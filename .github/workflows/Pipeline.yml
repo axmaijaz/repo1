@@ -23,7 +23,7 @@ jobs:
       - name: Build Application
         run: npm run build 
 
-      - name: Deploy
+      - name: production
         uses: actions/deployment-action@v1.2.6
         with:
           environment: production
