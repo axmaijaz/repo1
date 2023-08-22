@@ -22,7 +22,13 @@ jobs:
 
       - name: Build Application
         run: npm run build 
-        
+
+      - name: Deploy
+        uses: actions/deployment-action@v1.2.6
+        with:
+          environment: production
+          payload: '{"message": "Deploying to production"}'
+
       - name: Deploy to Azure Static Web App
         uses: azure/static-web-apps-deploy@v1
         with:
