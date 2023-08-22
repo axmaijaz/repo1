@@ -19,8 +19,8 @@ jobs:
         uses: actions/checkout@v3
       - name: npm install and build
         run: |
-            npm install
-            npm run build 
+            ls
+            pwd
       - name: Build And Deploy
         uses: Azure/static-web-apps-deploy@v1
         with:
@@ -30,3 +30,4 @@ jobs:
           app_location: ${{ env.APP_LOCATION }}
           api_location: ${{ env.API_LOCATION }}
           output_location: ${{ env.OUTPUT_LOCATION }}
+          app_build_command: npm run build
