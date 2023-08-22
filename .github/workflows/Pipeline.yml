@@ -1,0 +1,34 @@
+name: Automate Deploy Angular app
+
+on:
+  push:
+    branches:
+      - main  # Adjust the branch name as needed
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'  # Adjust Node.js version as needed
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build Application
+        run: npm run build  # Adjust the build command as needed
+
+      - name: Deploy to Azure Static Web App
+        uses: azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          app_location: '/'  # Adjust the app location if needed
+          api_location: ''  # Adjust the API location if needed
+          output_location: 'dist'  # Adjust the output location if needed
