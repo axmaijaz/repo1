@@ -1,7 +1,7 @@
 name: Automate Deploy Angular app
 
 env:
-  APP_LOCATION: "/src" # location of your client code
+  APP_LOCATION: "/src/index.html" # location of your client code
   API_LOCATION: "" # location of your api source code - optional
   OUTPUT_LOCATION: "dist" # location of client code build output
 
