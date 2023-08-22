@@ -22,9 +22,8 @@ jobs:
 
       - name: Build Application
         run: npm run build 
-
       - name: production
-        uses: actions/deployment-action@v1.2.6
+        uses: actions/deployment-action@v1.0.0
         with:
           environment: production
           payload: '{"message": "Deploying to production"}'
