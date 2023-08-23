@@ -1,0 +1,17 @@
+{
+    "app_location": "src",
+    "api_location": "",
+    "output_location": "src/app/dist",
+    "routes": [
+      {
+        "route": "/api/*",
+        "serve": "/api/index.js",
+        "allowed_origins": "*"
+      },
+      {
+        "route": "/*",
+        "rewrite": "/index.html"
+      }
+    ]
+  }
+  
