@@ -4,9 +4,7 @@ import { Component } from '@angular/core';
   selector: 'app-root',
   // templateUrl: './app.component.html',
   // styleUrls: ['./app.component.css']
-  template: `<h1>Welcome! Hello world from Angular!
-  /n Asma Ijaz
-</h1>,
+  template: `<h1>Welcome Asma Ijaz! Hello world from Angular!</h1>,
   })
 export class AppComponent {
   title = 'Test-app';
