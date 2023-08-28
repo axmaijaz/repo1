@@ -8,9 +8,20 @@ env:
 on:
   push:
     branches:
-      - master  
+      - master 
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      release Type:
+      description: 'Where to release( angular or test)?'
+      required: True
+      default:  'angular'    
 
+
+  
 jobs:
+  test:
   build-and-deploy:
     runs-on: ubuntu-latest
     name: Build and Deploy Job
@@ -28,3 +39,6 @@ jobs:
           output_location: ${{ env.OUTPUT_LOCATION }}
           # app_build_command: 'npm run build'
           app_build_command: 'ng build --prod'
+
+    
+     
