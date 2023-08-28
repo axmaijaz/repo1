@@ -35,6 +35,6 @@ jobs:
           app_location: ${{ env.APP_LOCATION }}
           api_location: ${{ env.API_LOCATION }}
           output_location: ${{ env.OUTPUT_LOCATION }}
-          # app_build_command: 'npm run build'
+          
           app_build_command: 'ng build --prod'
 
