@@ -10,15 +10,15 @@ on:
       branches:
         - master 
         - test
-   # release:
-   #   types: [published]
  workflow_dispatch:
     inputs:
       release Type:
        description: 'Where to release( angular or test)?'
        required: True
        default:  'test'    
-
+   # release:
+   #   types: [published]
+ 
 jobs:
  test:
     runs-on: ubuntu-latest
