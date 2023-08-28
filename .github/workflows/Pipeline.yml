@@ -38,5 +38,17 @@ jobs:
           # app_build_command: 'npm run build'
           app_build_command: 'ng build --prod'
 
-    
+ approval:
+  
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'  # Only run this job when code is pushed to main
+
+    steps:
+      - name: Request approval
+        id: approval
+        uses: "pascalgn/automerge-action@v1"
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          approval-labels: "approval-required"
+
      
