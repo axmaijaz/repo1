@@ -6,10 +6,10 @@ env:
   OUTPUT_LOCATION: "dist/test-app" 
 
 on:
-  push:
-    branches:
-      - master 
-      - test
+  # push:
+  #   branches:
+  #     - master 
+  #     - test
   release:
     types: [published]
   workflow_dispatch:
