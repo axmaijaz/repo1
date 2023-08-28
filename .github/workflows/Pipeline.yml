@@ -6,13 +6,13 @@ env:
   OUTPUT_LOCATION: "dist/test-app" 
 
 on:
-  # push:
-  #   branches:
-  #     - master 
-  #     - test
-  release:
-    types: [published]
-  workflow_dispatch:
+ push:
+      branches:
+        - master 
+        - test
+   # release:
+   #   types: [published]
+ workflow_dispatch:
     inputs:
       release Type:
        description: 'Where to release( angular or test)?'
