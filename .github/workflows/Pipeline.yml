@@ -10,15 +10,7 @@ on:
       branches:
         - master 
         - test
- workflow_dispatch:
-    inputs:
-      release Type:
-       description: 'Where to release( angular or test)?'
-       required: True
-       default:  'test'    
-   # release:
-   #   types: [published]
- 
+
 jobs:
  test:
     runs-on: ubuntu-latest
@@ -38,15 +30,4 @@ jobs:
           
           app_build_command: 'ng build --prod'
 
-approval:
-    needs: deploy
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push'  # Only run this job when code is pushed to main
 
-    steps:
-      - name: Request approval
-        id: approval
-        uses: "pascalgn/automerge-action@v1"
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          approval-labels: "approval-required"
