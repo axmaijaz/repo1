@@ -19,14 +19,12 @@ on:
        required: True
        default:  'test'    
 
-
-  
 jobs:
-  test:
-    build-and-deploy:
+ test:
      runs-on: ubuntu-latest
-     name: Build and Deploy Job
-    steps:
+      build-and-deploy:
+      name: Build and Deploy Job
+      steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
       - name: Build And Deploy
