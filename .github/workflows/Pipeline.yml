@@ -35,11 +35,9 @@ jobs:
           app_location: ${{ env.APP_LOCATION }}
           api_location: ${{ env.API_LOCATION }}
           output_location: ${{ env.OUTPUT_LOCATION }}
-          
           app_build_command: 'ng build --prod'
 
 approval:
-    needs: deploy
     runs-on: ubuntu-latest
     if: github.event_name == 'push'  # Only run this job when code is pushed to main
 
