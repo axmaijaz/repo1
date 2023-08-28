@@ -1,5 +1,6 @@
 # TestApp
-This application is Angular based and for test purpose
+Testing approval workflow
+This application is Angular based and for test purpose 
 Azure static web app token configured and web content is ready 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.0.
 
