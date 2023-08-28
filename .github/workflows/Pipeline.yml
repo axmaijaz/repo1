@@ -15,17 +15,17 @@ on:
   workflow_dispatch:
     inputs:
       release Type:
-      description: 'Where to release( angular or test)?'
-      required: True
-      default:  'angular'    
+       description: 'Where to release( angular or test)?'
+       required: True
+       default:  'test'    
 
 
   
 jobs:
   test:
-  build-and-deploy:
-    runs-on: ubuntu-latest
-    name: Build and Deploy Job
+    build-and-deploy:
+     runs-on: ubuntu-latest
+     name: Build and Deploy Job
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
