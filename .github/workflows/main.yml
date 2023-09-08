@@ -3,9 +3,11 @@ name: Angular Deployment
 on:
   workflow_dispatch: # This event allows manual triggering of the workflow
     inputs:
-      name:
-        description: "Who to greet"
-        default: "World"
+      environment:
+        description: 'Select the environment'
+        required: true
+        default: 'dev'
+
 
 jobs:
   deploy:
