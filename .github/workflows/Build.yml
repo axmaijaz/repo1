@@ -1,0 +1,45 @@
+name: Angular app test Deployment
+
+on:
+  push:
+    branches:
+    -
+
+  
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    env:
+      APP_DIRECTORY: '../../src/app'   #Our source directory
+
+    # strategy:
+    #   matrix:
+    #     environment: [QA, Production]
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Use Node.js $
+        uses: actions/setup-node@v1
+        with:
+          node-version:12.14.1
+
+      - name: Install dependencies
+        run: npm ci && npm install -g @angular/cli
+        
+      - name: Build
+        run: npm run build
+
+      - name: Archive Build Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+           name: dist
+           path: dist  # This assumes your built Angular app is in a "dist" directory
+
+      # - name: Set Environment Variables
+      #   run: |
+      #     echo "APP_DIRECTORY=$APP_DIRECTORY" >> $GITHUB_ENV
+      #     echo "ENVIRONMENT=${{ matrix.environment }}" >> $GITHUB_ENV
