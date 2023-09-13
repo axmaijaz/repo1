@@ -1,0 +1,42 @@
+name: Release Pipeline
+
+on:
+  workflow_run:
+    workflows: ["Build"] # Replace with the name of your build workflow
+    types:
+      - completed
+
+  pull_request_review:
+    types:
+      - approved
+      - submitted
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+  
+  strategy:
+        matrix:
+        environment: [QA, Production]
+  
+  steps:
+     - name: Checkout code
+       uses: actions/checkout@v2
+     
+     - name: Download Build Artifacts
+       uses: actions/download-artifact@v2
+       with:
+          name: dist
+
+#    - name: Trigger Build Pipeline
+#      uses: octokit/request-action@v2
+#      with:
+#      route: POST /repos/${{ axmaijaz.repo1 }}/actions/workflows/<YOUR_BUILD_WORKFLOW_ID>/dispatches
+#      token: ${{ secrets.GITHUB_TOKEN }}
+
+     - name: Set Environment Variables
+       run: |
+           echo "APP_DIRECTORY=$APP_DIRECTORY" >> $GITHUB_ENV
+           echo "ENVIRONMENT=${{ matrix.environment }}" >> $GITHUB_ENV
+
+

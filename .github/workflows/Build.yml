@@ -14,23 +14,16 @@ jobs:
     env:
       APP_DIRECTORY: '../../src/app'   #Our source directory
 
-    # strategy:
-    #   matrix:
-    #     environment: [QA, Production]
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
 
-      - name: Set Up Node.js 14
+      - name: Set Up Node.js 12
         uses: actions/setup-node@v2
         with:
-          node-version: 14
-      # - name: Use Node.js $
-      #   uses: actions/setup-node@v1
-      #   # with:
-      #   #   node-version: latest
+          node-version: 12
 
       - name: Install dependencies
         run: npm install -g @angular/cli
@@ -42,7 +35,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
            name: dist
-           path: dist  # This assumes your built Angular app is in a "dist" directory
+           path: dist  
 
       # - name: Set Environment Variables
       #   run: |
