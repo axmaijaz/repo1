@@ -1,4 +1,4 @@
-name: Angular app test Deployment
+name: Build Pipeline
 
 on:
   push:

@@ -2,15 +2,14 @@ name: Release Pipeline
 
 on:
   workflow_run:
-    workflows: ["Build"] # Replace with the name of your build workflow
+    workflows: ["Build Pipeline"] # Replace with the name of your build workflow
     types:
       - completed
 
   pull_request_review:
     types:
-      - approved
-      - submitted
-
+        - submitted
+        - approved
 jobs:
   release:
     runs-on: ubuntu-latest
