@@ -32,7 +32,7 @@ jobs:
         run: npm install 
         
       - name: Build
-        run: ng build  --prod
+        run: ng build 
         # run: npm run build
 
       - name: Archive Build Artifacts
