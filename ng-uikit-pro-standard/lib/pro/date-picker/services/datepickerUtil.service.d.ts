@@ -1,0 +1,34 @@
+import { IMyDate } from '../interfaces/date.interface';
+import { IMyDateRange } from '../interfaces/dateRange.interface';
+import { IMyMonth } from '../interfaces/month.interface';
+import { IMyMonthLabels } from '../interfaces/monthLabels.interface';
+import { IMyMarkedDates } from '../interfaces/markedDates.interface';
+import { IMyMarkedDate } from '../interfaces/markedDate.interface';
+import { IMyDateFormat } from '../interfaces/my-date-format.interface';
+import * as ɵngcc0 from '@angular/core';
+export declare class UtilService {
+    isDateValid(dateStr: string, dateFormat: string, minYear: number, maxYear: number, disableUntil: IMyDate, disableSince: IMyDate, disableWeekends: boolean, disableDays: Array<IMyDate | number>, disableDateRanges: Array<IMyDateRange>, monthLabels: IMyMonthLabels, enableDays: Array<IMyDate | number>): IMyDate;
+    getDateValue(dateStr: string, dateFormat: string, delimeters: Array<string>): Array<IMyDateFormat>;
+    getMonthNumberByMonthName(df: IMyDateFormat, monthLabels: IMyMonthLabels): number;
+    getNumberByValue(df: IMyDateFormat): number;
+    getDateFormatSeparator(dateFormat: string): string;
+    getDateFormatDelimeters(dateFormat: string): Array<string> | any;
+    isMonthLabelValid(monthLabel: string, monthLabels: IMyMonthLabels): number;
+    isYearLabelValid(yearLabel: number, minYear: number, maxYear: number): number;
+    parseDatePartNumber(dateFormat: string, dateString: string, datePart: string): number;
+    parseDatePartMonthName(dateFormat: string, dateString: string, datePart: string, monthLabels: IMyMonthLabels): number;
+    getDatePartIndex(dateFormat: string, datePart: string): number;
+    parseDefaultMonth(monthString: string | any): IMyMonth;
+    isDisabledDay(date: IMyDate, disableUntil: IMyDate, disableSince: IMyDate, disableWeekends: boolean, disableDays: Array<IMyDate | number>, disableDateRanges: Array<IMyDateRange>, enableDays: Array<IMyDate | number>): boolean;
+    isMarkedDate(date: IMyDate, markedDates: Array<IMyMarkedDates>, markWeekends: IMyMarkedDate): IMyMarkedDate;
+    getWeekNumber(date: IMyDate): number;
+    isMonthDisabledByDisableUntil(date: IMyDate, disableUntil: IMyDate): boolean;
+    isMonthDisabledByDisableSince(date: IMyDate, disableSince: IMyDate): boolean;
+    isInitializedDate(date: IMyDate): boolean;
+    getTimeInMilliseconds(date: IMyDate): number;
+    getDayNumber(date: IMyDate): number;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<UtilService, never>;
+    static ɵprov: ɵngcc0.ɵɵInjectableDef<UtilService>;
+}
+
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiZGF0ZXBpY2tlclV0aWwuc2VydmljZS5kLnRzIiwic291cmNlcyI6WyJkYXRlcGlja2VyVXRpbC5zZXJ2aWNlLmQudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7Ozs7Ozs7O0FBT0E7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O0FBcUJBIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgSU15RGF0ZSB9IGZyb20gJy4uL2ludGVyZmFjZXMvZGF0ZS5pbnRlcmZhY2UnO1xuaW1wb3J0IHsgSU15RGF0ZVJhbmdlIH0gZnJvbSAnLi4vaW50ZXJmYWNlcy9kYXRlUmFuZ2UuaW50ZXJmYWNlJztcbmltcG9ydCB7IElNeU1vbnRoIH0gZnJvbSAnLi4vaW50ZXJmYWNlcy9tb250aC5pbnRlcmZhY2UnO1xuaW1wb3J0IHsgSU15TW9udGhMYWJlbHMgfSBmcm9tICcuLi9pbnRlcmZhY2VzL21vbnRoTGFiZWxzLmludGVyZmFjZSc7XG5pbXBvcnQgeyBJTXlNYXJrZWREYXRlcyB9IGZyb20gJy4uL2ludGVyZmFjZXMvbWFya2VkRGF0ZXMuaW50ZXJmYWNlJztcbmltcG9ydCB7IElNeU1hcmtlZERhdGUgfSBmcm9tICcuLi9pbnRlcmZhY2VzL21hcmtlZERhdGUuaW50ZXJmYWNlJztcbmltcG9ydCB7IElNeURhdGVGb3JtYXQgfSBmcm9tICcuLi9pbnRlcmZhY2VzL215LWRhdGUtZm9ybWF0LmludGVyZmFjZSc7XG5leHBvcnQgZGVjbGFyZSBjbGFzcyBVdGlsU2VydmljZSB7XG4gICAgaXNEYXRlVmFsaWQoZGF0ZVN0cjogc3RyaW5nLCBkYXRlRm9ybWF0OiBzdHJpbmcsIG1pblllYXI6IG51bWJlciwgbWF4WWVhcjogbnVtYmVyLCBkaXNhYmxlVW50aWw6IElNeURhdGUsIGRpc2FibGVTaW5jZTogSU15RGF0ZSwgZGlzYWJsZVdlZWtlbmRzOiBib29sZWFuLCBkaXNhYmxlRGF5czogQXJyYXk8SU15RGF0ZSB8IG51bWJlcj4sIGRpc2FibGVEYXRlUmFuZ2VzOiBBcnJheTxJTXlEYXRlUmFuZ2U+LCBtb250aExhYmVsczogSU15TW9udGhMYWJlbHMsIGVuYWJsZURheXM6IEFycmF5PElNeURhdGUgfCBudW1iZXI+KTogSU15RGF0ZTtcbiAgICBnZXREYXRlVmFsdWUoZGF0ZVN0cjogc3RyaW5nLCBkYXRlRm9ybWF0OiBzdHJpbmcsIGRlbGltZXRlcnM6IEFycmF5PHN0cmluZz4pOiBBcnJheTxJTXlEYXRlRm9ybWF0PjtcbiAgICBnZXRNb250aE51bWJlckJ5TW9udGhOYW1lKGRmOiBJTXlEYXRlRm9ybWF0LCBtb250aExhYmVsczogSU15TW9udGhMYWJlbHMpOiBudW1iZXI7XG4gICAgZ2V0TnVtYmVyQnlWYWx1ZShkZjogSU15RGF0ZUZvcm1hdCk6IG51bWJlcjtcbiAgICBnZXREYXRlRm9ybWF0U2VwYXJhdG9yKGRhdGVGb3JtYXQ6IHN0cmluZyk6IHN0cmluZztcbiAgICBnZXREYXRlRm9ybWF0RGVsaW1ldGVycyhkYXRlRm9ybWF0OiBzdHJpbmcpOiBBcnJheTxzdHJpbmc+IHwgYW55O1xuICAgIGlzTW9udGhMYWJlbFZhbGlkKG1vbnRoTGFiZWw6IHN0cmluZywgbW9udGhMYWJlbHM6IElNeU1vbnRoTGFiZWxzKTogbnVtYmVyO1xuICAgIGlzWWVhckxhYmVsVmFsaWQoeWVhckxhYmVsOiBudW1iZXIsIG1pblllYXI6IG51bWJlciwgbWF4WWVhcjogbnVtYmVyKTogbnVtYmVyO1xuICAgIHBhcnNlRGF0ZVBhcnROdW1iZXIoZGF0ZUZvcm1hdDogc3RyaW5nLCBkYXRlU3RyaW5nOiBzdHJpbmcsIGRhdGVQYXJ0OiBzdHJpbmcpOiBudW1iZXI7XG4gICAgcGFyc2VEYXRlUGFydE1vbnRoTmFtZShkYXRlRm9ybWF0OiBzdHJpbmcsIGRhdGVTdHJpbmc6IHN0cmluZywgZGF0ZVBhcnQ6IHN0cmluZywgbW9udGhMYWJlbHM6IElNeU1vbnRoTGFiZWxzKTogbnVtYmVyO1xuICAgIGdldERhdGVQYXJ0SW5kZXgoZGF0ZUZvcm1hdDogc3RyaW5nLCBkYXRlUGFydDogc3RyaW5nKTogbnVtYmVyO1xuICAgIHBhcnNlRGVmYXVsdE1vbnRoKG1vbnRoU3RyaW5nOiBzdHJpbmcgfCBhbnkpOiBJTXlNb250aDtcbiAgICBpc0Rpc2FibGVkRGF5KGRhdGU6IElNeURhdGUsIGRpc2FibGVVbnRpbDogSU15RGF0ZSwgZGlzYWJsZVNpbmNlOiBJTXlEYXRlLCBkaXNhYmxlV2Vla2VuZHM6IGJvb2xlYW4sIGRpc2FibGVEYXlzOiBBcnJheTxJTXlEYXRlIHwgbnVtYmVyPiwgZGlzYWJsZURhdGVSYW5nZXM6IEFycmF5PElNeURhdGVSYW5nZT4sIGVuYWJsZURheXM6IEFycmF5PElNeURhdGUgfCBudW1iZXI+KTogYm9vbGVhbjtcbiAgICBpc01hcmtlZERhdGUoZGF0ZTogSU15RGF0ZSwgbWFya2VkRGF0ZXM6IEFycmF5PElNeU1hcmtlZERhdGVzPiwgbWFya1dlZWtlbmRzOiBJTXlNYXJrZWREYXRlKTogSU15TWFya2VkRGF0ZTtcbiAgICBnZXRXZWVrTnVtYmVyKGRhdGU6IElNeURhdGUpOiBudW1iZXI7XG4gICAgaXNNb250aERpc2FibGVkQnlEaXNhYmxlVW50aWwoZGF0ZTogSU15RGF0ZSwgZGlzYWJsZVVudGlsOiBJTXlEYXRlKTogYm9vbGVhbjtcbiAgICBpc01vbnRoRGlzYWJsZWRCeURpc2FibGVTaW5jZShkYXRlOiBJTXlEYXRlLCBkaXNhYmxlU2luY2U6IElNeURhdGUpOiBib29sZWFuO1xuICAgIGlzSW5pdGlhbGl6ZWREYXRlKGRhdGU6IElNeURhdGUpOiBib29sZWFuO1xuICAgIGdldFRpbWVJbk1pbGxpc2Vjb25kcyhkYXRlOiBJTXlEYXRlKTogbnVtYmVyO1xuICAgIGdldERheU51bWJlcihkYXRlOiBJTXlEYXRlKTogbnVtYmVyO1xufVxuIl19

@@ -1,0 +1,50 @@
+import { AfterViewInit, ElementRef, EventEmitter, OnDestroy, Renderer2 } from '@angular/core';
+import { MdbAutoCompleterComponent } from '../components/mdb-auto-completer.component';
+import { ControlValueAccessor } from '@angular/forms';
+import * as ɵngcc0 from '@angular/core';
+export declare const MAT_AUTOCOMPLETE_VALUE_ACCESSOR: any;
+export declare class MdbAutoCompleterDirective implements AfterViewInit, OnDestroy, ControlValueAccessor {
+    private renderer;
+    private el;
+    private document;
+    mdbAutoCompleter: MdbAutoCompleterComponent;
+    ngModelChange: EventEmitter<any>;
+    clearBtnClicked: EventEmitter<any>;
+    private _destroy$;
+    private _autocompleterInputChanges;
+    private _clearButton;
+    private _canOpenOnFocus;
+    private utils;
+    listenToClearClick: Function;
+    listenFunc: Function;
+    isBrowser: boolean;
+    onKeydown(event: any): void;
+    _handleInput(event: any): void;
+    _handleFocusIn(): void;
+    _handleBlurIn(): void;
+    handleMouseDown(): void;
+    constructor(renderer: Renderer2, el: ElementRef, platformId: string, document: any);
+    private _renderClearButton;
+    private _updateClearButtonVisibility;
+    private _setStyles;
+    private _addClass;
+    private _clearInput;
+    clear(): void;
+    _handleKeyDown(event: any): void;
+    getCoords(elem: any): any;
+    private _isOpen;
+    private _show;
+    private _hide;
+    private _appendDropdownToInput;
+    ngAfterViewInit(): void;
+    ngOnDestroy(): void;
+    _onChange: (value: any) => void;
+    _onTouched: () => void;
+    writeValue(value: any): void;
+    registerOnChange(fn: (value: any) => {}): void;
+    registerOnTouched(fn: () => {}): void;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<MdbAutoCompleterDirective, never>;
+    static ɵdir: ɵngcc0.ɵɵDirectiveDefWithMeta<MdbAutoCompleterDirective, "input[mdbAutoCompleter], textarea[mdbAutoCompleter]", ["mdbAutoCompleterTrigger"], { "mdbAutoCompleter": "mdbAutoCompleter"; }, { "ngModelChange": "ngModelChange"; "clearBtnClicked": "clearBtnClicked"; }, never>;
+}
+
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoibWRiLWF1dG8tY29tcGxldGVyLmRpcmVjdGl2ZS5kLnRzIiwic291cmNlcyI6WyJtZGItYXV0by1jb21wbGV0ZXIuZGlyZWN0aXZlLmQudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7Ozs7QUFHQTs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OztBQXlDQSIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IEFmdGVyVmlld0luaXQsIEVsZW1lbnRSZWYsIEV2ZW50RW1pdHRlciwgT25EZXN0cm95LCBSZW5kZXJlcjIgfSBmcm9tICdAYW5ndWxhci9jb3JlJztcbmltcG9ydCB7IE1kYkF1dG9Db21wbGV0ZXJDb21wb25lbnQgfSBmcm9tICcuLi9jb21wb25lbnRzL21kYi1hdXRvLWNvbXBsZXRlci5jb21wb25lbnQnO1xuaW1wb3J0IHsgQ29udHJvbFZhbHVlQWNjZXNzb3IgfSBmcm9tICdAYW5ndWxhci9mb3Jtcyc7XG5leHBvcnQgZGVjbGFyZSBjb25zdCBNQVRfQVVUT0NPTVBMRVRFX1ZBTFVFX0FDQ0VTU09SOiBhbnk7XG5leHBvcnQgZGVjbGFyZSBjbGFzcyBNZGJBdXRvQ29tcGxldGVyRGlyZWN0aXZlIGltcGxlbWVudHMgQWZ0ZXJWaWV3SW5pdCwgT25EZXN0cm95LCBDb250cm9sVmFsdWVBY2Nlc3NvciB7XG4gICAgcHJpdmF0ZSByZW5kZXJlcjtcbiAgICBwcml2YXRlIGVsO1xuICAgIHByaXZhdGUgZG9jdW1lbnQ7XG4gICAgbWRiQXV0b0NvbXBsZXRlcjogTWRiQXV0b0NvbXBsZXRlckNvbXBvbmVudDtcbiAgICBuZ01vZGVsQ2hhbmdlOiBFdmVudEVtaXR0ZXI8YW55PjtcbiAgICBjbGVhckJ0bkNsaWNrZWQ6IEV2ZW50RW1pdHRlcjxhbnk+O1xuICAgIHByaXZhdGUgX2Rlc3Ryb3kkO1xuICAgIHByaXZhdGUgX2F1dG9jb21wbGV0ZXJJbnB1dENoYW5nZXM7XG4gICAgcHJpdmF0ZSBfY2xlYXJCdXR0b247XG4gICAgcHJpdmF0ZSBfY2FuT3Blbk9uRm9jdXM7XG4gICAgcHJpdmF0ZSB1dGlscztcbiAgICBsaXN0ZW5Ub0NsZWFyQ2xpY2s6IEZ1bmN0aW9uO1xuICAgIGxpc3RlbkZ1bmM6IEZ1bmN0aW9uO1xuICAgIGlzQnJvd3NlcjogYm9vbGVhbjtcbiAgICBvbktleWRvd24oZXZlbnQ6IGFueSk6IHZvaWQ7XG4gICAgX2hhbmRsZUlucHV0KGV2ZW50OiBhbnkpOiB2b2lkO1xuICAgIF9oYW5kbGVGb2N1c0luKCk6IHZvaWQ7XG4gICAgX2hhbmRsZUJsdXJJbigpOiB2b2lkO1xuICAgIGhhbmRsZU1vdXNlRG93bigpOiB2b2lkO1xuICAgIGNvbnN0cnVjdG9yKHJlbmRlcmVyOiBSZW5kZXJlcjIsIGVsOiBFbGVtZW50UmVmLCBwbGF0Zm9ybUlkOiBzdHJpbmcsIGRvY3VtZW50OiBhbnkpO1xuICAgIHByaXZhdGUgX3JlbmRlckNsZWFyQnV0dG9uO1xuICAgIHByaXZhdGUgX3VwZGF0ZUNsZWFyQnV0dG9uVmlzaWJpbGl0eTtcbiAgICBwcml2YXRlIF9zZXRTdHlsZXM7XG4gICAgcHJpdmF0ZSBfYWRkQ2xhc3M7XG4gICAgcHJpdmF0ZSBfY2xlYXJJbnB1dDtcbiAgICBjbGVhcigpOiB2b2lkO1xuICAgIF9oYW5kbGVLZXlEb3duKGV2ZW50OiBhbnkpOiB2b2lkO1xuICAgIGdldENvb3JkcyhlbGVtOiBhbnkpOiBhbnk7XG4gICAgcHJpdmF0ZSBfaXNPcGVuO1xuICAgIHByaXZhdGUgX3Nob3c7XG4gICAgcHJpdmF0ZSBfaGlkZTtcbiAgICBwcml2YXRlIF9hcHBlbmREcm9wZG93blRvSW5wdXQ7XG4gICAgbmdBZnRlclZpZXdJbml0KCk6IHZvaWQ7XG4gICAgbmdPbkRlc3Ryb3koKTogdm9pZDtcbiAgICBfb25DaGFuZ2U6ICh2YWx1ZTogYW55KSA9PiB2b2lkO1xuICAgIF9vblRvdWNoZWQ6ICgpID0+IHZvaWQ7XG4gICAgd3JpdGVWYWx1ZSh2YWx1ZTogYW55KTogdm9pZDtcbiAgICByZWdpc3Rlck9uQ2hhbmdlKGZuOiAodmFsdWU6IGFueSkgPT4ge30pOiB2b2lkO1xuICAgIHJlZ2lzdGVyT25Ub3VjaGVkKGZuOiAoKSA9PiB7fSk6IHZvaWQ7XG59XG4iXX0=
