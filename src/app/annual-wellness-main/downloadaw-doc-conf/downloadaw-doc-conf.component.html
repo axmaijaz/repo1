@@ -1,0 +1,86 @@
+<div mdbModal #downloadDocumentsModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true" (open)="resetData()">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="downloadDocumentsModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <!-- <h4 class="modal-title w-100" id="myModalLabel"><i class="fa fa-exclamation-triangle yellow-text"></i>{{modalObj.Title}}
+      </h4> -->
+        <h4 class="modal-title w-100" id="myModalLabel">Download Pdf
+        </h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="container">
+            <div>
+              <ul class="list-group dndList" dndDropzone [dndHorizontal]="false" dndEffectAllowed="copyMove"
+                (dndDrop)="onDrop($event, itemsList)">
+                <li dndPlaceholderRef class="dndPlaceholder">
+                </li>
+                <li class="list-group-item d-flex justify-content-start align-items-center px-2"
+                  *ngFor="let item of itemsList; let index = index;" [dndDraggable]="item" [dndEffectAllowed]="'move'"
+                  [dndDisableIf]="false" (dndStart)="onDragStart($event)"
+                  (dndCopied)="onDragged(item, itemsList, 'copy')" (dndLinked)="onDragged(item, itemsList, 'link')"
+                  (dndMoved)="onDragged(item, itemsList, 'move')" (dndCanceled)="onDragged(item, itemsList, 'none')"
+                  (dndEnd)="onDragEnd($event)">
+                  <div class="d-flex justify-content-between flex-grow-1">
+                    <div class="d-flex align-items-center flex-grow-1 mr-3">
+                      <a class="dragable-btn mr-2" dndHandle>
+                        <i class="fa fa-ellipsis-v fa-lg"></i>
+                        <i class="fa fa-ellipsis-v fa-lg"></i>
+                        <i class="fa fa-ellipsis-v fa-lg"></i>
+                      </a>
+                      <mdb-badge *ngIf="!item.order" primary="true">{{index + 1}}</mdb-badge>
+                      <mdb-badge *ngIf="item.order" primary="true">{{item.order}}</mdb-badge>
+                      <p class="text-left mb-0 ml-3"> {{item.label}} </p>
+
+                    </div>
+                    <div>
+                      <mdb-checkbox [default]="true" [(ngModel)]="item.checked"></mdb-checkbox>
+                    </div>
+                  </div>
+
+
+                </li>
+
+              </ul>
+
+              <!-- <ul dndDropzone [dndHorizontal]="layout.dndHorizontal" dndEffectAllowed="copyMove"
+            (dndDrop)="onDrop($event, draggableListLeft)" class="dndList">
+
+            <li dndPlaceholderRef class="dndPlaceholder">
+            </li>
+
+            <li *ngFor="let item of draggableListLeft; let index = index;" [dndDraggable]="item"
+              [dndEffectAllowed]="item.effectAllowed" [dndDisableIf]="item.disable" (dndStart)="onDragStart($event)"
+              (dndCopied)="onDragged(item, draggableListLeft, 'copy')"
+              (dndLinked)="onDragged(item, draggableListLeft, 'link')"
+              (dndMoved)="onDragged(item, draggableListLeft, 'move')"
+              (dndCanceled)="onDragged(item, draggableListLeft, 'none')" (dndEnd)="onDragEnd($event)">
+              <i *ngIf="item.handle" class="fa fa-list fa-lg" style="cursor: pointer" dndHandle></i>
+              <h1>{{item.content}}</h1>
+              <p>effectAllowed: {{item.effectAllowed}} {{index}}</p>
+
+            </li>
+
+          </ul> -->
+
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+          (click)="downloadDocumentsModal.hide()" mdbWavesEffect>Close</button>
+        <button [disabled]="isLoadingData"
+        (click)="emitEventForDownload()" type="button" 
+        class="relative waves-light btn btn-sm btn-dynamic-secondary-2c" mdbWavesEffect>
+        <span *ngIf="isLoadingData" class="spinner-border spinner-border-sm" role="status"
+          aria-hidden="true"></span>
+        Download</button>
+      </div>
+    </div>
+  </div>
+</div>

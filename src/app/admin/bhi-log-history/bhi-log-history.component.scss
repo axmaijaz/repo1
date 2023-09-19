@@ -1,0 +1,110 @@
+@import 'theme';
+.logs-container {
+  // height: calc(100% - 2.5rem);
+  // max-height: 350px;
+  position: relative;
+  &::before {
+    @include media-breakpoint-up(sm){
+      content: " ";
+      height: 100%;
+      width: 1px;
+      border-left: 1px dashed $dynamic-colour;
+      position: absolute;
+      left: calc(5rem + 32px);
+      z-index: 8;
+    }
+    @include media-breakpoint-down(sm){
+      left: 1rem;
+    }
+
+  }
+}
+.logs {
+  height: 100%;
+  padding-left: 6rem;
+  @include media-breakpoint-down(sm){
+    padding: 0;
+  }
+  .log-item {
+    position: relative;
+    padding-bottom: 1rem;
+    &::before {
+      content: " ";
+      height: 100%;
+      width: 1px;
+      border-left: 1px solid $dynamic-colour;
+      position: absolute;
+      left: 1rem;
+      z-index: 8;
+
+    }
+    .log-title {
+      color: $dynamic-colour;
+      margin-bottom: 0;
+      padding-left: 11px;
+      &:before{
+        content: attr(date-time);
+        position: absolute;
+        left: -6rem;
+      }
+      span.log-bullet {
+        width: 12px;
+        height: 12px;
+        display: inline-block;
+        background: $dynamic-colour;
+        border-radius: 10px;
+        border: 2px solid $white;
+        z-index: 9;
+        position: relative;
+      }
+    }
+    .log-info {
+      padding-left: 2.5rem;
+      .sprt {
+        color: $grey;
+        margin: 0 1rem;
+      }
+    }
+  }
+}
+.logs-history{
+  .panel{
+    position: relative;
+  }
+}
+.text-overflow {
+  width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.box-cdma {
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 4px 2px 13px  rgba(0, 0, 0, 0.25);
+  background-color: #fff;
+
+  .box-right-btn {
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    border-radius: 8px;
+    background-color: $dynamic-secondary-colour;
+    color: #fff;
+    text-align: center;
+  }
+}
+.skltn-card__line {
+  height: 15px;
+  margin-bottom: 15px;
+}
+.skltn-card__avatar {
+  width: 30px;
+  height: 30px; /* <-- Don't forget height */
+  margin-bottom: 15px;
+}
+.width-size-200 {
+  width: 200px;
+}
+

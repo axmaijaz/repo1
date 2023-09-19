@@ -1,0 +1,317 @@
+@import "theme";
+.device-details {
+    @include media-breakpoint-down(md) {
+        margin-bottom: 1rem;
+    }
+    padding: 5px;
+    border: 1px solid lighten($grey, 13%);
+    p {
+        margin-bottom: 0;
+        display: flex;
+        justify-content: flex-start;
+        background: #f7f7f7;
+        &:not(:last-child) {
+        margin-bottom: 5px;
+        }
+        padding: 5px 5px;
+        strong {
+        background-color: lighten($primary, 45%);
+        display: inline-block;
+        width: 130px;
+        padding: 5px 8px;
+        margin: -5px;
+        margin-right: 1rem;
+        flex: 0 0 130px;
+        }
+    }
+    }
+    .progress-track{
+        padding: 0 8%;
+        #progressbar {
+            margin-bottom: 3vh;
+            overflow: hidden;
+            color: #000;
+            padding-left: 0px;
+            margin-top: 2rem;
+        }
+        
+        #progressbar li {
+            list-style-type: none;
+            font-size: 0.8rem;
+            width: 20%;
+            float: left;
+            position: relative;
+            font-weight: 400;
+            color: #000;
+        }
+        
+        #progressbar #step1:before {
+            content: "Open";
+            color: #fff;
+            width: 100px;
+            height: 100px;
+            margin-left: 0px !important;
+            text-align: center;
+            align-items: center;
+            justify-content: center;
+            display: flex;
+            z-index: 999;
+            position: relative;
+            font-size: 14px;
+        }
+        
+        #progressbar #step2:before {
+            content: "Waiting For Approval";
+            color: #fff;
+            margin-left: 30px;
+            width: 100px;
+            height: 100px;
+            text-align: center;
+            align-items: center;
+            justify-content: center;
+            display: flex;
+            z-index: 999;
+            position: relative;
+            font-size: 14px;
+        }
+        
+        #progressbar #step3:before {
+            content: "In Process";
+            color: #fff;
+            margin-right: 30px;
+            width: 100px;
+            height: 100px;
+            text-align: center;
+            align-items: center;
+            justify-content: center;
+            display: flex;
+            z-index: 999;
+            position: relative;
+            font-size: 14px;
+        }
+        
+        #progressbar #step4:before {
+            content: "Shipped";
+            color: #fff;
+            margin-right: 20px;
+            width: 100px;
+            height: 100px;
+            text-align: center;
+            align-items: center;
+            justify-content: center;
+            display: flex;
+            z-index: 999;
+            position: relative;
+            font-size: 14px;
+        }
+        #progressbar #step5:before {
+            content: "Closed";
+            color: #fff;
+            margin-right: 0px !important;
+            width: 100px;
+            height: 100px;
+            text-align: center;
+            align-items: center;
+            justify-content: center;
+            display: flex;
+            z-index: 999;
+            position: relative;
+            font-size: 14px;
+        }
+        #progressbar li:before {
+            display: block;
+            font-size: 12px;
+            background: $dynamic-secondary-colour;
+            border: 2px solid $dynamic-secondary-colour;
+            border-radius: 50%;
+            margin: auto;
+            z-index: 1;
+            margin-bottom: 1rem;
+        }
+        
+        #progressbar li:after {
+            content: '';
+            height: 3px;
+            background: $dynamic-secondary-colour;
+            position: absolute;
+            left: 0%;
+            right: 0%;
+            margin-bottom: 2rem;
+            top: 50px;
+            z-index: 1;
+        }
+        
+        #progressbar li:nth-child(2):after {
+            margin-right: auto;
+        }
+        
+        #progressbar li:nth-child(1):after {
+            margin: auto;
+        }
+        
+        #progressbar li:nth-child(3):after {
+            float: left;
+            width: 68%;
+        }
+        #progressbar li:nth-child(4):after {
+            margin-left: auto;
+            width: 132%;
+        }
+        #progressbar li:nth-child(5):after {
+            margin-left: auto;
+            width: 132%;
+        }
+        
+        #progressbar li.active:before,
+        #progressbar li.active:after {
+            background: $dynamic-colour;
+            border: 2px solid $dynamic-colour;
+        
+        }
+    }
+    .progress-track-three{
+        padding: 0 8%;
+        #progressbar {
+            margin-bottom: 3vh;
+            overflow: hidden;
+            color: #000;
+            padding-left: 0px;
+            margin-top: 2rem;
+        }
+        
+        #progressbar li {
+            list-style-type: none;
+            font-size: 0.8rem;
+            float: left;
+            position: relative;
+            font-weight: 400;
+            color: #000;
+        }
+        #progressbar li:nth-child(1) {
+            width: 100px;
+        }
+        #progressbar li:nth-child(2) {
+            width: calc(50% - 50px);
+        }
+        #progressbar li:nth-child(3) {
+            width:  calc(50% - 50px);
+        }
+        #progressbar #step1:before {
+            content: "Open";
+            color: #fff;
+            width: 100px;
+            height: 100px;
+            margin-left: 0px !important;
+            text-align: center;
+            align-items: center;
+            justify-content: center;
+            display: flex;
+            z-index: 999;
+            position: relative;
+            font-size: 14px;
+        }
+        
+        #progressbar #step2:before {
+            content: "In Process";
+            color: #fff;
+            margin-right: 0px;
+    
+            width: 100px;
+            height: 100px;
+            text-align: center;
+            align-items: center;
+            justify-content: center;
+            display: flex;
+            z-index: 999;
+            position: relative;
+            font-size: 14px;
+        }
+        
+        #progressbar #step3:before {
+            content: "Closed";
+            color: #fff;
+            margin-right: 0px;
+            width: 100px;
+            height: 100px;
+            text-align: center;
+            align-items: center;
+            justify-content: center;
+            display: flex;
+            z-index: 999;
+            position: relative;
+            font-size: 14px;
+        }
+        #progressbar li:before {
+            display: block;
+            font-size: 12px;
+            background: $dynamic-secondary-colour;
+            border: 2px solid $dynamic-secondary-colour;
+            border-radius: 50%;
+            margin: auto;
+            z-index: 1;
+            margin-bottom: 1rem;
+        }
+        
+        #progressbar li:after {
+            content: '';
+            height: 3px;
+            background: $dynamic-secondary-colour;
+            position: absolute;
+            left: 0%;
+            right: 0%;
+            margin-bottom: 2rem;
+            top: 50px;
+            z-index: 1;
+        }
+        
+        #progressbar li:nth-child(2):after {
+            margin-right: auto;
+            width: 100%;
+        }
+        
+        #progressbar li:nth-child(1):after {
+            margin: auto;
+        }
+        
+        #progressbar li:nth-child(3):after {
+            float: left;
+            width: 100%;
+        }
+        
+        #progressbar li.active:before,
+        #progressbar li.active:after {
+            background: $dynamic-colour;
+            border: 2px solid $dynamic-colour;
+        
+        }
+    }
+
+.circle-box-select {
+    width: 30px;
+    height: 30px;
+    background-color: $dynamic-colour;
+    color: #fff;
+    min-width: 30px;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+    font-size: 12px;
+    font-weight: 500;
+}
+    // Modality List
+
+.select-facility-user{
+    min-width: 250px;
+    background: #f8f8f8;
+    padding: 0.3rem 0.5rem;
+    border-radius: 6px;
+    border: 1px solid transparent;
+
+    &:active,
+    &:hover {
+        background-color: #fff;
+        border: 1px solid $dynamic-colour;
+    }
+}

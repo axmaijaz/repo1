@@ -1,0 +1,11 @@
+<ng-container *ngIf="viewType=='embedded'">
+  <app-emr-actions [patientId]="PatientId"></app-emr-actions>
+</ng-container>
+<ng-container *ngIf="viewType=='summary'">
+  <div class="d-flex align-items-center justify-content-between mb-3">
+      <h1 class="page-title mb-0">Patient Summary</h1>
+    </div>
+  <app-patient-details [showEmrActionWidget]="showEMrActions" [hideChatBtn]="true"></app-patient-details>
+  <app-sticky-notes></app-sticky-notes>
+</ng-container>
+

@@ -1,0 +1,88 @@
+<div class="d-flex flex-row align-items-center justify-content-between mb-3">
+    <div>
+      <h1 class="page-title mb-0">Client Exceptions</h1>
+    </div>
+</div>
+<div>
+    <ngx-datatable #table class="material" appRecalculateNgxTable  [headerHeight]="50"
+    [footerHeight]="50" [rowHeight]="40" [count]="rows.length" [scrollbarV]="false" [scrollbarH]="true"
+    [rows]="rows" [offset]="0" [limit]="10">
+        <ngx-datatable-column name="#" maxWidth=30>
+        <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+            {{rowIndex + 1}}
+        </ng-template>
+        </ngx-datatable-column >
+        <ngx-datatable-column name="Error Name" prop="errorName" [width]=100 >
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Error Message" prop="message" >
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Source" prop="source"  [width]=100  >
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Facility Name" prop="facilityName">
+        </ngx-datatable-column>
+        <ngx-datatable-column name="User Info" prop="userInfo">
+        </ngx-datatable-column>
+        <!-- <ngx-datatable-column name="Created User" prop="createdUser">
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Updated User" prop="updatedUser">
+        </ngx-datatable-column> -->
+        <ngx-datatable-column name="Sevice Info" prop="deviceInfo" >
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Path" prop="path" >
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Created On" prop="createdOn">
+        </ngx-datatable-column>
+
+        <!-- <ngx-datatable-column name="Updated On" prop="updatedOn">
+        </ngx-datatable-column> -->
+
+        <ngx-datatable-column name="Action" [width]=60 >
+            <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+              <div class="action-button d-flex justify-content-start">
+                <button class="btn btn-dynamic-2c btn-icon" title="View" (click)="openViewExceptionModal(viewExceptionDetailModal, row)" placement="left"><i
+                    class="fa fa-eye"></i>
+                </button>
+              </div>
+            </ng-template>
+          </ngx-datatable-column>
+    </ngx-datatable>
+</div>
+
+
+<div style="overflow-y: auto" mdbModal #viewExceptionDetailModal="mdbModal" class="modal fade" role="dialog"
+  [config]="{ignoreBackdropClick: true}" aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg flat-modal" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="viewExceptionDetailModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title pr-4 w-100"> Exception Detail </h4>
+      </div>
+
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="modal-custom-text"> <span>Id:</span> {{viewClientExceptionObj?.id}}</div>
+            <div class="modal-custom-text"> <span>Source:</span> {{viewClientExceptionObj?.source}}</div>
+            <div class="modal-custom-text"> <span>Facility Name:</span> {{viewClientExceptionObj?.facilityName}}</div>
+            <div class="modal-custom-text"> <span>Device Info:</span> {{viewClientExceptionObj?.deviceInfo}}</div>
+            <div class="modal-custom-text"> <span>User Info:</span> {{viewClientExceptionObj?.userInfo}}</div>
+            <div class="modal-custom-text"> <span>Path:</span> {{viewClientExceptionObj?.path}}</div>
+            <!-- <div class="modal-custom-text"> <span>Created User:</span> {{viewClientExceptionObj?.createdUser}}</div>
+            <div class="modal-custom-text"> <span>Updated User:</span> {{viewClientExceptionObj?.updatedUser}}</div> -->
+            <div class="modal-custom-text"> <span>isActiveState:</span> {{viewClientExceptionObj?.isActiveState}}</div>
+            <div class="modal-custom-text"> <span>isDeletedState:</span> {{viewClientExceptionObj?.isDeletedState}}</div>
+            <div class="modal-custom-text"> <span>Error:</span> {{viewClientExceptionObj?.error}}</div>
+            <div class="modal-custom-text"> <span>Error Name:</span> {{viewClientExceptionObj?.errorName}}</div>
+            <div class="modal-custom-text"> <span>Message:</span> {{viewClientExceptionObj?.message}}</div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-dark btn-sm" aria-label="Close" (click)="viewExceptionDetailModal.hide();"
+          mdbWavesEffect>Close</button>
+      </div>
+    </div>
+  </div>
+</div>

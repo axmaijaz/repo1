@@ -1,0 +1,58 @@
+<!-- aws configure list -->
+
+<!-- aws configure list --profile LocumUserDev -->
+
+<!-- aws configure --profile LocumUserDev -->
+<!-- this will ask for key and secret key -->
+
+<!-- aws ec2 describe-instances --profile LocumUserDev -->
+
+<!-- To specify the region for a single AWS command -->
+<!-- PS C:\> Get-EC2Image -Region us-east-1 -->
+
+<!-- To set a default region for all AWS CLI commands in the session -->
+<!-- PS C:\> Set-DefaultAWSRegion -Region us-east-1 -->
+
+<!-- npm run healthforce for testing -->
+<!-- npm run twochealth for production -->
+
+<!-- ng build --configuration=test --optimization=false -->
+<!-- ng build --prod --configuration=staging --optimization=false -->
+<!-- ng build --prod --configuration=production -->
+<!-- ng build --configuration=production -->
+<!-- ng build --prod --configuration=production --optimization=false -->
+
+<!-- node --max_old_space_size=8192 node_modules/@angular/cli/bin/ng build --prod --configuration=production --optimization=false -->
+
+
+<!-- tar -zcvf archive.tar.gz dist/mdb-angular-pro -->
+
+<!-- set AWS_PROFILE=default -->
+<!-- set AWS_PROFILE=2cHealthDevStage -->
+
+<!-- aws s3 rm s3://healthforce-dev/ --recursive --profile=2cHF -->
+<!-- aws s3 cp ./dist/mdb-angular-pro/ s3://healthforce-dev/ --recursive --profile=2cHF -->
+<!-- aws cloudfront create-invalidation --distribution-id ENLJ6DL1ET12H --paths "/*" --profile=2cHF -->
+<!-- aws s3 sync ./dist/mdb-angular-pro/ s3://healthforce-dev/ --profile=2cHF -->
+
+<!-- aws s3 rm s3://healthforce-stage/ --recursive --profile=2cHF -->
+<!-- aws s3 cp ./dist/mdb-angular-pro/ s3://healthforce-stage/ --recursive --profile=2cHF -->
+<!-- aws cloudfront create-invalidation --distribution-id E3QAA3PVEH7TC6 --paths "/*" --profile=2cHF -->
+<!-- aws s3 sync ./dist/mdb-angular-pro/ s3://healthforce-stage/ --profile=2cHF -->
+
+<!-- aws s3 cp ./dist/mdb-angular-pro/ s3://locummed.frontend/ --recursive --profile=Production -->
+<!-- aws s3 sync ./dist/mdb-angular-pro/ s3://locummed.frontend/ --profile=Production -->
+<!-- aws s3 rm s3://locummed.frontend/ --recursive --profile=Production -->
+
+<!-- aws s3 cp s3://locummed-data-dev2/ s3://dataq-data-test/ --acl bucket-owner-full-control --recursive --profile data-transfer-user -->
+<!-- aws s3 cp s3://spiralfusion-data-prod/ s3://dataq-data-prod/ --acl bucket-owner-full-control --recursive --profile data-transfer-user-prod -->
+
+`<!-- aws s3api put-object-acl --bucket locummed-data-dev2 --key BhiDocs/Patient-15/Testing.pdf --acl  bucket-owner-full-control --profile=testing -->
+
+the http-server package. This package enables you to create a local web server to serve the contents of any directory on your computer.
+
+npm install -g http-server
+Start the http-server by running http-server ./www -p 8888 (this will serve our app in localhost on port 8888)
+
+
+ng build --prod --configuration=production && aws s3 rm s3://spiralfusion-dev/ --recursive --profile=default  && aws s3 sync ./ s3://spiralfusion-dev/ --profile=default && aws cloudfront create-invalidation --distribution-id E2QWWYQQMPUSDJ --paths "/*" --profile=default

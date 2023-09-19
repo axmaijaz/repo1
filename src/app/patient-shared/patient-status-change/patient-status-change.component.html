@@ -1,0 +1,110 @@
+<div mdbModal #ChangeStatusModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true" mdbTableScroll (close)="clearStatusChangeDtoValues()">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="ChangeStatusModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" *ngIf="selectedType === 'ccmStatus'" id="myModalLabel">CCM Status</h4>
+        <h4 class="modal-title w-100" *ngIf="selectedType === 'ccmMonthlyStatus'" id="myModalLabel">CCM Monthly Status</h4>
+        <h4 class="modal-title w-100" *ngIf="selectedType === 'rpmMonthlyStatus'" id="myModalLabel">RPM Monthly Status</h4>
+        <h4 class="modal-title w-100" *ngIf="selectedType === 'bhiStatus'" id="myModalLabel">BHI Status</h4>
+        <h4 class="modal-title w-100" *ngIf="selectedType === 'rpmStatus'" id="myModalLabel">RPM Status</h4>
+        <h4 class="modal-title w-100" *ngIf="selectedType === 'pcmStatus'" id="myModalLabel">PCM Status</h4>
+        <h4 class="modal-title w-100" *ngIf="selectedType === 'prcmStatus'" id="myModalLabel">PrCM Status</h4>
+      </div>
+      <div class="modal-body">
+        <div *ngIf="selectedType === 'ccmStatus'">
+          <ul class="status-list">
+            <li *ngFor="let item of ccmStatusEnumList" [class.active]="statusValue=== item.number"> <a
+                class="link"
+                (click)="ccmStatusChangeDto.newStatusValue = item.number;statusValue= item.number">{{item.word}}
+              </a>
+            </li>
+          </ul>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="ml-1 form-group">
+              <!-- <label for="medName">Reason</label> -->
+                <textarea name="status" id="" cols="30" rows="10" class="form-control form-control-sm"
+                  [(ngModel)]="ccmStatusChangeDto.reason" id="medName" placeholder="Reason"></textarea>
+              </div>
+            </div>
+          </div>
+          <!-- <ul class="link-list" *ngFor="let item of ccmStatusEnumList">
+            <li [class.active]="statusValue === item.number" (click)="AssignCcmStatus(item)"> <a
+                class="link">{{item.word}}
+              </a>
+            </li>
+
+          </ul> -->
+        </div>
+        <div *ngIf="selectedType === 'ccmMonthlyStatus'">
+          <ul class="status-list">
+            <li *ngFor="let item of ccmMonthlyStatusEnumList"
+              [class.active]="statusValue === item.number"
+              (click)="AssignCcmMonthlyStatus(item.number)"> <a class="link">{{item.word}}
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div *ngIf="selectedType === 'rpmMonthlyStatus'">
+          <ul class="status-list">
+            <li *ngFor="let item of rpmMonthlyStatusList" [class.active]="statusValue=== item.value"> <a
+                class="link"
+                (click)="rpmMonthlyStatusChangeDto.rpmMonthlyStatus = item.value;assignRpmMonthlyStatus() ">{{item.name}}
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div *ngIf="selectedType === 'rpmStatus'">
+          <ul class="status-list">
+            <li *ngFor="let item of rpmStatusEnumList" [class.active]="statusValue=== item.number"> <a
+                class="link"
+                (click)="statusValue= item.number;rpmStatusChangeDto.newStatusValue = item.number;AssignRPMStatus() ">{{item.word}}
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div *ngIf="selectedType === 'bhiStatus'">
+          <ul class="status-list">
+            <li *ngFor="let item of bhiStatusEnumList" [class.active]="statusValue=== item.number"> <a
+                class="link"
+                (click)="statusValue= item.number;bhiStatusChangeDto.bhiStatus = item.number;AssignBHIStatus() ">{{item.word}}
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div *ngIf="selectedType === 'pcmStatus'">
+          <ul class="status-list">
+            <li *ngFor="let item of pcmStatusEnumList" [class.active]="statusValue=== item.number"> <a
+                class="link"
+                (click)="statusValue= item.number;pcmStatusChangeDto.pcmStatus = item.number;AssignPCMStatus() ">{{item.word}}
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div *ngIf="selectedType === 'prcmStatus'">
+          <ul class="status-list">
+            <li *ngFor="let item of prcmStatusEnumList" [class.active]="statusValue=== item.number"> <a
+                class="link"
+                (click)="statusValue= item.number;prcmStatusChangeDto.prCMStatus = item.number;AssignPrCMStatus() ">{{item.word}}
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+
+        <button  [disabled]="isChangingCCMStatus" *ngIf="selectedType === 'ccmStatus'" [disabled]="!ccmStatusChangeDto.reason" type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c"
+          aria-label="save" mdbWavesEffect (click)="AssignCcmStatus()"> <span *ngIf="isChangingCCMStatus" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Save</button>
+        <button type="button" (click)="ChangeStatusModal.hide()" class="waves-light btn btn-sm btn-dynamic-2c"
+          aria-label="Close" mdbWavesEffect>Cancel</button>
+        <!-- <button type="button" mdbBtn color="primry" (click)="addRequiredData()" class="relative waves-light"
+          mdbWavesEffect>Add Data</button> -->
+      </div>
+    </div>
+  </div>
+</div>

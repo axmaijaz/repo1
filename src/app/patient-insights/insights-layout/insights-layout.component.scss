@@ -1,0 +1,68 @@
+
+@import 'theme';
+.side-bar-ex {
+  position: absolute;
+  left: 0;
+  width: 150px;
+  background:var(--dynamic-sidenav);
+  height: 100vh;
+}
+
+.side-bar-ex ul {
+  padding: 0;
+}
+
+.side-bar-ex ul li {
+  margin: 15px 0;
+  display: block;
+  text-align: center;
+  position: relative;
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+}
+
+.side-bar-ex ul li a {
+  width: 130px;
+  height: 30px;
+  filter: drop-shadow(0px 10px 40px rgba(0, 0, 0, 0.15));
+  display: inline-block;
+  justify-content: start;
+  align-items: center;
+  border-radius: 6px;
+  font-size: 14px;
+  color: white;
+  line-height: 30px;
+  text-align: left;
+  padding-left: 1rem;
+}
+
+.side-bar-ex ul li.active,
+.side-bar-ex ul li:hover {
+  border-left: 5px solid $dynamic-colour;
+  cursor: pointer;
+}
+
+.side-bar-ex ul li.active a,
+.side-bar-ex ul li:hover a {
+  background-color:var(--dynamic-sidenav);
+  color:$dynamic-colour;
+}
+
+.side-bar-ex ul li.active a svg path,
+.side-bar-ex ul li:hover a svg path {
+  fill: $dynamic-colour;
+}
+.main-layout-in {
+  padding: 16px 16px 16px 166px;
+  width: 100%;
+  // color: #fff;
+  height: 100vh;
+}
+.main-outlet {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.signal-state {
+  display: none !important;
+}

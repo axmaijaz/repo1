@@ -1,0 +1,16 @@
+@import "theme";
+
+.ngx-datatable.material .datatable-header .datatable-header-cell {
+    font-size: 12px !important;
+}
+.ngx-datatable.material .datatable-body .datatable-body-row .datatable-body-cell {
+    font-size: 12px !important;
+    white-space: normal !important;
+}
+.custom-datatable ngx-datatable.material .datatable-header .datatable-header-cell {
+    font-size: 10px !important;
+}
+.badge {
+  background-color:#939393;
+}
+

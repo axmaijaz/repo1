@@ -1,0 +1,63 @@
+<!-- <div class="d-flex align-items-center flex-wrap justify-content-between mb-3">
+    <h4 class="mr-3 mb-0"><a class="text-dark" (click)="navigateBack()"><i class="fa fa-arrow-left"></i></a></h4>
+    <h1 class="page-title mb-0 flex-sm-grow-1 mb-0"> Facility Config</h1>
+</div> -->
+<div class="position-relative">
+    <div class="side-bar-ex">
+        <ul>
+            <li routerLinkActive="active">
+                <a class="px-1" routerLink="/modalConfig/facility/invoices-configration/{{facilityId}}"
+                    [skipLocationChange]="true">
+                    Verify CPT
+                </a>
+            </li>
+            <li routerLinkActive="active" *hasClaim="['CanModifyFacilityServices']">
+                <a class="px-1" routerLink="/modalConfig/facility/modules/{{facilityId}}"
+                    [skipLocationChange]="true">
+                    Services Config
+                </a>
+            </li>
+            <li routerLinkActive="active">
+                <a class="px-1" routerLink="/modalConfig/facility/service/facilityUsers/{{facilityId}}/{{orgId}}"
+                    [skipLocationChange]="true">
+                    Facility Users
+                </a>
+            </li>
+            <li routerLinkActive="active">
+                <a class="px-1" routerLink="/modalConfig/facility/phdevices/{{facilityId}}"
+                    [skipLocationChange]="true">
+                    RPM Pricing
+                </a>
+            </li>
+            <li routerLinkActive="active">
+                <a class="px-1" routerLink="/modalConfig/facility/AWVSetting/{{facilityId}}"
+                    [skipLocationChange]="true">
+                    AWV Forms Setting
+                </a>
+            </li>
+            <li routerLinkActive="active">
+              <a class="px-1" routerLink="/modalConfig/facility/EmrConfig/{{facilityId}}"
+                  [skipLocationChange]="true">
+                  Integration Setting
+              </a>
+          </li>
+          <!-- <li routerLinkActive="active">
+            <a class="px-1" routerLink="/modalConfig/facility/rpm-notification"
+                [skipLocationChange]="true">
+                Rpm Notification
+            </a>
+        </li> -->
+
+        </ul>
+    </div>
+
+    <div class="main-layout-in">
+        <div class="main-outlet">
+            <div class="row justify-content-center">
+                <div class="col-12 ">
+                    <router-outlet></router-outlet>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

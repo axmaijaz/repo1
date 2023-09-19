@@ -1,0 +1,246 @@
+<div class="d-flex flex-row align-items-center justify-content-between mb-3">
+  <div class="d-flex justify-content-start align-items-center">
+    <h4 class="mr-3 mb-0"><a class="text-dark" (click)="goBack()">
+        <i class="fa fa-arrow-left"></i></a></h4>
+    <h1 class="page-title mb-0">Rpm Alerts</h1>
+  </div>
+  <div>
+    <!-- <button type="button"  (click)="reset();addCptModal.show();" class="btn btn-dynamic-2c btn-sm mr-0" title="Add New CPT Code"
+      placement="left"><i class="fa fa-plus fa-lg"></i> Add CPT Code</button> -->
+  </div>
+</div>
+
+<div *ngIf="isLoadingAlerts" class="d-flex justify-content-center text-center">
+  <!-- <div class="d-flex justify-content-center text-center"> -->
+  <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+</div>
+<div class="custom-datatable" style="position: relative;" >
+  <div class="fixed-header-action">Action</div>
+  <ngx-datatable #table class="material" [rows]="rpmAlertListDto" [headerHeight]="50" [footerHeight]="50"
+    [rowHeight]="50" [scrollbarV]="false" [scrollbarH]="true" [limit]="8" >
+    <ngx-datatable-column cellClass="my-table-cell" name="#" [width]=30>
+      <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+        {{rowIndex + 1}}
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column cellClass="my-table-cell" name="Patient Name">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        <p style="cursor: pointer;margin:0;" container="body"
+          title="{{'Facility: ' + row.facilityName }}  {{'\n Phone: ' + row.phone }}  {{ '\n Email: ' + row.email}}"
+          placement="right">{{row.patientName}}</p>
+      </ng-template>
+    </ngx-datatable-column>
+    <!-- <ngx-datatable-column cellClass="my-table-cell"  name="Faclity" prop="facilityName">
+  </ngx-datatable-column>
+  <ngx-datatable-column cellClass="my-table-cell"  name="Phone" prop="phone">
+  </ngx-datatable-column>
+  <ngx-datatable-column cellClass="my-table-cell"  name="Email" prop="email">
+  </ngx-datatable-column> -->
+  <ngx-datatable-column cellClass="my-table-cell" name="Modality" prop="modality">
+  </ngx-datatable-column>
+  <ngx-datatable-column cellClass="my-table-cell" name="Alert Reason" prop="alertReason">
+  </ngx-datatable-column>
+  <ngx-datatable-column cellClass="my-table-cell justify-content-center"  name="Status">
+    <ng-template let-row="row" ngx-datatable-cell-template>
+    <span
+    [class.badge-danger]="row.alertStatus === alertStatusEnumObj.AlertOverDue"
+    [class.badge-warning]="row.alertStatus === alertStatusEnumObj.NotStarted"
+    [class.badge-info]="row.alertStatus === alertStatusEnumObj.UnableToContact"
+    class="badge w-100">{{alertStatusEnumObj[row.alertStatus]}}</span>
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column cellClass="my-table-cell" name="Alert Time" >
+    <ng-template let-row="row" let-value="alertStatusEnumObj" ngx-datatable-cell-template>
+      {{row.alertTime}}
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column cellClass="my-table-cell" name="Time Out" >
+    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+      {{row.timeOut}}
+    </ng-template>
+  </ngx-datatable-column>
+  <!-- <ngx-datatable-column cellClass="my-table-cell" name="Alert Manager" prop="alertManager">
+  </ngx-datatable-column> -->
+    <ngx-datatable-column cellClass="my-table-cell" name="SMS Time">
+      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+        <div *ngIf="row.smsTime">
+          <span class="text-info">({{row.smsCount}})</span>
+          {{row.smsTime}}
+        </div>
+
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column cellClass="my-table-cell" name="Call Time">
+      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+        <div *ngIf="row.callTime">
+          <span class="text-info">({{row.callCount}})</span>
+          {{row.callTime}}
+        </div>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column cellClass="my-table-cell" name="RPM CC " prop="rpmCC">
+    </ngx-datatable-column>
+    <ngx-datatable-column cellClass="fixed-column" name=""  [width]=230 [headerClass]="'insertYourCssClassNameHere'">
+
+      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template >
+        <div>
+          <a class="btn btn-dynamic-2c btn-icon" title="Edit"
+            (click)="editRpmAlertobj={};selectedRpmAlert=row;fillEditAlertDetail();editAlertDetailsMOdal.show()"
+            placement="left"><i class="fa fa-pencil"></i></a>
+          <a class="btn btn-dynamic-2c btn-icon" title="Send SMS"
+            (click)="sendAlertSmsObj={};selectedRpmAlert=row;GetDefaultNotReceivedSmsContent();sendAlertSms.show()"
+            placement="left"><i class="fa fa-envelope"></i></a>
+          <a class="btn btn-dynamic-2c btn-icon" title="Add Call"
+            (click)="addRpmCallLogObj={};selectedRpmAlert=row;setCallDefaultTime();sendAlertCall.show()"
+            placement="left"><i class="fa fa-phone"></i></a>
+          <a class="btn btn-dynamic-2c btn-icon" title="Chat to Facility"
+            (click)="sendChatToProviderDto={};selectedRpmAlert=row;getFacilityUsersList(row.facilityId);sendCHatMsgModal.show()"
+            placement="left"><i class="fa fa-comments"></i></a>
+          <a class="btn btn-dynamic-2c btn-icon" title="Add Task" (click)="getPatientDetail(row)" placement="left"><i
+              class="fa fa-plus"></i></a>
+        </div>
+      </ng-template>
+    </ngx-datatable-column>
+  </ngx-datatable>
+</div>
+
+<app-add-task #addTaskCompRef></app-add-task>
+<div style="overflow-y:auto" mdbModal #sendAlertSms="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  id="AlertModal" aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable flat-modal p-4" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="sendAlertSms.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="text-dynamic-2c modal-title font-500 mr-3">SMS Alert </h4>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Time out</label>
+          <input type="text" [dpDayPicker]="datePickerConfig" placeholder="MM-DD-YYYY"
+            [(ngModel)]="sendAlertSmsObj.timeOut" [theme]="'dp-material ccm-date-picker'" [mode]="'daytime'"
+            class="bg-white form-control">
+        </div>
+        <div class="form-group">
+          <label>Sms Note</label>
+          <textarea rows="13" [(ngModel)]="sendAlertSmsObj.messageText" class="form-control"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" (click)="sendAlertSms.hide()" aria-label="Close" class="waves-light btn-sm btn-dynamic-secondary-2c btn" >Close</button>
+        <button type="button" [disabled]="isSendingAlertSms || !sendAlertSmsObj.timeOut || !sendAlertSmsObj.messageText" mdbbtn="" (click)="SendAlertSms(sendAlertSms)" class="relative waves-light btn-sm btn-dynamic-2c btn">Send</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div style="overflow-y:auto" mdbModal #sendAlertCall="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  id="AlertModal" aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable flat-modal p-4" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="sendAlertCall.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="text-dynamic-2c modal-title font-500 mr-3">Add Call </h4>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Call Time</label>
+          <input type="text" [dpDayPicker]="datePickerConfig" placeholder="MM-DD-YYYY"
+            [(ngModel)]="addRpmCallLogObj.callTime" [theme]="'dp-material ccm-date-picker'" [mode]="'daytime'"
+            class="bg-white form-control">
+        </div>
+        <div class="form-group">
+          <input type="checkbox" (change)="addRpmCallLogObj.isSuccessfull!==true ? addRpmCallLogObj.timeOut=null: ''"
+            [(ngModel)]="addRpmCallLogObj.isSuccessfull" class="form-control-input" id="endOfLifePlanning">
+          <label class="ml-2" for="endOfLifePlanning"> Was call successfull</label>
+        </div>
+        <div class="form-group">
+          <label>Time Out</label>
+          <input [disabled]="addRpmCallLogObj.isSuccessfull!==true"
+            [class.bg-white]="addRpmCallLogObj.isSuccessfull===true" type="text" [dpDayPicker]="datePickerConfig"
+            placeholder="MM-DD-YYYY" [(ngModel)]="addRpmCallLogObj.timeOut" [theme]="'dp-material ccm-date-picker'"
+            [mode]="'daytime'" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Call Note</label>
+          <textarea rows="13" [(ngModel)]="addRpmCallLogObj.callNote" class="form-control"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" (click)="sendAlertCall.hide()" aria-label="Close"
+          class="waves-light btn-sm btn-dynamic-secondary-2c btn">Close</button>
+        <button type="button"
+          [disabled]="isSendingAlertCall || !addRpmCallLogObj.callTime || !addRpmCallLogObj.callNote" mdbbtn=""
+          (click)="AddAllertCallLog(sendAlertCall)"
+          class="relative waves-light btn-sm btn-dynamic-2c btn">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div style="overflow-y:auto" mdbModal #sendCHatMsgModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  id="AlertModal" aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable flat-modal p-4" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="sendCHatMsgModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="text-dynamic-2c modal-title font-500 mr-3">Send Message </h4>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="practiceName">Select User</label>
+          <ng-select class="ng-select-small" [multiple]="false" [(ngModel)]="sendChatToProviderDto.facilitatorId"
+            [searchable]="true" placeholder="Select User">
+            <ng-option [value]="item.id" *ngFor="let item of facilityUserList">{{item.lastName}},{{item.firstName}}
+            </ng-option>
+          </ng-select>
+        </div>
+        <div class="form-group">
+          <label>Message</label>
+          <textarea rows="10" [(ngModel)]="sendChatToProviderDto.message" class="form-control"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" (click)="sendCHatMsgModal.hide()" aria-label="Close" class="waves-light btn-sm btn-dynamic-secondary-2c btn" >Close</button>
+        <button type="button" [disabled]="isSendingChatMsg || !sendChatToProviderDto.facilitatorId || !sendChatToProviderDto.message" (click)="SendCHatMessage(sendCHatMsgModal)" class="relative waves-light btn-sm btn-dynamic-2c btn">Send</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div style="overflow-y:auto" mdbModal #editAlertDetailsMOdal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  id="AlertModal" aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable flat-modal p-4" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="editAlertDetailsMOdal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="text-dynamic-2c modal-title font-500 mr-3">Edit Alert</h4>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="practiceName">Alert Status</label>
+          <ng-select class="ng-select-small" [multiple]="false" [(ngModel)]="editRpmAlertobj.alertStatus"
+            [searchable]="true" placeholder="Alert Status">
+            <ng-option [value]="item.value" *ngFor="let item of alertStatusEnumList">{{item.name}}</ng-option>
+          </ng-select>
+        </div>
+        <div class="form-group">
+          <label>Alert Note</label>
+          <textarea rows="13" [(ngModel)]="editRpmAlertobj.note" class="form-control"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" (click)="editAlertDetailsMOdal.hide()" aria-label="Close"
+          class="waves-light btn-sm btn-dynamic-secondary-2c btn">Close</button>
+        <button type="button"
+          [disabled]="isSavingAlert || (!editRpmAlertobj.alertStatus && editRpmAlertobj.alertStatus !== 0 ) || !editRpmAlertobj.note"
+          mdbbtn="" (click)="EditAllertLog(editAlertDetailsMOdal)"
+          class="relative waves-light btn-sm btn-dynamic-2c btn">Save</button>
+      </div>
+    </div>
+  </div>
+</div>

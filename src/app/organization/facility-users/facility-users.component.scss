@@ -1,0 +1,38 @@
+
+@import 'theme';
+.verification-code input {
+  font-size: 2rem;
+  width: 216px;
+  line-height: 0;
+  font-weight: 700;
+  margin: 0 auto;
+  padding: 9px 1rem;
+  border-radius: 6px;
+  text-align: center;
+  margin-bottom: 1rem;
+  color: $dynamic-colour;
+  letter-spacing: 7px;
+  border: 1px dashed lighten($primary,30%);
+  &:focus {
+    outline: none;
+  }
+  &::placeholder{
+    font-size: 1rem !important;
+    letter-spacing: 0;
+    position: relative;
+    top: -7px;
+    font-weight: normal;
+  }
+}
+.mf-info{
+
+    text-align: left;
+    width: 400px;
+    margin: 0 auto;
+
+  span{
+    font-weight: 600;
+    width: 150px;
+    display: inline-block;
+  }
+}

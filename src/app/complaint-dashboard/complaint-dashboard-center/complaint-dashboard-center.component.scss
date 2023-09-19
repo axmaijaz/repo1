@@ -1,0 +1,93 @@
+@import "theme";
+$border: 1px solid #ddd;
+
+.rpm-content-box {
+  background: #ddd;
+  padding: 1rem;
+  border-radius: 5px;
+  border: $border;
+  margin-bottom: 10px;
+  overflow: hidden;
+  &:not(:first-child) {
+    margin-left: 10px;
+  }
+  p {
+    font-size: 1rem;
+    font-weight: 500;
+  }
+  .index-value {
+    height: 35px;
+    padding: 0 0.4rem;
+    background: transparent;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    border-radius: 6px;
+    color:#000;
+    font-weight: 700;
+    font-size: 18px;
+    
+  }
+}
+.rpm-content-box-hover {
+  cursor: pointer;
+  &.active,
+  &:hover {
+    background: white;
+    .index-value {
+      border:1px solid $dynamic-colour;
+      color:$dynamic-colour;
+      min-width: 35px;
+    }
+  }
+}
+label {
+  font-weight: 500;
+}
+
+.complaint-type {
+  background: white;
+  border-radius: 5px;
+  border: $border;
+  .justify-content-between {
+    &:hover,&.active{
+      color:$dynamic-colour;
+      
+      background-color: #f4f4f4;
+      // opacity: 0.4;
+    }
+  }
+}
+
+.index-value{
+  height: 30px;
+  width: 30px;
+  display: flex;
+  align-items: center;
+  font-size: .9rem;
+  justify-content: center;
+  background-color: $dynamic-colour ;
+  color: #fff !important;
+  // opacity: 0.4;
+}
+
+.aging-section {
+  border-top: 1px solid #ddd;
+  .aging-type{
+
+    display: flex;
+    justify-content: space-between;
+    padding: .5rem;
+    align-items: center;
+    cursor: pointer;
+    font-size: 12px;
+    &:not(:first-child){
+      border-left: $border;
+    }
+    &:hover,&.active{
+      color:$dynamic-colour;
+      
+      background-color: #f4f4f4;
+    }
+  }
+}

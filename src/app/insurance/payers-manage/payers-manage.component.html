@@ -1,0 +1,314 @@
+<div class="d-flex align-items-center flex-wrap justify-content-between mb-3">
+  <!-- <h4 class="mr-3 mb-0"><a class="text-dark" (click)="navigateBack()"><i
+    class="fa fa-arrow-left"></i></a></h4> -->
+  <h1 class="page-title mb-0 flex-sm-grow-1">Insurance Plans</h1>
+  <div>
+    <button type="button" class="btn btn-dynamic-2c btn-sm mr-0" (click)="resetObj();selectFacilityGaps();addPcmGapMOdal.show()"><i
+        class="fa fa-plus fa-lg"></i> Add New</button>
+  </div>
+</div>
+<div class="table-data-list">
+  <div *ngIf="isLoadingPayersList" class="d-flex justify-content-center text-center">
+    <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+  </div>
+<ngx-datatable #table class="material" [columnMode]="'force'" [headerHeight]="50" [footerHeight]="50" [rowHeight]="40"
+  [scrollbarV]="false" [scrollbarH]="true" [rows]="insurancePLanList" [offset]="0">
+  <ngx-datatable-column name="#" [maxWidth]=50>
+    <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+      <small class="mr-3">{{(rowIndex + 1)}}</small>
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="Name"> 
+    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+      <div class="d-flex justify-content-between align-items-center">
+        <div style="width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display: block;">
+          {{row.name}}
+        </div>
+        <div class="d-inline-flex">
+          <button type="button" class="btn btn-icon btn-dynamic-2c ml-2"
+          (click)="OpenEditInsurance(row, addPcmGapMOdal);"><span class="fa fa-pencil fa-lg"></span></button>
+          <a class="btn btn-danger btn-icon" (click)="openConfirmModal(row, warnDeletePayerModal)"><span class="fa fa-trash fa-lg"></span></a>
+        </div>
+
+      </div>
+      
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="Payer Name" prop="payerName"> </ngx-datatable-column>
+  <ngx-datatable-column name="CCM" prop="payerName" [maxWidth]=60>
+    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+      <div class="d-flex justify-content-between align-items-center">
+        <span *ngIf="row.isCcmCovered" class="fa fa-check-circle fa-lg text-dynamic-2c"></span>
+        <span *ngIf="!row.isCcmCovered" class="fa fa-times-circle fa-lg text-danger"></span>
+      </div>
+    </ng-template>  
+  </ngx-datatable-column>
+  <ngx-datatable-column name="RPM" prop="payerName" [maxWidth]=60>
+    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+      <div class="d-flex justify-content-between align-items-center">
+        <span *ngIf="row.isRpmCovered" class="fa fa-check-circle fa-lg text-dynamic-2c"></span>
+        <span *ngIf="!row.isRpmCovered" class="fa fa-times-circle fa-lg text-danger"></span>
+      </div>
+    </ng-template>
+  </ngx-datatable-column>
+  <!-- <ngx-datatable-column name="Dependency Score" prop="dependenceScore"> </ngx-datatable-column> -->
+  <!-- <ngx-datatable-column name="Encounter Type" prop="encounterType"> </ngx-datatable-column>
+  <ngx-datatable-column name="Result" prop="result"> </ngx-datatable-column> -->
+  <!-- <ngx-datatable-column name="Note" prop="note"> </ngx-datatable-column> -->
+  <!-- <ngx-datatable-column name="Created On">
+    <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+      {{ row.createdOn | dateFormatPipe }}
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="Next Due" prop="nextDue">
+    <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+      {{ row.nextDue | dateFormatPipe }}
+    </ng-template>
+  </ngx-datatable-column> -->
+  <!-- <ngx-datatable-column name="Action" [maxWidth]=120>
+
+
+    </ng-template>
+  </ngx-datatable-column> -->
+  <!-- <ngx-datatable-column name="action" prop="Notes"> </ngx-datatable-column> -->
+</ngx-datatable>
+</div>
+
+
+
+<div mdbModal #addPcmGapMOdal="mdbModal" class="modal fade " tabindex="-1" role="dialog" aria-labelledby="myaddPcmGapMOdalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="addPcmGapMOdal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" *ngIf="!addInsurancePLanObj.id" id="myModalLabel">Add New Payer</h4>
+        <h4 class="modal-title w-100" *ngIf="addInsurancePLanObj.id" id="myModalLabel">Update</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group mb-3">
+              <label for="name">Select Payer</label>
+              <ng-select class="ng-select-small" [typeahead]="searchWatch" [disabled]="addInsurancePLanObj.id > 0" [loading]="loadingPayers" [(ngModel)]="addInsurancePLanObj.payerId" [closeOnSelect]="true" [multiple]="false"
+                [searchable]="true" placeholder="">
+                <ng-option [value]="item.id" *ngFor="let item of PayersList">{{item.payerName}}</ng-option>
+              </ng-select>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group mb-3">
+              <label for="name">Plan Name</label>
+              <input type="text" [(ngModel)]="addInsurancePLanObj.name" class="form-control form-control-sm">
+            </div>
+          </div>
+          <div class="col-md-6 d-flex align-items-end">
+            <div class="radio-badge mb-3">
+              <button (click)="selectCoveredService('ccm')" [class.active]="addInsurancePLanObj.isCcmCovered" class="btn btn-radio-app">CCM</button>
+              <button (click)="selectCoveredService('rpm')" [class.active]="addInsurancePLanObj.isRpmCovered" class="btn btn-radio-app">RPM</button>
+            </div>
+          </div>
+        </div>
+        <p><strong>Care Gap</strong></p>
+        <div class="row d-flex justify-content-between flex-wrap text-checkable">
+          <div *ngFor="let item of CareGapsList;let index = index;" class="col-lg-6 col-md-6 col-sm-6 d-flex justify-content-between align-items-center">
+            <div class="custom-control custom-checkbox w-info-90">
+              <input type="checkbox" class="custom-control-input" [(ngModel)]="item['checked']" (change)="GapValueChanged($event.target.checked , item, index);" id="check1{{item.id}}">
+              <label class="custom-control-label " for="check1{{item.id}}">{{item.code}}-{{item.measureName | ellipsis: 40}}
+              </label>
+            </div>
+            <div class="btn-info-payer">
+              <a data-toggle="modal" data-target="#selectInfoModal"
+              (click)="selectRowForGuideline(item);selectInfoModal.show()" class="btn-info-box">
+                <i class="fa fa-exclamation-circle fa-lg"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+          (click)="addPcmGapMOdal.hide()">Close</button>
+        <button *ngIf="!addInsurancePLanObj.id" type="button" [disabled]="addingInsurancePLan || !addInsurancePLanObj.payerId || !addInsurancePLanObj.name || addInsurancePLanObj.selectedGaps.length < 1" 
+        (click)="AddEditInsurancePlan(addPcmGapMOdal)" class="relative waves-light btn btn-sm btn-dynamic-2c">
+          <span *ngIf="addingInsurancePLan" class="spinner-border spinner-border-sm" role="status"
+        aria-hidden="true"></span>
+          Add</button>
+        <button *ngIf="addInsurancePLanObj.id" type="button" [disabled]="addingInsurancePLan || !addInsurancePLanObj.payerId || !addInsurancePLanObj.name || addInsurancePLanObj.selectedGaps.length < 1"
+        (click)="AddEditInsurancePlan(addPcmGapMOdal)" class="relative waves-light btn btn-sm btn-dynamic-2c">
+          <span *ngIf="addingInsurancePLan" class="spinner-border spinner-border-sm" role="status"
+        aria-hidden="true"></span>
+          Update</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div mdbModal #selectInfoModal="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myselectInfoModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="selectInfoModal.hide()">
+            <span aria-hidden="true">×</span>
+          </button>
+        <h4 class="modal-title w-100 text-left align-content-left" id="myModalLabel">Care Gap Guidelines </h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+              <div *ngIf="loadingEditor" class="d-flex justify-content-center text-center">
+                <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+              </div>
+              <div *ngIf="selectInfoModal.isShown">
+                <editor (onPostRender)="loadingEditor=false" [(ngModel)]="gapGuidline" appOnDebounce [debounceTime]="2000"
+              apiKey="d8t35ignh0gnngobzvmdpf3pnxi74f0gcqhmr0xgu5xt0qr5"
+              [init]="{
+                height: 400,
+                menubar: false,
+                plugins: [
+                  'advlist autolink lists link image charmap print preview anchor',
+                  'searchreplace visualblocks code fullscreen',
+                  'insertdatetime media table paste code help wordcount'
+                ],
+                contextmenu: '',
+                toolbar:
+                  'undo redo | formatselect | bold italic backcolor | \
+                  alignleft aligncenter alignright alignjustify | \
+                  bullist numlist outdent indent | removeformat | help'
+              }"></editor>
+              </div>
+              <!-- <textarea class="form-control" rows="3" [(ngModel)]="gapGuidline" placeholder="Care Gap Guidelines"></textarea> -->
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button"  class="btn btn-dynamic-secondary-2c btn-sm" aria-label="Close"
+          (click)="selectInfoModal.hide()" >Close</button>
+        <button type="button" class="btn btn-dynamic-2c btn-sm " (click)="saveGuideline();selectInfoModal.hide()" >Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div mdbModal #warnDeletePayerModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg flat-modal modal-dialog-scrollable" role="document">
+    <div class="modal-content" *ngIf="warnDeletePayerModal.isShown">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="warnDeletePayerModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" >Delete <span *ngIf="selectedInsurancePLan.name"> {{selectedInsurancePLan.name}}</span></h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-12">
+            <label class="text-warning">
+              <!-- This plan has already been assigned to 19 patients. Transfer these patients to another payer before delete. -->
+              This plan has already been assigned to <span class="text-danger">{{count}}</span> . Transfer these patients to another payer before delete.</label>
+            <!-- <div class="form-group">
+              <label for="listName">List Name<small class="text-danger">*</small></label>
+              <div class="d-flex align-items-center flex-grow-1">
+                <input type="text" class="flex-grow-1 form-control form-control-sm"
+                  id="listName" placeholder="List Name">
+
+              </div>
+            </div> -->
+          </div>
+          <div class="col-lg-6 col-md-6 col-sm-6">
+            <label for="searchBy">Search Patient</label>
+            <div class="d-flex align-items-center justify-content-start">
+              <input type="text" #searchPatient [(ngModel)]="SearchParam" (ngModelChange)="filterPatients()" autocomplete="off"
+                class="form-control form-control-sm box-shadow w-100" id="searchBy" />
+              <!-- <input [hidden]="filterPatientDto.filterBy !== 2" id="searchBy" type="text" class="bg-white form-control form-control-sm box-shadow w-100" #dateDPicker="dpDayPicker" autocomplete="off"
+              [dpDayPicker]="datePickerConfig2" placeholder="MM-DD-YYYY" [(ngModel)]="filterPatientDto.SearchParam" (ngModelChange)="filterPatientDto.SearchParam.length == 10 ? getFilterPatientsList2(): ''"
+              [theme]="'dp-material ccm-date-picker'" [mode]="'day'" [appendTo]="'body'" /> -->
+            </div>
+          </div>
+          <div class="d-flex align-items-end col-lg-6 col-md-6 col-sm-6" >
+            <div class="flex-grow-1">
+              <label for="namea">Transfer to</label>
+              <ng-select style="max-width:230px;" class="ng-select-small"
+                [(ngModel)]="transferToPlanId" [closeOnSelect]="true"
+                [multiple]="false" [searchable]="true" placeholder="Select Payer">
+                <ng-option [value]="item.id" *ngFor="let item of transferInsurancePLanList">{{item.name}} - {{item.payerName}}</ng-option>
+              </ng-select>
+            </div>
+            <button [disabled]="!selected.length || transferIng || !transferToPlanId" (click)="AssignPatientsToInsurancePlan()" type="button" class="btn btn-dynamic-2c btn-sm mb-0">
+              <span *ngIf="transferIng" class="mr-1 spinner-border spinner-border-sm " role="status"
+                aria-hidden="true"></span>Transfer {{this.selected.length}}</button>
+          </div>
+          <div class="panel w-100">
+
+            <div class="panel-body" style="height:275px;">
+              <!-- <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar> -->
+              <div class="table-responsive text-nowrap" malihu-scrollbar [scrollbarOptions]="sidenavScroll" style="overflow:auto;height:100%;">
+                <table class="table table-striped btn-table table-sm">
+                  <thead>
+                    <tr>
+                      <!-- <th>#</th> -->
+                      <th class="text-center">
+
+                        <div class="custom-control custom-checkbox">
+                          <input class="custom-control-input" type="checkbox" id="selectAlla" [(ngModel)]="gridCheckAll"
+                            (change)="gridAllRowsCheckBoxChecked($event)">
+                          <label class="custom-control-label" for="selectAlla"></label>
+                        </div>
+                      </th>
+                      <th>Emr id</th>
+                      <th>Name</th>
+                      <!-- <th>Email</th>
+                      <th>Address</th>
+                      <th>Action</th> -->
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <tr *ngFor="let row of PatientsList; let i= index;">
+                      <ng-container *ngIf="!row['hidden']">
+                        <!-- <th scope="row">{{ i + 1}}</th> -->
+                        <!-- <td>{{row.checked}}</td> -->
+                        <td>
+                          <div class="text-center">
+                            <div class="custom-control custom-checkbox">
+                              <input class="custom-control-input" type="checkbox" id="{{(i + 1) }}a" [(ngModel)]="row.checked"
+                                (click)="rowCheckBoxChecked($event, row)">
+                              <label class="custom-control-label" for="{{(i + 1)}}a"></label>
+                            </div>
+                          </div>
+                        </td>
+                        <td>{{row.patientEmrId}}</td>
+                        <td>{{row.lastName}},{{row.firstName}}</td>
+                        <!-- <td>{{item.address}}</td> -->
+                      </ng-container>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- <div class="col-sm-12">
+            <div class="d-flex align-items-center">
+              <mdb-checkbox [inline]="true" [default]="true">Make this list available for other users</mdb-checkbox>
+            </div>
+          </div> -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-dark btn-sm" (click)="warnDeletePayerModal.hide()">Close</button>
+        <button [disabled]="count || savingList" (click)="DeleteInsurancePlan(selectedInsurancePLan.id,warnDeletePayerModal)" type="submit" class="btn btn-dynamic-2c btn-sm">
+          <span *ngIf="savingList" class="mr-1 spinner-border spinner-border-sm " role="status"
+            aria-hidden="true"></span>delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+

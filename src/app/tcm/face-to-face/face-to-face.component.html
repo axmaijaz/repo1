@@ -1,0 +1,228 @@
+<div class="panel rounded-0 rounded-bottom" style="box-shadow: 1px 6px 20px 0 rgba(0, 0, 0, 0.08);" style="overflow: visible;">
+  <div class="panel-header d-flex justify-content-between align-items-center" >
+    <h3>Face to Face</h3>
+    <p class="mb-0">Status: <mdb-badge color="bg-dynamic-secondary-2c">{{tcmStatusEnum[tcmStore.tcmData.tcmStatus]}}</mdb-badge>
+    </p>
+  </div>
+  <div class="panel-body" *ngIf="!gettingTcmData;else loadingSklton" >
+    <div class="row" [ngClass]="{disabledDiv: tcmStore.tcmData.tcmStatus > 2}">
+      <div class="col-lg-6 col-sm-12">
+        <div class="border p-3" style="height: 100%;">
+          <!-- <div class="col-sm-12">
+            <div class="form-group">
+              <label class="w-100">Visited at</label>
+              <input type="text" class="form-control form-control-sm" #dateToDp="dpDayPicker" [(ngModel)]="faceToFace.dateVisited"
+                [dpDayPicker]="datePickerConfig" [theme]="'dp-material ccm-date-picker'"
+                [mode]="'daytime'">
+            </div>
+          </div>
+          <div class="col-sm-12">
+            <div class="form-group">
+              <label for="location">Location</label>
+              <input type="text" class="form-control" [(ngModel)]="faceToFace.location" id="location" placeholder="Location">
+            </div>
+          </div> -->
+          <div class="col-sm-12 mb-3">
+            <div class="form-group">
+              <label for="providerName">Staff<span class="text-danger">*</span></label>
+              <ng-select [searchable]="false" [(ngModel)]="faceToFace.facilityUserId" [disabled]='tcmStore.tcmData.tcmStatus > 2' #contactCareProvider="ngModel" required name="careProviderId"  [appendTo]="'body'" class="ng-select-small"
+                  placeholder="Select User" (change)="AddEditFaceToFace()" [ngClass]="{ 'is-invalid':(contactCareProvider.touched || contactCareProvider.dirty) && !contactCareProvider.valid }">
+                  <ng-option [value]="0">Select User</ng-option>
+                  <ng-option [value]="item.id" *ngFor="let item of facilityUserList">{{item.lastName}},{{item.firstName}}
+                  </ng-option>
+                </ng-select>
+              <!-- <span class="invalid-feedback">
+                <span *ngIf="!!diagnoseForm.get('isChronic').errors?.required && (diagnoseForm.get('isChronic').touched ||
+              diagnoseForm.get('isChronic').dirty)">
+                  Please select is chronic.
+                </span>
+              </span> -->
+            </div>
+            <!-- <p class="mb-0"><strong>Medication review:</strong></p>
+            <mdb-checkbox [inline]="true" [default]="true">Patient is TCM Eligible</mdb-checkbox> -->
+          </div>
+
+          <div class="col-sm-12">
+            <div class="form-group">
+              <label for="medicationNote">Notes about medications (or any changes):
+              </label>
+              <textarea class="md-textarea form-control " rows="4" id="medicationNote" [disabled]='tcmStore.tcmData.tcmStatus > 2' [(ngModel)]="faceToFace.medicationNotes"
+              (blur)="AddEditFaceToFace()" type="text"></textarea>
+            </div>
+          </div>
+          <div class="col-sm-12">
+            <div class="form-group">
+              <label for="visitSummary">Summary of Visit and Recommendations:
+              </label>
+              <textarea class="md-textarea form-control " rows="4" id="visitSummary" [disabled]='tcmStore.tcmData.tcmStatus > 2' [(ngModel)]="faceToFace.visitSummary"
+              (blur)="AddEditFaceToFace()" type="text"></textarea>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="col-lg-6 col-sm-12">
+        <div class="border p-3" style="height: 100%;">
+          <div class="col-sm-12">
+            <p><strong>Vitals: Blood Pressure SBP DBP</strong></p>
+
+            <div class="row">
+              <div class="col-lg-6 col-sm-6">
+                <div class="form-group">
+                  <label for="pulse">SBP<span class="text-danger">*</span></label>
+                  <input type="number" class="form-control" [disabled]='tcmStore.tcmData.tcmStatus > 2' [(ngModel)]="faceToFace.sbp" (blur)="SBPValidation();" OnlyNumbers
+                   id="pulse" title="limit 50-250" placeholder="50-250">
+                </div>
+              </div>
+              <div class="col-lg-6 col-sm-6">
+                <div class="form-group">
+                  <label for="respRate">DBP<span class="text-danger">*</span></label>
+                  <input type="number" class="form-control" [disabled]='tcmStore.tcmData.tcmStatus > 2' [(ngModel)]="faceToFace.dbp" (blur)="DBPValidation();" OnlyNumbers
+                   id="respRate" title="limit 20-150" placeholder="20-150">
+                </div>
+              </div>
+
+              <div class="col-lg-6 col-sm-6">
+                <div class="form-group">
+                  <label for="pulse">Pulse (Per Min)<span class="text-danger">*</span></label>
+                  <input type="number" class="form-control" [disabled]='tcmStore.tcmData.tcmStatus > 2' [(ngModel)]="faceToFace.pulsePerMinute" (blur)="pulsePerMinuteValidation();"
+                   id="pulse"  OnlyNumbers title="limit 20-200" placeholder="20-200">
+                </div>
+              </div>
+              <div class="col-lg-6 col-sm-6">
+                <div class="form-group">
+                  <label for="temp">Temperature (Degree F)<span class="text-danger">*</span></label>
+                  <input type="textbox" class="form-control" [disabled]='tcmStore.tcmData.tcmStatus > 2' [(ngModel)]="faceToFace.temp  "
+                  (blur)="tempValidation();" Numeric id="temp" title="limit 90-108" placeholder="90-108">
+                </div>
+              </div>
+
+              <div class="col-lg-6 col-sm-6">
+                <div class="form-group">
+                  <label for="respRate">Resp Rate (min)<span class="text-danger">*</span></label>
+                  <input type="number" class="form-control" [disabled]='tcmStore.tcmData.tcmStatus > 2' [(ngModel)]="faceToFace.respRate" (blur)="respRateValidation();"
+                  OnlyNumbers  id="respRate" title="limit 4-60" placeholder="4-60">
+                </div>
+              </div>
+              <div class="col-lg-6 col-sm-6">
+                <div class="form-group">
+                  <label for="oxygenation ">Oxygenation (%)<span class="text-danger">*</span></label>
+                  <input type="number" class="form-control" [disabled]='tcmStore.tcmData.tcmStatus > 2' [(ngModel)]="faceToFace.oxygenation "
+                  (blur)="oxygenationValidation();"  OnlyNumbers id="oxygenation" title="limit 80-100" pattern="[1-9]\d*" placeholder="80-100">
+                </div>
+                </div>
+
+            </div>
+
+
+            <div class="mt-3">
+              <!-- <div class="form-check pl-0">
+                <input type="radio" class="form-check-input" [(ngModel)]="faceToFace.dateVisited" id="drCeetificate" name="drCeetificate" mdbInput>
+                <label class="form-check-label" for="drCeetificate">(a certification of doctor)
+                </label>
+              </div> -->
+              <p><strong>Billing<span class="text-danger">*</span></strong></p>
+              <div class="form-check pl-0"  >
+                <input type="radio" class="form-check-input" [disabled]='tcmStore.tcmData.tcmStatus > 2' [(ngModel)]="faceToFace.cptCode" [value]="'99495'"
+                (ngModelChange)="AddEditFaceToFace()" id="billing1" name="billing" mdbInput>
+                <label class="form-check-label" for="billing1">CPT 99495
+                </label>
+                <span style="cursor: pointer;" class="fa fa-info-circle ml-4 cursor-pointer" triggers="hover" [mdbPopover]="popTemplate" placement="top" ></span>
+                <ng-template #popTemplate>
+                    <div class="p-3 bg-dark text-white">
+                    Transitional Care Management services with the following required elements:<br>
+                    Communication (direct contact, telephone, electronic) with the patient and/or caregiver within 2
+                    business days of discharge; Medical decision making of at least moderate complexity during the
+                    service period; Face-to-face visit, within 14 calendar days of discharge
+                    </div>
+                </ng-template>
+              </div>
+              <div class="form-check pl-0" [ngClass]="{disabledDiv: tcmStore.calculateDate > 7}">
+                <input type="radio" class="form-check-input" [disabled]='tcmStore.tcmData.tcmStatus > 2' [(ngModel)]="faceToFace.cptCode" [value]="'99496'"
+                (ngModelChange)="AddEditFaceToFace()" id="billing2" name="billing" mdbInput>
+                <label class="form-check-label" for="billing2">CPT 99496
+                </label>
+                <span style="cursor: pointer;" class="fa fa-info-circle ml-4 cursor-pointer" triggers="hover" [mdbPopover]="popTemplates" placement="top"  ></span>
+                <ng-template #popTemplates>
+                    <div class="p-3 bg-dark text-white">
+                    Transitional Care Management services with the following required elements:<br>
+                    Communication (direct contact, telephone, electronic) with the patient and/or caregiver within 2
+                    business days of discharge; Medical decision making of high complexity during the service period;
+                    Face-to-face visit, within 7 calendar days of discharge
+                    You should not report the TCM face-to-face visit separately.
+                    </div>
+                </ng-template>
+              </div>
+            </div>
+            <div class="mt-3">
+              <!-- <p><strong>Date of Service</strong></p> -->
+              <!-- <div class="form-check pl-0">
+                <input type="radio" class="form-check-input" [(ngModel)]="typeOfService" (change)="servTypeChanged()" [value]="1" id="facetofacedate" name="dateofservicer" mdbInput>
+                <label class="form-check-label" for="facetofacedate">Use date of Face-to-Face visit
+
+                </label>
+              </div>
+              <div class="form-check pl-0">
+                <input type="radio" class="form-check-input" [(ngModel)]="typeOfService" (change)="servTypeChanged()" [value]="2" id="otherDate" name="dateofservicer" mdbInput>
+                <label class="form-check-label" for="otherDate">Use other date
+                </label>
+              </div> -->
+              <div class="form-group">
+                <label class="w-100">Service Date<span class="text-danger">*</span></label>
+                <!-- <input type="text" class="form-control form-control-sm" [disabled]="typeOfService===1 || tcmStore.tcmData.tcmStatus > 2"
+                #dateToDp="dpDayPicker"
+                [(ngModel)]="faceToFace.serviceDate"
+                [dpDayPicker]="datePickerConfig" (blur)="AddEditFaceToFace()" [theme]="'dp-material ccm-date-picker'"
+                  [mode]="'daytime'"> -->
+                  <input type="text" [ngModel]="faceToFace.serviceDate | dateFormatPipe: 'time'"
+                  (ngModelChange)="faceToFace.serviceDate=$event;AddEditFaceToFace()" [readonly]="typeOfService===1 || tcmStore.tcmData.tcmStatus > 2"
+                  class="form-control form-control-sm" #dateDPicker="dpDayPicker" [ngStyle]="{ 'background': (typeOfService===1 || tcmStore.tcmData.tcmStatus > 2 ? '#e9ecef' : 'white') }" [dpDayPicker]="datePickerConfig"
+                  placeholder="MM-DD-YYYY" [theme]="'dp-material ccm-date-picker'" [mode]="'daytime'" />
+              </div>
+            </div>
+
+
+            <!-- <div class="form-group">
+              <label for="Billingrovider">Billing Provider</label>
+              <ng-select [searchable]="false" required name="Billingrovider" [disabled]='tcmStore.tcmData.tcmStatus > 2' [(ngModel)]="faceToFace.billingProviderId" id="Billingrovider" [appendTo]="'body'" class="ng-select-small"
+              (change)="AddEditFaceToFace()" placeholder="Select User">
+                  <ng-option [value]="item.id" *ngFor="let item of billingProvidersList">{{item.firstName}} {{item.lastName}}
+                  </ng-option>
+                </ng-select>
+            </div> -->
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="d-flex justify-content-end">
+      <label *ngIf="faceToFace.billingProviderName" class="mx-1 mb-0"><span class="text-danger">*</span>{{faceToFace.billingProviderName}}</label>
+      <label *ngIf="!faceToFace.billingProviderName" class="mx-1 mb-0 text-danger"><span class="text-danger">*</span>Login user is not a billing provider.Please must select any billing provider.</label>
+    </div>
+    <div class="d-flex justify-content-end mt-3">
+      <button class="btn btn-dynamic-2c btn-sm mr-1" [disabled]='tcmStore.tcmData.tcmStatus > 2' (click)="OpenVerifyProviderModal()">Change Provider</button>
+      <button [disabled]="!faceToFace.facilityUserId || !faceToFace.billingProviderId
+      || !faceToFace.cptCode || faceToFace.facilityUserId === 0 || !faceToFace.serviceDate
+      || isLoadingBillingP || tcmStore.tcmData.tcmStatus > 2 || !faceToFace.sbp || !faceToFace.dbp || !faceToFace.oxygenation
+      || !faceToFace.temp || !faceToFace.respRate || !faceToFace.pulsePerMinute
+      " type="button" (click)="signTcmEncounter()" class="btn btn-dynamic-2c btn-sm" >
+        <span *ngIf="isLoadingBillingP" class="spinner-border spinner-border-sm " role="status" aria-hidden="true"></span>
+        E-Sign</button>
+    </div>
+  </div>
+</div>
+<app-verify-as-billing-provider></app-verify-as-billing-provider>
+<ng-template #loadingSklton >
+  <skltn-root  duration="2000"  [rectRadius]="0" flareWidth="50%" bgFill="#f2f3f8" flareFill="rgba(255,255,255, 0.5)">
+    <!-- Card with Avatar -->
+    <div class="p-3">
+      <div class="skltn-card">
+        <div class="skltn-card__body">
+          <div skltn-bone class="skltn-card__line"></div>
+          <div skltn-bone class="skltn-card__line"></div>
+          <div skltn-bone class="skltn-card__line"></div>
+          <div skltn-bone class="skltn-card__line"></div>
+        </div>
+      </div>
+    </div>
+  </skltn-root>
+</ng-template>

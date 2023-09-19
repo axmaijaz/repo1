@@ -1,0 +1,226 @@
+<mdb-tabset #tutorTabs [buttonClass]="'classic-tabs tabs-outline-primary tabs-2'" [contentClass]="'tab-shadow border'"
+  class="classic-tabs tabs-outline-primary">
+
+  <mdb-tab heading="Extension Clients">
+    <div class="d-flex flex-row align-items-center justify-content-between mb-3">
+      <div class="d-flex justify-content-start align-items-center">
+        <h4 class="mr-3 mb-0"><a class="text-dark" (click)="goBack()">
+            <i class="fa fa-arrow-left"></i></a></h4>
+            <h1 class="page-title mb-0">Extension Clients</h1>
+      </div>
+      <div>
+        <a class="btn btn-dynamic-2c btn-sm m-0" (click)="addEditExtDto={};addeditExtCLient.show()" date-placement="left">Add New Client</a>
+      </div>
+    </div>
+    <div class="d-flex justify-content-end">
+      <mdb-checkbox [default]="true" [(ngModel)]="getAll" (change)="GetExtensionUrls()">Show All
+      </mdb-checkbox>
+    </div>
+    <div class="ccm-body">
+
+        <div *ngIf="isLoadingExtensionClients" class="d-flex justify-content-center text-center">
+          <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+        </div>
+
+
+        <ngx-datatable style="width: 100%;" [columnMode]="'force'" class="material z-depth-0" [headerHeight]="50"
+          [footerHeight]="50" [rowHeight]="35" [scrollbarV]="false" [scrollbarH]="true" [rows]="clientsList" [limit]="20">
+          <ngx-datatable-column name="#" [maxWidth]=50>
+            <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+              {{rowIndex + 1}}
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Domain" prop="domain">
+          </ngx-datatable-column>
+          <!-- <ngx-datatable-column name="Script" prop="contentScript">
+          </ngx-datatable-column> -->
+          <ngx-datatable-column name="Action" [canAutoResize]=false [frozenRight]=true [width]="150">
+            <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+              <button class="btn btn-dynamic-2c btn-icon" (click)="openEditClientModel(row , addeditExtCLient)" title="Edit"
+                placement="left"><i class="fa fa-pencil"></i> </button>
+              <button class="btn btn-danger btn-icon" [disabled]="row['isDeletingExtensionClients']" (click)="openConfirmModal(row)"> <span
+                  *ngIf="row['isDeletingExtensionClients']" class="mr-1 spinner-border spinner-border-sm" role="status"
+                  aria-hidden="true"></span><i class="fa fa-trash"></i></button>
+            </ng-template>
+          </ngx-datatable-column>
+        </ngx-datatable>
+
+    </div>
+  </mdb-tab>
+
+  <mdb-tab heading="EMR Configuration">
+    <div class="d-flex flex-row align-items-center justify-content-end mb-3">
+      <!-- <div class="d-flex justify-content-start align-items-center">
+        <h4 class="mr-3 mb-0"><a class="text-dark" (click)="goBack()">
+            <i class="fa fa-arrow-left"></i></a></h4>
+            <h1 class="page-title mb-0">Extension Clients</h1>
+      </div> -->
+      <div>
+        <a class="btn btn-dynamic-2c btn-sm m-0" (click)="addEditExtDto={};addEditEMRModal.show()" date-placement="left">Add New Emr</a>
+      </div>
+    </div>
+    <!-- <div class="d-flex justify-content-end">
+      <mdb-checkbox [default]="true" [(ngModel)]="getAll" (change)="GetExtensionUrls()">Show All
+      </mdb-checkbox>
+    </div> -->
+    <div class="ccm-body">
+
+        <div *ngIf="isLoadingExtensionClients" class="d-flex justify-content-center text-center">
+          <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+        </div>
+
+
+        <ngx-datatable style="width: 100%;" [columnMode]="'force'" class="material z-depth-0" [headerHeight]="50"
+          [footerHeight]="50" [rowHeight]="35" [scrollbarV]="false" [scrollbarH]="true" [rows]="emrList" [limit]="20">
+          <ngx-datatable-column name="#" [maxWidth]=50>
+            <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+              {{rowIndex + 1}}
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Name" prop="name">
+          </ngx-datatable-column>
+          <!-- <ngx-datatable-column name="Integrated" prop="isIntegrated">
+          </ngx-datatable-column> -->
+          <ngx-datatable-column name="Integrated" prop="isIntegrated">
+            <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+              <mdb-badge class="badge-success" *ngIf="row.isIntegrated">Yes</mdb-badge>
+              <mdb-badge class="badge-info" *ngIf="!row.isIntegrated">No</mdb-badge>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Action" [canAutoResize]=false [frozenRight]=true [width]="150">
+            <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+              <button class="btn btn-dynamic-2c btn-icon" (click)="openEditEmrModel(row , addEditEMRModal)" title="Edit"
+                placement="left"><i class="fa fa-pencil"></i> </button>
+              <!-- <button class="btn btn-danger btn-icon" [disabled]="row['isDeletingExtensionClients']" (click)="openConfirmModal(row)"> <span
+                  *ngIf="row['isDeletingExtensionClients']" class="mr-1 spinner-border spinner-border-sm" role="status"
+                  aria-hidden="true"></span><i class="fa fa-trash"></i></button> -->
+            </ng-template>
+          </ngx-datatable-column>
+        </ngx-datatable>
+
+    </div>
+  </mdb-tab>
+</mdb-tabset>
+
+
+
+
+
+
+
+
+<div mdbModal #addeditExtCLient="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true" [config]="{backdrop: true, ignoreBackdropClick: true}">
+  <div class="modal-dialog modal-dialog-centered modal-md flat-modal modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="addeditExtCLient.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" *ngIf="!addEditExtDto.id">Add Client</h4>
+        <h4 class="modal-title w-100" *ngIf="addEditExtDto.id">Edit Client</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <!-- <div class="col-sm-12 mb-2">
+            <small class="text-dynamic-2c text-uppercase font-500">User Information</small>
+          </div> -->
+          <div class="col-sm-12">
+
+            <div class="form-group">
+              <label for="reasondafdskjb">Url<small class="text-danger">*</small></label>
+              <textarea type="text" id="reasondafdskjb" rows="2"
+                placeholder="Description" [(ngModel)]="addEditExtDto.domain" class="form-control"></textarea>
+            </div>
+            <div class="form-group">
+              <label for="reasondafdskjb">EMR List<small class="text-danger">*</small></label>
+              <ng-select class="ng-select-small" appendTo="body"  [(ngModel)]="addEditExtDto.emrId" [searchable]="true" placeholder="Emr List">
+              <ng-option [value]="item.id" *ngFor="let item of emrList">{{ item.name }}</ng-option>
+            </ng-select>
+
+            </div>
+            <!-- <div class="form-group">
+              <label for="reason">Script</label>
+              <textarea type="text" id="reason" rows="15"
+                placeholder="Description" [(ngModel)]="addEditExtDto.contentScript" class="form-control" style="height: 150px;"></textarea>
+            </div> -->
+          </div>
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-dark btn-sm" (click)="addeditExtCLient.hide()">Close</button>
+        <button *ngIf="!addEditExtDto.id" type="submit" class="btn btn-dynamic-2c btn-sm" [disabled]="!addEditExtDto.domain || !addEditExtDto.emrId || isSavingExtensionClient" (click)="AddEditExtClient(addeditExtCLient)">Add</button>
+        <button *ngIf="addEditExtDto.id" [disabled]="!addEditExtDto.domain || !addEditExtDto.emrId" type="submit" class="btn btn-dynamic-2c btn-sm" (click)="AddEditExtClient(addeditExtCLient)" [disabled]="isSavingExtensionClient">Edit</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div mdbModal #addEditEMRModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true" (close)="clearEmrModalData()" [config]="{backdrop: true, ignoreBackdropClick: true}">
+  <div class="modal-dialog modal-dialog-centered modal-xl flat-modal modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="addEditEMRModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" *ngIf="!addEditEmrDto.id">Add EMR</h4>
+        <h4 class="modal-title w-100" *ngIf="addEditEmrDto.id">Edit EMR</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <!-- <div class="col-sm-12 mb-2">
+            <small class="text-dynamic-2c text-uppercase font-500">User Information</small>
+          </div> -->
+          <div class="col-sm-12">
+
+            <div class="form-group">
+              <label for="reasondafdskjb">Name</label>
+              <textarea type="text" id="reasondafdskjb" rows="1"
+                placeholder="Description" [(ngModel)]="addEditEmrDto.name" class="form-control"></textarea>
+            </div>
+            <div class="form-group">
+              <label for="isIntegrated">Is Integrated</label>
+              <ng-select [readonly]="true" [(ngModel)]="addEditEmrDto.isIntegrated" (ngModelChange)="IntigrationFieldChanged()" [clearable]="false" class="ng-select-small" [searchable]="false" placeholder="No"
+                id="isIntegrated">
+                <ng-option [value]="true">Yes</ng-option>
+                <ng-option [value]="false">No</ng-option>
+              </ng-select>
+            </div>
+            <div class="py-3 border" *ngIf="addEditEmrDto?.isIntegrated">
+              <ul class="status-list custom-column-list">
+                <!-- (click)="addEditEmrDto.claimSubmission=!addEditEmrDto.claimSubmission" -->
+                <li  [class.active]="addEditEmrDto.claimSubmission"  class=" col-sm-6 m-0 mb-1 disabled" >
+                  <a class="link" >Claim Submission</a>
+                </li>
+                <!-- (click)="addEditEmrDto.clinicalDocumentSubmission=!addEditEmrDto.clinicalDocumentSubmission" -->
+                <li  [class.active]="addEditEmrDto.clinicalDocumentSubmission"  class=" col-sm-6 m-0 mb-1 disabled" >
+                  <a class="link" >Clinical Document Submission</a>
+                </li>
+                <!-- (click)="addEditEmrDto.canSetCcmEnrollmentStatus=!addEditEmrDto.canSetCcmEnrollmentStatus" -->
+                <li  [class.active]="addEditEmrDto.canSetCcmEnrollmentStatus"  class=" col-sm-6 m-0 mb-1 disabled" >
+                  <a class="link" >CanSet Ccm Enrollment Status</a>
+                </li>
+                <!-- (click)="addEditEmrDto.vitalsSubmission=!addEditEmrDto.vitalsSubmission" -->
+                <li  [class.active]="addEditEmrDto.vitalsSubmission"  class=" col-sm-6 m-0 mb-1 disabled" >
+                  <a class="link" >CanSet Ccm Enrollment Status</a>
+                </li>
+              </ul>
+            </div>
+            <div class="form-group">
+              <label for="reason">Script</label>
+              <textarea type="text" id="reason" rows="15"
+                placeholder="Description" [(ngModel)]="addEditEmrDto.contentScript" class="form-control" style="height: 150px;"></textarea>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-dark btn-sm" (click)="addEditEMRModal.hide()">Close</button>
+        <button *ngIf="!addEditEmrDto.id" [disabled]="!addEditEmrDto.name || !addEditEmrDto.contentScript || isSavingEmr" type="submit" class="btn btn-dynamic-2c btn-sm" (click)="AddEditEmrList(addEditEMRModal)">Add</button>
+        <button *ngIf="addEditEmrDto.id" [disabled]="!addEditEmrDto.name || !addEditEmrDto.contentScript || isSavingEmr" type="submit" class="btn btn-dynamic-2c btn-sm" (click)="AddEditEmrList(addEditEMRModal)">Edit</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,1642 @@
+
+<div class="ccm-body">
+  <fieldset [disabled]="superBillDto && superBillDto.status !== 1"
+  [class.disable]="superBillDto && superBillDto.status !== 1">
+  <div class="col-sm-12">
+    <!-- <app-patient-details></app-patient-details> -->
+    <div class="d-flex align-items-center justify-content-between px-3 py-2 border-bottom">
+      <div class="d-flex align-items-center justify-content-start">
+        <h1 class="page-title mb-0">Super Bill</h1>
+      </div>
+
+      <div>
+        <!-- <button type="button" [disabled]="printingData" class="btn btn-dynamic-2c btn-sm text-capitalize"
+          (click)="DownLoadPdf(viewPdfModal)">
+          <span *ngIf="printingData" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          <i class="fa fa-download"></i>
+          DOWNLOAD</button>
+        <button type="button" [disabled]="printingDataHM" class="btn btn-dynamic-2c btn-sm text-capitalize" id="superBillBtn"
+          (click)="PrintData(viewPdfModal)">
+          <span *ngIf="printingDataHM" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          <i class="fa fa-download"></i>
+          DOWNLOAD SUPER BILL</button> -->
+      </div>
+    </div>
+    <div class="supplement-table-container  table-responsive">
+
+
+    <table class="w-100 patient-info-table mt-3" style="width: 100%;">
+      <ng-container *ngIf="!PatientData;then loadingSkelton"></ng-container>
+      <tbody *ngIf="PatientData">
+          <tr>
+              <td width="50%" class="px-1">
+
+                      <table>
+                          <tr>
+                            <td><strong style="width: 100;display: inline-block">Patient Name:</strong><span *ngIf="PatientData.fullName">{{PatientData.fullName}}</span></td>
+                          </tr>
+                          <tr>
+                            <td><strong style="width: 100;display: inline-block">DOB:</strong><span *ngIf="PatientData.dateOfBirth">{{PatientData.dateOfBirth | date}}</span></td>
+                          </tr>
+                          <tr>
+                            <td><strong style="width: 100;display: inline-block">Service Name:</strong><span></span></td>
+                          </tr>
+                      </table>
+
+              </td>
+              <td width="50%" class="px-1">
+
+                      <table>
+                          <tr>
+                            <td><strong style="width: 100;display: inline-block">Insurance:</strong><span *ngIf="PatientData.insurancePlanName">{{PatientData.insurancePlanName}}</span></td>
+                          </tr>
+                          <tr>
+                            <td><strong style="width: 100;display: inline-block">Copay:</strong><span></span></td>
+                          </tr>
+                          <tr>
+                            <td><strong style="width: 100;display: inline-block">Paid:</strong><span></span></td>
+                          </tr>
+                      </table>
+
+              </td>
+          </tr>
+      </tbody>
+    </table>
+    <div class="table-responsive" id="supplement-table">
+
+      <table class="supplement border-0 table-sm family-history-table mb-0 w-100" id="supplement-table1">
+        <tbody>
+          <tr>
+            <td style="width: 50%;" style="vertical-align: top;">
+              <table style="width: 100%;" class="sup-sec">
+                <tr>
+                  <td colspan="4" class="title" id=">New" [class.bg-white]="activeTitleObj['New']===3" [class.active]="activeTitleObj['New']===2" (click)="SetTitleState('New')">
+                    <strong>New</strong></td>
+                </tr>
+                <tr>
+                  <td>
+                    99203
+                  </td>
+                  <td class="check-cell">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                        [(ngModel)]="superBillDto.cpt99203" id="cpt99203" [attr.checked]="superBillDto.cpt99203 ? '': null">
+                      <label class="custom-control-label" for="cpt99203"></label>
+                    </div>
+                  </td>
+                  <td>
+                    99212
+                  </td>
+                  <td class="check-cell">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                        [(ngModel)]="superBillDto.cpt99212" id="cpt99212" [attr.checked]="superBillDto.cpt99212 ? '': null">
+                      <label class="custom-control-label" for="cpt99212"></label>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    99204
+                  </td>
+                  <td class="check-cell">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                        [(ngModel)]="superBillDto.cpt99204" id="cpt99204" [attr.checked]="superBillDto.cpt99204 ? '': null">
+                      <label class="custom-control-label" for="cpt99204"></label>
+                    </div>
+                  </td>
+                  <td>
+                    99213
+                  </td>
+                  <td class="check-cell">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                        [(ngModel)]="superBillDto.cpt99213" id="cpt99213" [attr.checked]="superBillDto.cpt99213 ? '': null">
+                      <label class="custom-control-label" for="cpt99213"></label>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    99205
+                  </td>
+                  <td class="check-cell">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                        [(ngModel)]="superBillDto.cpt99205" id="99205" [attr.checked]="superBillDto.cpt99205 ? '': null">
+                      <label class="custom-control-label" for="99205"></label>
+                    </div>
+                  </td>
+                  <td>
+                    99214
+                  </td>
+                  <td class="check-cell">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                        [(ngModel)]="superBillDto.cpt99214" id="cpt99214" [attr.checked]="superBillDto.cpt99214 ? '': null">
+                      <label class="custom-control-label" for="cpt99214"></label>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <table style="width:100%" class="sup-sec">
+                <tbody>
+                  <tr>
+                    <td colspan="6" class="title" id=">INCIDENT TO" [class.bg-white]="activeTitleObj['INCIDENTTO']===3" [class.active]="activeTitleObj['INCIDENTTO']===2" (click)="SetTitleState('INCIDENTTO')">
+                      <strong>INCIDENT TO</strong></td>
+                  </tr>
+                  <tr>
+                    <td colspan="6">  <strong> F/U From Physician </strong></td>
+                  </tr>
+                  <tr>
+                    <td>
+                      99212
+                    </td>
+                    <td class="check-cell">
+                      <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                          [(ngModel)]="superBillDto.cptIncidentTo99212" id="cptIncidentTo99212" [attr.checked]="superBillDto.cptIncidentTo99212 ? '': null">
+                        <label class="custom-control-label" for="cptIncidentTo99212"></label>
+                      </div>
+                    </td>
+                    <td>
+                      99213
+                    </td>
+                    <td class="check-cell">
+                      <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                          [(ngModel)]="superBillDto.cptIncidentTo99213" id="cptIncidentTo99213" [attr.checked]="superBillDto.cptIncidentTo99212 ? '': null">
+                        <label class="custom-control-label" for="cptIncidentTo99213"></label>
+                      </div>
+                    </td>
+                    <td>
+                      99214
+                    </td>
+                    <td class="check-cell">
+                      <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                          [(ngModel)]="superBillDto.cptIncidentTo99214" id="cptIncidentTo99214" [attr.checked]="superBillDto.cptIncidentTo99212 ? '': null">
+                        <label class="custom-control-label" for="cptIncidentTo99214"></label>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <table style="width: 100%;" class="sup-sec">
+                <tr>
+                  <td colspan="5" class="title" id=">WELL WOMAN" [class.bg-white]="activeTitleObj['WELLWOMAN']===3" [class.active]="activeTitleObj['WELLWOMAN']===2" (click)="SetTitleState('WELLWOMAN')">
+                    <strong>WELLNESS EXAM</strong>
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="5">
+                    <strong>Mark both codes</strong>
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="3">
+                    <strong> Exam & G0101 </strong>
+                  </td>
+                  <td colspan="2" class="p-0">
+                    <table class="w-100 sup-sec-sub">
+                      <tr>
+                        <td class="cell-code">G0101</td>
+                        <td class="check-cell">
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                              [(ngModel)]="superBillDto.cptG0101" id="cptG0101" [attr.checked]="superBillDto.cptG0101 ? '': null">
+                            <label class="custom-control-label" for="cptG0101"></label>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="cell-code">Q0091</td>
+                        <td class="check-cell">
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                              [(ngModel)]="superBillDto.cptG0091" id="cptG0091" [attr.checked]="superBillDto.cptG0091 ? '': null">
+                            <label class="custom-control-label" for="cptG0091"></label>
+                          </div>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="3">
+                    <strong>Welcome to MRC</strong>
+                  </td>
+                  <td class="cell-code">G0402</td>
+                  <td class="check-cell">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                        [(ngModel)]="superBillDto.cptG0402" id="cptG0402" [attr.checked]="superBillDto.cptG0402 ? '': null">
+                      <label class="custom-control-label" for="cptG0402"></label>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="3">
+                    <strong>Annual MCR: Inital
+                      <a title="Based on physician tab" placement="top">
+                        <span class="fa fa-lg fa-exclamation-circle text-danger"></span>
+                      </a>
+                    </strong>
+                  </td>
+                  <td class="cell-code">G0438</td>
+                  <td class="check-cell">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                        [(ngModel)]="superBillDto.cptG0438" id="cptG0438" [attr.checked]="superBillDto.cptG0438 ? '': null">
+                      <label class="custom-control-label" for="cptG0438"></label>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="3">
+                    <strong>DX: Z00.00 SUBS
+                      <a title="Based on physician tab" placement="top">
+                        <span class="fa fa-lg fa-exclamation-circle text-danger"></span>
+                      </a>
+                    </strong>
+                  </td>
+                  <td class="cell-code">G0439</td>
+                  <td class="check-cell">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                        [(ngModel)]="superBillDto.cptG0439" id="cptG043djdkjsb" [attr.checked]="superBillDto.cptG0439 ? '': null">
+                      <label class="custom-control-label" for="cptG043djdkjsb"></label>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="3">
+                    <strong>Humana CPT99203</strong>
+                  </td>
+                  <td class="cell-code">(Add code 96160)</td>
+                  <td class="check-cell">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                        [(ngModel)]="superBillDto.cpt96160" id="cpt96160" [attr.checked]="superBillDto.cpt96160 ? '': null">
+                      <label class="custom-control-label" for="cpt96160"></label>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td colspan="3">
+                    <strong>Humana/Other CPT99385</strong>
+                  </td>
+                  <td class="cell-code">99385</td>
+                  <td class="check-cell">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                        [(ngModel)]="superBillDto.cpt99385" id="cpt99385" [attr.checked]="superBillDto.cpt99385 ? '': null">
+                      <label class="custom-control-label" for="cpt99385"></label>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="3">
+                    <strong>Humana/Other CPT99386</strong>
+                  </td>
+                  <td class="cell-code">99386</td>
+                  <td class="check-cell">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                        [(ngModel)]="superBillDto.cpt99386" id="cpt99386" [attr.checked]="superBillDto.cpt99386 ? '': null">
+                      <label class="custom-control-label" for="cpt99386"></label>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="3">
+                    <strong>Humana/Other CPT99387</strong>
+                  </td>
+                  <td class="cell-code">99387</td>
+                  <td class="check-cell">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                        [(ngModel)]="superBillDto.cpt99387" id="cpt99387" [attr.checked]="superBillDto.cpt99387 ? '': null">
+                      <label class="custom-control-label" for="cpt99387"></label>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="3">
+                    <strong>Humana/Other CPT99395</strong>
+                  </td>
+                  <td class="cell-code">99395</td>
+                  <td class="check-cell">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                        [(ngModel)]="superBillDto.cpt99395" id="cpt99395" [attr.checked]="superBillDto.cpt99395 ? '': null">
+                      <label class="custom-control-label" for="cpt99395"></label>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="3">
+                    <strong>Humana/Other CPT99396 </strong>
+                  </td>
+                  <td class="cell-code">99396</td>
+                  <td class="check-cell">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                        [(ngModel)]="superBillDto.cpt99396" id="Cpt99396" [attr.checked]="superBillDto.cpt99396 ? '': null">
+                      <label class="custom-control-label" for="Cpt99396"></label>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td colspan="3">
+                    <strong>Humana/Other CPT99397</strong>
+                  </td>
+                  <td class="cell-code">99397</td>
+                  <td class="check-cell">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                        [(ngModel)]="superBillDto.cpt99397" id="cpt99397" [attr.checked]="superBillDto.cpt99397 ? '': null">
+                      <label class="custom-control-label" for="cpt99397"></label>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <table style="width: 100%;" class="sup-sec">
+                <tr>
+                  <td colspan="3" class="title" id=">ANNUAL MCR" [class.bg-white]="activeTitleObj['ANNUALMCR']===3" [class.active]="activeTitleObj['ANNUALMCR']===2" (click)="SetTitleState('ANNUALMCR')">
+                    <strong>ANNUAL MCR SCREENS</strong>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Alcohol Screen</strong>
+                  </td>
+                  <td class="cell-code">G0442</td>
+                  <td class="check-cell">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                        [(ngModel)]="superBillDto.cptG0442" id="cptG0442" [attr.checked]="superBillDto.cptG0442 ? '': null">
+                      <label class="custom-control-label" for="cptG0442"></label>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Cardiovascular Therapy
+                      <a title="Based on physician tab" placement="top">
+                        <span class="fa fa-lg fa-exclamation-circle text-danger"></span>
+                      </a>
+                    </strong>
+                  </td>
+                  <td class="cell-code">G0446</td>
+                  <td class="check-cell">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                        [(ngModel)]="superBillDto.cptG0446" id="cptG0446" [attr.checked]="superBillDto.cptG0446 ? '': null">
+                      <label class="custom-control-label" for="cptG0446"></label>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Advance Care Planning</strong>
+                  </td>
+                  <td class="cell-code">99497(33)</td>
+                  <td class="check-cell">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                        [(ngModel)]="superBillDto.cpt99497" id="cpt99497" [attr.checked]="superBillDto.cpt99497 ? '': null">
+                      <label class="custom-control-label" for="cpt99497"></label>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td >
+                    <strong>Depression Screen</strong>
+                  </td>
+                  <td class="cell-code">G0444</td>
+                  <td class="check-cell">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                        [(ngModel)]="superBillDto.cptG0444" id="cptG0444" [attr.checked]="superBillDto.cptG0444 ? '': null">
+                      <label class="custom-control-label" for="cptG0444"></label>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- <table style="width: 100%;" class="sup-sec">
+                <tr>
+                  <td colspan="3" class="title" id=">HOSP DISCHARGE" [class.bg-white]="activeTitleObj['HOSPDISCHARGE']===3" [class.active]="activeTitleObj['HOSPDISCHARGE']===2" (click)="SetTitleState('HOSPDISCHARGE')">
+                    <strong>HOSP DISCHARGE F/U</strong>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>W/In 14 Bus Days (Mod Comp)</strong>
+                  </td>
+                  <td class="cell-code">99495</td>
+                  <td class="check-cell">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                        [(ngModel)]="superBillDto.cpt99495" id="cpt99495" [attr.checked]="superBillDto.cpt99495 ? '': null">
+                      <label class="custom-control-label" for="cpt99495"></label>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>W/In 7 Bus Days (High Comp)</strong>
+                  </td>
+                  <td class="cell-code">99496</td>
+                  <td class="check-cell">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                        [(ngModel)]="superBillDto.cpt99496" id="cpt99496" [attr.checked]="superBillDto.cpt99496 ? '': null">
+                      <label class="custom-control-label" for="cpt99496"></label>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Med Recon.W/In 30 Days of D/C</strong>
+                  </td>
+                  <td class="cell-code">1111F</td>
+                  <td class="check-cell">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                        [(ngModel)]="superBillDto.cpt1111F" id="cpt1111F" [attr.checked]="superBillDto.cpt1111F ? '': null">
+                      <label class="custom-control-label" for="cpt1111F"></label>
+                    </div>
+                  </td>
+                </tr>
+              </table> -->
+              <table style="width: 100%;" class="sup-sec">
+                <tr>
+                  <td colspan="3" class="title" id="Chronic Care Mana" [class.bg-white]="activeTitleObj['ChronicCareManag']===3" [class.active]="activeTitleObj['ChronicCareManag']===2" (click)="SetTitleState('ChronicCareManag')">
+                    <strong>Chronic Care Management</strong>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>CCM</strong>
+                  </td>
+                  <td class="cell-code">G0506</td>
+                  <td class="check-cell">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                        [(ngModel)]="superBillDto.cptG0506" id="cptG0506" [attr.checked]="superBillDto.cptG0506 ? '': null">
+                      <label class="custom-control-label" for="cptG0506"></label>
+                    </div>
+                  </td>
+                </tr>
+
+              </table>
+              <table style="width: 100%;" class="sup-sec">
+                <tr>
+                  <td colspan="3" class="title" id=">SMOKING CESSATION" [class.bg-white]="activeTitleObj['SMOKINGCESSATION']===3" [class.active]="activeTitleObj['SMOKINGCESSATION']===2" (click)="SetTitleState('SMOKINGCESSATION')">
+                    <strong>SMOKING CESSATION COUNSELING</strong>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong> Less then 10 MIN </strong>
+                  </td>
+                  <td class="cell-code">99406</td>
+                  <td class="check-cell">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                        [(ngModel)]="superBillDto.cpt99406" id="cpt99406" [attr.checked]="superBillDto.cpt99406 ? '': null">
+                      <label class="custom-control-label" for="cpt99406"></label>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>More then MIN </strong>
+                  </td>
+                  <td class="cell-code">99407</td>
+                  <td class="check-cell">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                        [(ngModel)]="superBillDto.cpt99407" id="cpt99407" [attr.checked]="superBillDto.cpt99407 ? '': null">
+                      <label class="custom-control-label" for="cpt99407"></label>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>LDCT Counseling</strong>
+                  </td>
+                  <td class="cell-code">G0296</td>
+                  <td class="check-cell">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                        [(ngModel)]="superBillDto.cptG0296" id="cptG0296" [attr.checked]="superBillDto.cptG0296 ? '': null">
+                      <label class="custom-control-label" for="cptG0296"></label>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <table style="width: 100%;" class="sup-sec">
+
+                <tr>
+                  <td>
+                    <strong> CGM Data Interpretation</strong>
+                  </td>
+                  <td class="cell-code">95251</td>
+                  <td class="check-cell">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                        [(ngModel)]="superBillDto.cpt95251" id="cpt95251" [attr.checked]="superBillDto.cpt95251 ? '': null">
+                      <label class="custom-control-label" for="cpt95251"></label>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Weight Management Indiv.</strong>
+                  </td>
+                  <td class="cell-code">47, G0473 </td>
+                  <td class="check-cell">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                        [(ngModel)]="superBillDto.cptG0473" id="cptG0473" [attr.checked]="superBillDto.cptG0473 ? '': null">
+                      <label class="custom-control-label" for="cptG0473"></label>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Group Behavior Coun. 2-10</strong>
+                  </td>
+                  <td class="cell-code">G0505</td>
+                  <td class="check-cell">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                        [(ngModel)]="superBillDto.cptG0505" id="cptG0505" [attr.checked]="superBillDto.cptG0505 ? '': null">
+                      <label class="custom-control-label" for="cptG0505"></label>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <table style="width: 100%;" class="sup-sec">
+                <tr>
+                  <td>
+                    <strong> Dx Codes:</strong>
+                  </td>
+
+                </tr>
+                <!-- <tr>
+                  <td>From Diagnosis</td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong> Add Diagnose</strong>
+                  </td>
+                </tr> -->
+                <tr>
+                  <td>
+                    <div class="d-flex p-2">
+                      <input type="text" [(ngModel)]="superBillDto.dxCodes" #dxCodes class="form-control form-control-sm">
+                      <!-- <button class="btn btn-dynamic-2c btn-sm" style="    padding: 0 12px;
+                      font-size: 10px;
+                      margin: 0;
+                      flex-shrink: 0;
+                      margin-left: 10px;">Add</button> -->
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Note:</strong>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="d-flex p-2">
+                      <textarea class="form-control" [(ngModel)]="superBillDto.notes" #notes style="min-height:95px;"></textarea>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+
+            </td>
+            <td style="width: 50%; vertical-align: top;">
+              <table style="width: 100%;" class="sup-sec">
+                <tr>
+                  <td width="100px" style="vertical-align: middle;" class="title" id="BMI185"  [class.bg-white]="activeTitleObj['BMI185']===3" [class.active]="activeTitleObj['BMI185']===2" (click)="SetTitleState('BMI185')" #popupQustion="bs-mdbPopover" container="body" [mdbPopover]="popTemplateBmi" triggers="hover">
+                    <ng-template #popTemplateBmi >
+                      <div *ngIf="superbillHoverDto.bmi" class="bg-dark text-white py-2 pl-2 pr-2">
+                        <p class="mb-0 small-text-p">{{superbillHoverDto.bmi}}</p>
+                      </div>
+                    </ng-template>
+                  <strong> BMI ( > 18.5 and < 25g/m2 ) </strong>  </td>
+                  <td width="100px" style="vertical-align: middle;">
+                    If above or below normal must have f/u plan
+                  </td>
+                  <td>
+                    <table style="width: 100%;" class="sup-sec-sub">
+                      <tr>
+                        <td>
+                          <strong>Normal</strong>
+                        </td>
+                        <td class="cell-code">G8420</td>
+                        <td class="check-cell">
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                              [(ngModel)]="superBillDto.cptG8420" id="cptG8420" [attr.checked]="superBillDto.cptG8420 ? '': null">
+                            <label class="custom-control-label" for="cptG8420"></label>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <strong>Above</strong>
+                        </td>
+                        <td class="cell-code">G8417</td>
+                        <td class="check-cell">
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                              [(ngModel)]="superBillDto.cptG8417" id="cptG8417" [attr.checked]="superBillDto.cptG8417 ? '': null">
+                            <label class="custom-control-label" for="cptG8417"></label>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <strong>Below (Remove that are not pertinenr) </strong>
+                        </td>
+                        <td class="cell-code">G8418</td>
+                        <td class="check-cell">
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                              [(ngModel)]="superBillDto.cptG8418" id="cptG8418" [attr.checked]="superBillDto.cptG8418 ? '': null">
+                            <label class="custom-control-label" for="cptG8418"></label>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <strong>Refused</strong>
+                        </td>
+                        <td class="cell-code">G8422</td>
+                        <td class="check-cell">
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                              [(ngModel)]="superBillDto.cptG8422" id="cptG8422" [attr.checked]="superBillDto.cptG8422 ? '': null">
+                            <label class="custom-control-label" for="cptG8422"></label>
+                          </div>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+
+              </table>
+              <table style="width: 100%;" class="sup-sec">
+                <tr>
+                  <td width="100px" style="vertical-align: middle; text-align: center;" class="title" id="HTN" [class.bg-white]="activeTitleObj['HTN']===3" [class.active]="activeTitleObj['HTN']===2" (click)="SetTitleState('HTN')"  #popupQustion="bs-mdbPopover" container="body" [mdbPopover]="popTemplateHtn" triggers="hover">
+                    <ng-template #popTemplateHtn>
+                      <div *ngIf="superbillHoverDto.htn" class="bg-dark text-white py-2 pl-2 pr-2">
+                        <p class="mb-0 small-text-p">{{superbillHoverDto.htn}}</p>
+                      </div>
+                    </ng-template>
+                    <strong>HTN</strong>
+                  </td>
+                  <td>
+                    <table style="width: 100%;" class="sup-sec-sub">
+                      <tr>
+                        <td>
+                          <strong>Systolic BP < 140mm/Hg</strong>
+                        </td>
+                        <td class="cell-code">G8752</td>
+                        <td class="check-cell">
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                              [(ngModel)]="superBillDto.cptG8752" id="cptG8752" [attr.checked]="superBillDto.cptG8752 ? '': null">
+                            <label class="custom-control-label" for="cptG8752"></label>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <strong>Diastolic BP < 90mm/Hg</strong>
+                        </td>
+                        <td class="cell-code">G8754</td>
+                        <td class="check-cell">
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                              [(ngModel)]="superBillDto.cptG8754" id="cptG8754" [attr.checked]="superBillDto.cptG8754 ? '': null">
+                            <label class="custom-control-label" for="cptG8754"></label>
+                          </div>
+                        </td>
+                      </tr>
+
+                    </table>
+                  </td>
+                </tr>
+
+              </table>
+              <table style="width: 100%;" class="sup-sec">
+                <tr>
+                  <td width="100px" style="vertical-align: middle; text-align: center;" class="title" id="Tobacco" [class.bg-white]="activeTitleObj['Tobacco']===3" [class.active]="activeTitleObj['Tobacco']===2" (click)="SetTitleState('Tobacco')" #popupQustion="bs-mdbPopover" container="body" [mdbPopover]="popTemplateTobacco" triggers="hover">
+                    <ng-template #popTemplateTobacco>
+                      <div *ngIf="superbillHoverDto.tobacco" class="bg-dark text-white py-2 pl-2 pr-2">
+                        <p class="mb-0 small-text-p">{{superbillHoverDto.tobacco}}</p>
+                      </div>
+                    </ng-template>
+                    <strong>Tobacco</strong>
+                  </td>
+                  <td>
+                    <table style="width: 100%;" class="sup-sec-sub">
+                      <tr>
+                        <td>
+                          <strong>Tobacco user & counseling given</strong>
+                        </td>
+                        <td class="cell-code">4004F</td>
+                        <td class="check-cell">
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                              [(ngModel)]="superBillDto.cpt4004F" id="cpt4004F" [attr.checked]="superBillDto.cpt4004F ? '': null">
+                            <label class="custom-control-label" for="cpt4004F"></label>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <strong>Current Non-User</strong>
+                        </td>
+                        <td class="cell-code">1036F</td>
+                        <td class="check-cell">
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                              [(ngModel)]="superBillDto.cpt1036F" id="cpt1036F" [attr.checked]="superBillDto.cpt1036F ? '': null">
+                            <label class="custom-control-label" for="cpt1036F"></label>
+                          </div>
+                        </td>
+                      </tr>
+
+                    </table>
+                  </td>
+                </tr>
+
+              </table>
+              <table style="width: 100%;" class="sup-sec">
+                <tr>
+                  <td width="100px" style="vertical-align: middle; text-align: center;" class="title" id="Depression" [class.bg-white]="activeTitleObj['Depression']===3" [class.active]="activeTitleObj['Depression']===2" (click)="SetTitleState('Depression')" #popupQustion="bs-mdbPopover" container="body" [mdbPopover]="popTemplateDepression" triggers="hover">
+                    <ng-template #popTemplateDepression >
+                      <div *ngIf="superbillHoverDto.depression" class="bg-dark text-white py-2 pl-2 pr-2">
+                        <p class="mb-0 small-text-p">{{superbillHoverDto.depression}}</p>
+                      </div>
+                    </ng-template>
+                    <strong>Depression</strong>
+                  </td>
+                  <td>
+                    <table style="width: 100%;" class="sup-sec-sub">
+                      <tr>
+                        <td>
+                          <strong>PHQ-9 < 9</strong>
+                        </td>
+                        <td class="cell-code">G8510</td>
+                        <td class="check-cell">
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                              [(ngModel)]="superBillDto.cptG8510" id="cptG8510" [attr.checked]="superBillDto.cptG8510 ? '': null">
+                            <label class="custom-control-label" for="cptG8510"></label>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <strong>PHQ-9 > 9 w/ f/u plan doc.</strong>
+                        </td>
+                        <td class="cell-code">G8431</td>
+                        <td class="check-cell">
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                              [(ngModel)]="superBillDto.cptG8431" id="cptG8431" [attr.checked]="superBillDto.cptG8431 ? '': null">
+                            <label class="custom-control-label" for="cptG8431"></label>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <strong>PHQ-9, Excep: Depression/Bipolar Disorder</strong>
+                        </td>
+                        <td class="cell-code">G9717</td>
+                        <td class="check-cell">
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                              [(ngModel)]="superBillDto.cptG9717" id="cptG9717" [attr.checked]="superBillDto.cptG9717 ? '': null">
+                            <label class="custom-control-label" for="cptG9717"></label>
+                          </div>
+                        </td>
+                      </tr>
+
+                    </table>
+                  </td>
+                </tr>
+
+              </table>
+              <table style="width: 100%;" class="sup-sec">
+                <tr>
+                  <td width="100px" [mdbPopover]="popTemplateFall" #popupQustion="bs-mdbPopover" container="body"  triggers="hover" style="vertical-align: middle; text-align: center;" class="title" id="FallScreening" [class.bg-white]="activeTitleObj['FallScreening']===3" [class.active]="activeTitleObj['FallScreening']===2" (click)="SetTitleState('FallScreening')">
+                    <ng-template #popTemplateFall >
+                      <div *ngIf="superbillHoverDto.fallRisk" class="bg-dark text-white py-2 pl-2 pr-2">
+                        <p class="mb-0 small-text-p">{{superbillHoverDto.fallRisk}}</p>
+                        <!-- <div class="who-covered" (click)="$event.stopPropagation()"  malihu-scrollbar
+                          [scrollbarOptions]="scrollbarOptionsTimeline" style="max-height: 300px;"> -->
+                        <!-- </div> -->
+                      </div>
+                    </ng-template>
+                    <strong>Fall
+                      Screening
+                    </strong>
+                  </td>
+                  <td>
+                    <table style="width: 100%;" class="sup-sec-sub">
+                      <tr>
+                        <td>
+                          <strong>2+ falls or any fall w/injury(Mark both)</strong>
+                        </td>
+                        <td class="cell-code">1100F</td>
+                        <td class="check-cell">
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                              [(ngModel)]="superBillDto.cpt1100F" id="cpt1100F" [attr.checked]="superBillDto.cpt1100F ? '': null">
+                            <label class="custom-control-label" for="cpt1100F"></label>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <strong>Assess w/in 12mo of documented fall</strong>
+                        </td>
+                        <td class="cell-code">3288F</td>
+                        <td class="check-cell">
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                              [(ngModel)]="superBillDto.cpt3288F" id="cpt3288F" [attr.checked]="superBillDto.cpt3288F ? '': null">
+                            <label class="custom-control-label" for="cpt3288F"></label>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <strong>No falls or 1 fall w/out injury</strong>
+                        </td>
+                        <td class="cell-code">1101F</td>
+                        <td class="check-cell">
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                              [(ngModel)]="superBillDto.cpt1101F" id="cpt1101F" [attr.checked]="superBillDto.cpt1101F ? '': null">
+                            <label class="custom-control-label" for="cpt1101F"></label>
+                          </div>
+                        </td>
+                      </tr>
+
+                    </table>
+                  </td>
+                </tr>
+
+              </table>
+              <table style="width: 100%;" class="sup-sec">
+                <tr>
+                  <td  #popupQustion="bs-mdbPopover" container="body" [mdbPopover]="popTemplateTwo" triggers="hover"
+                  width="100px" style="vertical-align: middle; text-align: center;" class="title" id="Vaccines" [class.bg-white]="activeTitleObj['Vaccines']===3" [class.active]="activeTitleObj['Vaccines']===2" (click)="SetTitleState('Vaccines')">
+                  <ng-template #popTemplateTwo>
+                    <div class="bg-dark text-white py-2 pl-2 pr-2">
+                      <p class="mb-2 small-text-p">{{superbillHoverDto.iv}}</p>
+                      <p class="mb-0 small-text-p">{{superbillHoverDto.pv}}</p>
+                      <!-- <div class="who-covered" (click)="$event.stopPropagation()"  malihu-scrollbar
+                        [scrollbarOptions]="scrollbarOptionsTimeline" style="max-height: 300px;"> -->
+                      <!-- </div> -->
+                    </div>
+                  </ng-template>
+                  <strong>Vaccines</strong>
+                  </td>
+                  <td>
+                    <table style="width: 100%;" class="sup-sec-sub">
+                      <tr>
+                        <td>
+                          <strong>Document year rcvd and type<br />
+                            Pneumo rcvd if known
+                            <a title="Based on IV care gap" placement="top">
+                              <span class="fa fa-lg fa-exclamation-circle text-danger"></span>
+                            </a>
+                          </strong>
+                        </td>
+                        <td class="cell-code">4040F</td>
+                        <td class="check-cell">
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                              [(ngModel)]="superBillDto.cpt4040F" id="cpt4040F" [attr.checked]="superBillDto.cpt4040F ? '': null">
+                            <label class="custom-control-label" for="cpt4040F"></label>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <strong>Flu Vaccine</strong>
+                        </td>
+                        <td class="cell-code">G8482 </td>
+                        <td class="check-cell">
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                              [(ngModel)]="superBillDto.cptG8482" id="cptG8482" [attr.checked]="superBillDto.cptG8482 ? '': null">
+                            <label class="custom-control-label" for="cptG8482"></label>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <strong>Pt. refuses, allergy, Flu Not Eligible<br />
+                            vaccine not available
+                            <a title="Based on IV care gap" placement="top">
+                              <span class="fa fa-lg fa-exclamation-circle text-danger"></span>
+                            </a>
+                          </strong>
+                        </td>
+                        <td class="cell-code">G8483 </td>
+                        <td class="check-cell">
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                              [(ngModel)]="superBillDto.cptG8483" id="cptG8483" [attr.checked]="superBillDto.cptG8483 ? '': null">
+                            <label class="custom-control-label" for="cptG8483"></label>
+                          </div>
+                        </td>
+                      </tr>
+
+                    </table>
+                  </td>
+                </tr>
+
+              </table>
+              <table style="width: 100%;" class="sup-sec">
+                <tr>
+                  <td #popupQustion="bs-mdbPopover" container="body" [mdbPopover]="popTemplate3" triggers="hover"
+                  width="100px" style="vertical-align: middle; text-align: center;" class="title" id="CAScreening" [class.bg-white]="activeTitleObj['CAScreening']===3" [class.active]="activeTitleObj['CAScreening']===2" (click)="SetTitleState('CAScreening')">
+                    <ng-template #popTemplate3>
+                      <div class="bg-dark text-white py-2 pl-2 pr-2">
+                        <p class="mb-2 small-text-p">{{superbillHoverDto.cc}}</p>
+                        <p class="mb-0 small-text-p">{{superbillHoverDto.sm}}</p>
+                        <!-- <div class="who-covered" (click)="$event.stopPropagation()"  malihu-scrollbar
+                          [scrollbarOptions]="scrollbarOptionsTimeline" style="max-height: 300px;"> -->
+                        <!-- </div> -->
+                      </div>
+                    </ng-template>
+                    <strong>CA Screening</strong>
+                  </td>
+                  <td>
+                    <table style="width: 100%;" class="sup-sec-sub">
+                      <tr>
+                        <td>
+                          <strong>Colo CA Screening (Report Viewed)</strong>
+                        </td>
+                        <td class="cell-code">3017F</td>
+                        <td class="check-cell">
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                              [(ngModel)]="superBillDto.cpt3017F" id="cpt3017F" [attr.checked]="superBillDto.cpt3017F ? '': null">
+                            <label class="custom-control-label" for="cpt3017F"></label>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <strong>Hx of Colectomy or Colon CA</strong>
+                        </td>
+                        <td class="cell-code">G9711 </td>
+                        <td class="check-cell">
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                              [(ngModel)]="superBillDto.cptG9711" id="cptG9711" [attr.checked]="superBillDto.cptG9711 ? '': null">
+                            <label class="custom-control-label" for="cptG9711"></label>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <strong>Mammo Docu. In last 27 mo.</strong>
+                        </td>
+                        <td class="cell-code">G9899</td>
+                        <td class="check-cell">
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                              [(ngModel)]="superBillDto.cptG9899" id="cptG9899" [attr.checked]="superBillDto.cptG9899 ? '': null">
+                            <label class="custom-control-label" for="cptG9899"></label>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <strong>Hx of Bi/Unilateral Mastectomy</strong>
+                        </td>
+                        <td class="cell-code">G9708</td>
+                        <td class="check-cell">
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                              [(ngModel)]="superBillDto.cptG9708" id="cptG9708" [attr.checked]="superBillDto.cptG9708 ? '': null">
+                            <label class="custom-control-label" for="cptG9708"></label>
+                          </div>
+                        </td>
+                      </tr>
+
+                    </table>
+                  </td>
+                </tr>
+
+              </table>
+              <table style="width: 100%;" class="sup-sec">
+                <tr>
+                  <td #popupQustion="bs-mdbPopover" container="body" [mdbPopover]="popTemplate4" triggers="hover"
+                  width="100px" style="vertical-align: middle; text-align: center;" class="title" id="DM123" [class.bg-white]="activeTitleObj['DM123']===3" [class.active]="activeTitleObj['DM123']===2" (click)="SetTitleState('DM123')">
+                  <ng-template #popTemplate4>
+                    <div class="bg-dark text-white py-2 pl-2 pr-2">
+                      <p class="mb-2 small-text-p">{{superbillHoverDto.ac}}</p>
+                      <!-- <p class="mb-0 small-text-p">{{superbillHoverDto.dn}}</p> -->
+                      <!-- <div class="who-covered" (click)="$event.stopPropagation()"  malihu-scrollbar
+                        [scrollbarOptions]="scrollbarOptionsTimeline" style="max-height: 300px;"> -->
+                      <!-- </div> -->
+                    </div>
+                  </ng-template>
+                  <strong>DM</strong>
+                  </td>
+                  <td>
+                    <table style="width: 100%;" class="sup-sec-sub">
+                      <tr>
+                        <td>
+                          <strong>A1c < 7 %</strong>
+                        </td>
+                        <td class="cell-code">3044F</td>
+                        <td class="check-cell">
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                              [(ngModel)]="superBillDto.cpt3044F" id="cpt3044F" [attr.checked]="superBillDto.cpt3044F ? '': null">
+                            <label class="custom-control-label" for="cpt3044F"></label>
+                          </div>
+                        </td>
+                      </tr>
+                      <!-- <tr>
+                        <td>
+                          <strong>A1c 7 - 9 %</strong>
+                        </td>
+                        <td class="cell-code">3045F </td>
+                        <td class="check-cell">
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                              [(ngModel)]="superBillDto.cpt3045F" id="cpt3045F" [attr.checked]="superBillDto.cpt3045F ? '': null">
+                            <label class="custom-control-label" for="cpt3045F"></label>
+                          </div>
+                        </td>
+                      </tr> -->
+                      <tr>
+                        <td>
+                          <strong>A1c 7 - 8 %</strong>
+                        </td>
+                        <td class="cell-code">3051F </td>
+                        <td class="check-cell">
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                              [(ngModel)]="superBillDto.cpt3051F" id="cpt3051F" [attr.checked]="superBillDto.cpt3051F ? '': null">
+                            <label class="custom-control-label" for="cpt3051F"></label>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <strong>A1c 8 - 9 %</strong>
+                        </td>
+                        <td class="cell-code">3052F </td>
+                        <td class="check-cell">
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                              [(ngModel)]="superBillDto.cpt3052F" id="cpt3052F" [attr.checked]="superBillDto.cpt3052F ? '': null">
+                            <label class="custom-control-label" for="cpt3052F"></label>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <strong>In office 7 field Photos</strong>
+                        </td>
+                        <td class="cell-code">2024F</td>
+                        <td class="check-cell">
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                              [(ngModel)]="superBillDto.cpt2024F" id="cpt2024F" [attr.checked]="superBillDto.cpt2024F ? '': null">
+                            <label class="custom-control-label" for="cpt2024F"></label>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <strong>No Retinopathy (2018-2019)</strong>
+                        </td>
+                        <td class="cell-code">3072F</td>
+                        <td class="check-cell">
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                              [(ngModel)]="superBillDto.cpt3072F" id="cpt3072F" [attr.checked]="superBillDto.cpt3072F ? '': null">
+                            <label class="custom-control-label" for="cpt3072F"></label>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <strong>Dilated Eye Exam (Report Viewed)</strong>
+                        </td>
+                        <td class="cell-code">2022F</td>
+                        <td class="check-cell">
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                              [(ngModel)]="superBillDto.cpt2022F" id="cpt2022F" [attr.checked]="superBillDto.cpt2022F ? '': null">
+                            <label class="custom-control-label" for="cpt2022F"></label>
+                          </div>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>
+                          <strong>Microalbumin (+ve))</strong>
+                        </td>
+                        <td class="cell-code">3060F</td>
+                        <td class="check-cell">
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                              [(ngModel)]="superBillDto.cpt3060F" id="cpt3060F" [attr.checked]="superBillDto.cpt3060F ? '': null">
+                            <label class="custom-control-label" for="cpt3060F"></label>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <strong>Microalbumin (-ve)</strong>
+                        </td>
+                        <td class="cell-code">3061F</td>
+                        <td class="check-cell">
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                              [(ngModel)]="superBillDto.cpt3061F" id="cpt3061F" [attr.checked]="superBillDto.cpt3061F ? '': null">
+                            <label class="custom-control-label" for="cpt3061F"></label>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <strong>CKD – Stage 4/5</strong>
+                        </td>
+                        <td class="cell-code">3066F</td>
+                        <td class="check-cell">
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                              [(ngModel)]="superBillDto.cpt3066F" id="cpt3066F" [attr.checked]="superBillDto.cpt3066F ? '': null">
+                            <label class="custom-control-label" for="cpt3066F"></label>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <strong>On ACE or ARB</strong>
+                        </td>
+                        <td class="cell-code">G8506</td>
+                        <td class="check-cell">
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                              [(ngModel)]="superBillDto.cptG8506" id="cptG8506" [attr.checked]="superBillDto.cptG8506 ? '': null">
+                            <label class="custom-control-label" for="cptG8506"></label>
+                          </div>
+                        </td>
+                      </tr>
+
+                    </table>
+                  </td>
+                </tr>
+
+              </table>
+              <table style="width: 100%;" class="sup-sec">
+                <tr>
+                  <td width="100px" style="vertical-align: middle; text-align: center;" class="title" id="ASCVD" [class.bg-white]="activeTitleObj['ASCVD']===3" [class.active]="activeTitleObj['ASCVD']===2" (click)="SetTitleState('ASCVD')">
+                    <strong>ASCVD</strong>
+                  </td>
+                  <td>
+                    <table style="width: 100%;" class="sup-sec-sub">
+                      <tr>
+                        <td>
+                          <strong>Aspirin or other antiplatelet</strong>
+                        </td>
+                        <td class="cell-code">G8598</td>
+                        <td class="check-cell">
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                              [(ngModel)]="superBillDto.cptG8598" id="cptG8598" [attr.checked]="superBillDto.cptG8598 ? '': null">
+                            <label class="custom-control-label" for="cptG8598"></label>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <strong>Anticoagulants</strong>
+                        </td>
+                        <td class="cell-code">G9724</td>
+                        <td class="check-cell">
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                              [(ngModel)]="superBillDto.cptG9724" id="cptG9724" [attr.checked]="superBillDto.cptG9724 ? '': null">
+                            <label class="custom-control-label" for="cptG9724"></label>
+                          </div>
+                        </td>
+                      </tr>
+
+                    </table>
+                  </td>
+                </tr>
+
+              </table>
+              <table style="width: 100%;" class="sup-sec">
+                <tr>
+                  <td width="100px" style="vertical-align: middle; text-align: center;" class="title" id="ASCVDStatin" [class.bg-white]="activeTitleObj['ASCVDStatin']===3" [class.active]="activeTitleObj['ASCVDStatin']===2" (click)="SetTitleState('ASCVDStatin')">
+                    <strong>ASCVD
+                      Statin
+                      Therapy
+                    </strong>
+                  </td>
+                  <td>
+                    <table style="width: 100%;" class="sup-sec-sub">
+                      <tr>
+                        <td colspan="3">LDL-C > 190mg/dL, LDL-C 70-189mg/dL (if DM) or ASCVD</td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <strong>On Statin/rcvd Rx for Statin</strong>
+                        </td>
+                        <td class="cell-code">G9664</td>
+                        <td class="check-cell">
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                              [(ngModel)]="superBillDto.cptG9664" id="cptG9664" [attr.checked]="superBillDto.cptG9664 ? '': null">
+                            <label class="custom-control-label" for="cptG9664"></label>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <strong>Intolerance or allergy to statin or Active Liver Disease</strong>
+                        </td>
+                        <td class="cell-code">G9781</td>
+                        <td class="check-cell">
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                              [(ngModel)]="superBillDto.cptG9781" id="cptG9781" [attr.checked]="superBillDto.cptG9781 ? '': null">
+                            <label class="custom-control-label" for="cptG9781"></label>
+                          </div>
+                        </td>
+                      </tr>
+
+                    </table>
+                  </td>
+                </tr>
+
+              </table>
+              <table style="width: 100%;" class="sup-sec">
+                <tr>
+                  <td width="100px" style="vertical-align: middle; text-align: center;" class="title" id="ASCVDStatinPain" [class.bg-white]="activeTitleObj['ASCVDStatinPain']===3" [class.active]="activeTitleObj['ASCVDStatinPain']===2" (click)="SetTitleState('ASCVDStatinPain')">
+                    <strong>Pain
+                    </strong>
+                  </td>
+                  <td>
+                    <table style="width: 100%;" class="sup-sec-sub">
+                      <!-- <tr>
+                        <td colspan="3">LDL-C > 190mg/dL, LDL-C 70-189mg/dL (if DM) or ASCVD</td>
+                      </tr> -->
+                      <tr>
+                        <td>
+                          <strong>Pain assessment and plan</strong>
+                        </td>
+                        <td class="cell-code">1125F</td>
+                        <td class="check-cell">
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                              [(ngModel)]="superBillDto.cpt1125F" id="cpt1125F" [attr.checked]="superBillDto.cpt1125F ? '': null">
+                            <label class="custom-control-label" for="cpt1125F"></label>
+                          </div>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+
+              </table>
+              <table style="width: 100%;" class="sup-sec">
+                <tr>
+                  <td width="100px" style="vertical-align: middle; text-align: center;" class="title" id="Medreview" [class.bg-white]="activeTitleObj['Medreview']===3" [class.active]="activeTitleObj['Medreview']===2" (click)="SetTitleState('Medreview')">
+                    <strong>Med Review
+                    </strong>
+                  </td>
+                  <td>
+                    <table style="width: 100%;" class="sup-sec-sub">
+                      <!-- <tr>
+                        <td colspan="3">LDL-C > 190mg/dL, LDL-C 70-189mg/dL (if DM) or ASCVD</td>
+                      </tr> -->
+                      <tr>
+                        <td>
+                          <strong>Documented Med Record</strong>
+                        </td>
+                        <td class="cell-code">1160F</td>
+                        <td class="check-cell">
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                              [(ngModel)]="superBillDto.cpt1160F" id="cpt1160F" [attr.checked]="superBillDto.cpt1160F ? '': null">
+                            <label class="custom-control-label" for="cpt1160F"></label>
+                          </div>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              <table width="100%" class="sup-sec schedule-table">
+                <tbody>
+                  <tr>
+                    <td colspan="10" class="title" id=">SCHEDULEFOR" [class.bg-white]="activeTitleObj['SCHEDULEFOR']===3" [class.active]="activeTitleObj['SCHEDULEFOR']===2" (click)="SetTitleState('SCHEDULEFOR')">
+                      <strong>SCHEDULE FOR</strong></td>
+                  </tr>
+                  <tr>
+                    <td class="text-left px-2">
+                      <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                          [(ngModel)]="superBillDto.allergy" [attr.checked]="superBillDto.allergy ? '': null" id="allergy">
+                        <label class="custom-control-label" for="allergy">ALLERGY</label>
+                      </div>
+                    </td>
+                    <td class="text-left px-2">
+                      <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                          [(ngModel)]="superBillDto.echo" [attr.checked]="superBillDto.echo ? '': null" id="echo">
+                        <label class="custom-control-label" for="echo">ECHO</label>
+                      </div>
+                    </td>
+                    <!-- <td class="text-left px-2">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()" [(ngModel)]="superBillDto.aaa" [attr.checked]="superBillDto.aaa ? '': null" id="defaultChecked2">
+                      <label class="custom-control-label" for="defaultChecked2">AAA</label>
+                    </div>
+                  </td> -->
+                    <td class="text-left px-2">
+                      <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                          [(ngModel)]="superBillDto.dexa" [attr.checked]="superBillDto.dexa ? '': null" id="dexa">
+                        <label class="custom-control-label" for="dexa">DEXA</label>
+                      </div>
+                    </td>
+                    <td class="text-left px-2">
+                      <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                          [(ngModel)]="superBillDto.retinaVue" [attr.checked]="superBillDto.retinaVue ? '': null" id="retinaVue">
+                        <label class="custom-control-label" for="retinaVue">RETINA</label>
+                      </div>
+                    </td>
+                    <!-- <td class="text-left px-2">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()" [(ngModel)]="superBillDto.cpt99203" [attr.checked]="superBillDto.cpt99203 ? '': null" id="defaultChecked2">
+                      <label class="custom-control-label" for="defaultChecked2">VUE</label>
+                    </div>
+                  </td> -->
+                    <td class="text-left px-2">
+                      <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                          [(ngModel)]="superBillDto.cognitiveCare" [attr.checked]="superBillDto.cognitiveCare ? '': null" id="cognitiveCare">
+                        <label class="custom-control-label" for="cognitiveCare">COGINITIVE</label>
+                      </div>
+                    </td>
+                    <!-- <td class="text-left px-2">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()" [(ngModel)]="superBillDto.cpt99203" [attr.checked]="superBillDto.cpt99203 ? '': null" id="defaultChecked2">
+                      <label class="custom-control-label" for="defaultChecked2">CARE</label>
+                    </div>
+                  </td> -->
+                    <td class="text-left px-2">
+                      <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                          [(ngModel)]="superBillDto.rd" [attr.checked]="superBillDto.rd ? '': null" id="rddjldjd">
+                        <label class="custom-control-label" for="rddjldjd">RD</label>
+                      </div>
+                    </td>
+                    <td class="text-left px-2">
+
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td class="text-left px-2">
+                      <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                          [(ngModel)]="superBillDto.abiLegUs" [attr.checked]="superBillDto.abiLegUs ? '': null" id="abiLegUs">
+                        <label class="custom-control-label" for="abiLegUs">ABI/LEG/US</label>
+                      </div>
+                    </td>
+                    <td class="text-left px-2">
+                      <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                          [(ngModel)]="superBillDto.ccm" [attr.checked]="superBillDto.ccm ? '': null" id="ccm">
+                        <label class="custom-control-label" for="ccm">CCM</label>
+                      </div>
+                    </td>
+                    <td class="text-left px-2">
+                      <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                          [(ngModel)]="superBillDto.bhi" [attr.checked]="superBillDto.bhi ? '': null" id="bhi">
+                        <label class="custom-control-label" for="bhi">BHI</label>
+                      </div>
+                    </td>
+                    <td class="text-left px-2">
+                      <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                          [(ngModel)]="superBillDto.cgm" [attr.checked]="superBillDto.cgm ? '': null" id="cgm">
+                        <label class="custom-control-label" for="cgm">CGM</label>
+                      </div>
+                    </td>
+                    <td class="text-left px-2">
+                      <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                          [(ngModel)]="superBillDto.spirometry" [attr.checked]="superBillDto.spirometry ? '': null" id="spirometry">
+                        <label class="custom-control-label" for="spirometry">SPIROMETRY</label>
+                      </div>
+                    </td>
+                    <td class="text-left px-2">
+                      <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                          [(ngModel)]="superBillDto.gwmtWwe" [attr.checked]="superBillDto.gwmtWwe ? '': null" id="gwmtWwe">
+                        <label class="custom-control-label" for="gwmtWwe">GWMT WWW</label>
+                      </div>
+                    </td>
+                    <!-- <td class="text-left px-2">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()" [(ngModel)]="superBillDto.ww" [attr.checked]="superBillDto.ww ? '': null" id="defaultChecked2">
+                      <label class="custom-control-label" for="defaultChecked2">WWE</label>
+                    </div>
+                  </td> -->
+                    <td class="text-left px-2">
+                      <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                          [(ngModel)]="superBillDto.awv" [attr.checked]="superBillDto.awv ? '': null" id="awv">
+                        <label class="custom-control-label" for="awv">AWV</label>
+                      </div>
+                    </td>
+                    <td class="text-left px-2">
+                      <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()"
+                          [(ngModel)]="superBillDto.weightClinic" [attr.checked]="superBillDto.weightClinic ? '': null" id="weightClinic">
+                        <label class="custom-control-label" for="weightClinic">WEIGHT</label>
+                      </div>
+                    </td>
+                    <!-- <td class="text-left px-2">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" (change)="EditSuperBill()" [(ngModel)]="superBillDto.clin" [attr.checked]="superBillDto.clin ? '': null" id="defaultChecked2">
+                      <label class="custom-control-label" for="defaultChecked2">CLINIC</label>
+                    </div>
+                  </td> -->
+                  </tr>
+
+                </tbody>
+              </table>
+
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+
+    <table class="w-100 patient-info-table" style="width: 100%;">
+      <tbody>
+        <tr>
+          <td width="50%">
+            <table>
+              <tbody>
+                <tr>
+                  <td><strong style="width: 150;display: inline-block">Next Followup:</strong>
+                    <!-- <span>{{PatientData.dateOfBirth | date}}</span>  -->
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong style="width: 150;display: inline-block">Hospital Name</strong></td>
+                </tr>
+              </tbody>
+
+            </table>
+          </td>
+          <td width="50%">
+            <table class="ml-auto">
+              <tr>
+                <td class="w-100" style="text-align: right;"><strong style="display: inline-block;">Electronically signed by: </strong> <span *ngIf="superBillDto.signature"> {{superBillDto.signature}} on {{superBillDto.signatureDate | dateFormatPipe: 'time'}}</span>
+                <span *ngIf="!superBillDto.signature">__________________________________</span></td>
+              </tr>
+              <tr>
+                <!-- <td style="text-align: right;"><strong style="display: inline-block">Revised:</strong> 04/30/2019</td> -->
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+      </table>
+    </div>
+    <!-- <div class="d-flex justify-content-between">
+      <p><strong>Next Follow Up:</strong></p>
+      <p><strong>Signature:</strong></p>
+    </div> -->
+    <div>
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="form-form form-group">
+            <div class="row">
+              <div class="col-sm-6 mt-2 pl-4">
+                <label for="gapsData">Gaps Data</label>
+              </div>
+              <div class="col-sm-6">
+                <div class="d-flex justify-content-end">
+                  <button title="Refresh gaps data" class="btn btn-dynamic-secondary-2c btn-sm mr-1" [disabled]="superBillDto.status !== 1" (click)="openConfirmModal()">Refresh Gaps Data</button>
+                  <button class="btn btn-dynamic-secondary-2c btn-sm mr-1" (click)="copyData(superBillDto.gapsData)">Copy</button>
+                </div>
+              </div>
+            </div>
+            <!-- (onDebounce)="saveTempGapsData()" -->
+            <textarea [readOnly]="superBillDto.status !== 1" type="text" #textarea [(ngModel)]="superBillDto.gapsData" id="gapsData" rows="15" placeholder="Enter note text..."
+              class="form-control"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </fieldset>
+</div>
+<ng-template #loadingSkelton>
+  <div class="panel-body">
+    <div class="row">
+      <div class="col-sm-12 p-0">
+        <skltn-root duration="2000" [rectRadius]="0" flareWidth="50%" bgFill="#f2f3f8"
+          flareFill="rgba(255,255,255, 0.5)">
+          <!-- Card with Avatar -->
+          <div class="p-3">
+            <div class="skltn-card">
+              <div class="skltn-card__body">
+                <div skltn-bone class="skltn-card__line"></div>
+                <div skltn-bone class="skltn-card__line"></div>
+                <div skltn-bone class="skltn-card__line"></div>
+                <div skltn-bone class="skltn-card__line"></div>
+              </div>
+            </div>
+          </div>
+        </skltn-root>
+      </div>
+    </div>
+  </div>
+</ng-template>
+<div mdbModal #viewPdfModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true" (close)="objectURLStr='';objectURLStrAW=''">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="viewPdfModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">Pdf Document</h4>
+      </div>
+      <div class="modal-body" style="height:calc(100vh - 175px); padding: 0px;">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="ccm-header" id="ccm-header">
+              <div class="d-flex justify-content-between align-items-center flex-wrap flex-sm-wrap ccm-nav" style="min-width: 100%;">
+                <ul class="ccm-navbar">
+                  <li *ngIf="objectURLStrAW" (click)="activeTabId=2" [class.active]="activeTabId===2"><a>AW</a></li>
+                  <li *ngIf="objectURLStr" (click)="activeTabId=1" [class.active]="activeTabId===1"><a>Super Bill</a></li>
+                  </ul>
+                </div>
+              </div>
+
+            </div>
+        </div>
+        <app-pdf-view *ngIf="objectURLStrAW && activeTabId===2" [documentUrl]="objectURLStrAW"></app-pdf-view>
+        <app-pdf-view *ngIf="objectURLStr && activeTabId===1" [documentUrl]="objectURLStr"></app-pdf-view>
+        <!-- <mdb-tabset #ccmConsent [buttonClass]="'classic-tabs tabs-outline-primary'" [contentClass]="'p-0'"
+      class="classic-tabs tabs-outline-primary">
+        <mdb-tab *ngIf="objectURLStrAW && activeTabId===2">
+
+        </mdb-tab>
+        <mdb-tab *ngIf="objectURLStr && activeTabId===1">
+          <app-pdf-view [documentUrl]="objectURLStr"></app-pdf-view>
+        </mdb-tab>
+      </mdb-tabset> -->
+      </div>
+    </div>
+  </div>
+</div>

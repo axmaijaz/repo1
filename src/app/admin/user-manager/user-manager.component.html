@@ -1,0 +1,478 @@
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <h1 class="page-title mb-0">Care Providers</h1>
+  <div *hasClaim="'CanModifyFacilityUsers'">
+    <a class="btn btn-dynamic-2c btn-sm m-0" (click)="f.reset();emailinvalid = false; addUser.show()">Add New</a>
+  </div>
+</div>
+
+<form autocomplete="off" class="mb-1">
+  <div class="form-group">
+    <label for="searchByFacility">Search Care Provider</label>
+    <input type="text" class="form-control form-control-sm box-shadow" autocomplete="off" id="searchByFacility"
+      placeholder="Search by Name & Surname" (keyup)="updateFilter($event)" />
+  </div>
+</form>
+
+<div class="">
+  <div class="d-flex align-items-center justify-content-between">
+    <mdb-checkbox [(ngModel)]="showInActiveUsers" (ngModelChange)="getGetCareProviders()" [default]="true" >Show InActive
+    </mdb-checkbox>
+  </div>
+  <div class="d-flex justify-content-center text-center">
+    <mdb-progress-bar *ngIf="IsLoading" class="progress primary-color-dark mb-0" mode="indeterminate">
+    </mdb-progress-bar>
+  </div>
+  <ngx-datatable #table class="material" [columnMode]="'force'" [headerHeight]="50" [footerHeight]="50" [rowHeight]="50"
+      [scrollbarV]="false" [scrollbarH]="true" [rows]="userList" [limit]="15"
+      [sorts]="[{prop: 'firstName', dir: 'asc'}]">
+      <ngx-datatable-column name="#" [maxWidth]=50>
+        <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+          {{rowIndex + 1}}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="Name" prop="fullName">
+      </ngx-datatable-column>
+      <ngx-datatable-column name="User Name" prop="userName">
+      </ngx-datatable-column>
+      <!-- <ngx-datatable-column name="Roles">
+      </ngx-datatable-column> -->
+      <ngx-datatable-column name="Email">
+        <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+          <div class="facility-email py-3">
+            <p class="mb-0">{{row.email}}</p>
+          </div>
+
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column name="Title" prop="title">
+      </ngx-datatable-column>
+      <ngx-datatable-column name="Action" [canAutoResize]=true [width]=225>
+        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+          <a class="btn btn-dynamic-2c btn-icon" title="Assign Roles" placement="left"
+          (click)="selectedFacilityUser=row.id;selectedFacilityUserObj=row;getRolesByUserId();assignRolesModal.show()"><i
+            class="fa fa-lock"></i> </a>
+          <a class="btn btn-dynamic-2c btn-icon" title="Assign Facilities" placement="left"
+              (click)="selectedFacilityUser=row.id;selectednewUserObj=row;getFacilitiesbyUserId();assignFacilitiesMOdal.show()"><i
+                class="fa fa-gear"></i> </a>
+          <a class="btn btn-dynamic-2c btn-icon" title="Edit" placement="left"
+          (click)="facilityUser=row;editFacilitiesMOdal.show()"><i
+            class="fa fa-pencil"></i> </a>
+            <a class="btn btn-dynamic-2c btn-icon" title="Active" placement="left" *ngIf="row.isDisabled === false;"
+            (click)="setFacilityUserActive(row)">
+              <i class="fa fa-toggle-on"></i>
+            </a>
+            <a class="btn btn-danger btn-icon" title="Deactive" placement="left" *ngIf="row.isDisabled === true;"
+            (click)="setFacilityUserActive(row)">
+              <i class="fa fa-toggle-off"></i>
+            </a>
+        </ng-template>
+      </ngx-datatable-column>
+
+    </ngx-datatable>
+</div>
+
+<div mdbModal #assignRolesModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+    [config]="{ignoreBackdropClick: true}" aria-labelledby="myassignRolesModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close pull-right" aria-label="Close" (click)="assignRolesModal.hide()">
+            <span aria-hidden="true">×</span>
+          </button>
+          <h4 class="modal-title w-100" id="myModalLabel">Assign Roles</h4>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label for="Roles">Roles</label>
+                <ng-select  [(ngModel)]="selectedRoles" [ngModelOptions]="{standalone: true}"
+                  [multiple]="true" [searchable]="true" placeholder="Select Roles">
+                  <ng-option [value]="item.id" *ngFor="let item of rolesList">{{item.name}}</ng-option>
+                </ng-select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button"  class="btn waves-light btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+            (click)="assignRolesModal.hide()" mdbWavesEffect>Close</button>
+          <button type="button" (click)="assignRolesModal.hide();AssignRolesToUsers();"
+            class="btn waves-light btn-sm btn-dynamic-2c" mdbWavesEffect>Save
+            changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<div style="overflow-y: auto" mdbModal #addUser="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg flat-modal" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="addUser.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">Add User</h4>
+      </div>
+      <div class="modal-body">
+        <form name="form" #f="ngForm" novalidate>
+          <div class="row">
+            <div class="col-sm-12 mb-2">
+              <small class="text-dynamic-2c text-uppercase font-500">User Information</small>
+            </div>
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label for="Title">Role</label>
+                <ng-select class="ng-select-small" [(ngModel)]="newUser.title" name="title" [multiple]="false"
+                  [searchable]="true" placeholder="Select Title">
+                  <ng-option [value]="item.name" *ngFor="let item of rolesList">{{item.name}} </ng-option>
+                </ng-select>
+                <!-- <input [(ngModel)]="newUser.title" class="form-control form-control-sm" name="title" id="Title"
+                  type="text"> -->
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label for="practiceName">First Name<small class="text-danger">*</small></label>
+                <input type="text" [(ngModel)]="newUser.firstName" class="form-control form-control-sm"
+                  id="practiceName" placeholder="First Name" required name="firstName" #firstName="ngModel"
+                  [ngClass]="{ 'is-invalid': firstName.touched && firstName.invalid }">
+                <div *ngIf="firstName.touched && firstName.invalid" class="invalid-feedback">
+                  <div *ngIf="firstName.errors.required">First name must be filled out.</div>
+                </div>
+                <!-- <div *ngIf="firstName.invalid && (firstName.dirty || firstName.touched)" class="invalid invalid-text">
+                  <div *ngIf="!!firstName.errors.required">
+                    <small class="text-danger">First name must be filled out.</small>
+                  </div>
+                </div> -->
+              </div>
+            </div>
+
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label for="isChronic">Middle Name</label>
+                <input type="text" [(ngModel)]="newUser.middleName" name="middleName"
+                  class="form-control form-control-sm" id="isChronic" placeholder="Middle Name">
+              </div>
+            </div>
+
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label for="icdcode">Last Name<small class="text-danger">*</small></label>
+                <input type="text" [(ngModel)]="newUser.lastName" class="form-control form-control-sm" id="icdcode"
+                  placeholder="Last Name" required name="lastName" #lastName="ngModel"
+                  [ngClass]="{ 'is-invalid': lastName.touched && lastName.invalid }">
+                <div *ngIf="lastName.touched && lastName.invalid" class="invalid-feedback">
+                  <div *ngIf="lastName.errors.required">Last name must be filled out.</div>
+                </div>
+                <!-- <div *ngIf="lastName.invalid && (lastName.dirty || lastName.touched)" class="invalid invalid-text">
+                  <div *ngIf="!!lastName.errors.required">
+                    <small class="text-danger">Last name must be filled out.</small>
+                  </div>
+                </div> -->
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <div class="d-flex justify-content-between">
+                  <label for="email">Email
+                    <small class="text-danger">*</small>
+                  </label>
+                  <mdb-checkbox [default]="true" [checked]="false" (change)="FillUserNameUserName($event.checked)">Make
+                    this Email my Username as well
+                  </mdb-checkbox>
+                </div>
+                <!-- <label for="email">Email<small class="text-danger">*</small><small *ngIf="emailinvalid"
+                  class="text-danger"> Email already exist.</small></label> -->
+                <input type="text" [(ngModel)]="newUser.email" class="form-control form-control-sm"
+                  placeholder="sample@mail.com"
+                  pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,3}$" required name="email" #email="ngModel"
+                  [ngClass]="{ 'is-invalid': email.touched && email.invalid }">
+                <!-- <div *ngIf="email.invalid && (email.dirty || email.touched)" class="invalid invalid-text">
+                <div *ngIf="email.errors.required || email.errors.touched">
+                  <small class="text-danger">Email must be filled out.</small>
+                </div>
+              </div> -->
+                <div *ngIf="email.touched && email.invalid" class="d-flex invalid-feedback">
+                  <div>Example: sample@mail.com</div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group col-sm-6 ">
+              <label for="icdcodesystem23">UserName
+                <small class="text-danger">*</small>
+                <small *ngIf="emailinvalid" class="text-danger">
+                  User Name already registered</small>
+              </label>
+              <input type="text" [(ngModel)]="newUser.userName" class="form-control form-control-sm"
+                placeholder="sample@mail.com" (blur)="checkAvailibility(newUser.userName)" required name="userName"
+                #userName="ngModel" [ngClass]="{ 'is-invalid': userName.touched && userName.invalid }">
+            </div>
+
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label for="phn1">Country Calling Code<small class="text-danger">*</small></label>
+                <ng-select #countryCallingCode="ngModel" id="countryCallingCode" class="ng-select-small" [ngModelOptions]="{standalone: true}" [(ngModel)]="facilityUser.countryCallingCode" [multiple]="false" [searchable]="true"
+                      placeholder="Select Country Calling Code">
+                      <ng-option *ngFor="let item of countriesList" [value]="item.callingCode">{{item.callingCode}} {{item.name}}
+                      </ng-option>
+              </ng-select>
+
+                <div *ngIf="countryCallingCode.touched && countryCallingCode.invalid" class="invalid-feedback">
+                  <div *ngIf="countryCallingCode.errors.required">Phone No is required</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-8">
+              <div class="form-group">
+                <label for="phn1">Phone No<small class="text-danger">*</small></label>
+                <input type="text" [(ngModel)]="facilityUser.phoneNo"
+                  class="form-control form-control-sm" placeholder="Phone" name="phoneNo" #phoneNo="ngModel" id="phn1"
+                  autocomplete="nope" mask="(000)000-0000" required [ngClass]="{ 'is-invalid': phoneNo.touched && phoneNo.invalid }">
+                <!-- <div *ngIf="phoneNo.invalid && (phoneNo.dirty || phoneNo.touched)" class="invalid invalid-text">
+                <div *ngIf="phoneNo.errors.required">
+                  <small class="text-danger">Phone No must be filled out.</small>
+                </div>
+                </div> -->
+
+                <div *ngIf="phoneNo.touched && phoneNo.invalid" class="invalid-feedback">
+                  <div *ngIf="phoneNo.errors.required">Phone No is required</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label for="password">Password<small class="text-danger">*</small></label>
+                <input [(ngModel)]="newUser.password" autocomplete="new-password" type="password"
+                  class="form-control form-control-sm" id="password" placeholder="must be 6 characters or greater"
+                  minlength="6" #password="ngModel" required name="password"
+                  [ngClass]="{ 'is-invalid': password.touched && password.invalid }">
+
+                <div *ngIf="password.touched && password.invalid" class="invalid-feedback">
+                  <div *ngIf="password.errors.required">password must be filled out.</div>
+                  <div *ngIf="password.errors.invalid || !password.errors.required">password must be as 6 characters.
+                  </div>
+                </div>
+                <!-- <div *ngIf="password.invalid && (password.dirty || password.touched)" class="invalid invalid-text">
+                  <div *ngIf="!!password.errors.required">
+                    <small class="text-danger">password must be filled out.</small>
+                  </div>
+
+                </div> -->
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group mb-0">
+                <label for="ConfirmPass">Confirm Password<small class="text-danger">*</small></label>
+                <input [(ngModel)]="newUser.confirmPassword" class="form-control form-control-sm" rows="3"
+                  id="ConfirmPass" placeholder="Confirm Password" type="password" name="confirmPassword" minlength="6"
+                  #confirmPassword="ngModel" required [ngClass]="{ 'is-invalid':(confirmPassword.touched ||
+                confirmPassword.dirty) &&
+                !confirmPassword.valid }">
+                <div *ngIf="newUser.password !== newUser.confirmPassword">
+                  <small class="text-danger">Must be matched with password.</small>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="submit"
+          [disabled]="!newUser.email || !newUser.password || !newUser.confirmPassword || !newUser.firstName || !newUser.lastName || f.invalid || emailinvalid ||(newUser.password !== newUser.confirmPassword)"
+          class="btn btn-dynamic-2c btn-sm" (click)="adduser()">Add</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div style="overflow-y: auto" mdbModal #assignPatientsModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg flat-modal" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="assignPatientsModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">Assign Patients</h4>
+      </div>
+
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="form-group">
+              <label for="practiceName">Select Patients</label>
+              <ng-select [(ngModel)]="AssignPatientsToCareProviderDto.patientIds" [ngModelOptions]="{standalone: true}"
+                [closeOnSelect]="false" [multiple]="true" [searchable]="true" placeholder="Assign Diseases">
+                <ng-option *ngFor="let item of patientsList" [value]="item.id">{{item.lastName}},{{item.firstName}}
+                </ng-option>
+              </ng-select>
+            </div>
+          </div>
+          <div class="col-sm-12" *hasClaim="'IsAppAdmin'">
+            <div class="form-group">
+              <label for="namea">Select Facility</label>
+              <ng-select class="ng-select-small" appendTo="body" (change)="facilityChanged($event)" [multiple]="false"
+                [searchable]="true" placeholder="Select Facility">
+                <ng-option *ngFor="let item of facilityList" [value]="item.id">{{item.facilityName}}
+                </ng-option>
+              </ng-select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-dynamic-2c btn-sm"
+          (click)="assignPatientsModal.hide();AssignPatients();">Add</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div mdbModal #assignFacilitiesMOdal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myassignFacilitiesMOdalLabel" aria-hidden="true" >
+  <div class="modal-dialog modal-xl " role="document">
+    <div class="modal-content ">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="assignFacilitiesMOdal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">Assign Facilities</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="form-group">
+              <label for="Facilities">Facilities</label>
+              <ng-select class="" [(ngModel)]="selectedFacilities" appendTo="body" [loading]="gettingFacilities"
+               [multiple]="true" [closeOnSelect]="false" [searchable]="true"
+                placeholder="Select Facilities">
+                <ng-option [value]="item.id" *ngFor="let item of facilityList">{{item.facilityName}}</ng-option>
+              </ng-select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+          (click)="assignFacilitiesMOdal.hide()" mdbWavesEffect>Close</button>
+        <button type="button" (click)="assignFacilitiesMOdal.hide();AssignFacilitiesToUsers();"
+          class="relative btn waves-light btn-sm btn-dynamic-2c" mdbWavesEffect>Save
+          changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div mdbModal #editFacilitiesMOdal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myassignFacilitiesMOdalLabel" aria-hidden="true" >
+  <div class="modal-dialog modal-lg " role="document">
+    <div class="modal-content ">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="editFacilitiesMOdal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">Edit Facility User</h4>
+      </div>
+      <div class="modal-body">
+        <div>
+          <form name="form" #f="ngForm" novalidate>
+            <div class="row">
+              <div class="col-sm-12 mb-2">
+                <div class="d-flex justify-content-between align-items-center">
+                  <small class="text-dynamic-2c text-uppercase font-500">User Information</small>
+                  <!-- <div class="custom-control custom-switch">
+                    <input type="checkbox" class="custom-control-input" id="customSwitches">
+                    <label class="custom-control-label" for="customSwitches">Action</label>
+                  </div> -->
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="form-group">
+                  <label for="firstName">First Name<small class="text-danger">*</small></label>
+                  <input type="text"  class="form-control form-control-sm"
+                    placeholder="First Name" required name="firstName" [(ngModel)]="facilityUser.firstName" >
+                  <div *ngIf="firstName.touched && firstName.invalid" class="invalid-feedback">
+                    <div *ngIf="firstName.errors.required">First Name is required</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-sm-4">
+                <div class="form-group">
+                  <label for="isChronic">Middle Name</label>
+                  <input type="text" [(ngModel)]="facilityUser.middleName" name="middleName" class="form-control form-control-sm"
+                    id="isChronic" placeholder="Middle Name">
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="form-group">
+                  <label for="lastName">Last Name<small class="text-danger">*</small></label>
+                  <input type="text" class="form-control form-control-sm" [(ngModel)]="facilityUser.lastName"
+                    placeholder="Last Name" name="lastName" required>
+                  <div *ngIf="true" class="invalid-feedback">
+                    <div *ngIf="true">Last Name is required</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="form-group">
+                  <label for="phn1">Country Calling Code<small class="text-danger">*</small></label>
+                  <ng-select id="countryCallingCode" class="ng-select-small" [(ngModel)]="facilityUser.countryCallingCode" [ngModelOptions]="{standalone: true}" [multiple]="false" [searchable]="true"
+                        placeholder="Select Country Calling Code">
+                        <ng-option *ngFor="let item of countriesList" [value]="item.callingCode">{{item.callingCode}} {{item.name}}</ng-option>
+                  </ng-select>
+
+                  <div *ngIf="true" class="invalid-feedback">
+                    <div *ngIf="true">Phone No is required</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-8">
+                <div class="form-group">
+                  <label for="phn1">Phone No<small class="text-danger">*</small></label>
+                  <input type="text" [(ngModel)]="facilityUser.phoneNo"
+                    class="form-control form-control-sm" placeholder="Phone" name="phoneNo" id="phone1"
+                    autocomplete="nope" mask="(000)000-0000" required >
+                  <div *ngIf="true" class="invalid-feedback">
+                    <div *ngIf="true">Phone No is required</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <div class="d-flex justify-content-between">
+                    <label for="email">Email
+                      <small class="text-danger">*</small>
+                    </label>
+                  </div>
+                  <!-- <label for="email">Email<small class="text-danger">*</small><small *ngIf="emailinvalid"
+                    class="text-danger"> Email already exist.</small></label> -->
+                  <input type="text" [(ngModel)]="facilityUser.email" class="form-control form-control-sm"
+                    placeholder="sample@mail.com"
+                    pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,3}$" required name="email" #email="ngModel"
+                    [ngClass]="{ 'is-invalid': email.touched && email.invalid }">
+                  <!-- <div *ngIf="email.invalid && (email.dirty || email.touched)" class="invalid invalid-text">
+                  <div *ngIf="email.errors.required || email.errors.touched">
+                    <small class="text-danger">Email must be filled out.</small>
+                  </div>
+                </div> -->
+                  <div *ngIf="email.touched && email.invalid" class="d-flex invalid-feedback">
+                    <div>Example: sample@mail.com</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+          (click)="editFacilitiesMOdal.hide()" mdbWavesEffect>Close</button>
+        <button type="button" (click)="editFacilityUser(editFacilitiesMOdal)" [disabled]="!facilityUser.firstName || !facilityUser.lastName || !facilityUser.countryCallingCode || !facilityUser.phoneNo"
+          class="relative btn waves-light btn-sm btn-dynamic-2c" mdbWavesEffect><span *ngIf="isUpdatingFacilityUser" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Update</button>
+      </div>
+    </div>
+  </div>
+</div>

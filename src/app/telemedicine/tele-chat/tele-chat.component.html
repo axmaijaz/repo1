@@ -1,0 +1,212 @@
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <div class="d-flex align-items-center justify-content-start">
+    <h4 class="mr-3 mb-0"><a class="text-dark"><i class="fa fa-arrow-left" (click)="navigateBack()"></i></a></h4>
+    <h1 class="page-title mb-0">Tele-Medicine</h1>
+  </div>
+  <div>
+    <button type="button" class="btn btn-dynamic-2c btn-sm" (click)="resetSendTmObject();sendTmRequestModal.show();">Add
+      New</button>
+  </div>
+</div>
+
+<div *ngIf="isLoading" class="d-flex justify-content-center text-center">
+  <!-- <div class="d-flex justify-content-center text-center"> -->
+  <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+</div>
+
+<ngx-datatable #table class="material" [columnMode]="'force'" [headerHeight]="50" [footerHeight]="50" [rowHeight]="35"
+  [externalPaging]="false" [count]="page.totalElements" [scrollbarV]="false" [scrollbarH]="true" [rows]="rows">
+  <ngx-datatable-column name="Name" prop="patientFullName">
+
+    <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+      <div class="d-flex justify-content-between align-items-center">
+        {{row.patientFullName}}
+        <div class="action-button d-flex justify-content-center">
+          <button type="button" class="btn btn-dynamic-2c btn-sm px-2" (click)="sendTMRToExistingPatient(row)">New</button>
+          <button *ngIf="row.live" type="button" (click)="GotoCall(row)" class="btn btn-dynamic-2c btn-sm px-2 mr-0">Waiting
+            {{row.timer}}</button>
+        </div>
+
+      </div>
+    </ng-template>
+
+
+
+  </ngx-datatable-column>
+  <ngx-datatable-column name="Email" prop="patientEmail"></ngx-datatable-column>
+  <ngx-datatable-column name="Phone" prop="patientPhoneNumber"> </ngx-datatable-column>
+  <ngx-datatable-column name="Date of Birth" prop="dob" [width]="110">
+    <ng-template let-row="row" let-value="value" let-rowIndex="rowIndex" ngx-datatable-cell-template>
+      <p *ngIf="row.dob !== '0001-01-01T00:00:00'" class="mb-0">
+        {{row.dob | dateFormatPipe}} </p>
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="Status" [width]="100">
+    <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+      {{tmEncounterStatusEnum[row.status]}}
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="Start Time" prop="startedTime" [width]="80"> </ngx-datatable-column>
+  <ngx-datatable-column name="Duration" prop="encounterDuration" [width]="80"> </ngx-datatable-column>
+</ngx-datatable>
+
+<!-- <ngx-datatable-column name="Action" [canAutoResize]=false [frozenRight]=true [width]="160">
+    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+      <div class="action-button">
+        <a class="btn btn-dynamic-2c btn-icon" title="View" placement="left"><i
+            class="fa fa-eye"></i> View</a>
+
+      </div>
+    </ng-template>
+  </ngx-datatable-column> -->
+
+
+<div mdbModal style="overflow-y: auto" #sendTmRequestModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true" [config]="{backdrop: true, ignoreBackdropClick: true}">
+  <div class="modal-dialog modal-lg flat-modal" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="sendTmRequestModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100">Chat Request</h4>
+      </div>
+      <div class="modal-body">
+        <form name="form" #f="ngForm" novalidate>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label for="sP">Search Patient</label>
+                <ng-select class="ng-select-small" [(ngModel)]="selectedPatient" [closeOnSelect]="true" #sP="ngModel"
+                  (ngModelChange)="setValues()" [multiple]="false" [searchable]="true" name="sP" placeholder="">
+                  <!-- <ng-option [value]="0">All Billing Providers </ng-option> -->
+                  <ng-option *ngFor="let item of patientsList" [value]="item">{{item.fullName}}
+                  </ng-option>
+                </ng-select>
+                <!-- <div *ngIf="bP.touched && bP.invalid" class="invalid-feedback">
+                  <div *ngIf="bP.errors.required">Billing Provider is required</div>
+                </div> -->
+              </div>
+            </div>
+            <div class="col-lg-6 col-sm-12">
+              <div class="form-group">
+                <label for="firstName">First Name<small class="text-danger">*</small></label>
+                <input type="text" [(ngModel)]="sendTmEncounterObj.firstName" class="form-control form-control-sm"
+                  name="firstName" #firstName="ngModel" placeholder="First Name" required
+                  [ngClass]="{ 'is-invalid': firstName.touched && firstName.invalid }">
+                <div *ngIf="firstName.touched && firstName.invalid" class="invalid-feedback">
+                  <div *ngIf="firstName.errors.required">First Name is required</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6 col-sm-12">
+              <div class="form-group">
+                <label for="lastName">Last Name<small class="text-danger">*</small></label>
+                <input type="text" [(ngModel)]="sendTmEncounterObj.lastName" class="form-control form-control-sm"
+                  name="lastName" #lastName="ngModel" placeholder="Last Name" required
+                  [ngClass]="{ 'is-invalid': lastName.touched && lastName.invalid }">
+
+                <div *ngIf="lastName.touched && lastName.invalid" class="invalid-feedback">
+                  <div *ngIf="lastName.errors.required">Last Name is required</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-6 col-sm-12">
+              <div class="form-group">
+                <label class="w-100">Date of Birth<small class="text-danger">*</small></label>
+                <input type="text" [(ngModel)]="sendTmEncounterObj.dob" class="form-control form-control-sm"
+                  #dateToDp="dpDayPicker" name="DOB" #DOB="ngModel" [dpDayPicker]="myDatePickerOptions"
+                  [theme]="'dp-material ccm-date-picker'" [mode]="'day'"
+                  [ngClass]="{ 'is-invalid': DOB.touched && DOB.invalid }" />
+
+                <div *ngIf="DOB.touched && DOB.invalid" class="invalid-feedback">
+                  <div *ngIf="DOB.errors.required">Date of Birth is required</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-6 col-sm-12">
+              <div class="form-group">
+                <label for="email">Email<small class="text-danger">*</small>
+                  <!-- <small *ngIf="existEmail"
+                    class="text-danger">
+                    Patient with this Email already registered</small> -->
+                </label>
+                <input type="text" [(ngModel)]="sendTmEncounterObj.email" class="form-control form-control-sm"
+                  name="email" #email="ngModel" placeholder="Email"
+                  pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,3}$" required
+                  [ngClass]="{ 'is-invalid': email.touched && email.invalid }">
+
+                <div *ngIf="email.touched && email.invalid" class="invalid-feedback">
+                  <div *ngIf="email.errors.required">Email is required</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- <div class="col-sm-12">
+            <div class="form-group mt-3">
+              <label for="sex" class="w-100">Send Request Via<small class="text-danger">*</small></label>
+              <div class="form-check form-check-inline mt-0">
+                <input type="radio" class="form-check-input" id="sms" name="sendvia" mdbInput>
+                <label class="form-check-label" for="sms">SMS</label>
+              </div>
+            </div> -->
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label for="bP">Billing Provider<small class="text-danger">*</small></label>
+                <ng-select class="ng-select-small" [(ngModel)]="selectedBP" [closeOnSelect]="true" #bP="ngModel"
+                  [multiple]="false" required [ngClass]="{ 'is-invalid': bP.touched && bP.invalid }" [searchable]="true"
+                  name="bP" placeholder="Billing Provider">
+                  <!-- <ng-option [value]="0">All Billing Providers </ng-option> -->
+                  <ng-option *ngFor="let item of BIllingProviderList" [value]="item.id">{{item.lastName}},{{item.firstName}}
+                  </ng-option>
+                </ng-select>
+                <div *ngIf="bP.touched && bP.invalid" class="invalid-feedback">
+                  <div *ngIf="bP.errors.required">Billing Provider is required</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label for="phoneNo">Phone No.<small class="text-danger">*</small><small *ngIf="existPhone"
+                    class="text-danger">This Phone already registered</small></label>
+                <input type="text" [(ngModel)]="sendTmEncounterObj.phoneNumber" (blur)="checkExistPhone()"
+                mask="(000)000-0000" class="form-control form-control-sm" name="phoneNo" #phoneNo="ngModel"
+                  placeholder="Phone No." required [ngClass]="{ 'is-invalid': phoneNo.touched && phoneNo.invalid }">
+
+                <div *ngIf="phoneNo.touched && phoneNo.invalid" class="invalid-feedback">
+                  <div *ngIf="phoneNo.errors.required">Phone No is required</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <div class="form-group">
+          <div class="form-check form-check-inline">
+            <input type="radio" class="form-check-input" id="ReligionImpactsOnHealthCare" [value]="0"
+              [(ngModel)]="sendTmEncounterObj.sendMethod" name="ReligionImpactsOnHealthCare" mdbInput>
+            <label class="form-check-label" for="ReligionImpactsOnHealthCare">SMS</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input type="radio" class="form-check-input" id="ReligionImpactsOnHealthCare1" [value]="1"
+              [(ngModel)]="sendTmEncounterObj.sendMethod" name="ReligionImpactsOnHealthCare" mdbInput>
+            <label class="form-check-label" for="ReligionImpactsOnHealthCare1">Email</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input type="radio" class="form-check-input" id="ReligionImpactsOnHealthCare2" [value]="2"
+              [(ngModel)]="sendTmEncounterObj.sendMethod" name="ReligionImpactsOnHealthCare" mdbInput>
+            <label class="form-check-label" for="ReligionImpactsOnHealthCare2">Both</label>
+          </div>
+        </div>
+        <button type="button" [disabled]="f.invalid || existPhone"
+          (click)="SendTMEncounterToNewPatient(sendTmRequestModal)" class="btn btn-dynamic-2c btn-sm">Send
+          Request</button>
+        <button type="button" (click)="resetSendTmObject();sendTmRequestModal.hide()"
+          class="btn btn-dynamic-secondary-2c btn-sm">close</button>
+      </div>
+    </div>
+  </div>
+</div>

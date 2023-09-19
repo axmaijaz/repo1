@@ -1,0 +1,390 @@
+<div class="row">
+  <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+    <div class="rpm-alert" style="min-height: 383px;max-height: 383px">
+      <div class="rpm-alert-title px-3 d-flex justify-content-between align-items-center">
+          <p class="mb-0 text-center"><strong>Out of Range Alerts</strong> <span *ngIf="rpmAlertListOutOfRange?.length">({{outOfRangeAddressedCount || 0}}/{{rpmAlertListOutOfRange?.length || ''}})</span></p>
+          <div class="d-flex align-items-center">
+            <div>
+              <span [class.active]="alertFilterObj.outOfRange == 'all'" (click)="alertFilterObj.outOfRange='all'" title="UnAssociated Communications" class="btn btn-icon msg-badge">All</span>
+            </div>
+            <svg [class.active]="alertFilterObj.outOfRange == 'addressed'" (click)="alertFilterObj.outOfRange='addressed'"  class="ml-2 mr-2 alertAddressedSelection" xmlns="http://www.w3.org/2000/svg" style="width: 20px;fill: #4eb048; cursor: pointer;" viewBox="0 0 512 512"><!-- Font Awesome Pro 5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) --><path d="M104 224H24c-13.255 0-24 10.745-24 24v240c0 13.255 10.745 24 24 24h80c13.255 0 24-10.745 24-24V248c0-13.255-10.745-24-24-24zM64 472c-13.255 0-24-10.745-24-24s10.745-24 24-24 24 10.745 24 24-10.745 24-24 24zM384 81.452c0 42.416-25.97 66.208-33.277 94.548h101.723c33.397 0 59.397 27.746 59.553 58.098.084 17.938-7.546 37.249-19.439 49.197l-.11.11c9.836 23.337 8.237 56.037-9.308 79.469 8.681 25.895-.069 57.704-16.382 74.757 4.298 17.598 2.244 32.575-6.148 44.632C440.202 511.587 389.616 512 346.839 512l-2.845-.001c-48.287-.017-87.806-17.598-119.56-31.725-15.957-7.099-36.821-15.887-52.651-16.178-6.54-.12-11.783-5.457-11.783-11.998v-213.77c0-3.2 1.282-6.271 3.558-8.521 39.614-39.144 56.648-80.587 89.117-113.111 14.804-14.832 20.188-37.236 25.393-58.902C282.515 39.293 291.817 0 312 0c24 0 72 8 72 81.452z"/></svg>
+            <svg [class.active]="alertFilterObj.outOfRange == 'unaddressed'" (click)="alertFilterObj.outOfRange='unaddressed'" class="alertAddressedSelection" xmlns="http://www.w3.org/2000/svg" style="width: 20px;fill: #212529; cursor: pointer;"  viewBox="0 0 512 512"><!-- Font Awesome Pro 5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) --><path d="M466.27 286.69C475.04 271.84 480 256 480 236.85c0-44.015-37.218-85.58-85.82-85.58H357.7c4.92-12.81 8.85-28.13 8.85-46.54C366.55 31.936 328.86 0 271.28 0c-61.607 0-58.093 94.933-71.76 108.6-22.747 22.747-49.615 66.447-68.76 83.4H32c-17.673 0-32 14.327-32 32v240c0 17.673 14.327 32 32 32h64c14.893 0 27.408-10.174 30.978-23.95 44.509 1.001 75.06 39.94 177.802 39.94 7.22 0 15.22.01 22.22.01 77.117 0 111.986-39.423 112.94-95.33 13.319-18.425 20.299-43.122 17.34-66.99 9.854-18.452 13.664-40.343 8.99-62.99zm-61.75 53.83c12.56 21.13 1.26 49.41-13.94 57.57 7.7 48.78-17.608 65.9-53.12 65.9h-37.82c-71.639 0-118.029-37.82-171.64-37.82V240h10.92c28.36 0 67.98-70.89 94.54-97.46 28.36-28.36 18.91-75.63 37.82-94.54 47.27 0 47.27 32.98 47.27 56.73 0 39.17-28.36 56.72-28.36 94.54h103.99c21.11 0 37.73 18.91 37.82 37.82.09 18.9-12.82 37.81-22.27 37.81 13.489 14.555 16.371 45.236-5.21 65.62zM88 432c0 13.255-10.745 24-24 24s-24-10.745-24-24 10.745-24 24-24 24 10.745 24 24z"/></svg>
+          </div>
+      </div>
+      <div  >
+          <div *ngIf="isAlertLoading" class="d-flex justify-content-center text-center">
+            <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+          </div>
+          <div class="table-responsive">
+            <table mdbTable #tableEl2="mdbTable" class="table mb-0 table-bordered w-100 rpm-device-table">
+              <thead class="bg-dynamic-2c text-white">
+              <tr>
+                <th scope="col">ID</th>
+                <th scope="col" style="min-width: 150px;">Patient Name</th>
+                <th scope="col">Modality</th>
+                <th scope="col" style="min-width: 95px;">Alert Reason</th>
+                <th scope="col" style="min-width: 120px;">Reading</th>
+                <th scope="col" style="min-width: 120px;">Date/Time</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let row of rpmAlertListOutOfRange; let i = index" [ngClass]="{'my-class-rpmalert' : row.isDue}">
+                <ng-container *ngIf="alertFilterObj.outOfRange == 'all' || (alertFilterObj.outOfRange == 'addressed' && row.addressedById)
+                || (alertFilterObj.outOfRange == 'unaddressed' && !row.addressedById)" >
+                  <th *ngIf="i+1 >= tableEl2Page.firstItemIndex && i < tableEl2Page.lastItemIndex"
+                      scope="row">{{i + 1}}</th>
+                  <td *ngIf="i+1 >= tableEl2Page.firstItemIndex && i < tableEl2Page.lastItemIndex">
+                    <div class="action-button d-flex justify-content-between align-items-center " >
+                      <div class="d-inline-flex align-items-center">
+                        <svg (click)="SetAddressedBy(row)" class="mr-1" xmlns="http://www.w3.org/2000/svg" *ngIf="row.addressedById" style="width: 14px;fill: #4eb048;" viewBox="0 0 512 512"><!-- Font Awesome Pro 5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) --><path d="M104 224H24c-13.255 0-24 10.745-24 24v240c0 13.255 10.745 24 24 24h80c13.255 0 24-10.745 24-24V248c0-13.255-10.745-24-24-24zM64 472c-13.255 0-24-10.745-24-24s10.745-24 24-24 24 10.745 24 24-10.745 24-24 24zM384 81.452c0 42.416-25.97 66.208-33.277 94.548h101.723c33.397 0 59.397 27.746 59.553 58.098.084 17.938-7.546 37.249-19.439 49.197l-.11.11c9.836 23.337 8.237 56.037-9.308 79.469 8.681 25.895-.069 57.704-16.382 74.757 4.298 17.598 2.244 32.575-6.148 44.632C440.202 511.587 389.616 512 346.839 512l-2.845-.001c-48.287-.017-87.806-17.598-119.56-31.725-15.957-7.099-36.821-15.887-52.651-16.178-6.54-.12-11.783-5.457-11.783-11.998v-213.77c0-3.2 1.282-6.271 3.558-8.521 39.614-39.144 56.648-80.587 89.117-113.111 14.804-14.832 20.188-37.236 25.393-58.902C282.515 39.293 291.817 0 312 0c24 0 72 8 72 81.452z"/></svg>
+                        <svg (click)="SetAddressedBy(row)" class="mr-1" xmlns="http://www.w3.org/2000/svg" *ngIf="!row.addressedById"  viewBox="0 0 512 512" style="width: 14px;fill:#212529"><!-- Font Awesome Pro 5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) --><path d="M466.27 286.69C475.04 271.84 480 256 480 236.85c0-44.015-37.218-85.58-85.82-85.58H357.7c4.92-12.81 8.85-28.13 8.85-46.54C366.55 31.936 328.86 0 271.28 0c-61.607 0-58.093 94.933-71.76 108.6-22.747 22.747-49.615 66.447-68.76 83.4H32c-17.673 0-32 14.327-32 32v240c0 17.673 14.327 32 32 32h64c14.893 0 27.408-10.174 30.978-23.95 44.509 1.001 75.06 39.94 177.802 39.94 7.22 0 15.22.01 22.22.01 77.117 0 111.986-39.423 112.94-95.33 13.319-18.425 20.299-43.122 17.34-66.99 9.854-18.452 13.664-40.343 8.99-62.99zm-61.75 53.83c12.56 21.13 1.26 49.41-13.94 57.57 7.7 48.78-17.608 65.9-53.12 65.9h-37.82c-71.639 0-118.029-37.82-171.64-37.82V240h10.92c28.36 0 67.98-70.89 94.54-97.46 28.36-28.36 18.91-75.63 37.82-94.54 47.27 0 47.27 32.98 47.27 56.73 0 39.17-28.36 56.72-28.36 94.54h103.99c21.11 0 37.73 18.91 37.82 37.82.09 18.9-12.82 37.81-22.27 37.81 13.489 14.555 16.371 45.236-5.21 65.62zM88 432c0 13.255-10.745 24-24 24s-24-10.745-24-24 10.745-24 24-24 24 10.745 24 24z"/></svg>
+                        <!-- <i (click)="SetAddressedBy(row)" [class.text-dynamic-2c]="row.addressedById" class="fa fa-thumbs-up mr-1 text-dynamic-2c" style="font-size: 18px;cursor:pointer;" ></i> -->
+                        <a class="mb-0 link text-dynamic-2c text-left" style="cursor: pointer;margin:0;" container="body"
+                        routerLink="/rpm/PatientRpm/{{row.patientId}}"
+                          title="{{'Facility: ' + row.facilityName }}  {{'\n Phone: ' + row.phone }}  {{ '\n Email: ' + row.email}}"
+                          placement="right">{{row.patientName}}
+                        </a>
+                      </div>
+
+                      <!-- <button (click)="selectedRpmAlert=row;quickEncounterModal.show();rpmServiceType= 5;PatientEncounterMonthlyStatus= row.rpmMonthlyStatus;PatientEncounterMonthlyStatusTExt = rpmMonthlyStatusEnum[row.rpmMonthlyStatus] " title="Create Encounter"
+                        class="btn btn-dynamic-2c btn-icon my-1 ml-0 mr-0" >
+                        <i class="fa fa-bolt"></i>
+                      </button> -->
+                    </div>
+                  </td>
+                  <td  *ngIf="i+1 >= tableEl2Page.firstItemIndex && i < tableEl2Page.lastItemIndex">{{row.modality}}</td>
+                  <td *ngIf="i+1 >= tableEl2Page.firstItemIndex && i < tableEl2Page.lastItemIndex">{{row.alertReason}}</td>
+                  <td *ngIf="i+1 >= tableEl2Page.firstItemIndex && i < tableEl2Page.lastItemIndex" style="white-space: nowrap;"><i  title="Alerts History" class=" fa-lg fa fa-history text-dynamic-2c" style="cursor: pointer;" (click)="selectedRpmAlertOutOfRange=row;getRpmReadingHistory(outOfRangeAlertsHistoryModal)"></i> {{row.reading}} </td>
+                  <td *ngIf="i+1 >= tableEl2Page.firstItemIndex && i < tableEl2Page.lastItemIndex">{{row.measurementDate }}</td>
+                </ng-container>
+              </tr>
+              <tr *ngIf="!rpmAlertListOutOfRange">
+                <td colspan="5" class="py-3">No data to display</td>
+              </tr>
+              </tbody>
+              <tfoot class="grey lighten-5 w-100">
+              <tr>
+                <td colspan="6">
+                  <mdb-table-pagination #tableEl2Page [tableEl]="tableEl2" [searchDataSource]="rpmAlertListOutOfRange"></mdb-table-pagination>
+                </td>
+              </tr>
+              </tfoot>
+            </table>
+          </div>
+      </div>
+  </div>
+  </div>
+  <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+      <div class="rpm-alert" style="min-height: 383px;max-height: 383px">
+          <div class="rpm-alert-title px-3 d-flex justify-content-between align-items-center">
+              <p class="mb-0 text-center"><strong>Time Lapse Alerts <span *ngIf="rpmAlertListTimeLapse?.length">({{timeLapseAddressedCount || 0}}/{{rpmAlertListTimeLapse?.length || ''}})</span></strong></p>
+              <div class="d-flex align-items-center">
+                <div>
+                  <span [class.active]="alertFilterObj.missedReading == 'all'" (click)="alertFilterObj.missedReading='all'" title="UnAssociated Communications" class="btn btn-icon msg-badge">All</span>
+                </div>
+                <svg [class.active]="alertFilterObj.missedReading == 'addressed'" (click)="alertFilterObj.missedReading='addressed'"  class="ml-2 mr-2 alertAddressedSelection" xmlns="http://www.w3.org/2000/svg" style="width: 20px;fill: #4eb048; cursor: pointer;" viewBox="0 0 512 512"><!-- Font Awesome Pro 5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) --><path d="M104 224H24c-13.255 0-24 10.745-24 24v240c0 13.255 10.745 24 24 24h80c13.255 0 24-10.745 24-24V248c0-13.255-10.745-24-24-24zM64 472c-13.255 0-24-10.745-24-24s10.745-24 24-24 24 10.745 24 24-10.745 24-24 24zM384 81.452c0 42.416-25.97 66.208-33.277 94.548h101.723c33.397 0 59.397 27.746 59.553 58.098.084 17.938-7.546 37.249-19.439 49.197l-.11.11c9.836 23.337 8.237 56.037-9.308 79.469 8.681 25.895-.069 57.704-16.382 74.757 4.298 17.598 2.244 32.575-6.148 44.632C440.202 511.587 389.616 512 346.839 512l-2.845-.001c-48.287-.017-87.806-17.598-119.56-31.725-15.957-7.099-36.821-15.887-52.651-16.178-6.54-.12-11.783-5.457-11.783-11.998v-213.77c0-3.2 1.282-6.271 3.558-8.521 39.614-39.144 56.648-80.587 89.117-113.111 14.804-14.832 20.188-37.236 25.393-58.902C282.515 39.293 291.817 0 312 0c24 0 72 8 72 81.452z"/></svg>
+                <svg [class.active]="alertFilterObj.missedReading == 'unaddressed'" (click)="alertFilterObj.missedReading='unaddressed'" class="alertAddressedSelection" xmlns="http://www.w3.org/2000/svg" style="width: 20px;fill: #212529; cursor: pointer;"  viewBox="0 0 512 512"><!-- Font Awesome Pro 5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) --><path d="M466.27 286.69C475.04 271.84 480 256 480 236.85c0-44.015-37.218-85.58-85.82-85.58H357.7c4.92-12.81 8.85-28.13 8.85-46.54C366.55 31.936 328.86 0 271.28 0c-61.607 0-58.093 94.933-71.76 108.6-22.747 22.747-49.615 66.447-68.76 83.4H32c-17.673 0-32 14.327-32 32v240c0 17.673 14.327 32 32 32h64c14.893 0 27.408-10.174 30.978-23.95 44.509 1.001 75.06 39.94 177.802 39.94 7.22 0 15.22.01 22.22.01 77.117 0 111.986-39.423 112.94-95.33 13.319-18.425 20.299-43.122 17.34-66.99 9.854-18.452 13.664-40.343 8.99-62.99zm-61.75 53.83c12.56 21.13 1.26 49.41-13.94 57.57 7.7 48.78-17.608 65.9-53.12 65.9h-37.82c-71.639 0-118.029-37.82-171.64-37.82V240h10.92c28.36 0 67.98-70.89 94.54-97.46 28.36-28.36 18.91-75.63 37.82-94.54 47.27 0 47.27 32.98 47.27 56.73 0 39.17-28.36 56.72-28.36 94.54h103.99c21.11 0 37.73 18.91 37.82 37.82.09 18.9-12.82 37.81-22.27 37.81 13.489 14.555 16.371 45.236-5.21 65.62zM88 432c0 13.255-10.745 24-24 24s-24-10.745-24-24 10.745-24 24-24 24 10.745 24 24z"/></svg>
+              </div>
+          </div>
+          <div  >
+              <div *ngIf="isAlertLoading" class="d-flex justify-content-center text-center">
+                <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+              </div>
+              <div class="table-responsive">
+                <table mdbTable #tableEl1="mdbTable" class="table table-bordered w-100 rpm-device-table">
+                  <thead class="bg-dynamic-2c text-white">
+                  <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col" style="min-width: 150px;">Patient Name</th>
+                    <th scope="col">Modality</th>
+                    <th scope="col" style="min-width: 95px;">Alert Reason</th>
+                    <!-- <th scope="col" style="min-width: 120px;">Reading</th> -->
+                    <th scope="col" style="min-width: 120px;">Alert Date</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let row of rpmAlertListTimeLapse; let i = index" [ngClass]="{'my-class-rpmalert' : row.isDue}">
+                    <ng-container *ngIf="alertFilterObj.missedReading == 'all' || (alertFilterObj.missedReading == 'addressed' && row.addressedById)
+                    || (alertFilterObj.missedReading == 'unaddressed' && !row.addressedById)" >
+                      <th *ngIf="i+1 >= tableEl1Page.firstItemIndex && i < tableEl1Page.lastItemIndex"
+                          scope="row">{{i + 1}}</th>
+                      <td *ngIf="i+1 >= tableEl1Page.firstItemIndex && i < tableEl1Page.lastItemIndex">
+                        <div class="action-button d-flex justify-content-between align-items-center " >
+                          <div class="d-inline-flex align-items-center">
+                            <svg (click)="SetAddressedBy(row)" class="mr-1" xmlns="http://www.w3.org/2000/svg" *ngIf="row.addressedById" style="width: 14px;fill: #4eb048;" viewBox="0 0 512 512"><!-- Font Awesome Pro 5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) --><path d="M104 224H24c-13.255 0-24 10.745-24 24v240c0 13.255 10.745 24 24 24h80c13.255 0 24-10.745 24-24V248c0-13.255-10.745-24-24-24zM64 472c-13.255 0-24-10.745-24-24s10.745-24 24-24 24 10.745 24 24-10.745 24-24 24zM384 81.452c0 42.416-25.97 66.208-33.277 94.548h101.723c33.397 0 59.397 27.746 59.553 58.098.084 17.938-7.546 37.249-19.439 49.197l-.11.11c9.836 23.337 8.237 56.037-9.308 79.469 8.681 25.895-.069 57.704-16.382 74.757 4.298 17.598 2.244 32.575-6.148 44.632C440.202 511.587 389.616 512 346.839 512l-2.845-.001c-48.287-.017-87.806-17.598-119.56-31.725-15.957-7.099-36.821-15.887-52.651-16.178-6.54-.12-11.783-5.457-11.783-11.998v-213.77c0-3.2 1.282-6.271 3.558-8.521 39.614-39.144 56.648-80.587 89.117-113.111 14.804-14.832 20.188-37.236 25.393-58.902C282.515 39.293 291.817 0 312 0c24 0 72 8 72 81.452z"/></svg>
+                            <svg (click)="SetAddressedBy(row)" class="mr-1" xmlns="http://www.w3.org/2000/svg" *ngIf="!row.addressedById"  viewBox="0 0 512 512" style="width: 14px;fill:#212529"><!-- Font Awesome Pro 5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) --><path d="M466.27 286.69C475.04 271.84 480 256 480 236.85c0-44.015-37.218-85.58-85.82-85.58H357.7c4.92-12.81 8.85-28.13 8.85-46.54C366.55 31.936 328.86 0 271.28 0c-61.607 0-58.093 94.933-71.76 108.6-22.747 22.747-49.615 66.447-68.76 83.4H32c-17.673 0-32 14.327-32 32v240c0 17.673 14.327 32 32 32h64c14.893 0 27.408-10.174 30.978-23.95 44.509 1.001 75.06 39.94 177.802 39.94 7.22 0 15.22.01 22.22.01 77.117 0 111.986-39.423 112.94-95.33 13.319-18.425 20.299-43.122 17.34-66.99 9.854-18.452 13.664-40.343 8.99-62.99zm-61.75 53.83c12.56 21.13 1.26 49.41-13.94 57.57 7.7 48.78-17.608 65.9-53.12 65.9h-37.82c-71.639 0-118.029-37.82-171.64-37.82V240h10.92c28.36 0 67.98-70.89 94.54-97.46 28.36-28.36 18.91-75.63 37.82-94.54 47.27 0 47.27 32.98 47.27 56.73 0 39.17-28.36 56.72-28.36 94.54h103.99c21.11 0 37.73 18.91 37.82 37.82.09 18.9-12.82 37.81-22.27 37.81 13.489 14.555 16.371 45.236-5.21 65.62zM88 432c0 13.255-10.745 24-24 24s-24-10.745-24-24 10.745-24 24-24 24 10.745 24 24z"/></svg>
+                            <a class="mb-0 link text-dynamic-2c text-left" style="cursor: pointer;margin:0;" container="body"
+                            routerLink="/rpm/PatientRpm/{{row.patientId}}"
+                              title="{{'Facility: ' + row.facilityName }}  {{'\n Phone: ' + row.phone }}  {{ '\n Email: ' + row.email}}"
+                              placement="right">{{row.patientName}}
+                            </a>
+                          </div>
+
+                          <!-- <button (click)="selectedRpmAlert=row;resetEncounterModal(rpmEncounterModal);rpmEncounterDto.rpmServiceType=2;rpmServiceType= 5" title="Create Encounter"
+                            class="btn btn-dynamic-2c btn-icon my-1 ml-0 mr-0" >
+                            <i class="fa fa-bolt"></i>
+                          </button> -->
+                        </div>
+                      </td>
+                      <td  *ngIf="i+1 >= tableEl1Page.firstItemIndex && i < tableEl1Page.lastItemIndex">{{row.modality}}</td>
+                      <td *ngIf="i+1 >= tableEl1Page.firstItemIndex && i < tableEl1Page.lastItemIndex" >
+                        <i title="Alerts History" class=" fa-lg fa fa-history text-dynamic-2c" style="cursor: pointer;" (click)="isPatientModalityDetails=false;selectedRpmAlertOutOfRange=row;getRpmReadingHistory(outOfRangeAlertsHistoryModal)"></i>
+                        {{row.alertReason}}</td>
+                      <!-- <td *ngIf="i+1 >= tableEl1Page.firstItemIndex && i < tableEl1Page.lastItemIndex">{{row.reading}}</td> -->
+                      <td *ngIf="i+1 >= tableEl1Page.firstItemIndex && i < tableEl1Page.lastItemIndex">{{row.alertTime | dateFormatPipe}}</td>
+                    </ng-container>
+                  </tr>
+                  <tr *ngIf="!rpmAlertListTimeLapse">
+                    <td colspan="5" class="py-3">No data to display</td>
+                  </tr>
+                  </tbody>
+                  <tfoot class="grey lighten-5 w-100">
+                  <tr>
+                    <td colspan="5">
+                      <mdb-table-pagination #tableEl1Page [tableEl]="tableEl1" [searchDataSource]="rpmAlertListTimeLapse"></mdb-table-pagination>
+                    </td>
+                  </tr>
+                  </tfoot>
+                </table>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+<!-- (encounterSaved)="RPMEncounterAdded()" -->
+<app-rpm-quick-encounter #addRPmEncounterRef ></app-rpm-quick-encounter>
+<div mdbModal #outOfRangeAlertsHistoryModal="mdbModal" class="modal  fade" tabindex="-1" role="dialog" aria-labelledby="myBasicModalLabel" aria-hidden="true" (close)="clearData()">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title w-100 text-center" id="myModalLabel">Reading History
+        </h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div *ngIf="isPatientModalityDetails" class="col-12">
+            <div class="border-0">
+              <div class="modality-info p-0" >
+                <div class="row w-100">
+                  <div *ngFor="let item of devicesList" class="col-sm-6 col-lg-4"  >
+                    <div class="modality-list ">
+                      <div  class="item position-relative my-2"  [class.active]="selectedModalityCode === item.modality"
+                      (click)="clearData();selectedModalityCode = item.modality;getSelectedModalityHistory()">
+                        <span  *ngIf="item.isIotDevice" class="dot4g">4G</span>
+                        <div class="flex-1 d-flex align-items-center" style="margin: 0 10px;">
+                          <img src="/assets/rpm-devices/mbp.svg" *ngIf="item.modality == 'BP'" alt="Blood Pressure">
+                          <img src="/assets/rpm-devices/mw.svg" *ngIf="item.modality == 'WT'" alt="Weight">
+                          <img src="/assets/rpm-devices/pulse.svg" *ngIf="item.modality == 'PO'" alt="Pulse Oximetry">
+                          <img src="/assets/rpm-devices/mbg.svg" style="width: 32px;" *ngIf="item.modality == 'BG'"
+                            alt="Blood Glucose">
+                          <img src="/assets/rpm-devices/activity.svg" *ngIf="item.modality == 'AT'" alt="Activity">
+                          <img src="/assets/rpm-devices/mcgm.svg" *ngIf="item.modality == 'CGM'" alt="Continuous Blood Glucose">
+                          <p style="font-size: 10px;" title="{{item.modalityName}}" *ngIf="item.modalityName"><strong>{{item.modalityName}}</strong></p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-12 px-0">
+
+            <mdb-tabset #outOfRangeAlertsHistoryTabs [buttonClass]="'classic-tabs classic-tabs-c tabs-outline-primary tabs-2'" [contentClass]="'tab-shadow border'"
+            class="classic-tabs classic-tabs-c tabs-outline-primary">
+
+            <mdb-tab heading="Reading History">
+
+              <div style="margin-right: 1rem;">
+                <table class="table table-bordered table-hover mb-0">
+                  <colgroup>
+                    <col width="50%">
+                    <col width="50%">
+                  </colgroup>
+                  <thead class="bg-dynamic-2c text-white">
+                    <tr>
+                      <th>Date</th>
+                      <th>Reading</th>
+                    </tr>
+                  </thead>
+
+                </table>
+              </div>
+
+              <div malihu-scrollbar [scrollbarOptions]="dropdownScroll" style="max-height: 400px; margin-right: 1rem;">
+                <table class="table table-bordered table-hover">
+                  <colgroup>
+                    <col width="50%">
+                    <col width="50%">
+                  </colgroup>
+                  <tbody *ngIf="isWtDevice">
+                    <tr *ngIf="!weightDataList || !weightDataList.length">
+                      <td>No Record Found</td>
+                    </tr>
+                    <tr *ngFor="let witem of weightDataList">
+                      <td>{{witem.measurementDate | dateFormatPipe: 'time'}}</td>
+                      <td>Wt: {{witem.weightValue}}</td>
+                    </tr>
+                  </tbody>
+                  <tbody *ngIf="isBpDevice">
+                    <tr *ngIf="!BPDeviceDataList || !BPDeviceDataList.length">
+                      <td>No Record Found</td>
+                    </tr>
+                    <tr *ngFor="let bpitem of BPDeviceDataList">
+                      <td>
+                         <!-- <a class="" (click)="openReadingDateCalender(bpitem)">
+                        <i *hasClaim="'CanModifyRPMEncounter'" class="fa fa-calendar text-dynamic-secondary-2c mx-2"
+                            style="font-size: 20px;" title="Edit Date"
+                            placement="right"></i>
+                          </a> -->
+                          {{bpitem.measurementDate}}</td>
+                      <td>Sys: {{bpitem.highPressure}}, dys: {{bpitem.lowPressure}}, HR: {{bpitem.heartRate}}</td>
+                    </tr>
+                  </tbody>
+                  <!-- <mdb-date-picker #datePicker class="myDate-111" name="mydate" [outlineInput]="false"  (dateChanged)="editRpmReading($event)" [options]="myDatePickerOptions" [placeholder]="'Selected date'"
+                    [(ngModel)]="selectedDate" required></mdb-date-picker> -->
+                  <tbody *ngIf="isPoDevice">
+                    <tr *ngIf="!pulseOximetryDataList || !pulseOximetryDataList.length">
+                      <td>No Record Found</td>
+                    </tr>
+                    <tr *ngFor="let poitem of pulseOximetryDataList">
+                      <td>{{poitem.measurementDate | dateFormatPipe: 'time'}}</td>
+                      <td>OS: {{poitem.bloodOxygen}}, HR: {{poitem.heartRate}}</td>
+                    </tr>
+                  </tbody>
+                  <tbody *ngIf="isAtDevice">
+                    <tr *ngIf="!activityDataList || !activityDataList.length">
+                      <td>No Record Found</td>
+                    </tr>
+                    <tr *ngFor="let aitem of activityDataList">
+                      <td>{{aitem.measurementDate | dateFormatPipe: 'time'}}</td>
+                      <td>Cal.: {{aitem.calories}}, Dist.: {{aitem.distanceTraveled}}, Steps: {{aitem.steps}}</td>
+                    </tr>
+                  </tbody>
+                  <tbody *ngIf="isBgDevice">
+                    <tr *ngIf="!BGDeviceDataList || !BGDeviceDataList.length">
+                      <td>No Record Found</td>
+                    </tr>
+                    <tr *ngFor="let bgitem of BGDeviceDataList">
+                      <td>{{bgitem.measurementDate | dateFormatPipe: 'time'}}</td>
+                      <td>BG: {{bgitem.bg | number : '1.0-0'}}</td>
+                    </tr>
+
+                  </tbody>
+                </table>
+              </div>
+
+
+            </mdb-tab>
+
+            <mdb-tab heading="Last 30 Days Statistics">
+              <div *ngIf="isBpDevice"  class="col-sm-12">
+                <div *ngIf="isLoadingRpmModalityStatistics" class="d-flex justify-content-center text-center">
+                  <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+                </div>
+                <h5 class="bg-dynamic-2c p-2 mb-0" style="font-size: 20px;font-weight: 600;color:#fff;border-left:1px solid #fff;border-right:1px solid #fff;">Blood Pressure</h5>
+                <div class="table-responsive">
+                  <table class="table reading-rpm-table">
+                    <thead>
+                      <tr>
+                        <th>Description</th>
+                        <th># of Reading</th>
+                        <th>High</th>
+                        <th>Low</th>
+                        <th>Average</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let item of bloodPressureStatistics">
+                        <td>{{item.description}}</td>
+                        <td>{{item.readingCount}}</td>
+                        <td>{{item.high}}</td>
+                        <td>{{item.low}}</td>
+                        <td>{{item.average}}</td>
+                      </tr>
+
+                    </tbody>
+                    <tbody *ngIf="bloodPressureStatistics.length === 0">
+                      <td class="bg-white p-3 text-danger" colspan="12">No Record Found</td>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div *ngIf="isBgDevice" class="col-sm-12">
+                <div *ngIf="isLoadingRpmModalityStatistics" class="d-flex justify-content-center text-center">
+                  <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+                </div>
+                <h5 class="bg-dynamic-2c p-2 mb-0" style="font-size: 20px;font-weight: 600;color:#fff;border-left:1px solid #fff;border-right:1px solid #fff;">Blood Glucose</h5>
+                <div class="table-responsive">
+                  <table class="table reading-rpm-table">
+                    <thead>
+                      <tr>
+                        <th>Description</th>
+                        <th># of Reading</th>
+                        <th>High</th>
+                        <th>Low</th>
+                        <th>Average</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let item of bloodGlucoseStatistics">
+                        <td>{{item.description}}</td>
+                        <td>{{item.readingCount}}</td>
+                        <td>{{item.high}}</td>
+                        <td>{{item.low}}</td>
+                        <td>{{item.average}}</td>
+                      </tr>
+                    </tbody>
+                    <tbody *ngIf="bloodGlucoseStatistics.length === 0">
+                      <td class="bg-white p-3 text-danger" colspan="12">No Record Found</td>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+
+              <div *ngIf="isWtDevice" class="col-sm-12">
+                <div *ngIf="isLoadingRpmModalityStatistics" class="d-flex justify-content-center text-center">
+                  <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+                </div>
+                <h5 class="bg-dynamic-2c p-2 mb-0" style="font-size: 20px;font-weight: 600;color:#fff;border-left:1px solid #fff;border-right:1px solid #fff;">Weight</h5>
+                <div class="table-responsive">
+                  <table class="table reading-rpm-table">
+                    <thead>
+                      <tr>
+                        <th>Description</th>
+                        <th># of Reading</th>
+                        <th>High</th>
+                        <th>Low</th>
+                        <th>Average</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let item of weightStatistics">
+                        <td>{{item.description}}</td>
+                        <td>{{item.readingCount}}</td>
+                        <td>{{item.high}}</td>
+                        <td>{{item.low}}</td>
+                        <td>{{item.average}}</td>
+                      </tr>
+                    </tbody>
+                    <tbody *ngIf="weightStatistics.length === 0">
+                      <td class="bg-white p-3 text-danger" colspan="12">No Record Found</td>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </mdb-tab>
+          </mdb-tabset>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+          (click)="outOfRangeAlertsHistoryModal.hide()" mdbWavesEffect>Close</button>
+        <!-- <butmdbModalton type="button" mdbBtn color="primay" (click)="addRequiredData()" class="relative waves-light"
+          mdbWavesEffect>Add Data</button> -->
+      </div>
+    </div>
+  </div>
+  </div>

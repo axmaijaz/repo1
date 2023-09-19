@@ -1,0 +1,62 @@
+@import "theme";
+
+.xy-axis {
+  display: none;
+  top:0px; left:0px;
+  width: 200px;
+  // height: 200px;
+  position:absolute;
+  // border: 1px solid #ccc;
+  // background-color: #fff;
+  // padding: 0.5rem;
+  text-align:center;
+  z-index: 999999;
+  border-radius: 4px;
+  // box-shadow: 2px 5px 10px #ccc;
+  .event-scroll {
+    height: 135px;
+    .event-scroll-call {
+      height: 100%;
+      overflow-y: auto;
+    }
+  }
+  .form-group {
+    position: relative;
+    .form-group-search {
+      position: absolute;
+      left: 7px;
+      top: 8px;
+    }
+    .form-control {
+      padding-left: 2rem;
+    }
+  }
+  .select-taglist {
+    display: block;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    li {
+      display: block;
+      color: #000;
+      border: 1px solid #ccc;
+      text-align: left;
+      border-radius: 4px;
+      padding: 0.2rem 0.3rem;
+      margin-bottom: 5px;
+      background-color: #fff;
+      color: $dynamic-colour;
+      cursor: pointer;
+      &:hover {
+        background-color:$primary ;
+        color:#fff ;
+      }
+    }
+  }
+}
+.fa-search-xy {
+  position: absolute;
+  left: 7px;
+  top: 8px;
+  z-index: 99999;
+}

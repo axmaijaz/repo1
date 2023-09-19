@@ -1,0 +1,67 @@
+<div style="height: 100vh;" *ngIf="isCarePlanFound">
+  <ng-container>
+    <button class="btn btn-dynamic-2c btn-sm mr-0 pull-right" (click)="resetFields();carePlanHistoryViewModal.show();"><i
+        class="fas fa-share"></i>
+      <span *ngIf="isLoadingMail" class="mr-1 spinner-border spinner-border-sm" role="status"
+        aria-hidden="true"></span>Share</button>
+  </ng-container>
+  <!-- <object type="application/pdf" width="100%" height="100%" [data]="carePlanHistoryView"
+    style="zoom: 100% ; right:0; top:0; bottom:0; width:100%;" id="pdf_content"></object> -->
+  <iframe width="100%" height="100%" [src]="carePlanHistoryView" type="application/doc"></iframe>
+  <!-- <iframe src="carePlanHistoryView#zoom=FitH" style="position:absolute;right:0; top:0; bottom:0; width:100%;"></iframe> -->
+  <!-- <object  width="100%" height="1500px" type="application/pdf"
+  data="carePlanHistoryView?#zoom=100&scrollbar=1&toolbar=1&navpanes=1"></object> -->
+  <div appCcmLoader>
+    <div class="loader-wrap" *ngIf="isLoadingCPHistory">
+      <div class="text-dynamic-2c la-ball-pulse ccm-loader">
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-record-not-found *ngIf="!isCarePlanFound"></app-record-not-found>
+
+
+<div mdbModal #carePlanHistoryViewModal="mdbModal" class="modal fade" id="centralModalSm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+
+  <!-- Change class .modal-sm to change the size of the modal -->
+  <div class="modal-dialog modal-dialog-centered" role="document">
+
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="carePlanHistoryViewModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title" id="myModalLabel">Send Email</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="form-group">
+              <label for="email">Email Address<small class="text-danger">*</small></label>
+              <input type="text" id="email" [formControl]="email" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,3}$"
+                class="form-control form-control-sm" [ngClass]="{ 'is-invalid': email.touched && email.invalid }">
+              <div *ngIf="email.touched && email.invalid" class="d-flex invalid-feedback">
+                <div>Example: sample@mail.com</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-dynamic-2c btn-sm" [disabled]="!email || email.invalid" (click)="sendCarePlanHistoryPdf();carePlanHistoryViewModal.hide()">
+          send
+        </button>
+        <button type="button" class="btn btn-dynamic-2c btn-sm" (click)="carePlanHistoryViewModal.hide()">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

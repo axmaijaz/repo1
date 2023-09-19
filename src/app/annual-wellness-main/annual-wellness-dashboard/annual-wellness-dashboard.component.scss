@@ -1,0 +1,131 @@
+@import "theme";
+$device-box: 50px;
+$border: 1px solid #d9d9d9;
+$device-box: 50px;
+$border: 1px solid #d9d9d9;
+
+.rpm-content-box {
+  background: white;
+  padding: 0.3rem;
+  border-radius: 5px;
+  border: $border;
+  margin-bottom: 10px;
+  overflow: hidden;
+  &:not(:first-child) {
+    margin-left: 10px;
+  }
+  .item-bold {
+    font-size: 1rem;
+    font-weight: 500;
+  }
+}
+.my-class-rpmalert {
+  color: #e57373;
+  background: #ffebee;
+  border:1px solid #e57373;
+}
+.rpm-content-box-hover {
+  cursor: pointer;
+  &.active,
+  &:hover {
+    background: #f4f4f4;
+  }
+}
+
+.item-top-centent {
+  border-bottom: $border;
+  padding: 0.6rem 0.4rem;
+
+  .index-value {
+    width: 30px;
+    height: 30px;
+    background:$dynamic-colour;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    border-radius: 5px;
+    color: white;
+  }
+
+}
+.item-top-centent-hover {
+  cursor: pointer;
+  &.active,
+  &:hover {
+    background: #f4f4f4;
+  }
+}
+.item-bottom-content {
+  justify-content: space-around;
+  align-items: center;
+}
+.item-bottom-content {
+  .completed-min-not-started {
+    flex: 1;
+    &:not(:first-child) {
+      border-left: $border;
+    }
+    p {
+      small {
+        font-size: 13px;
+      }
+    }
+  }
+  .completed-min {
+    cursor: pointer;
+    flex: 1;
+    padding: 0.2rem 0;
+    &:not(:first-child) {
+      border-left: $border;
+    }
+    &.active,
+    &:hover {
+
+      color:$dynamic-colour;
+
+      background-color: #f4f4f4;
+      // filter: brightness(100%);
+      p {
+        small {
+          color:$dynamic-colour !important;
+        }
+      }
+    }
+    p {
+        small.font-count {
+            font-size: 12px;
+        }
+      small {
+        font-size: 10px;
+      }
+    }
+  }
+}
+button:disabled {
+  pointer-events: auto !important;
+  cursor: not-allowed;
+}
+.btn-transparent {
+  box-shadow: none!important;
+  padding: 0 !important;
+  background-color: transparent !important;
+  text-transform: none !important;
+  border: 0;
+}
+.selected-box {
+  .selected-text {
+    background: #E4FFE2;
+    border-radius: 9px 9px 9px 0px;
+    padding: 1rem;
+    min-height: 100px;
+    width: 300px;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 14px;
+    color: #6B6E75;
+  }
+}
+
+.disabledrow {
+  background-color: #ecf7eb;
+}

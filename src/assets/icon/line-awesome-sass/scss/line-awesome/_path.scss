@@ -1,0 +1,14 @@
+/* FONT PATH
+ * -------------------------- */
+
+@font-face {
+  font-family: $la-font-name;
+  src: url(if($la-sass-asset-helper, fa-font-path('#{$la-font-path}#{$la-font-name}.eot?v=#{$la-version}'), '#{$la-font-path}#{$la-font-name}.eot?v=#{$la-version}'));
+  src: url(if($la-sass-asset-helper, fa-font-path('#{$la-font-path}#{$la-font-name}.eot?v=#{$la-version}#iefix'), '#{$la-font-path}#{$la-font-name}.eot?v=#{$la-version}#iefix')) format('embedded-opentype'),
+    url(if($la-sass-asset-helper, fa-font-path('#{$la-font-path}#{$la-font-name}.woff2?v=#{$la-version}'), '#{$la-font-path}#{$la-font-name}.woff2?v=#{$la-version}')) format('woff2'),
+    url(if($la-sass-asset-helper, fa-font-path('#{$la-font-path}#{$la-font-name}.woff?v=#{$la-version}'), '#{$la-font-path}#{$la-font-name}.woff?v=#{$la-version}')) format('woff'),
+    url(if($la-sass-asset-helper, fa-font-path('#{$la-font-path}#{$la-font-name}.ttf?v=#{$la-version}'), '#{$la-font-path}#{$la-font-name}.ttf?v=#{$la-version}')) format('truetype'),
+    url(if($la-sass-asset-helper, fa-font-path('#{$la-font-path}#{$la-font-name}.svg?v=#{$la-version}#lineawesomeregular'), '#{$la-font-path}#{$la-font-name}.svg?v=#{$la-version}#lineawesomeregular')) format('svg');
+  font-weight: normal;
+  font-style: normal;
+}

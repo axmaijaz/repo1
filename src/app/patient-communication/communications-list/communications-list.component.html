@@ -1,0 +1,539 @@
+<div [class.inside-main]="insideMain && insideSideNav" [class.expanded-chat-view]="!insideMain && insideSideNav"  class="d-flex" *ngIf="compactMode">
+  <div class="left-side-chat shadow ">
+    <div class="left-side-chat-header">
+      <div class="d-inline-flex align-items-center">
+        <span> <span *ngIf="!insideMain" (click)="DisplayListView();" class="fa fa-arrow-left fa-lg cursor-pointer"></span>
+        <span  [routerLink]="'/admin/usersettings'" [queryParams]="{type: 'RC'}" class="icon-color" class="fa fa-gear mr-1 fa-md cursor-pointer"></span>
+        Messages</span>
+        <span  class="msg-unread">{{summaryData.unread || '0'}}</span>
+      </div>
+      <div class="d-inline-flex align-items-center ">
+          <div class="chat-list-box chat-new" title="Following" [class.active]="communicationHistoryParam.Following == true"
+          (click)="SummaryFilterChanged('Following')">
+              <div class="w-100">
+                  <h2>{{summaryData.following || '0'}}</h2>
+              </div>
+              <span class="box-img-icon">
+                  <!-- <img src="../../../assets/img/new.svg"> -->
+                  <img src="../../../assets/img/flag.svg">
+              </span>
+          </div>
+          <div class="chat-list-box chat-critical" title="Critical" [class.active]="communicationHistoryParam.Critical == true"
+          (click)="SummaryFilterChanged('Critical')">
+              <div class="w-100">
+                  <h2>{{summaryData.critical || '0'}}</h2>
+              </div>
+              <span class="box-img-icon">
+                  <img src="../../../assets/img/cri.svg">
+              </span>
+          </div>
+          <ng-container *hasClaim="['TelephonyCommunication']">
+            <div *ngIf="rcService?.rcPhoneInfo?.length" class="openRingCentral cusor-pointer" (click)="RequestRcViewStateChange()">
+              <!-- <div class="expanded-view">
+                <span class="fa fa-angle-right" ></span>
+              </div> -->
+              <img class="img-fluid  cursor-pointer" src="https://netstorage.ringcentral.com/appext/logo/TXmRITezQwat3ioy9O0kiw~f5vX_dY7SpK-_EUsEkJdqA/fe64c15a-1442-4ebf-8d24-8454afa816e4.png">
+            </div>
+          </ng-container>
+      </div>
+    </div>
+    <div class="left-side-chat-search">
+      <input [(ngModel)]="searchStr" (ngModelChange)="SearchChat()" type="text" placeholder="Search Patient">
+      <span class="fa fa-search"></span>
+    </div>
+    <div class="left-side-chat-body">
+      <div class="body-scroll">
+        <div class="preview-name-msg" [class.unread-row]="item.unread" [class.active]="item.id == selectedGroup?.id" *ngFor="let item of commGroupsList"
+          (click)="LoadGroupDetails(item)">
+          <div class="name-msg-avatar">
+            <span class="avatar">
+              {{item.lastCommunication?.shortCode}}
+            </span>
+            <div class="show-name-msg">
+              <div class="show-name">
+                <span class="name-overflow">{{item.lastCommunication?.patientName}}</span>
+                <span class="time">{{item.lastCommunication?.timeStamp}}</span>
+              </div>
+              <div class="d-flex align-content-center justify-content-between mt-1">
+                <div class="show-msg">
+                  {{item.lastCommunication?.message}}
+                </div>
+                <div class="show-icons">
+                  <div class="d-inline-flex">
+                    <span class="msg-icon" *ngIf="item.lastCommunication?.type == CommunicationType.Text">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="14" viewBox="0 0 15 14" fill="none">
+                        <path
+                          d="M4.61111 4.59862H10.3889M4.61111 7.47751H8.94444M11.8333 1C12.408 1 12.9591 1.22748 13.3654 1.63241C13.7717 2.03733 14 2.58652 14 3.15917V8.91696C14 9.4896 13.7717 10.0388 13.3654 10.4437C12.9591 10.8486 12.408 11.0761 11.8333 11.0761H8.22222L4.61111 13.2353V11.0761H3.16667C2.59203 11.0761 2.04093 10.8486 1.6346 10.4437C1.22827 10.0388 1 9.4896 1 8.91696V3.15917C1 2.58652 1.22827 2.03733 1.6346 1.63241C2.04093 1.22748 2.59203 1 3.16667 1H11.8333Z"
+                          stroke="#134389" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                      </svg>
+                    </span>
+                    <span class="msg-icon" *ngIf="item.lastCommunication?.type == CommunicationType.SMS">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="12" viewBox="0 0 13 12" fill="none">
+                        <path d="M6.50066 10.5614C10.0905 10.5614 13 8.1978 13 5.28071C13 2.36363 10.0905 0 6.50066 0C2.91079 0 0.001319 2.36363 0.001319 5.28071C0.001319 6.42572 0.450687 7.4844 1.21233 8.35013C1.16409 8.97214 0.922905 9.5256 0.669025 9.94704C0.52939 10.1806 0.387217 10.3685 0.283126 10.4954C0.229811 10.5589 0.189191 10.6071 0.158725 10.6401C0.143492 10.6554 0.133337 10.6681 0.12572 10.6757L0.118104 10.6833C0.00131901 10.8001 -0.0316855 10.9727 0.0317847 11.125C0.0952548 11.2774 0.242505 11.3764 0.407528 11.3764C1.13616 11.3764 1.86988 11.1504 2.47919 10.8864C3.06058 10.6325 3.55565 10.3304 3.85776 10.1095C4.6651 10.4015 5.55876 10.564 6.50066 10.564V10.5614ZM5.15255 3.67619C5.31758 3.62034 5.50037 3.67873 5.607 3.81836L6.50066 5.00906L7.39432 3.81836C7.49841 3.67873 7.6812 3.62034 7.84876 3.67619C8.01633 3.73204 8.12549 3.88691 8.12549 4.06209V6.49934C8.12549 6.72276 7.9427 6.90555 7.71929 6.90555C7.49587 6.90555 7.31308 6.72276 7.31308 6.49934V5.28071L6.82563 5.93065C6.74946 6.0322 6.6276 6.09313 6.50066 6.09313C6.37372 6.09313 6.25186 6.0322 6.17569 5.93065L5.68824 5.28071V6.49934C5.68824 6.72276 5.50545 6.90555 5.28203 6.90555C5.05862 6.90555 4.87582 6.72276 4.87582 6.49934V4.06209C4.87582 3.88691 4.98753 3.73204 5.15255 3.67619ZM9.54723 4.64094V4.65109C9.54976 4.65363 9.56246 4.6714 9.60308 4.69425C9.70209 4.75264 9.8468 4.79834 10.0677 4.86689L10.0829 4.87197C10.2708 4.92782 10.5221 5.00398 10.7227 5.13093C10.9537 5.27564 11.1644 5.51682 11.1695 5.89003C11.1746 6.27085 10.9766 6.55012 10.7176 6.71006C10.4764 6.85985 10.187 6.91063 9.9382 6.90301C9.62847 6.89286 9.3365 6.7913 9.11055 6.71514C9.07501 6.70245 9.042 6.69229 9.009 6.6796C8.79574 6.60851 8.68149 6.37748 8.75258 6.16676C8.82367 5.95604 9.0547 5.83925 9.26542 5.91034C9.30858 5.92557 9.3492 5.93826 9.38982 5.95096C9.62085 6.02966 9.78587 6.08552 9.96359 6.09059C10.0981 6.09567 10.2175 6.06521 10.2886 6.01951C10.319 5.9992 10.3343 5.98142 10.3419 5.96873C10.3469 5.95858 10.3571 5.93826 10.3571 5.90018V5.89511C10.3571 5.87733 10.3571 5.85956 10.2886 5.8164C10.1921 5.75547 10.0448 5.70723 9.83157 5.64122L9.80111 5.63107C9.61831 5.57522 9.37713 5.50413 9.18418 5.38734C8.95568 5.25025 8.73481 5.01414 8.73481 4.64094C8.73227 4.25504 8.95314 3.98846 9.20449 3.83867C9.44313 3.69904 9.72494 3.64826 9.95851 3.6508C10.2124 3.65588 10.4587 3.70919 10.6668 3.76251C10.8826 3.8209 11.0121 4.04178 10.9537 4.26012C10.8953 4.47845 10.6745 4.60539 10.4561 4.547C10.2708 4.49876 10.0981 4.46322 9.94582 4.46068C9.82142 4.45814 9.69701 4.48861 9.61831 4.53431C9.58277 4.55462 9.565 4.57493 9.55738 4.58508C9.5523 4.5927 9.54723 4.60539 9.54723 4.63332V4.64094ZM2.64168 4.64094V4.65109C2.64421 4.65363 2.65691 4.6714 2.69753 4.69425C2.79654 4.75264 2.94126 4.79834 3.16213 4.86689L3.17736 4.87197C3.36524 4.92782 3.61658 5.00398 3.81714 5.13093C4.04817 5.27564 4.25889 5.51682 4.26397 5.89003C4.26905 6.27085 4.07102 6.55012 3.81207 6.71006C3.57088 6.85985 3.28146 6.91063 3.03265 6.90301C2.72038 6.89286 2.41826 6.78876 2.18977 6.71006C2.15676 6.69991 2.1263 6.68975 2.09837 6.6796C1.88511 6.60851 1.77087 6.37748 1.84195 6.16676C1.91304 5.95604 2.14407 5.83925 2.35479 5.91034C2.39033 5.92303 2.42588 5.93319 2.45888 5.94588C2.70007 6.02712 2.87779 6.08805 3.06058 6.09313C3.19514 6.09821 3.31446 6.06774 3.38555 6.02205C3.41601 6.00174 3.43124 5.98396 3.43886 5.97127C3.44394 5.96111 3.45409 5.9408 3.45409 5.90272V5.89764C3.45409 5.87987 3.45409 5.8621 3.38555 5.81894C3.28907 5.75801 3.14182 5.70977 2.92856 5.64376L2.8981 5.63361C2.7153 5.57775 2.47412 5.50667 2.28117 5.38988C2.05267 5.25533 1.8318 5.01922 1.82926 4.64601C1.82672 4.26011 2.0476 3.99354 2.29894 3.84375C2.53759 3.70412 2.81939 3.65334 3.05296 3.65588C3.29415 3.65842 3.61658 3.70919 3.84253 3.76759C4.05833 3.82598 4.18781 4.04686 4.12942 4.26519C4.07102 4.48353 3.85015 4.61047 3.63181 4.55208C3.46425 4.50638 3.20529 4.4683 3.04027 4.46576C2.91587 4.46322 2.79147 4.49369 2.71276 4.53938C2.67722 4.55969 2.65945 4.58 2.65183 4.59016C2.64675 4.59778 2.64168 4.61047 2.64168 4.6384V4.64094Z" fill="#134389"/>
+                    </svg>
+                    </span>
+                    <span class="msg-badge">
+                      {{CommunicationMethod[item.lastCommunication?.method]}}
+                    </span>
+                    <span title="UnAssociated Communications" *ngIf="item.unAssociatedCommunication > 0" style="width: 30px;" class="msg-badge">
+                      {{item.unAssociatedCommunication}}
+                    </span>
+                    <span class="flag-chat ml-2 mr-2" title="Following" [class.active]="item.following == true"
+                      (click)="$event.stopPropagation();item.following=!item.following;MarkPatientGroupFlags(item)">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="17" height="16" viewBox="0 0 17 16" fill="none">
+                        <path d="M17 6.00024C17.0001 6.13872 16.9562 6.27379 16.8744 6.38668C16.7926 6.49958 16.677 6.5847 16.5436 6.63023L1.36 11.8076V15.3333C1.36 15.5102 1.28836 15.6797 1.16083 15.8047C1.03331 15.9298 0.860347 16 0.68 16C0.499653 16 0.326692 15.9298 0.199168 15.8047C0.0716429 15.6797 1.15616e-07 15.5102 1.15616e-07 15.3333V0.667039C-6.31722e-05 0.560629 0.0258571 0.45575 0.0755943 0.361169C0.125331 0.266588 0.19744 0.185054 0.285893 0.123382C0.374346 0.0617096 0.476572 0.0216917 0.584027 0.0066733C0.691482 -0.00834515 0.801042 0.002072 0.90355 0.0370544L16.5436 5.37026C16.677 5.41578 16.7926 5.5009 16.8744 5.6138C16.9562 5.7267 17.0001 5.86176 17 6.00024Z" fill="#FFC700"/>
+                      </svg>
+                    </span>
+                    <span class="cri-chat mr-2" title="Critical" [class.active]="item.critical == true"
+                      (click)="$event.stopPropagation();item.critical=!item.critical;MarkPatientGroupFlags(item)">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="4" height="18" viewBox="0 0 4 18" fill="none">
+                        <path d="M1.76306 1C1.35083 1 0.973819 1.35035 1.00143 1.76163L1.38224 12.0437C1.38224 12.1447 1.42237 12.2415 1.49378 12.313C1.5652 12.3844 1.66206 12.4245 1.76306 12.4245C1.86406 12.4245 1.96092 12.3844 2.03234 12.313C2.10376 12.2415 2.14388 12.1447 2.14388 12.0437L2.52469 1.76163C2.5523 1.35035 2.17529 1 1.76306 1Z" stroke="#FF0000" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M1.7631 16.9998C2.18374 16.9998 2.52473 16.6588 2.52473 16.2382C2.52473 15.8176 2.18374 15.4766 1.7631 15.4766C1.34246 15.4766 1.00146 15.8176 1.00146 16.2382C1.00146 16.6588 1.34246 16.9998 1.7631 16.9998Z" stroke="#FF0000" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </span>
+                    <span *ngIf="item.unread" title="Unread Count" class="show-unread">{{item.unread || '0'}}</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-12 bg-white py-2 profile-block"  *ngIf="gettingGroups">
+          <div  class="mt-2 row" *ngFor="let item of [1,2,3,4]">
+            <div class="col-12">
+              <skltn-root duration="1000" [rectRadius]="2" flareWidth="50%" bgFill="#f2f3f8"
+                  flareFill="rgba(255,255,255, 0.5)">
+                  <!-- Card with Avatar -->
+                  <div class="skltn-card message-skltn-card">
+                    <div class="skltn-card__body"  >
+                      <div skltn-bone class="skltn-card__avatar" type="circle"></div>
+                      <div skltn-bone class="skltn-card__title"></div>
+                      <div skltn-bone class="skltn-card__line"></div>
+                      <div skltn-bone class="skltn-card__line"></div>
+                    </div>
+                  </div>
+                </skltn-root>
+            </div>
+            </div>
+          </div>
+      </div>
+    </div>
+  </div>
+  <app-communication-detail class="w-100" #detailCompRef *ngIf="fromRoute && !insideSideNav"
+    [selectedGroup]="selectedGroup"></app-communication-detail>
+</div>
+<div style="overflow-y: auto;max-height: 100%;">
+  <div class="card rounded-lg shadow-sm"  *ngIf="!compactMode && !insideMain">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-sm-3 col-md-2">
+          <div class="chat-f-box chat-new" [class.active]="communicationHistoryParam.UnRead == true"
+            (click)="SummaryFilterChanged('UnRead')">
+            <span class="box-img-icon">
+              <img src="../../../assets/img/new.svg">
+            </span>
+            <div>
+              <h2>{{summaryData.unread || '0'}}</h2>
+              <p>New</p>
+            </div>
+          </div>
+        </div>
+        <!-- <div class="col">
+                  <div class="chat-f-box chat-multi" [class.active]="communicationHistoryParam.UnRead">
+                      <span class="box-img-icon">
+                          <img src="../../../assets/img/multi.svg">
+                      </span>
+                      <div>
+                          <h2>6</h2>
+                          <p>Multipule</p>
+                      </div>
+                  </div>
+              </div> -->
+        <div class="col-sm-3 col-md-2">
+          <div class="chat-f-box chat-critical" [class.active]="communicationHistoryParam.Critical == true"
+            (click)="SummaryFilterChanged('Critical')">
+            <span class="box-img-icon">
+              <img src="../../../assets/img/cri.svg">
+            </span>
+            <div>
+              <h2>{{summaryData.critical || '0'}}</h2>
+              <p>Critical</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-3 col-md-2">
+          <div class="chat-f-box chat-follow" [class.active]="communicationHistoryParam.Following == true"
+            (click)="SummaryFilterChanged('Following')">
+            <span class="box-img-icon">
+              <img src="../../../assets/img/flag.svg">
+            </span>
+            <div>
+              <h2>{{summaryData.following || '0'}}</h2>
+              <p>Following</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-3 col-md-2 ml-auto">
+          <div class="d-flex align-items-end">
+            <div class="chat-f-box chat-anon" [class.active]="AnonymousSelected == true"
+            (click)="AnonymousSelectionChanged()">
+              <span class="box-img-icon">
+                <img src="../../../assets/img/anon.svg">
+              </span>
+              <div>
+                <h2>{{summaryData.anonymous || '0'}}</h2>
+                <p>Anonymous</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="text-right d-flex justify-content-end" *ngIf="!compactMode && !insideMain">
+    <button (click)="ResetGroupsData()" class="btn btn-dynamic-secondary-2c btn-sm" type="button">  Reset </button>
+    <div [class.disabled]="!selectedItems?.length" class="dropdown" mdbDropdown>
+      <button mdbDropdownToggle class="btn btn-dynamic-2c btn-icon" type="button">
+        <i class="fa fa-ellipsis-v"></i>
+      </button>
+
+      <div class="dropdown-menu dropdown-menu-right mr-3">
+        <a class="dropdown-item" (click)="ConfirmChangeFlag('unRead')">
+          <span class="btn btn-icon btn-dynamic-2c m-0 mr-2" >
+            <svg width="17" height="11" viewBox="0 0 23 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M13.7885 12.7471H15.9595V10.6822H18.1304V8.61723H15.9595V6.55228H13.7885V8.61723H11.6175V10.6822H13.7885V12.7471ZM2.93367 16.877C2.33665 16.877 1.82539 16.6747 1.39988 16.2699C0.974366 15.8652 0.761973 15.3793 0.762697 14.8121V2.42238C0.762697 1.85451 0.975452 1.36822 1.40096 0.963487C1.82647 0.558756 2.33737 0.356735 2.93367 0.357424H9.44657L11.6175 2.42238H20.3014C20.8984 2.42238 21.4097 2.62474 21.8352 3.02947C22.2607 3.4342 22.4731 3.92016 22.4724 4.48733V14.8121C22.4724 15.38 22.2596 15.8663 21.8341 16.271C21.4086 16.6757 20.8977 16.8777 20.3014 16.877H2.93367ZM2.93367 2.42238V14.8121H20.3014V4.48733H10.722L8.55104 2.42238H2.93367Z" fill="#fff"/>
+              </svg>
+          </span>
+          Mark as unread
+        </a>
+        <a class="dropdown-item"  (click)="ConfirmChangeFlag('critical')">
+          <span  class="btn btn-icon btn-dynamic-2c m-0 mr-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="4" height="18" viewBox="0 0 4 18" fill="none">
+              <path d="M1.76306 1C1.35083 1 0.973819 1.35035 1.00143 1.76163L1.38224 12.0437C1.38224 12.1447 1.42237 12.2415 1.49378 12.313C1.5652 12.3844 1.66206 12.4245 1.76306 12.4245C1.86406 12.4245 1.96092 12.3844 2.03234 12.313C2.10376 12.2415 2.14388 12.1447 2.14388 12.0437L2.52469 1.76163C2.5523 1.35035 2.17529 1 1.76306 1Z" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M1.7631 16.9998C2.18374 16.9998 2.52473 16.6588 2.52473 16.2382C2.52473 15.8176 2.18374 15.4766 1.7631 15.4766C1.34246 15.4766 1.00146 15.8176 1.00146 16.2382C1.00146 16.6588 1.34246 16.9998 1.7631 16.9998Z" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          Critical
+        </a>
+        <a class="dropdown-item"  (click)="ConfirmChangeFlag('following')">
+          <span class="btn btn-icon btn-dynamic-2c m-0 mr-2" >
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="11" viewBox="0 0 17 16" fill="none">
+              <path d="M17 6.00024C17.0001 6.13872 16.9562 6.27379 16.8744 6.38668C16.7926 6.49958 16.677 6.5847 16.5436 6.63023L1.36 11.8076V15.3333C1.36 15.5102 1.28836 15.6797 1.16083 15.8047C1.03331 15.9298 0.860347 16 0.68 16C0.499653 16 0.326692 15.9298 0.199168 15.8047C0.0716429 15.6797 1.15616e-07 15.5102 1.15616e-07 15.3333V0.667039C-6.31722e-05 0.560629 0.0258571 0.45575 0.0755943 0.361169C0.125331 0.266588 0.19744 0.185054 0.285893 0.123382C0.374346 0.0617096 0.476572 0.0216917 0.584027 0.0066733C0.691482 -0.00834515 0.801042 0.002072 0.90355 0.0370544L16.5436 5.37026C16.677 5.41578 16.7926 5.5009 16.8744 5.6138C16.9562 5.7267 17.0001 5.86176 17 6.00024Z" fill="#fff"/>
+            </svg>
+          </span>
+            Following
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="bg-white mt-1 position-relative" *ngIf="!compactMode && !insideMain">
+    <div *ngIf="gettingGroups" style="top:0;" class="d-flex justify-content-center text-center loadingrow">
+      <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+    </div>
+    <div class="table-responsive" *ngIf="!AnonymousSelected">
+
+      <table class="table ">
+        <thead class="bg-dynamic-2c text-white">
+          <tr>
+            <th style="width:50px;">
+              <div class="form-check pl-0 form-check-inline" >
+                <div class="form-group mb-0">
+                  <div class="custom-control custom-checkbox w-info-90">
+                    <input type="checkbox" [(ngModel)]="allSelected" (change)="selectAllDetails()" class="custom-control-input" id="cptcheck">
+                    <label class="custom-control-label" for="cptcheck"></label>
+                  </div>
+                </div>
+              </div>
+            </th>
+            <th (click)="ApplySorting('From')" style="width: 220px;">
+              From
+              <span [class.fa-sort-asc]="communicationHistoryParam.SortBy=='From' && communicationHistoryParam.SortOrder == 0"
+              [class.fa-sort-desc]="communicationHistoryParam.SortBy=='From' && communicationHistoryParam.SortOrder == 1"
+              class="fa fa-sort text-white ml-2 cursor-pointer"></span>
+            </th>
+            <th (click)="ApplySorting('Time')" class="text-center" style="min-width: 150px;">
+              Time
+              <span [class.fa-sort-asc]="communicationHistoryParam.SortBy=='Time' && communicationHistoryParam.SortOrder == 0"
+              [class.fa-sort-desc]="communicationHistoryParam.SortBy=='Time' && communicationHistoryParam.SortOrder == 1"
+              class="fa fa-sort ml-2 text-white cursor-pointer"></span>
+            </th>
+            <th (click)="ApplySorting('Origin')" class="text-center" style="width: 150px;">
+              Origin
+              <span [class.fa-sort-asc]="communicationHistoryParam.SortBy=='Origin' && communicationHistoryParam.SortOrder == 0"
+              [class.fa-sort-desc]="communicationHistoryParam.SortBy=='Origin' && communicationHistoryParam.SortOrder == 1"
+              class="fa fa-sort ml-2 cursor-pointer"></span>
+            </th>
+            <th (click)="ApplySorting('Type')" class="text-center" style="width: 100px;">
+              Type
+              <span [class.fa-sort-asc]="communicationHistoryParam.SortBy=='Type' && communicationHistoryParam.SortOrder == 0"
+              [class.fa-sort-desc]="communicationHistoryParam.SortBy=='Type' && communicationHistoryParam.SortOrder == 1"
+              class="fa fa-sort ml-2  cursor-pointer"></span>
+            </th>
+            <th>Message</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of commGroupsList" [class.unread-row]="item.unread">
+            <td>
+              <div class="form-check pl-0 form-check-inline" >
+                <div class="form-group mb-0">
+                  <div class="custom-control custom-checkbox w-info-90">
+                    <input type="checkbox" [(ngModel)]="item.selected" (change)="selectDetail()"
+                     class="custom-control-input" id="{{item.id+ 'sadsdasdas'}}">
+                    <label class="custom-control-label" for="{{item.id+ 'sadsdasdas'}}"></label>
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="d-flex justify-content-start align-items-center">
+                <div class="d-inline-flex align-items-center">
+                  <span class="profile-box mr-2">
+                    {{item.lastCommunication?.shortCode}}
+                  </span>
+                  <p class="mb-0 name-ph-patient-chat-list text-dynamic-2c cursor-pointer" title="{{item.lastCommunication?.patientName}}" (click)="OpenPatientDetail(item)">{{item.lastCommunication?.patientName}}</p>
+                </div>
+                <div class="d-inline-flex align-items-center ml-2" >
+                  <span class="flag-chat mr-2" title="Following" [class.active]="item.following == true"
+                    (click)="item.following=!item.following;MarkPatientGroupFlags(item)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="17" height="16" viewBox="0 0 17 16" fill="none">
+                      <path d="M17 6.00024C17.0001 6.13872 16.9562 6.27379 16.8744 6.38668C16.7926 6.49958 16.677 6.5847 16.5436 6.63023L1.36 11.8076V15.3333C1.36 15.5102 1.28836 15.6797 1.16083 15.8047C1.03331 15.9298 0.860347 16 0.68 16C0.499653 16 0.326692 15.9298 0.199168 15.8047C0.0716429 15.6797 1.15616e-07 15.5102 1.15616e-07 15.3333V0.667039C-6.31722e-05 0.560629 0.0258571 0.45575 0.0755943 0.361169C0.125331 0.266588 0.19744 0.185054 0.285893 0.123382C0.374346 0.0617096 0.476572 0.0216917 0.584027 0.0066733C0.691482 -0.00834515 0.801042 0.002072 0.90355 0.0370544L16.5436 5.37026C16.677 5.41578 16.7926 5.5009 16.8744 5.6138C16.9562 5.7267 17.0001 5.86176 17 6.00024Z" fill="#7dc700"/>
+                    </svg>
+                  </span>
+                  <span class="cri-chat" title="Critical" [class.active]="item.critical == true"
+                    (click)="item.critical=!item.critical;MarkPatientGroupFlags(item)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="4" height="18" viewBox="0 0 4 18" fill="none">
+                      <path d="M1.76306 1C1.35083 1 0.973819 1.35035 1.00143 1.76163L1.38224 12.0437C1.38224 12.1447 1.42237 12.2415 1.49378 12.313C1.5652 12.3844 1.66206 12.4245 1.76306 12.4245C1.86406 12.4245 1.96092 12.3844 2.03234 12.313C2.10376 12.2415 2.14388 12.1447 2.14388 12.0437L2.52469 1.76163C2.5523 1.35035 2.17529 1 1.76306 1Z" stroke="#FF0000" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M1.7631 16.9998C2.18374 16.9998 2.52473 16.6588 2.52473 16.2382C2.52473 15.8176 2.18374 15.4766 1.7631 15.4766C1.34246 15.4766 1.00146 15.8176 1.00146 16.2382C1.00146 16.6588 1.34246 16.9998 1.7631 16.9998Z" stroke="#FF0000" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </span>
+                </div>
+
+              </div>
+            </td>
+            <td class="text-center">{{item.lastCommunication?.timeStamp}}</td>
+            <td class="text-center">
+              <span class="badge badge-info "
+                style="width: 100px;">{{CommunicationMethod[item.lastCommunication?.method]}}</span>
+            </td>
+            <td *ngIf="item.lastCommunication?.type == CommunicationType.Text" class="text-center"><img
+                src="../../../assets/img/chat.svg"></td>
+            <td *ngIf="item.lastCommunication?.type == CommunicationType.SMS" class="text-center"><img
+                src="../../../assets/img/sms.svg"></td>
+            <td *ngIf="item.lastCommunication?.type == CommunicationType.Document" class="text-center"><img
+                src="../../../assets/img/pin.svg"></td>
+            <!-- <td class="text-center"><img src="../../../assets/img/audio.svg"></td> -->
+            <td>
+              <div class="d-flex justify-content-between align-items-center">
+                <p class="mb-0 mr-3" style="width: 300px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">{{item.lastCommunication?.message}}</p>
+                <button (click)="LoadGroupDetails(item)" class="btn btn-icon btn-dynamic-2c m-0">
+                  <span class="fa fa-arrow-right"></span>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+    <div class="table-responsive" *ngIf="AnonymousSelected">
+
+      <table class="table ">
+        <thead class="bg-dynamic-2c text-white">
+          <tr>
+            <th style="width: 250px;">Phone Number</th>
+            <th class="text-center" style="min-width: 150px;">Time</th>
+            <th class="text-center" style="width: 100px;">Type</th>
+            <th>Message</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let group of anonymousGroups">
+            <td>
+              <div class="d-flex justify-content-start align-items-center">
+                <div class="d-inline-flex align-items-center">
+                  <!-- <span class="profile-box mr-2">
+                    {{group?.lastCommunication?.lastCommunication?.shortCode}}
+                  </span> -->
+                  <p class="mb-0 ph-patient-chat-list">{{group?.lastCommunication?.phoneNo}}</p>
+                </div>
+                <div class="d-inline-flex align-items-center ml-2" >
+                      <button class="btn btn-icon bg-transparent z-depth-0 m-0">
+                        <i
+                          class="fa fa-arrow-{{group?.lastCommunication?.direction === 'Outbound' ? 'up': 'down'}} text-{{group?.lastCommunication?.direction === 'Outbound' ? 'primary': 'secondary'}}"></i>
+                      </button>
+                       <button (click)="selectAnonymousGroup(group);mapModal.show();" class="btn btn-icon btn-dynamic-2c m-0">
+                  <span class="fa fa-arrow-right"></span>
+                </button>
+                </div>
+              </div>
+            </td>
+            <td class="text-center">{{group?.lastCommunication?.creationTime}}</td>
+            <!-- <td class="text-center"><img src="../../../assets/img/sms.svg"></td> -->
+            <td class="text-center">
+              <span class="badge badge-info "
+                style="width: 100px;">{{group?.lastCommunication?.type}}</span>
+            </td>
+            <td>
+              <div class="d-flex justify-content-between align-items-center">
+                <p class="mb-0 mr-3" style="width: 300px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">{{group?.lastCommunication?.subject}}</p>
+                <!-- <button (click)="LoadGroupDetails(item)" class="btn btn-icon btn-dynamic-2c m-0">
+                  <span class="fa fa-arrow-right"></span>
+                </button> -->
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div mdbModal #mapModal="mdbModal" class="modal fade" tabindex="-1" role="dialog" [config]="{backdrop: false}"
+  aria-labelledby="mymapModalLabel" aria-hidden="true" (close)="MapPhoneNumberModelClosed()">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="mapModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100 text-dynamic-2c" id="myModalLabel">Map Phone Number</h4>
+      </div>
+
+      <div class="modal-body py-0">
+        <div class="row">
+          <div class="col-6 py-3 border-right">
+            <div class="row justify-content-center align-content-between" >
+              <div class="col-8">
+                <div class="preview-number" *ngIf="selectedPhoneNumber">
+                  {{selectedPhoneNumber}}
+                </div>
+                <!-- <div class="form-group position-relative mt-4">
+                  <input type="text" class="map-form-control form-control-sm">
+                  <span class="fa fa-search map-search" ></span>
+                </div> -->
+                <ng-select id="medNameSearch" class="ng-select-small form-group mt-4" #searchPatientRef="ngModel"
+                [(ngModel)]="selectedPatient" [loading]="isLoading" [multiple]="false"
+                  [searchable]="true" placeholder="Search Patient" [typeahead]="searchWatch">
+                  <ng-option (click)="selectedPatient = item" [value]="item" *ngFor="let item of rows">
+                    {{item.fullName}} ({{item.patientEmrId}})</ng-option>
+                </ng-select>
+              </div>
+              <div class="col-12">
+                <div class="border-maping">
+                  <div class="row">
+                    <div class="col-6">
+                      <div class="d-flex justify-content-start align-items-end ">
+                        <div class="radio-select" [class.active]="mapType==1" (click)="changePatientPhone(1)">
+                        </div>
+                        <div class="form-group mb-0">
+                          <label class="w-100 d-inline-flex justify-content-between align-items-center">
+                            <span class="pnum">Primary Number</span>
+                            <span class="pno">{{selectedPatient?.primaryPhoneNumber}}</span>
+                          </label>
+                          <input readonly [(ngModel)]="mapNumberObj.primaryPhoneNumber" type="text" class="form-control">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="d-flex justify-content-start align-items-end ">
+                        <div class="radio-select" [class.active]="mapType==2" (click)="changePatientPhone(2)">
+                        </div>
+                        <div class="form-group mb-0">
+                          <label class="w-100 d-inline-flex justify-content-between align-items-center">
+                            <span class="pnum">Secondary Number</span>
+                            <span class="pno">{{selectedPatient?.secondaryPhoneNumber}}</span>
+                          </label>
+                          <input readonly [(ngModel)]="mapNumberObj.secondaryPhoneNumber" type="text" class="form-control">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 py-3">
+            <!-- <div class="row">
+              <div class="col-6">
+                <div class="d-flex justify-content-start align-items-center mb-2" >
+                  <div class="tile-map-primary">ID</div>
+                  <div class="tile-map-grey" title="230000">230</div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="d-flex justify-content-start align-items-center mb-2" >
+                  <div class="tile-map-primary">EMR ID</div>
+                  <div class="tile-map-grey" title="230000">230</div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="d-flex justify-content-start align-items-center mb-2" >
+                  <div class="tile-map-primary">Organization</div>
+                  <div class="tile-map-grey" title="230000">230</div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="d-flex justify-content-start align-items-center mb-2" >
+                  <div class="tile-map-primary">Facility</div>
+                  <div class="tile-map-grey" title="230000">kjdshkhdjkhdaJKHDkjhdKHdkjkhDKHdkj</div>
+                </div>
+              </div>
+            </div> -->
+            <div class="row">
+              <div class="col-12">
+                <div class="map-chat-box">
+                  <div class="map-chat-list">
+                    <ng-container *ngFor="let item of selectedAnonymousGroup?.communications">
+                      <div class="msg-out-map" *ngIf="item.direction=='Inbound'">
+                        <div class="show-name-msg">
+                            <div class="show-name">{{item.phoneNo}}</div>
+                            <div class="show-msg">
+                              {{item.subject}}
+                            </div>
+                            <div class="date-icon">
+                                <span class="msg-date">
+                                  {{item.creationTime | date}}
+                                </span>
+                            </div>
+                        </div>
+                      </div>
+                      <div class="msg-in-map" *ngIf="item.direction=='Outbound'">
+                        <div class="show-name-msg">
+                            <div class="show-name">{{item.phoneNo}}</div>
+                            <div class="show-msg">
+                              {{item.subject}}
+                            </div>
+                            <div class="date-icon">
+                                <span class="msg-date">
+                                  {{item.creationTime | date}}
+                                </span>
+                            </div>
+                        </div>
+                      </div>
+                    </ng-container>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+
+      <div class="modal-footer">
+        <div class="w-100 d-flex justify-content-end align-item-center">
+
+          <div>
+            <button type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+              (click)="mapModal.hide()" mdbWavesEffect>Cancel</button>
+            <button [disabled]="!mapNumberObj.primaryPhoneNumber && !mapNumberObj.secondaryPhoneNumber" (click)="MapNumberTOUser(mapModal)" [disabled]=" mappingNumber"
+              type="button" class="relative waves-light btn btn-sm btn-dynamic-2c" mdbWavesEffect>Save
+              changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

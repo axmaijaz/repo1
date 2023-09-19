@@ -1,0 +1,305 @@
+<div class="ccm-body" id="disableMedica54View" *ngIf="!hideListView">
+  <div class="d-flex align-items-center justify-content-between p-3">
+    <p class="mb-0"><strong *ngIf="!careplanView">Medication Record</strong></p>
+    <button [disabled]="awDisable" (click)="resetMedication(); medicationName.reset();dose.reset();addMedicationMOdal.show();status.reset();" *hasClaim=" ['CanModifyMedication']"
+      class="btn btn-dynamic-2c btn-sm m-0" title="Add Medication" date-placement="left">Add New</button>
+  </div>
+  <div *ngIf="isLoading" class="d-flex justify-content-center text-center">
+    <!-- <div class="d-flex justify-content-center text-center"> -->
+    <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+  </div>
+
+  <ngx-datatable style="width: 100%;" [columnMode]="'force'" class="material z-depth-0" [headerHeight]="50"
+    [footerHeight]="50" [rowHeight]="35" [scrollbarV]="false" [scrollbarH]="true" [rows]="rows" [limit]="15"
+    (activate)="onActivate($event)">
+    <ngx-datatable-column name="#" [maxWidth]=50>
+      <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+        {{rowIndex + 1}}
+      </ng-template>
+    </ngx-datatable-column>
+    <!-- <ngx-datatable-column name="RXCUI" prop="rxCui">
+      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+        <div *ngIf="row.rxCui" class="d-flex  align-items-center">
+          <div class="mr-2">
+            <span style="cursor: pointer;" (click)="getInfo(row.rxCui)" title="Info" class="text-dynamic-2c"><i class="fa fa-info-circle fa-lg"></i></span>
+          </div>
+          <div>
+            <p class="mb-0">{{row.rxCui}}</p>
+          </div>
+        </div>
+      </ng-template>
+    </ngx-datatable-column> -->
+    <ngx-datatable-column name="Medication" prop="medicationName">
+    </ngx-datatable-column>
+    <!-- <ngx-datatable-column name="Generic Name" prop="genericName">
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Brand Name" prop="brandName">
+    </ngx-datatable-column> -->
+    <ngx-datatable-column name="Dose" prop="dose">
+    </ngx-datatable-column>
+    <!-- <ngx-datatable-column name="Dose Form" prop="doseForm">
+    </ngx-datatable-column> -->
+    <ngx-datatable-column name="Start Date" prop="startDate">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        <!-- {{row.startDate | dateFormatPipe}} -->
+        {{row.startDate | dateFormatPipe}}
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Stop Date" prop="stopDate">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        <!-- {{row.stopDate | dateFormatPipe}} -->
+        {{row.stopDate | dateFormatPipe}}
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Frequency" prop="frequency">
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Status" prop="status">
+    </ngx-datatable-column>
+    <ngx-datatable-column *hasClaim=" ['CanModifyMedication']" name="Action" [canAutoResize]=false [frozenRight]=true [width]="150">
+      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+        <button [disabled]="awDisable" class="btn btn-dynamic-2c btn-icon mx-2" title="Edit" placement="left"
+          (click)="editMedication(row);dateformat(medicationDto);addMedicationMOdal.show()">
+          <span class="fa fa-pencil"></span>
+        </button>
+        <button [disabled]="awDisable" class="btn btn-danger btn-icon" (click)=" openConfirmModal(row)"><span class="fa fa-trash"></span></button>
+      </ng-template>
+    </ngx-datatable-column>
+  </ngx-datatable>
+
+</div>
+
+
+<div style="overflow-y: auto" (close)="clearData()" mdbModal #addMedicationMOdal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true" (open)="nkdaCheck=false">
+  <div class="modal-dialog modal-lg flat-modal" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close"
+          (click)="addMedicationMOdal.hide(); medicationName.reset();dose.reset();">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" *ngIf="medicationDto.id === 0" id="myModalLabel">Add Medication</h4>
+        <h4 class="modal-title w-100" *ngIf="medicationDto.id > 0" id="myModalLabel">Edit Medication</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-12 mb-2 d-flex justify-content-between">
+            <small class="text-dynamic-2c text-uppercase font-500">Medicine Information</small>
+            <div class="custom-control custom-checkbox" *ngIf="(!rows || !rows.length) && !isLoading">
+              <mdb-checkbox [(ngModel)]="nkdaCheck" (ngModelChange)="nkdaChecked()" [default]="true" [checked]="false">No active medication</mdb-checkbox>
+            </div>
+          </div>
+          <div class="col-sm-12">
+            <div class="row py-3" [class.overlay-Body]="nkdaCheck === true">
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="medNameSearch">Search Medicine</label>
+                  <ng-select id="medNameSearch" class="ng-select-small" #medicationName1="ngModel"
+                    [(ngModel)]="selectedSearch" (ngModelChange)="getSynonyms()" [ngModelOptions]="{standalone: true}"
+                    [loading]="isLoadingMedicine" [multiple]="false" [searchable]="true" placeholder="Search Medicine"
+                    [typeahead]="searchWatch" required [ngClass]="{ 'is-invalid':(medicationName1.touched ||
+                    medicationName1.dirty) &&
+                    !medicationName1.valid }">
+
+                    <ng-option [value]="item" *ngFor="let item of medicinesList">{{item.name}}</ng-option>
+                  </ng-select>
+                  <div *ngIf="medicationName1.invalid && (medicationName1.dirty || medicationName1.touched)"
+                    class="invalid invalid-text">
+                    <div *ngIf="!!medicationName1.errors.required">
+                      <small class="text-danger">Please select medicine.</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="medName">Medicine Name<small class="text-danger">*</small></label>
+                  <ng-select id="medName" class="ng-select-small" #medicationName="ngModel"
+                    [(ngModel)]="selectedMed" [loading]="isLoadingMedicine" (ngModelChange)="updateMedicineDto()"
+                    [ngModelOptions]="{standalone: true}" [multiple]="false" [searchable]="true" placeholder="Medicine Name"
+                    required [ngClass]="{ 'is-invalid':(medicationName.touched ||
+                    medicationName.dirty) &&
+                    !medicationName.valid }">
+
+                    <ng-option [value]="item"  *ngFor="let item of synonmsList">{{item.name}}</ng-option>
+                  </ng-select>
+                  <div *ngIf="medicationName.invalid && (medicationName.dirty || medicationName.touched)"
+                    class="invalid invalid-text">
+                    <div *ngIf="!!medicationName.errors.required">
+                      <small class="text-danger">Medicine name must be filled out.</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="genericName">Generic Name</label>
+                  <input type="text" class="form-control form-control-sm" [(ngModel)]="medicationDto.genericName"
+                    id="genericName" placeholder="Generic Name">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="BrandNameBrandName">Brand Name</label>
+                  <input type="text" class="form-control form-control-sm" [(ngModel)]="medicationDto.brandName"
+                    id="BrandName" placeholder="Brand Name">
+                </div>
+              </div> -->
+
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="medDose">Dose<small class="text-danger">*</small></label>
+                  <input type="text" class="form-control form-control-sm" #dose="ngModel" [(ngModel)]="medicationDto.dose"
+                    id="medDose" placeholder="Dose" required [ngClass]="{ 'is-invalid':(dose.touched ||
+                  dose.dirty) &&
+                  !dose.valid }">
+                  <div *ngIf="dose.invalid && (dose.dirty || dose.touched)" class="invalid invalid-text">
+                    <div *ngIf="!!dose.errors.required">
+                      <small class="text-danger">Dose must be filled out.</small>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="medfrequency">Frequency</label>
+                  <input type="text" class="form-control form-control-sm" #frequency="ngModel" [(ngModel)]="medicationDto.frequency"
+                    id="medfrequency" placeholder="Frequency">
+                  <!-- <div *ngIf="frequency.invalid && (frequency.dirty || frequency.touched)" class="invalid invalid-text">
+                    <div *ngIf="!!frequency.errors.required">
+                      <small class="text-danger">Frequency must be filled out.</small>
+                    </div>
+                  </div> -->
+
+                </div>
+              </div>
+              <!-- <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="medDose">Route</label>
+                  <input type="number" class="form-control form-control-sm" #route="ngModel"
+                    [(ngModel)]="medicationDto.route" id="medRoute" placeholder="Route" >
+                </div>
+              </div> -->
+
+              <!-- <div class="col-sm-6">
+                <div class="input-group form-group">
+                  <label class="w-100">Dose Form</label>
+                  <input type="text" class="form-control form-control-sm" [(ngModel)]="medicationDto.doseForm"
+                    #dateToDp="dpDayPicker" [dpDayPicker]="datePickerConfig" [displayDate]="displayDate"
+                    [theme]="'dp-material ccm-date-picker'" [mode]="'day'" />
+
+                </div>
+              </div> -->
+              <!-- <div class="col-sm-6">
+                <div class="input-group form-group mb-0">
+                  <label class="w-100">Original Start Date<small class="text-danger">*</small></label>
+                  <input type="text" class="form-control form-control-sm" [(ngModel)]="medicationDto.originalStartDate"
+                    #dateToDp="dpDayPicker" [dpDayPicker]="datePickerConfig" [displayDate]="displayDate"
+                    [theme]="'dp-material ccm-date-picker'" [mode]="'day'" #originalStartDate="ngModel" required [ngClass]="{ 'is-invalid':originalStartDate.touched  &&
+                    !originalStartDate.valid }" />
+                </div>
+                <div *ngIf="(originalStartDate.dirty || originalStartDate.touched) && originalStartDate.invalid "
+              >
+                <div *ngIf="originalStartDate.errors.required && originalStartDate.touched"  class="invalid invalid-text">
+                  <small class="text-danger">Original start date must be filled out.</small>
+                </div>
+              </div>
+              </div> -->
+
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label class="w-100">Start From</label>
+                  <input type="text" class="form-control form-control-sm" [(ngModel)]="medicationDto.startDate"
+                    #dateToDp="dpDayPicker" [dpDayPicker]="datePickerConfig" [displayDate]="displayDate"
+                    [theme]="'dp-material ccm-date-picker'" [mode]="'day'" #startDate="ngModel"  [ngClass]="{ 'is-invalid':(startDate.touched ||
+                  startDate.dirty) &&
+                  !startDate.valid }"/>
+                  <div *ngIf="(startDate.touched || startDate.dirty) &&
+                                              !startDate.valid" class="invalid invalid-text">
+
+                    <small class="text-danger">Date must be Valid.</small>
+
+                  </div>
+
+                </div>
+              </div>
+
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label class="w-100">Stop AT</label>
+                  <input type="text" class="form-control form-control-sm" [(ngModel)]="medicationDto.stopDate"
+                    #dateToDp="dpDayPicker" [dpDayPicker]="datePickerConfig" [displayDate]="displayDate"
+                    [theme]="'dp-material ccm-date-picker'" [mode]="'day'" #stopDate="ngModel"  [ngClass]="{ 'is-invalid':(stopDate.touched ||
+                  stopDate.dirty) &&
+                  !stopDate.valid }"/>
+                  <div *ngIf="(stopDate.touched ||
+                                              stopDate.dirty) &&
+                                              !stopDate.valid" class="invalid invalid-text">
+
+                    <small class="text-danger">Date must be Valid.</small>
+
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <label for="medName">Status</label>
+                  <textarea name="status" id="" cols="30" rows="10" class="form-control form-control-sm" #status="ngModel"
+                    [(ngModel)]="medicationDto.status" id="medName" placeholder="Status"></textarea>
+                </div>
+              </div>
+              <!-- <div class="col-sm-12">
+                <div class="form-group">
+                  <label for="sigDescription">Sig Description</label>
+                  <textarea class="md-textarea form-control " rows="3" [(ngModel)]="medicationDto.sigDescription"
+                    id="sigDescription" type="text"></textarea>
+                </div>
+              </div> -->
+              <!-- <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="medDose1">Nd CId<small class="text-danger">*</small></label>
+                  <input type="number" class="form-control form-control-sm" [(ngModel)]="medicationDto.ndcId" id="medndcId"
+                    placeholder="Nd Cid" #ndcId="ngModel" required [ngClass]="{ 'is-invalid':(ndcId.touched ||
+                    ndcId.dirty) &&
+                    !ndcId.valid }">
+                  <div *ngIf="ndcId.invalid && (ndcId.dirty || ndcId.touched)" class="invalid invalid-text">
+                    <div *ngIf="ndcId.errors.required && ndcId.touched">
+                      <small class="text-danger">Nd Cid must be filled out.</small>
+                    </div>
+                  </div>
+                </div>
+              </div> -->
+              <!-- <div class="col-sm-6">
+              <div class="form-group">
+                <label for="medDose3">Rx Norm Code<small class="text-danger">*</small></label>
+                <input type="number" class="form-control form-control-sm" [(ngModel)]="medicationDto.rxNormCode"
+                  id="medrxNormCode" placeholder="Dise" #rxNormCode="ngModel" required [ngClass]="{ 'is-invalid':(rxNormCode.touched ||
+                  rxNormCode.dirty) &&
+                  !rxNormCode.valid }">
+                <div *ngIf="rxNormCode.invalid && (rxNormCode.dirty || rxNormCode.touched)" class="invalid invalid-text">
+                  <div *ngIf="rxNormCode.errors.required && rxNormCode.touched">
+                    <small class="text-danger">Rx Norm Code must be filled out.</small>
+                  </div>
+                </div>
+              </div>
+            </div> -->
+          </div>
+        </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-dark btn-sm" aria-label="Close" (click)="addMedicationMOdal.hide();"
+          mdbWavesEffect>Close</button>
+        <button *ngIf="medicationDto.id === 0" type="button" class="btn btn-dynamic-2c btn-sm"
+          (click)="saveAndAdd = 0;addMedication()"
+          [disabled]="medicationName.invalid || dose.invalid || stopDate.invalid || startDate.invalid">Add</button>
+        <button *ngIf="medicationDto.id === 0" type="button" class="btn btn-dynamic-2c btn-sm"
+          (click)="saveAndAdd = 1;addMedication();resetMedication();medicationName.reset();dose.reset();"
+          [disabled]="medicationName.invalid || dose.invalid || stopDate.invalid || startDate.invalid">Save & Add</button>
+        <button *ngIf="medicationDto.id > 0" type="button" class="btn btn-dynamic-2c btn-sm" [disabled]="dose.invalid|| stopDate.invalid || startDate.invalid"
+          (click)="saveAndAdd = 0;addMedication(); medicationName.reset();dose.reset();status.reset();">Update</button>
+      </div>
+    </div>
+  </div>
+</div>

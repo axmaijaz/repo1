@@ -1,0 +1,336 @@
+<div class=" d-flex flex-wrap align-items-center justify-content-between mb-3">
+  <div class="d-flex align-items-center justify-content-start flex-lg-grow-1 flex-md-grow-1">
+    <!-- <h4 class="mr-3 mb-0"><a class="text-dark" [routerLink]="['/home/patients']" [queryParams]="{ filters: 2 }"> -->
+    <h4 class="mr-3 mb-0"><a class="text-dark" (click)="navigateBack()">
+        <i class="fa fa-arrow-left"></i></a></h4>
+    <h1 class="page-title mb-0">Patient Summary</h1>
+  </div>
+  <ng-container *hasClaim="['ccmService']">
+
+  </ng-container>
+
+
+</div>
+<div class="row justify-content-center  mb-3">
+  <div  class=" col-xl-12">
+    <app-sticky-notes></app-sticky-notes>
+  </div>
+  <div class=" col-xl-12">
+    <app-patient-gap-detail></app-patient-gap-detail>
+  </div>
+</div>
+
+<div class="patient-profile">
+  <div class="patient-info-data">
+
+
+    <div class="profile-block bs-sm m-0  p-0 ">
+      <app-patient-details></app-patient-details>
+
+      <div class="mt-2" *ngIf="false">
+        <skltn-root duration="1000" [rectRadius]="0" flareWidth="50%" bgFill="#f2f3f8"
+          flareFill="rgba(255,255,255, 0.5)">
+          <!-- Card with Avatar -->
+          <div class="skltn-card">
+            <div class="skltn-card__body">
+              <div skltn-bone class="skltn-card__title"></div>
+              <div skltn-bone class="skltn-card__line"></div>
+              <div skltn-bone class="skltn-card__line"></div>
+              <div skltn-bone class="skltn-card__line"></div>
+              <div skltn-bone class="skltn-card__line"></div>
+            </div>
+          </div>
+        </skltn-root>
+      </div>
+
+      <!-- <div class="row" *ngIf="PatientData"> -->
+      <!-- <div class="col-sm-12 border-bottom mb-2">
+          <div>
+            <div class="row mb-1">
+              <div class="col-md-4 my-custom-d">
+                <small class="d-block"><strong>EMR ID:</strong> {{PatientData.patientEmrId}}</small>
+                <small class="d-block"><strong>Emergency Contact Name:</strong> {{PatientData.emergencyContactName}}</small>
+                <small class="d-block"><strong>Emergency Contact Relationship:</strong> {{PatientData.emergencyContactRelationship}}</small>
+              </div>
+              <div class="col-md-4 my-custom-d">
+                <small class="d-block"><strong>Primary Phone Number:</strong> {{PatientData.homePhone}}<span  *ngIf="PatientData.phoneNumberConfirmed" title="Phone No. Verified" class="text-dynamic-2c ml-auto" >Verified</span><span title="Phone No. Not verified" *ngIf="!PatientData.phoneNumberConfirmed" class="text-danger ml-auto">Not Verified</span></small>
+                <small class="d-block"><strong>Emergency Primary Contact Number:</strong> {{PatientData.emergencyContactPrimaryPhoneNo}}</small>
+              </div>
+              <div class="col-md-4 my-custom-d">
+                <small class="d-block"><strong>Secondary Phone Number:</strong> {{PatientData.personNumber}}</small>
+                <small class="d-block"><strong>Emergency Secondary Contact Number:</strong> {{PatientData.emergencyContactSecondaryPhoneNo}}</small>
+              </div>
+              <div class="col-md-4 my-custom-d">
+                <small class="d-block"><strong>Billing Provider:</strong> {{PatientData.billingProviderName}}</small>
+                <small class="d-block"><strong>Insurance Plan:</strong> {{PatientData.insurancePlanName}}</small>
+              </div>
+              <div class="col-md-4 my-custom-d">
+                <small class="d-block"><strong>Care Provider:</strong> <p *ngFor="let careProvider of PatientData.careProviders">{{careProvider.fullName}}</p></small>
+                <small class="d-block"><strong>Date of Birth:</strong> {{PatientData.dateOfBirth}}</small>
+              </div>
+            </div>
+          </div>
+          <div class="d-flex align-items-center pb-2">
+            <div>
+              <div class="d-flex align-items-center pb-2 flex-wrap">
+                <h3 class="text-dynamic-secondary-2c mb-0 mr-3">{{PatientData.firstName | titlecase}}
+                  {{PatientData.lastName | titlecase}}
+                </h3>
+                <span title="PatientData.lastAppLaunchDate" *ngIf="PatientData.lastAppLaunchDate && PatientData.isActiveMobileUser" class=" fa-mobile-custom-active" >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="#ffffff" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 72.93 122.88" style="enable-background:new 0 0 72.93 122.88" xml:space="preserve"><style type="text/css">.st0{fill-rule:evenodd;clip-rule:evenodd;}</style><g><path class="st0" d="M10.94,0h51.04C68,0,72.93,4.93,72.93,10.94v100.99c0,6.02-4.93,10.94-10.94,10.94l-51.04,0 C4.93,122.88,0,117.95,0,111.94V10.95C0,4.93,4.93,0,10.94,0L10.94,0z M36.46,100.1c3.91,0,7.09,3.17,7.09,7.09 c0,3.91-3.18,7.09-7.09,7.09c-3.92,0-7.09-3.17-7.09-7.09C29.37,103.28,32.55,100.1,36.46,100.1L36.46,100.1z M25.17,8.86h22.59 c0.16,0,0.3,0.14,0.3,0.3v3.3c0,0.16-0.14,0.3-0.3,0.3H25.17c0,0,0,0,0,0c-0.16,0-0.3-0.13-0.3-0.3v0l0-3.3c0,0,0,0,0,0 C24.87,8.99,25,8.86,25.17,8.86L25.17,8.86L25.17,8.86L25.17,8.86z M9.65,21.53h53.63c0.98,0,1.78,0.81,1.78,1.78v70.01 c0,0.97-0.81,1.78-1.78,1.78H9.65c-0.97,0-1.78-0.8-1.78-1.78V23.3C7.87,22.33,8.67,21.53,9.65,21.53L9.65,21.53z"/></g></svg>
+                </span>
+                <span title="PatientData.lastAppLaunchDate" *ngIf="PatientData.lastAppLaunchDate && !PatientData.isActiveMobileUser" class=" fa-mobile-custom-inactive" >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="#ffffff" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 72.93 122.88" style="enable-background:new 0 0 72.93 122.88" xml:space="preserve"><style type="text/css">.st0{fill-rule:evenodd;clip-rule:evenodd;}</style><g><path class="st0" d="M10.94,0h51.04C68,0,72.93,4.93,72.93,10.94v100.99c0,6.02-4.93,10.94-10.94,10.94l-51.04,0 C4.93,122.88,0,117.95,0,111.94V10.95C0,4.93,4.93,0,10.94,0L10.94,0z M36.46,100.1c3.91,0,7.09,3.17,7.09,7.09 c0,3.91-3.18,7.09-7.09,7.09c-3.92,0-7.09-3.17-7.09-7.09C29.37,103.28,32.55,100.1,36.46,100.1L36.46,100.1z M25.17,8.86h22.59 c0.16,0,0.3,0.14,0.3,0.3v3.3c0,0.16-0.14,0.3-0.3,0.3H25.17c0,0,0,0,0,0c-0.16,0-0.3-0.13-0.3-0.3v0l0-3.3c0,0,0,0,0,0 C24.87,8.99,25,8.86,25.17,8.86L25.17,8.86L25.17,8.86L25.17,8.86z M9.65,21.53h53.63c0.98,0,1.78,0.81,1.78,1.78v70.01 c0,0.97-0.81,1.78-1.78,1.78H9.65c-0.97,0-1.78-0.8-1.78-1.78V23.3C7.87,22.33,8.67,21.53,9.65,21.53L9.65,21.53z"/></g></svg>
+                </span>
+                <p class="mb-0"><strong class="text-dynamic-2c">{{PatientData.sex | titlecase}}, {{PatientAge}}</strong>
+                  year</p>
+              </div>
+            </div>
+
+            <button (click)="getChatGroup()" [disabled]="gettingChatGroup || !isFacilityChatEnabled"
+              class="btn btn-dynamic-2c btn-sm btn-rounded ml-auto">
+              <span *ngIf="gettingChatGroup" class="spinner-border spinner-border-sm" role="status"
+                aria-hidden="true"></span> Message
+            </button>
+          </div>
+
+        </div> -->
+      <!-- <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6">
+          <div class="pb-info w-100">
+            <p class="flex-wrap"><strong> Phone No. </strong> {{PatientData.homePhone}} <span  *ngIf="PatientData.phoneNumberConfirmed" title="Phone No. Verified" class="text-dynamic-2c ml-auto" >Verified</span>
+              <span title="Phone No. Not verified" *ngIf="!PatientData.phoneNumberConfirmed" class="text-danger ml-auto">Not Verified</span></p>
+            <p><strong> Secondary No. </strong>{{PatientData.personNumber}}</p>
+            <p><strong>Date Of Birth </strong> {{PatientData.dateOfBirth | dateFormatPipe}}</p>
+          </div>
+        </div>
+        <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6">
+          <div class="pb-info">
+            <p><strong>Billing Provider</strong>
+              {{PatientData.billingProviderName}}</p>
+            <p><strong>Care Provider</strong>
+              {{PatientData.careProviderName}}
+            <p><strong>Insurance Plan</strong>
+              <ng-container *ngIf="PatientData.insurancePlanName">{{PatientData.insurancePlanName}}</ng-container>
+          </div>
+        </div>
+        <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6">
+          <div class="pb-info">
+            <p><strong>Name</strong> {{PatientData.emergencyContactName}}</p>
+            <p><strong>Contact</strong> {{PatientData.emergencyContactPrimaryPhoneNo}}</p>
+          </div>
+        </div> -->
+      <!-- </div> -->
+
+    </div>
+  </div>
+</div>
+<div class="ccm-header" style="position: relative;">
+  <div class="ccm-nav my-custom-scroll" style="min-width: 100%;left: 0;">
+    <ul class="ccm-navbar">
+      <li routerLinkActive="active"><a [routerLink]="['summary']">Summary</a></li>
+      <!-- <li routerLinkActive="active"><a [routerLink]="['CcmQuestionList']">Care Plan</a></li> -->
+      <li routerLinkActive="active"><a [routerLink]="['pDetail/pDiagnoses']">Diagnosis</a></li>
+      <li routerLinkActive="active"><a [routerLink]="['pDetail/pMedications']">Medications</a></li>
+      <li routerLinkActive="active"><a [routerLink]="['pDetail/pAllergies']">Allergies</a></li>
+      <li routerLinkActive="active"><a [routerLink]="['pDetail/pImmunization']">Immunization</a></li>
+      <li *hasClaim="['ccmService']" routerLinkActive="active"><a
+          [class.text-orange]="PatientData?.carePlanStatusColor == 1"
+          [class.text-red]="PatientData?.carePlanStatusColor == 0"
+          [class.text-grey]="PatientData?.carePlanStatusColor == 2" [routerLink]="['pDetail/pMasterCarePLan']">Care
+          Plan</a></li>
+      <li routerLinkActive="active"><a [routerLink]="['pDetail/providers']">Providers</a></li>
+      <li routerLinkActive="active"><a [routerLink]="['history/family']">Family History</a></li>
+      <li routerLinkActive="active"><a [routerLink]="['history/surgical']">Surgical History</a></li>
+
+      <!-- <li routerLinkActive="active"><a [routerLink]="['clinicalsummary']">Clinical Summary</a></li> -->
+
+
+
+      <!-- <li routerLinkActive="active"><a [routerLink]="['emergencyplan']">Emergency Plan</a></li> -->
+    </ul>
+  </div>
+</div>
+
+<!-- <div mdbModal (close)="selectedMeasure={}" #pcmMOdel="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="mypcmMOdelLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header py-2">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="pcmMOdel.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+
+        <div class="d-flex align-items-center">
+          <ng-container *ngIf="selectedMeasure && selectedMeasure.measureName">
+            <h4 class="modal-title w-100" title="{{selectedMeasure.measureName}}">
+              {{selectedMeasure.measureName | ellipsis:30 }} </h4>
+          </ng-container>
+
+
+          <a id="popTemplate" #popupInfo="bs-mdbPopover" class="ml-3" container="body" [mdbPopover]="popTemplate" placement="bottom" (click)="popupQustion ? popupQustion.hide(): ''"
+            triggers="focus"><i class="fa fa-exclamation-circle fa-lg"></i></a>
+
+            <a id="popTemplateTwo"  #popupQustion="bs-mdbPopover" *ngIf="pcmMOdelData.guideline" class="ml-3" container="body" [mdbPopover]="popTemplateTwo" (click)="popupInfo.hide();" placement="bottom"
+            triggers="focus"><i class="fa  fa-question-circle fa-lg"></i></a>
+
+          <ng-template #popTemplate>
+            <div class="bg-dark text-white py-3 pl-3 pr-2">
+              <div class="who-covered" (click)="$event.stopPropagation()" [innerHTML]="whoIsCovered" malihu-scrollbar
+                [scrollbarOptions]="scrollbarOptionsTimeline" style="max-height: 300px;"></div>
+            </div>
+          </ng-template>
+
+          <ng-template #popTemplateTwo>
+            <div class="bg-dark text-white py-3 pl-2 pr-2">
+              <div class="who-covered" (click)="$event.stopPropagation()" [innerHTML]="pcmMOdelData.guideline"  malihu-scrollbar
+                [scrollbarOptions]="scrollbarOptionsTimeline" style="max-height: 300px;">
+              </div>
+            </div>
+          </ng-template>
+
+        </div>
+
+      </div>
+      <div class="modal-body">
+        <skltn-root *ngIf="pcmModelLoading" duration="1000" [rectRadius]="0" flareWidth="50%" bgFill="#f2f3f8"
+          flareFill="rgba(255,255,255, 0.5)">
+          <div class="skltn-card">
+            <div skltn-bone class="skltn-card__avatar" type="circle"></div>
+            <div class="skltn-card__body">
+              <div skltn-bone class="skltn-card__title"></div>
+              <div skltn-bone class="skltn-card__line"></div>
+              <div skltn-bone class="skltn-card__line"></div>
+            </div>
+          </div>
+        </skltn-root>
+        <ng-container *ngIf="!pcmModelLoading">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <div class="d-flex align-items-center">
+              <p class="m-0">Status:</p>
+              <div class="btn-group ml-3" *ngIf="selectedGapStatus" mdbDropdown>
+                <mdb-badge mdbDropdownToggle success="true">{{selectedGapStatus.name}}</mdb-badge>
+
+                <div class="dropdown-menu status-dropdown">
+                  <div>
+                    <a [class.active]="pcmMOdelData.currentStatus===item.value"
+                      (click)="pcmMOdelData.currentStatus=item.value;selectedGapStatus=item;"
+                      *ngFor="let item of pcmMOdelData.statusList" class="dropdown-item">{{item.name}}</a>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+            <div class="btn-group ml-3" >
+                <div>
+                  <div class="custom-control custom-checkbox custom-control-inline">
+                    <input type="checkbox" [(ngModel)]="pcmMOdelData.controlled" class="custom-control-input" id="Controlled232"
+                      name="Controlleds">
+                    <label class="custom-control-label" for="Controlled232">Controlled</label>
+                  </div>
+                </div>
+            </div>
+            <div class="btn-group ml-3" *ngIf="pcmMOdelData.hasEncounters" mdbDropdown>
+              <a mdbDropdownToggle class="btn btn-dynamic-2c btn-icon" placement="right"><i class="fa fa-plus"></i></a>
+              <div class="dropdown-menu dropdown-menu-right status-dropdown">
+                <div>
+                  <button *ngIf="selectedMeasure.code !== 'AW'" [disabled]="isCreatingScreening" (click)="$event.stopPropagation();AddScreening()" class="dropdown-item">{{selectedMeasure.code}} Screening <span *ngIf="isCreatingScreening" class="spinner-border spinner-border-sm" role="status"
+                    aria-hidden="true"></span></button>
+                  <button *ngIf="selectedMeasure.code !== 'AW'" [disabled]="isCreatingCounselling" (click)="$event.stopPropagation();AddCounselling()" class="dropdown-item">{{selectedMeasure.code}} Counselling <span *ngIf="isCreatingCounselling" class="spinner-border spinner-border-sm" role="status"
+                    aria-hidden="true"></span></button>
+                  <button *ngIf="selectedMeasure.code === 'AW'" [disabled]="isCreatingAWEncounter" (click)="$event.stopPropagation();AddAWEncounter()" class="dropdown-item">Add Encounter <span *ngIf="isCreatingAWEncounter" class="spinner-border spinner-border-sm" role="status"
+                    aria-hidden="true"></span></button>
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <div class="border p-3 mb-3">
+            <div class="input-group form-group">
+              <label style="width: 70px;" class="flex-shrink-0">Last Done</label>
+              <input type="text" class="form-control form-control-sm ml-3" [(ngModel)]="pcmMOdelData.lastDone"
+                #date="dpDayPicker" [dpDayPicker]="datePickerConfig" [theme]="'dp-material ccm-date-picker'"
+                [mode]="'day'" />
+              <a (click)="date.api.open();" class="input-group-append">
+                <span class="input-group-text text-white bg-dynamic-2c" id="category1"><i
+                    class="fa fa-calendar fa-lg"></i></span> </a>
+            </div>
+            <div class="d-flex" *ngIf="!pcmMOdelData.isResultNumeric">
+              <label style="width: 70px;" class="flex-shrink-0" for="result">Result</label>
+              <div class="form-group flex-1 ml-3">
+                <input [(ngModel)]="pcmMOdelData.result" type="text" class="form-control" id="result"
+                  placeholder="Risk Level">
+              </div>
+            </div>
+            <div class="d-flex" *ngIf="pcmMOdelData.isResultNumeric">
+              <label style="width: 70px;" class="flex-shrink-0" for="result">Result</label>
+              <div class="form-group flex-1 ml-3">
+                <input [(ngModel)]="pcmMOdelData.result" OnlyNumbers type="text" class="form-control" id="result"
+                  placeholder="Risk Level">
+              </div>
+            </div>
+            <div class="form-form form-group d-flex mb-0">
+              <label style="width: 70px;" class="flex-shrink-0" for="note">Notes</label>
+              <textarea [(ngModel)]="pcmMOdelData.note" type="text" id="note" style="height:100px" rows="6"
+                class="form-control ml-3"></textarea>
+            </div>
+          </div>
+
+          <div class="border p-3">
+            <div class="input-group form-group">
+              <label style="width: 70px;" class="flex-shrink-0 ">Next Due</label>
+              <input [(ngModel)]="pcmMOdelData.nextDue" type="text" class="form-control form-control-sm ml-3"
+                #dateDPicker="dpDayPicker" [dpDayPicker]="datePickerConfig" [theme]="'dp-material ccm-date-picker'"
+                [mode]="'day'" />
+              <a (click)="dateDPicker.api.open();" class="input-group-append">
+                <span class="input-group-text text-white bg-dynamic-2c" id="category"><i
+                    class="fa fa-calendar fa-lg"></i></span> </a>
+            </div>
+            <div class="d-flex align-items-start">
+              <label for="file" class="flex-shrink-0" style="width: 70px;">Attachment</label>
+              <div class="file-field flex-wrap align-items-center w-100 ml-3">
+                <div class="btn btn-success btn-sm mx-0 mt-0">
+                  <span class="w-100"><i class="fa fa-paperclip fa-lg" [disabled]="uploadImg"></i> Attach File<span
+                      *ngIf="uploadImg" class="mr-1 spinner-border spinner-border-sm" role="status"
+                      aria-hidden="true"></span></span>
+                  <input type="file" mdbFileSelect accept=".pdf, .xlsx,.docx, .doc, .odt , .txt, .ppt, .pptx"
+                    (change)="onUploadOutput($event);" #select>
+                </div>
+              </div>
+            </div>
+            <div class="w-100" *ngIf="pcmMOdelData.pcmDocuments && pcmMOdelData.pcmDocuments.length > 0">
+              <div class="file-field flex-wrap align-items-center">
+                <div *ngFor="let doc of pcmMOdelData.pcmDocuments" class="file-item">
+                  <small class="mb-0"><a (click)="viewDoc(doc)">{{doc.title | slice:0:40}}</a><a (click)="DeleteDoc(doc)"><i
+                        class="ml-2 fa fa-times fa-lg text-danger"></i>
+                    </a></small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+      <div class="modal-footer">
+        <button type="button" mdbBtn color="secodary" size="sm" class="waves-light" aria-label="Close"
+          (click)="pcmMOdel.hide()" mdbWavesEffect>Cancel</button>
+        <button [disabled]="editingPcmData" type="button" mdbBtn color="primry" (click)="AddEditMeasureData(pcmMOdel)"
+          size="sm" class="relative waves-light" mdbWavesEffect><span *ngIf="editingPcmData"
+            class="mr-1 spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Update</button>
+      </div>
+    </div>
+  </div>
+</div> -->
+<router-outlet></router-outlet>
+<div mdbModal #viewPdfModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" [config]="{backdrop: true, ignoreBackdropClick: true}" aria-hidden="true"
+  (close)="objectURLStrAW=''">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-body" style="height:calc(100vh - 50px); padding: 0px;">
+        <button type="button" class="close pull-right document-close" aria-label="Close" (click)="viewPdfModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <app-pdf-view *ngIf="objectURLStrAW" [documentUrl]="objectURLStrAW"></app-pdf-view>
+      </div>
+    </div>
+  </div>
+</div>

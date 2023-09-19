@@ -1,0 +1,68 @@
+<div class="d-flex align-items-center justify-content-start mb-4">
+  <div class="d-flex align-items-center justify-content-start">
+    <!-- <h4 class="mr-3 mb-0"><a class="text-dark" (click)="navigateBack()"><i class="fa fa-arrow-left"></i></a></h4> -->
+    <h1 class="page-title mb-0">Patient Quick View Global Settings</h1>
+  </div>
+</div>
+<div class="row d-flex justify-content-between flex-wrap text-checkable">
+    <div *ngIf="adminInsightsData.isSummaryView || isAdmin" class="col-lg-6 col-md-6 col-sm-6 d-flex justify-content-between align-items-center">
+      <div class="custom-control custom-checkbox w-info-90">
+        <input type="checkbox" class="custom-control-input" [(ngModel)]="addEditInsightsData.isSummaryView" id="isSummaryView">
+        <label class="custom-control-label" for="isSummaryView">Summary View</label>
+      </div>
+    </div>
+
+    <div *ngIf="adminInsightsData.isDiagnosisView || isAdmin" class="col-lg-6 col-md-6 col-sm-6 d-flex justify-content-between align-items-center">
+      <div class="custom-control custom-checkbox w-info-90">
+        <input type="checkbox" class="custom-control-input" [(ngModel)]="addEditInsightsData.isDiagnosisView" id="isDiagnosisView">
+        <label class="custom-control-label" for="isDiagnosisView">Diagnosis View</label>
+      </div>
+    </div>
+
+    <div *ngIf="adminInsightsData.isMedicationsView || isAdmin" class="col-lg-6 col-md-6 col-sm-6 d-flex justify-content-between align-items-center">
+      <div class="custom-control custom-checkbox w-info-90">
+        <input type="checkbox" class="custom-control-input" [(ngModel)]="addEditInsightsData.isMedicationsView" id="isMedicationsView">
+        <label class="custom-control-label" for="isMedicationsView">Medications View</label>
+      </div>
+    </div>
+
+    <div *ngIf="adminInsightsData.isAllergiesView || isAdmin" class="col-lg-6 col-md-6 col-sm-6 d-flex justify-content-between align-items-center">
+      <div class="custom-control custom-checkbox w-info-90">
+        <input type="checkbox" class="custom-control-input" [(ngModel)]="addEditInsightsData.isAllergiesView" id="isAllergiesView">
+        <label class="custom-control-label" for="isAllergiesView">Allergies View</label>
+      </div>
+    </div>
+
+    <div *ngIf="adminInsightsData.isCCMLogsView || isAdmin" class="col-lg-6 col-md-6 col-sm-6 d-flex justify-content-between align-items-center">
+      <div class="custom-control custom-checkbox w-info-90">
+        <input type="checkbox" class="custom-control-input" [(ngModel)]="addEditInsightsData.isCCMLogsView" id="isCCMLogsView">
+        <label class="custom-control-label" for="isCCMLogsView">CCMLogs View</label>
+      </div>
+    </div>
+
+    <div *ngIf="adminInsightsData.isRPMDeviceView || isAdmin" class="col-lg-6 col-md-6 col-sm-6 d-flex justify-content-between align-items-center">
+      <div class="custom-control custom-checkbox w-info-90">
+        <input type="checkbox" class="custom-control-input" [(ngModel)]="addEditInsightsData.isRPMDeviceView" id="isRPMDevice1View">
+        <label class="custom-control-label" for="isRPMDevice1View">RPM Device View</label>
+      </div>
+    </div>
+
+    <div *ngIf="adminInsightsData.isRPMLogsView || isAdmin" class="col-lg-6 col-md-6 col-sm-6 d-flex justify-content-between align-items-center">
+      <div class="custom-control custom-checkbox w-info-90">
+        <input type="checkbox" class="custom-control-input" [(ngModel)]="addEditInsightsData.isRPMLogsView" id="isRPMLogsView">
+        <label class="custom-control-label" for="isRPMLogsView">RPMLogs View</label>
+      </div>
+    </div>
+    <!-- <div class="btn-info-payer">
+      <a data-toggle="modal" data-target="#selectInfoModal"
+      (click)="selectInfoModal.show()" class="btn-info-box">
+        <i  class="fa fa-exclamation-circle fa-lg"></i>
+      </a>
+    </div> -->
+</div>
+<button type="button" [disabled]="savingData"
+              (click)="AddorEditQuickViewConfigByFacilityId()" class="relative waves-light btn btn-sm btn-dynamic-2c">
+                <span *ngIf="savingData" class="spinner-border spinner-border-sm" role="status"
+              aria-hidden="true"></span>
+                Save
+</button>

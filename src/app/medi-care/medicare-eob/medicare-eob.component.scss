@@ -1,0 +1,23 @@
+.u-small-table{
+  td,th {
+    font-size: 12px;
+  }
+}
+
+.eob-table thead tr th {
+    background: #4eb0481c;
+}
+
+.eob-table thead tr th:not(first-child),
+.eob-table tbody tr td:not(first-child) {
+    border-left: 1px solid #dee2e6;
+    border-right: 1px solid #dee2e6;
+    font-weight: 500;
+}
+
+.eob-table thead tr th{
+  border-top: 1px solid #dee2e6;
+}
+.eob-table tbody tr td:not(first-child) {
+    border-bottom: 1px solid #dee2e6;
+}

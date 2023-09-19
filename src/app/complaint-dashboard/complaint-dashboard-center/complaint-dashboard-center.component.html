@@ -1,0 +1,413 @@
+<div class="d-flex align-items-center justify-content-start mb-4">
+  <div class="d-flex align-items-center justify-content-start">
+    <h1 class="page-title mb-0">Complaint Center</h1>
+  </div>
+</div>
+<div class="row">
+  <div class="d-flex align-items-stretch col-xl-4 col-lg-6 col-md-6 col-sm-6 mb-3"
+    *ngFor="let item of complaintsData?.complaintStatusStats;let i=index">
+    <div class="d-flex flex-wrap align-items-stretch w-100 complaint-type ">
+
+      <div class="d-flex justify-content-between align-items-center w-100 p-2 cursor-pointer"
+      (click)="activeAgingSection=i+'-one-All';ApplyAgingFilter(-1, i);filterComplaintsParam.departmentTypes=''"
+      [class.active]="i+'-one-All'===activeAgingSection">
+        <p class="mb-0"><strong> {{item.status}}</strong></p>
+        <span class="index-value badge bg-dynamic-2c text-white">{{item.totalCount}}</span>
+      </div>
+
+      <div class="d-flex aging-section w-100">
+        <div class="aging-type flex-1"
+          (click)="activeAgingSection=i+'-one-Today';ApplyAgingFilter(0, i);filterComplaintsParam.departmentTypes=''"
+          [class.active]="i+'-one-Today'===activeAgingSection">
+          <small><strong>Today</strong></small>
+          <p class="mb-0"><strong>{{item.perDayCount}}</strong></p>
+        </div>
+        <div class="aging-type flex-1"
+          (click)="activeAgingSection=i+'-one-Week';ApplyAgingFilter(6, i);filterComplaintsParam.departmentTypes=''"
+          [class.active]="i+'-one-Week'===activeAgingSection">
+          <small><strong>Last 7 Days</strong></small>
+          <p class="mb-0"><strong>{{item.perWeekCount}}</strong></p>
+        </div>
+        <div class="aging-type flex-1"
+          (click)="activeAgingSection=i+'-one-Month';ApplyAgingFilter(29, i);filterComplaintsParam.departmentTypes=''"
+          [class.active]="i+'-one-Month'===activeAgingSection">
+          <small><strong>Last 30 Days</strong></small>
+          <p class="mb-0"><strong>{{item.perMonthCount}}</strong></p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<div class="panel">
+  <div class="panel-header d-flex align-items-center py-2 justify-content-between">
+    <h3>Close Complaints</h3>
+    <div class="d-flex align-items-center">
+      <!-- <p class="mb-0"><strong>Total  </strong></p><div class="index-value badge bg-dynamic-2c text-white ml-3">{{complaintsData.resolved}}</div> -->
+    </div>
+
+  </div>
+  <div class="panel-body">
+    <div class="row">
+      <div class="d-flex align-items-stretch col-lg-3 col-md-6 mb-2"
+        *ngFor="let item of complaintsData?.departmentStats;let i=index">
+        <div class="d-flex flex-wrap align-items-stretch w-100 complaint-type  cursor-pointer ">
+
+          <div class="d-flex justify-content-between align-items-center w-100 p-2"
+            (click)="filterComplaintsParam.departmentTypes=item.departmentType;activeAgingSection=i+'-two-All';ApplyAgingFilter(-1, i);"
+            [class.active]="i+'-two-All'===activeAgingSection"
+          >
+            <p class="mb-0"><strong> {{DepartmentTypeEnum[item.departmentType]}}</strong></p>
+            <span class="index-value badge border text-dynamic-2c">{{item.closedCount}}</span>
+          </div>
+
+          <div class="d-flex aging-section w-100">
+            <div class="aging-type flex-1"
+              (click)="filterComplaintsParam.departmentType=item.departmentType;activeAgingSection=i+'-two-Today';ApplyAgingFilter(0,4);"
+              [class.active]="i+'-two-Today'===activeAgingSection">
+              <small><strong>Today</strong></small>
+              <p class="mb-0"><strong>{{item.perDayCount}}</strong></p>
+            </div>
+            <div class="aging-type flex-1"
+              (click)="filterComplaintsParam.departmentType=item.departmentType;activeAgingSection=i+'-two-Week';ApplyAgingFilter(6,4);"
+              [class.active]="i+'-two-Week'===activeAgingSection">
+              <small><strong>Last 7 Days</strong></small>
+              <p class="mb-0"><strong>{{item.perWeekCount}}</strong></p>
+            </div>
+            <div class="aging-type flex-1"
+              (click)="filterComplaintsParam.departmentType=item.departmentType;activeAgingSection=i+'-two-Month';ApplyAgingFilter(29,4);"
+              [class.active]="i+'-two-Month'===activeAgingSection">
+              <small><strong>Last 30 Days</strong></small>
+              <p class="mb-0"><strong>{{item.perMonthCount}}</strong></p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row mt-3 mb-4">
+  <div class="col-lg-3 col-md-6">
+    <div class="form-group">
+      <label for="name">Status</label>
+      <ng-select appendTo="body" [searchable]="true" [(ngModel)]="filterComplaintsParam.complaintStatus"
+        (change)="pagingData.pageNumber=0;getComplaintsList()" [closeOnSelect]="true" class="ng-select-small"
+        placeholder="Status">
+        <ng-option [value]="-1">Active</ng-option>
+        <ng-option [value]="0">All</ng-option>
+        <ng-option [value]="1">Open</ng-option>
+        <ng-option [value]="2">In Process</ng-option>
+        <!-- <ng-option [value]="3">Show Stopper</ng-option> -->
+        <ng-option [value]="4">Closed</ng-option>
+      </ng-select>
+    </div>
+  </div>
+  <div class="col-lg-3 col-md-6">
+    <div class="form-group">
+      <label for="name">Assigned</label>
+      <ng-select appendTo="body" [searchable]="true" [multiple]="true" [closeOnSelect]="true" class="ng-select-small"
+        placeholder="Assigned" [(ngModel)]="filterComplaintsParam.facilityUserIds"
+        (change)="pagingData.pageNumber=0;getComplaintsList()">
+        <ng-option [value]="0">All</ng-option>
+        <ng-option [value]="-1">Un Assigned</ng-option>
+        <ng-option [value]="user.id" *ngFor="let user of userList">{{
+          user.fullName
+          }}</ng-option>
+      </ng-select>
+    </div>
+  </div>
+  <div class="col-lg-3 col-md-6">
+    <label>Date</label>
+    <div class="form-group">
+      <input id="complainDateField" class="form-control form-control-sm box-shadow w-100" type="text"
+        [(ngModel)]="selectedDateRange" name="daterangeInput" autocomplete="off" daterangepicker [options]="options"
+        (selected)="selectedDate($event, daterange)" placeholder="Select Date Range" (cancelDaterangepicker)="clearDate()" />
+      <!-- <input
+        type="text"
+        class="form-control form-control-sm"
+        #dateDPicker="dpDayPicker"
+        (onChange)="pagingData.pageNumber=0;getComplaintsList()"
+        [dpDayPicker]="datePickerConfig2"
+        placeholder="MM-DD-YYYY"
+        [(ngModel)]="filterComplaintsParam.updatedOn"
+        [theme]="'dp-material ccm-date-picker'"
+        [mode]="'day'"
+        appendTo="body"
+      /> -->
+    </div>
+  </div>
+  <div class="col-lg-3 col-md-6">
+    <div class="form-group">
+      <label for="name">Department</label>
+      <ng-select appendTo="body" [searchable]="true" [multiple]="true" [(ngModel)]="filterComplaintsParam.departmentTypes"
+        (change)="pagingData.pageNumber=0;getComplaintsList()" [closeOnSelect]="true" class="ng-select-small"
+        placeholder="Department">
+        <!-- <ng-option [value]="''">All</ng-option> -->
+        <ng-option [value]="item.departmentType" *ngFor="let item of complaintsData?.departmentStats">
+          {{DepartmentTypeEnum[item.departmentType]}}</ng-option>
+        <!-- <ng-option [value]="1">General</ng-option>
+        <ng-option [value]="2">Care Delivery</ng-option>
+        <ng-option [value]="3">WorkPlace</ng-option>
+        <ng-option [value]="4">Technical</ng-option> -->
+      </ng-select>
+    </div>
+  </div>
+
+
+  <div class="col-xl-3 col-lg-6" *hasClaim="'IsAppAdmin'">
+    <div class="form-group">
+      <label for="name">Facility</label>
+      <ng-select appendTo="body" [searchable]="true" [closeOnSelect]="true" class="ng-select-small"
+        placeholder="Assigned" [(ngModel)]="facilityId"
+        (change)="pagingData.pageNumber=0;getComplaintsList()">
+        <ng-option [value]="0">All</ng-option>
+        <ng-option [value]="user.id" *ngFor="let user of facilityList">{{
+          user.facilityName
+          }}</ng-option>
+      </ng-select>
+    </div>
+  </div>
+  <div class="col-xl-3 col-lg-6" *hasClaim="'IsAppAdmin'">
+    <div class="form-group">
+      <label for="name">Complaint Type</label>
+      <ng-select class="ng-select-small"
+              [closeOnSelect]="true"  [(ngModel)]="filterComplaintsParam.complaintTypeIds" [multiple]="true"
+              [searchable]="true" placeholder="Complaint Type " (change)="pagingData.pageNumber=0;getComplaintSubTypes();getComplaintsList();" >
+              <ng-option *ngFor="let item of complaintTypesList"  [value]="item.id">{{item.display}}</ng-option>
+              <!-- <ng-option [value]="1">PatientRPM</ng-option>
+              <ng-option [value]="2">4G Device Request</ng-option>
+              <ng-option [value]="3">Other</ng-option> -->
+            </ng-select>
+    </div>
+  </div>
+  <div class="col-xl-3 col-lg-6" *hasClaim="'IsAppAdmin'">
+    <div class="form-group">
+      <label for="name">Complaint SubType</label>
+      <ng-select class="ng-select-small"
+              [closeOnSelect]="true" (change)="pagingData.pageNumber=0;getComplaintsList()"  [(ngModel)]="filterComplaintsParam.complaintSubTypeIds" [multiple]="true"
+              [searchable]="true" placeholder="Complaint SubType "  >
+              <!-- <ng-option [value]="-1">All</ng-option> -->
+              <ng-option *ngFor="let item of complaintSubTypesList"  [value]="item.id">{{item.display}}</ng-option>
+
+              <!-- <ng-option [value]="1">PatientRPM</ng-option>
+              <ng-option [value]="2">4G Device Request</ng-option>
+              <ng-option [value]="3">Other</ng-option> -->
+            </ng-select>
+    </div>
+  </div>
+
+</div>
+<div class="d-flex mb-3 align-items-end">
+  <div class="d-flex flex-grow-1">
+    <div class=" mr-3 flex-1 form-group mb-0">
+      <label for="name">Search Complaint</label>
+      <input [hidden]="filterBy === 3" type="text" autocomplete="off" [(ngModel)]="searchParam" (keyup)="getComplaintsList()"
+        class="form-control form-control-sm box-shadow w-100" placeholder="{{ filterBy === 1 ? 'Ticket No.' :filterBy === 2 ? 'Name / EMR ID': filterBy === 3 ? 'Date of Birth e.g yyyy-MM-dd': 'Phone No'}}" />
+        <input [hidden]="filterBy !== 3" id="searchBy" type="text"
+        class="bg-white form-control form-control-sm box-shadow w-100" #dateDPicker="dpDayPicker" autocomplete="off"
+        [dpDayPicker]="datePickerConfig2" placeholder="MM-DD-YYYY" [(ngModel)]="searchParam"
+        (ngModelChange)="searchParam.length == 10 ? getComplaintsList(): ''"
+        [theme]="'dp-material ccm-date-picker'" [mode]="'day'"  />
+    </div>
+    <div class="flex-1" >
+      <label for="namea">Filter By</label>
+      <ng-select class="ng-select-small" 
+       [closeOnSelect]="true" [(ngModel)]="filterBy" [clearable]="false" [multiple]="false" [searchable]="true" placeholder="Filter By"
+       (ngModelChange)="searchParam = '';getComplaintsList()">
+        <ng-option [value]="1">Ticket No.</ng-option>
+        <ng-option [value]="2">Patient Name / EMR ID</ng-option>
+        <ng-option [value]="3">Date of Birth</ng-option>
+        <ng-option [value]="4">Patient Phone Number</ng-option>
+      </ng-select>
+    </div>
+  </div>
+  <button type="button" class="btn btn-dynamic-2c btn-sm mr-0 mt-0 mb-0 ml-3" title="Download Excel" placement="left"
+  routerLinkActive="router-link-active" (click)="getComplaintsListExcelFile()"> Download Excel</button>
+</div>
+<div class="d-flex justify-content-between align-items-end">
+  <div class="dataTables_length" id="page_length"><label>Show <select [(ngModel)]="pagingData.pageSize" (ngModelChange)="getComplaintsList()"
+    name="page_length" aria-controls="example"
+       class="">
+       <option [value]="10">10</option>
+       <option [value]="25">25</option>
+       <option [value]="50">50</option>
+       <option [value]="100">100</option>
+     </select> entries</label>
+   </div>
+</div>
+
+  <div *ngIf="gettingDashboadData" class="d-flex justify-content-center text-center">
+    <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+  </div>
+<ngx-datatable [externalPaging]="true" [externalSorting]="true" [sortType]="'single'"
+ [count]="pagingData.elementsCount" [offset]="pagingData.pageNumber" (sort)="sortCallback($event)"
+  (page)='setPage($event)' class="material expandable" [headerHeight]="50" [footerHeight]="50"
+  [rowHeight]="40" [scrollbarV]="false" [scrollbarH]="true" [rows]="row" [limit]="pagingData.pageSize" style="width: 100%">
+  <ngx-datatable-column [sortable]="true" name="Patient Name" prop="fullName" >
+  </ngx-datatable-column>
+  <ngx-datatable-column [sortable]="true" name="Facility" prop="facilityName">
+  </ngx-datatable-column>
+  <ngx-datatable-column [sortable]="true" prop="ticketNo" name="Ticket #" >
+    <!-- <ng-template let-value="id" ngx-datatable-cell-template>
+      {{ id }}
+    </ng-template> -->
+    <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+      <!-- <small class="mr-3"></small> -->
+      <div class="d-flex justify-content-between align-items-center w-100" style="width: 185px"
+        (appIsOutside)="pop.isOpen=false">
+        <button style="cursor: pointer;" class="status-bullet mr-1 bg-success" id="popTemplate{{rowIndex}}"
+          #pop="bs-mdbPopover" placement="right" container="body" triggers="click"
+          [mdbPopover]="popTemplate"></button>{{row.ticketNo}}
+        <ng-template #popTemplate>
+          <!-- <ng-container *ngIf="!row.patientComplaintComments || !row.patientComplaintComments.length">
+            <p class="mb-0 py-1 px-2">No comments found</p>
+          </ng-container>
+          <ng-container *ngFor="let items of row.patientComplaintComments">
+            <p class="mb-0 pb-1 px-2" *ngIf="items.comment">{{items.comment}}</p>
+          </ng-container> -->
+          <div style="max-height:200px; width:300px; padding: .70rem;" (click)="$event.stopPropagation()"
+            [innerHTML]="row.logDetails || '<p>No data</p>'" malihu-scrollbar
+            [scrollbarOptions]="scrollbarOptionsTimeline">
+          </div>
+          <!-- <p class="mb-0 py-1 px-2">Lorem Ipsum is simply dummy text of the printing</p>
+          <p class="mb-0 py-1 px-2">Lorem Ipsum is simply dummy text of the printing</p> -->
+        </ng-template>
+
+        <div class="ml-auto">
+
+          <i *ngIf="row.hasAttachments" title="Attachments" class="fa fa-paperclip my-2 mr-2"></i>
+          <i class="fa fa-video-camera my-2 mr-2" title="Video" *ngIf="row.hasVideo"></i>
+
+          <div *ngIf="row.complaintPriority && row.complaintPriority === 3" class="badge status-danger mr-2">High</div>
+          <div *ngIf="row.complaintPriority && row.complaintPriority === 2" class="badge status-warning mr-2">Medium
+          </div>
+          <div *ngIf="row.complaintPriority && row.complaintPriority === 1" class="badge status-primary mr-2">Low</div>
+          <button class="btn btn-dynamic-2c btn-icon m-0 my-2 m-0" title="View Detail" placement="left"
+            (click)="showComplaintDetail(row);">
+            <span *ngIf="row.isLoading" class="spinner-border spinner-border-s  m" role="status"
+              aria-hidden="true"></span><i class="fa fa-eye"></i>
+          </button>
+          <button *ngIf="row.complaintTypeId == 2" class="btn btn-dynamic-2c btn-icon m-0 my-2 m-0 ml-1" title="Order 4G Device" placement="left"
+            (click)="openDeviceOrderModal(row)">
+            <span *ngIf="row.isLoading" class="spinner-border spinner-border-s  m" role="status"
+              aria-hidden="true"></span><i class="fa fa-info-circle"></i>
+          </button>
+          <!-- <a class="btn btn-dynamic-2c btn-icon m-0 my-2 " (click)="viewInvoiceDetail(row.id)" title="View" placement="left"><i
+              class="fa fa-eye"></i> View</a> -->
+
+          <!-- <a  class="btn btn-danger btn-icon" title="Remove" placement="left"><i class="fa fa-trash"></i></a> -->
+        </div>
+      </div>
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column [sortable]="true" name="Status" prop="complaintStatus" >
+    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template class="d-flex">
+      <!-- <span>{{ComplaintStatusEnum[row.complaintStatus]}}</span> -->
+      <div class="w-100 d-flex justify-content-center">
+        <span *ngIf="row.complaintStatus == 1" style="min-width: 80px;"
+          class="m-auto badge  badge-danger">{{ComplaintStatusEnum[row.complaintStatus]}}</span>
+        <span *ngIf="row.complaintStatus == 2" style="min-width: 80px;"
+          class="m-auto badge  badge-warning">{{ComplaintStatusEnum[row.complaintStatus]}}</span>
+        <span *ngIf="row.complaintStatus == 3" style="min-width: 80px;"
+          class="m-auto badge  badge-primary">{{ComplaintStatusEnum[row.complaintStatus]}}</span>
+        <span *ngIf="row.complaintStatus == 4" style="min-width: 80px;"
+          class="m-auto badge  badge-success">{{ComplaintStatusEnum[row.complaintStatus]}}</span>
+      </div>
+
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column [sortable]="true" name="Last Update" prop="updatedOn">
+    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+      <span>{{row.updatedOn | date}}</span>
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column [sortable]="false" name="Lag" prop="lag">
+    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+      <span>{{row.lag + " Days"}}</span>
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column [sortable]="true" name="Assigned to" prop="assignedFacilityUserName">
+  </ngx-datatable-column>
+  <ngx-datatable-column [sortable]="true" name="Complaint Type" prop="complaintType">
+    <!-- <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+      <span>{{ComplaintTypeEnum[row.complaintType]}}</span>
+    </ng-template> -->
+
+  </ngx-datatable-column>
+  <ngx-datatable-column [sortable]="true" name="Complaint Subtype" prop="complaintSubType">
+  </ngx-datatable-column>
+  <ngx-datatable-column [sortable]="false" name="Department" prop="departmentType">
+    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+      <span>{{DepartmentTypeEnum[row.departmentType]}}</span>
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column [sortable]="true" name="Action Date" prop="actionDate">
+    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+      <span>{{row.actionDate | date}}</span>
+    </ng-template>
+  </ngx-datatable-column>
+
+
+</ngx-datatable>
+
+<app-complaint-detail-modal #complaintDetailModalRef (refreshComplaints)="getComplaintsList()">
+</app-complaint-detail-modal>
+
+<div mdbModal #deviceOrderModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg flat-modal modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="deviceOrderModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" >Order List - {{selectedComplaint.fullName}}</h4>
+      </div>
+      <div class="modal-body">
+        <div style="max-height: 300px;">
+          <div style="overflow-y:auto;height:100%;">
+            <mdb-progress-bar class="progress primary-color-dark mb-0" *ngIf="isLoadingPatientOrders" mode="indeterminate"></mdb-progress-bar>
+            <div class="table-responsive text-nowrap">
+              <table class="table table-striped " >
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Order Number</th>
+                    <th>SKU</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <p *ngIf="!rows || !rows.length ">No Record Found</p>
+                  <tr *ngFor="let row of rows; let i= index;">
+                    <th scope="row">{{ i + 1}}</th>
+                    <td>{{row.orderNumber}}</td>
+                    <td>{{row.sku}}</td>
+                    <!-- <td>{{row.status}}</td> -->
+                    <td><span  style="min-width: 80px;"
+                      class="m-auto badge  badge-info">{{row.status}}</span></td>
+                  </tr>
+                  <tr>
+                    <td class="text-right" colspan="4">
+                      <p>Are you sure you want to create new order?</p>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="modal-footer">
+
+        <button type="submit" class="btn btn-dark btn-sm" (click)="deviceOrderModal.hide()">No</button>
+        <button type="submit" class="btn btn-dynamic-2c btn-sm" (click)="addNewDeviceOrder()" >
+          <span *ngIf="false" class="mr-1 spinner-border spinner-border-sm " role="status"
+            aria-hidden="true"></span>Yes</button>
+      </div>
+    </div>
+  </div>
+</div>

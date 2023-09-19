@@ -1,0 +1,23 @@
+.header {
+  height: 60px;
+  width: 100%;
+}
+.brand-logo {
+  img {
+    width: 175px;
+  }
+  &:focus {
+    outline: none;
+  }
+}
+
+footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 1rem;
+  p {
+    font-size: 12px;
+    margin: 0;
+  }
+}

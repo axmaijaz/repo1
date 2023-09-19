@@ -1,0 +1,654 @@
+<ng-container *ngIf="true" >
+
+
+
+<div class="d-flex align-items-center justify-content-start mb-4">
+  <div class="d-flex align-items-center justify-content-start">
+    <!-- <h4 class="mr-3 mb-0"><a class="text-dark" (click)="navigateBack()"><i class="fa fa-arrow-left"></i></a></h4> -->
+    <h4 *ngIf="!isIframe" class="mr-3 mb-0"><a class="text-dark" [routerLink]="['/admin/patient/' + patientId + '/summary']"><i class="fa fa-arrow-left"></i></a></h4>
+    <h1 class="page-title mb-0">Remote Patient Monitoring</h1>
+  </div>
+</div>
+<app-patient-details [hideChatBtn]="true"></app-patient-details>
+
+<div class="ccm-care-plan-header d-flex justify-content-between align-items-center">
+  <div class="">
+    <strong class="font-500 px-3">Create Encounter</strong>
+  </div>
+  <div class="d-flex">
+    <!-- <button class="btn px-3 collapse-btn btn-danger btn-icon" (click)="openVerificationModal();">
+      <i class="fa fa-phone"></i>
+    </button> -->
+    <!-- <div class=" timer-container">
+      <a (click)="test.hide();openModalityCofiguration();" class="btn btn-dynamic-secondary-2c btn-md px-3 text-capitalize"><i
+          class="fa fa-gear fa-lg mr-2"></i> Configure
+        Modality</a>
+    </div> -->
+    <div class="btn px-3 btn-sm btn-dynamic-2c " style="cursor: pointer;"  appDebounceClick
+      (debounceClick)="FillNoteText('');rpmencounter.toggle();" > Create Encounter
+      <i *ngIf="rpmencounter.isCollapsed" class="fa fa-angle-down ml-3"></i>
+      <i *ngIf="!rpmencounter.isCollapsed" class="fa fa-angle-up ml-3"></i>
+    </div>
+  </div>
+</div>
+<div class="ccm-care-plan-body col-sm-12 p-0" [class.drop-shadow]="!rpmencounter.isCollapsed" mdbCollapse #rpmencounter="bs-collapse" >
+  <div class="ccm-body z-depth-0">
+    <div class="encounter-section">
+      <div class="encounter-header flex-wrap d-flex align-items-center justify-content-between p-3">
+        <div class="month">
+          <ng-select [searchable]="false" class="ng-select-small" [clearable]="false" [(ngModel)]="rpmMonthId"
+            (ngModelChange)="getLogsByPatientAndMonthId();GetModalityLogsByPatientId();getRpmEncounterTime1()"
+            placeholder="Select Month" (click)="$event.stopPropagation();" style="min-width:200px">
+            <ng-option [value]="1">January</ng-option>
+            <ng-option [value]="2">February</ng-option>
+            <ng-option [value]="3">March</ng-option>
+            <ng-option [value]="4">April</ng-option>
+            <ng-option [value]="5">May</ng-option>
+            <ng-option [value]="6">June</ng-option>
+            <ng-option [value]="7">July</ng-option>
+            <ng-option [value]="8">August</ng-option>
+            <ng-option [value]="9">September</ng-option>
+            <ng-option [value]="10">October</ng-option>
+            <ng-option [value]="11">November</ng-option>
+            <ng-option [value]="12">December</ng-option>
+          </ng-select>
+        </div>
+        <div class="ccm-date mr-lg-auto">
+          <div class="month ml-3">
+            <ng-select [searchable]="false" class="ng-select-small" [clearable]="false" placeholder="Select Year"
+              [(ngModel)]="yearNum"
+              (ngModelChange)="getLogsByPatientAndMonthId();GetModalityLogsByPatientId();getRpmEncounterTime1()"
+              (click)="$event.stopPropagation();" style="width:250px">
+              <ng-option *ngFor="let year of listOfYears" [value]="year">{{year}}</ng-option>
+            </ng-select>
+          </div>
+        </div>
+
+        <div class="ccm-time ml-md-auto mt-md-2 mt-sm-2">
+
+          <p class="mb-0 text-dark"><i class="fa fa-clock-o fa-lg"></i>RPM Time Completed: <strong
+              class="text-dynamic-2c">{{rpmEncounterTime1?.duration}}</strong> </p>
+        </div>
+      </div>
+      <div class="encounter-body px-3">
+        <div class="row">
+          <div class="enc-time col-xl-6 col-lg-12 col-md-12 col-sm-12 py-3">
+            <!-- <div class="row border-bottom mb-3">
+              <div class="col-lg-6 col-md-6 col-sm-12">
+                <label for="selectBillingProvider">Select Billing Provider</label>
+                <ng-select [(ngModel)]="selectedBillingProvider" [multiple]="false" [searchable]="false"
+                  id="selectBillingProvider" class="ng-select-small" placeholder="Default Billing Provider"
+                  (click)="$event.stopPropagation();" style="min-width:200px">
+                  <ng-option *ngFor="let item of billingProviders" [value]="item">{{item.firstName}} {{item.lastName}}
+                  </ng-option>
+
+                </ng-select>
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="form-group">
+                  <label for="verifyPassword">Password</label>
+                  <div class="input-group mb-3">
+                    <input type="password" [(ngModel)]="password" class="form-control form-control-sm"
+                      placeholder="Type your Password">
+                    <div class="input-group-append">
+                      <button [disabled]="!password || !selectedBillingProvider" (click)="validateUser()"
+                        class="btn btn-sm btn-dynamic-2c m-0">Verify</button>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div> -->
+            <!-- <div class="d-flex align-items-center">
+              <button class="btn btn-dynamic-2c btn-sm">Reading Stats</button>
+              <button class="btn btn-dynamic-2c btn-sm">RPM Care Plan</button>
+            </div> -->
+            <div class="d-flex align-items-center justify-content-between">
+              <strong class="text-dynamic-2c mb-0 d-block">Encounter Time</strong>
+
+            </div>
+            <div class="rpm-container border mt-3 p-3">
+              <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                  <div class="form-group">
+                    <label for="startTime">Date <sup class="text-danger">*</sup></label>
+                    <input type="text" [(ngModel)]="rpmEncounterDto.encounterDate" class="form-control form-control-sm"
+                      placeholder="Date" #date='ngModel' #dateToDp="dpDayPicker" [dpDayPicker]="datePickerConfig"
+                      [theme]="'dp-material ccm-date-picker'" [mode]="'daytime'"
+                      [ngClass]="{ 'is-invalid': date.touched && !date.valid }" />
+                    <div class="invalid invalid-text">
+                      <small *ngIf="date.invalid && date.touched" class="text-danger">Date must be valid.</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-6 col-md-6 pl-md-0  col-sm-12">
+                  <div class="d-flex">
+                    <div class="form-group">
+                        <label for="endTime">Duration <sup class="text-danger">*</sup></label>
+                      <input #durationInput type="number" [(ngModel)]="rpmEncounterDto.duration" OnlyNumbers max="3"
+                        class="form-control form-control-sm" placeholder="In Minutes">
+                      <!-- <input type="text" [(ngModel)]="rpmEncounterDto.duration" class="form-control form-control-sm"
+                          #dateToDp="dpDayPicker" [dpDayPicker]="timePickerConfig" [theme]="'dp-material ccm-date-picker'"
+                          [mode]="'time'" /> -->
+                    </div>
+                    <div class="form-group ml-3">
+                      <label for="endTime">Timer</label>
+                      <div class="d-flex">
+                        <input type="text" id="stopwatchFieldRPM1"
+                        class="form-control form-control-sm text-dynamic-secondary-2c" readonly placeholder="00:00:00">
+                        <button *ngIf="stopWatchInterval" class="btn btn-dynamic-2c my-0 mr-0 px-2 btn-sm " (click)="ResetStopWatch()">Stop </button>
+                        <button *ngIf="!stopWatchInterval" class="btn btn-dynamic-2c my-0 mr-0 px-2 btn-sm " (click)="startStopWatch()">Start </button>
+                      </div>
+
+                    </div>
+                  </div>
+
+                </div>
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                  <div class="d-flex justify-content-between align-items-end">
+                    <div class="form-group flex-1 mr-1">
+                      <label for="serviceType">Service Type <sup class="text-danger">*</sup></label>
+                      <ng-select [searchable]="false" [appendTo]="'body'" class=" ng-select-small"
+                        placeholder="Select Service Type" [(ngModel)]="rpmEncounterDto.rpmServiceType" [clearable]="false"
+                        style="min-width: 200px;">
+                        <ng-option [value]="0">Interactive Call</ng-option>
+                        <!-- <ng-option [value]="1">SMS</ng-option> -->
+                        <!-- <ng-option disabled [value]="2">Interactive Communication</ng-option> -->
+                        <ng-option [value]="3">Text</ng-option>
+                        <ng-option [value]="4">Voice Mail</ng-option>
+                        <ng-option [value]="6">Data Analysis</ng-option>
+                        <ng-option [value]="5">Other</ng-option>
+                      </ng-select>
+                    </div>
+                    <div>
+                      <button type="button" class="btn btn-info btn-sm mr-0" (click)="treatmentPlanModal.show()" style="margin-bottom: 0.75rem;">Note Generator</button>
+                    </div>
+                  </div>
+                  
+                </div>
+                <div class="col-sm-12">
+                  <div class="form-form form-group">
+                    <label for="">Note<sup class="text-danger">*</sup></label>
+                    <!-- <textarea type="text" id="form77q68" #note='ngModel' [(ngModel)]="rpmEncounterDto.note"
+                      [ngClass]="{ 'is-invalid': note.touched && note.invalid }" placeholder="Note" rows="6"
+                      class="form-control" required></textarea> -->
+                      <app-two-c-text-area #myFIeldRefRPM [value]="rpmEncounterDto.note" [height]="'140px'" [PatientId]="patientId" (valueChanged)="rpmEncounterDto.note=$event"></app-two-c-text-area>
+                    <!-- <div class="invalid invalid-text">
+                      <small *ngIf="note.invalid && note.touched" class="text-danger">Please write some note.</small>
+                    </div> -->
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- <div class="d-flex justify-content-between flex-wrap align-items-center">
+              <p class="mt-2 mb-0"><strong>Current Billing Provider</strong>: {{providerName}}</p>
+              <div class="d-flex align-items-center">
+                <div class="custom-control custom-checkbox w-info-90">
+                  <input type="checkbox" [disabled]="!rpmEncounterDto.billingProviderId"
+                    [(ngModel)]="rpmEncounterDto.isProviderRpm" class="custom-control-input" id="cptcheck">
+                  <label class="custom-control-label" for="cptcheck">CPT 99091</label>
+                </div>
+                <a id="cpt99091" class="ml-3" container="body" [mdbPopover]="cpt99091" placement="bottom"
+                  triggers="focus"><i class="fa fa-exclamation-circle text-success fa-lg"></i></a>
+                <ng-template #cpt99091>
+                  <div class="bg-dark text-white py-3 pl-3 pr-2">
+                    <div class="who-covered" (click)="$event.stopPropagation()" [innerHTML]="rpmencounterCovered"
+                      malihu-scrollbar [scrollbarOptions]="scrollbarOptionsTimeline" style="max-height: 300px;"></div>
+                  </div>
+                </ng-template>
+
+              </div>
+            </div> -->
+
+
+            <div class="d-flex flex-wrap align-items-center">
+                <!-- <button class="btn btn-dynamic-secondary-2c btn-sm m-0 mr-2" (click)="OpenVerifyProviderModal()">
+                  Change Provider</button> -->
+                <button *ngIf="!rpmEncounterDto.id"
+                  [disabled]="addingRPMEncounter || !rpmEncounterDto.duration || !rpmEncounterDto.note || !rpmEncounterDto.encounterDate || (!rpmEncounterDto.rpmServiceType && rpmEncounterDto.rpmServiceType !== 0) || !canAddEncounter || date.invalid"
+                  type="submit" class="btn btn-dynamic-2c btn-sm m-0" (click)="getRpmEncounterSum();patientEncounterMonthlyStatusAcknowledge= false;addMREncounterWarning.show();note?.reset();">
+                  Add Encounter</button>
+                <button *ngIf="rpmEncounterDto.id"
+                  [disabled]="addingRPMEncounter || !rpmEncounterDto.duration || !rpmEncounterDto.note ||!rpmEncounterDto.encounterDate || (!rpmEncounterDto.rpmServiceType && rpmEncounterDto.rpmServiceType !== 0) || !canAddEncounter || date.invalid"
+                  type="submit" class="btn btn-dynamic-2c btn-sm m-0" (click)="EditRpmEncounter();note?.reset();">
+                  Edit Encounter</button>
+                  <button class="btn btn-dynamic-2c btn-sm ml-2" (click)="AddNew()" placement="left">
+                    Reset
+                  </button>
+            </div>
+            <p *ngIf="!rpmEncounterDto.billingProviderId" class="alert alert-danger p-2 mt-2">Logged-In user is not a
+              Billing Provider. </p>
+          </div>
+
+          <!-- Logs -->
+          <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 py-3 px-0">
+            <div class="ccm-nav">
+              <div class="row m-0">
+                <div class="col-sm-12 p-0">
+                  <mdb-tabset [buttonClass]="'ccm-navbar px-0'" [contentClass]="'px-0 py-2 border-top'">
+                    <mdb-tab heading="Care Plan">
+                      <div class="row">
+                        <div class="col-lg-12 h-100">
+                          <div class="d-flex justify-content-between align-items-center mb-2">
+                            <p class="mb-0"> <strong class="text-dynamic-2c "></strong></p>
+                              <div class="btn-group">
+                                <!-- <button class="btn btn-icon btn-dynamic-secondary-2c" ><i class="fa fa-download"></i></button> -->
+                                <button  (click)="copyCarePlan()" title="Copy" class="btn btn-icon btn-dynamic-secondary-2c border-left"><i class="fa fa-copy"></i></button>
+                              </div>
+                          </div>
+                          <div *ngIf="false" class="d-flex justify-content-center text-center">
+                            <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+                          </div>
+                          <editor id="editorElement" (readonly)="true" (onPostRender)="false" #editor12 [(ngModel)]="rpmCarePlan" (onKeyPress)="triggerPopOverCheck($event)"
+                          appOnDebounce [debounceTime]="2000" (onDebounce)="EditRPMCarePLan()"
+                          apiKey="d8t35ignh0gnngobzvmdpf3pnxi74f0gcqhmr0xgu5xt0qr5"
+                          [init]="{
+                            height: 383,
+                            menubar: false,
+                            readonly: true,
+                            disabled:true,
+                            plugins: [
+                              'advlist autolink lists link image charmap print preview anchor',
+                              'searchreplace visualblocks code fullscreen',
+                              'insertdatetime media table paste code help wordcount'
+                            ],
+                            contextmenu: '',
+                            toolbar:
+                              'undo redo | formatselect | bold italic backcolor | \
+                              alignleft aligncenter alignright alignjustify | \
+                              bullist numlist outdent indent | removeformat | help '
+                          }" readonly></editor>
+                        </div>
+                      </div>
+                    </mdb-tab>
+
+                    <mdb-tab heading="Encounter Logs">
+                      <div class="row">
+                        <div class="col-12 h-100">
+                          <div class="logs-container" *ngIf="rpmEncounterList.length  > 0" malihu-scrollbar
+                            [scrollbarOptions]="dropdownScroll" style="position: relative;height: 350px;">
+                            <div class="logs">
+                              <div class="log-item" *ngFor="let item of rpmEncounterList">
+                                <p class="log-title" [attr.date-time]="item.encounterDate| dateFormatPipe">
+                                  <span class="log-bullet"></span><span class="font-400 pl-3"><strong
+                                      class="text-gray">RPM
+                                      Service</strong> <span class="rpm-provider-name"
+                                      *ngIf="item.isProviderRpm">Provider RPM</span></span>
+
+                                  <a class="float-right">
+                                    <i *ngIf="!item.claimGenerated" (click)="SeteditEncounterValues(item)"
+                                      class="fa fa-pencil text-dynamic-secondary-2c mr-2"></i>
+                                    <i *ngIf="!item.claimGenerated" (click)="openDeleteEncounterConfirmModal(item)"
+                                      class="fa fa-trash text-danger mr-2"></i>
+                                    <i [class.fa-angle-down]="logs.isCollapsed" [class.fa-angle-up]="!logs.isCollapsed"
+                                      appDebounceClick (debounceClick)="logs.toggle()" [debounceTime]="200"
+                                      class="fa"></i>
+                                  </a>
+                                </p>
+
+                                <div class="log-info">
+                                  <div class="" mdbCollapse #logs="bs-collapse">
+                                    <div class="border border-grey p-2 rounded mt-2">
+                                      <strong class="text-dynamic-2c">Encounter Note:</strong>
+                                      <p class="mb-0"> {{item.note}}.</p>
+                                    </div>
+                                  </div>
+                                  <p class="mb-0"></p>
+                                  <small class="mr-2"><span class="text-unique-color">Created By :</span> <strong
+                                      class="text-dynamic-2c">
+                                      {{item.facilityUserName}}</strong></small>
+                                  <small *ngIf="item['billingProviderName'] && item.isProviderRpm" class="mr-2"><span
+                                      class="text-unique-color">Provider :</span> <strong class="text-dynamic-2c">
+                                      {{item.billingProviderName}}</strong></small>
+                                  <small class="text-unique-color mr-2">Start Time: {{item.startTime}}</small>
+                                  <small class="text-unique-color">Duration: {{item.duration}}</small>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </mdb-tab>
+                    <!-- <mdb-tab heading="Modality Logs">
+                      <button class="btn px-3 collapse-btn mt-0 ml-auto btn-success btn-icon" title="Refresh"
+                        (click)="GetModalityLogsByPatientId();">
+                        <i class="fa fa-refresh"></i>
+                      </button>
+                      <div *ngIf="isModalityLogsLoading" class="d-flex justify-content-center text-center">
+                        <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate">
+                        </mdb-progress-bar>
+                      </div>
+                      <div class="row">
+                        <div class="col-12">
+                          <div class="table-responsive">
+                            <table class="table rpm table-bordered table-hover mb-0">
+                              <thead class="bg-dynamic-2c text-white">
+                                <tr>
+                                  <th>Installation Date</th>
+                                  <th>Device Type</th>
+                                  <th>Device Model</th>
+                                  <th>Serial Number</th>
+                                  <th>Charge Device Installation</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr *ngFor="let row of phDeviceDto">
+                                  <td>{{row.installationDate | dateFormatPipe}}</td>
+                                  <td>{{ row.modalityName }} </td>
+                                  <td> {{ row.model }} </td>
+                                  <td> {{row.serialNo}}</td>
+                                  <td>
+                                    <p *ngIf="row.cpT99453" class="mb-0">Yes</p>
+                                    <p *ngIf="!row.cpT99453" class="mb-0">No</p>
+                                  </td>
+                                </tr>
+                                <tr *ngIf="phDeviceDto?.length == 0">
+                                  No Record Found
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </mdb-tab> -->
+                  </mdb-tabset>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="xy-axis" id="rpmIntellisenseView" (appIsOutside)="ChangeIntellisenseViewState('none')">
+  <!-- <div class="form-group mb-3">
+    <div class="form-group-search">
+      <span class="fa fa-search fa-lg"></span>
+    </div>
+    <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+  </div> -->
+  <div class="form-group">
+    <span class="fa fa-search-xy fa-search fa-lg"></span>
+    <ng-select id="selectForIntellisense" [(ngModel)]="SelectedSmartPhrase" (ngModelChange)="SmartPhraseSelected()"
+     class="ng-select-small custom-select-xy-axis" name="myOrganization" [loading]="usingSMartPhrase"
+      [multiple]="false" [clearable]="false" [style]="" [dropdownPosition]="'bottom'" [isOpen]="true" [searchable]="true" [closeOnSelect]="false" [searchable]="true"
+      placeholder="Select Organization" >
+        <ng-option [value]="item" *ngFor="let item of smartPhrasesList" >{{item.title}}</ng-option>
+    </ng-select>
+  </div>
+  <!-- <div class="event-scroll">
+    <div class="event-scroll-call" malihu-scrollbar [scrollbarOptions]="dropdownScrolls">
+      <ul class="select-taglist">
+        <li>HELLO</li>
+        <li>Good Morning</li>
+        <li>Good Night</li>
+        <li>Good Evening</li>
+        <li>Good Night</li>
+        <li>Good Morning</li>
+      </ul>
+    </div>
+  </div> -->
+
+</div>
+
+
+
+</ng-container>
+
+
+<!-- <div class="sds">
+      </div>
+      <strong> Device No. 1</strong>
+      <div style="position: relative; height:90%; width:100%">
+        <canvas mdbChart [chartType]="'line'" [datasets]="DeviceBarChartData" [labels]="DeviceBarChartLabels"
+          [colors]="linechartColors" [options]="chartOptions" [legend]="false">
+        </canvas>
+      </div>
+    </div> -->
+
+<!-- <div class="ods">
+      <div class="graph-container">
+        <div appCcmLoader class="loader-wrap" *ngIf="isLoading">
+          <div class="spinner-border text-dynamic-secondary-2c ccm-loader" role="status">
+          </div>
+        </div>
+        <p class="device-title"><strong>Device No. 2</strong></p>
+        <div style="position: relative; height:90%; width:100%">
+          <canvas mdbChart [chartType]="chartType" [datasets]="chartDatasets" [labels]="chartLabels"
+            [colors]="chartColors" [options]="chartOptions" [legend]="false">
+          </canvas>
+        </div>
+      </div>
+      <div class="graph-container">
+        <div appCcmLoader class="loader-wrap" *ngIf="isLoading">
+          <div class="spinner-border text-dynamic-secondary-2c ccm-loader" role="status">
+          </div>
+        </div>
+        <p class="device-title"><strong>Device No. 2</strong></p>
+        <div style="position: relative; height:90%; width:100%">
+          <canvas mdbChart [chartType]="chartType" [datasets]="chartDatasets" [labels]="chartLabels"
+            [colors]="chartColors" [options]="chartOptions" [legend]="false">
+          </canvas>
+        </div>
+      </div>
+    </div> -->
+
+
+<app-verify-as-billing-provider></app-verify-as-billing-provider>
+
+<div mdbModal #verificationModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" [config]="{ignoreBackdropClick: true}" aria-hidden="true">
+  <div class="modal-dialog modal-md" role="document">
+    <div class="modal-content">
+      <button type="button" class="close pull-right mt-2" style="z-index: 1" aria-label="Close"
+        (click)="verificationModal.hide()">
+        <span aria-hidden="true">×</span>
+      </button>
+      <div class="modal-body p-4">
+        <div class="text-center">
+          <h3 class="mb-3">SMS Verification</h3>
+          <p>An OTP (One Time Password) has been sent to the following number. Please enter the OTP in the field below
+            to verify. </p>
+          <div class="mf-info">
+            <p><span>Name:</span> {{verificationUserName}}</p>
+            <p><span>Mobile:</span> {{sendPhoneNoVerifictionDto.phoneNumber}} <button
+                *ngIf="verificationModalViewState !== 1" class="edit-code"
+                (click)="verificationModalViewState=1;newPhoneNo=sendPhoneNoVerifictionDto.phoneNumber;"><i
+                  class="fa fa-pencil fa-lg"></i>Edit</button></p>
+          </div>
+          <ng-container *ngIf="verificationModalViewState === 0">
+            <div class="phone-verification">
+              <div class="verification-code">
+                <input type="text" [(ngModel)]="verifyPhoneNoDto.code" [minLength]="0" mask="000000"
+                  placeholder="Enter Code" [maxLength]="6">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+
+              </div>
+
+
+              <button [disabled]="sendingCode" class="btn btn-dynamic-2c btn-sm my-0 mr-0"
+                (click)="sendPhoneNoVerificationToken()">
+                <span *ngIf="sendingCode" class="spinner-border spinner-border-sm" role="status"
+                  aria-hidden="true"></span>
+                Send Code</button>
+
+            </div>
+
+            <button [disabled]="verifyingPhone" class="btn btn-dynamic-secondary-2c btn-sm btn-block mt-3"
+              (click)="verifyPhoneNumber()">
+              <span *ngIf="verifyingPhone" class="spinner-border spinner-border-sm" role="status"
+                aria-hidden="true"></span>
+              Verify</button>
+          </ng-container>
+          <ng-container *ngIf="verificationModalViewState === 1">
+            <div class="phone-verification">
+
+              <div class="verification-code">
+                <input type="text" [(ngModel)]="newPhoneNo" [minLength]="0" mask="(000)000-0000" #newPhoneNoRef="ngModel"
+                  placeholder="Phone No">
+              </div>
+
+              <button [disabled]="updatingPhoneNo || !newPhoneNoRef.valid || !newPhoneNo"
+                class="btn btn-dynamic-2c btn-sm my-0 mr-0" (click)="UpdatePhoneNo()">
+                <span *ngIf="updatingPhoneNo" class="spinner-border spinner-border-sm" role="status"
+                  aria-hidden="true"></span>
+                Save</button>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+      <!-- <div class="modal-footer">
+        <button type="button" mdbBtn color="secodary" class="waves-light" aria-label="Close"
+          (click)="verificationModal.hide()" mdbWavesEffect>Close</button>
+        <button type="button" mdbBtn color="primry" class="relative waves-light" mdbWavesEffect>Save!</button>
+      </div> -->
+    </div>
+  </div>
+</div>
+
+<app-patient-rpm-modalities #patientRPMCompRef></app-patient-rpm-modalities>
+
+<!-- <router-outlet></router-outlet> -->
+
+<div mdbModal #addMREncounterWarning="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title w-100 text-center" id="myModalLabel">Do you Want to submit?</h4>
+      </div>
+      <div class="modal-body">
+        <div *ngIf="rpmEncounterDto.id === 0 && (!patientEncounterMonthlyStatusAcknowledge || (PatientEncounterMonthlyStatus === rpmMonthlyStatusEnum['Not Started']))" class="d-flex justify-content-between alert alert-warning alert-dismissible animated fade show" role="alert">
+          <strong >Acknowledge/update monthly status to save</strong>
+        </div>
+        <div *ngIf="!rpmEncounterTime1?.isServicetypeCallOrText && totalRpmDuration >= 20" class="d-flex justify-content-between alert alert-warning alert-dismissible animated fade show" role="alert">
+          <strong >RPM monthly encounter duration will be 20 or more without any call or text.</strong>
+        </div>
+        <div>
+          <div *ngIf="rpmEncounterDto.id === 0" class=" d-flex justify-content-between mb-2 align-items-center">
+            <p class="m-0"><strong> Monthly Status: </strong></p>
+            <div style="padding: 2px;" class=" ml-3 border rounded" [class.border-success]="patientEncounterMonthlyStatusAcknowledge && (PatientEncounterMonthlyStatus !== rpmMonthlyStatusEnum['Not Started'])"
+            [class.border-warning]="!patientEncounterMonthlyStatusAcknowledge || (PatientEncounterMonthlyStatus === rpmMonthlyStatusEnum['Not Started'])">
+              <div class="btn-group cursor-pointer"  mdbDropdown>
+                <mdb-badge style="line-height: 14px;width: 120px;"  mdbDropdownToggle success="true" (click)="patientEncounterMonthlyStatusAcknowledge=true;">{{PatientEncounterMonthlyStatusTExt}}</mdb-badge>
+
+                <div class="dropdown-menu status-dropdown">
+                  <div>
+                    <a [class.active]="PatientEncounterMonthlyStatus === value" (click)="patientEncounterMonthlyStatusAcknowledge=true;rpmEncounterDto.rpmMonthlyStatus =item.value;PatientEncounterMonthlyStatus=item.value;PatientEncounterMonthlyStatusTExt=item.name;" *ngFor="let item of rpmMonthlyStatusEnumList" class="dropdown-item">{{item.name}}</a>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div class="text-center" [innerHTML]="showValidationAlertData"></div>
+      </div>
+      <div class="modal-footer">
+        <button [disabled]="!patientEncounterMonthlyStatusAcknowledge || (PatientEncounterMonthlyStatus === rpmMonthlyStatusEnum['Not Started'])" type="button" (click)="addRpmEncounter();addMREncounterWarning.hide();"
+          class="relative waves-light btn btn-dynamic-2c btn-sm" mdbWavesEffect>Yes</button>
+
+          <button type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close" (click)="addMREncounterWarning.hide();"
+          mdbWavesEffect>NO</button>
+
+
+      </div>
+    </div>
+  </div>
+</div>
+<div mdbModal #treatmentPlanModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" style="z-index: 1" aria-label="Close"
+        (click)="treatmentPlanModal.hide()">
+        <span aria-hidden="true">×</span>
+      </button>
+        <h4 class="modal-title w-100" id="myModalLabel">Note Generator </h4>
+        
+      </div>
+      <div class="modal-body" *ngIf="treatmentPlanModal.isShown">
+        <div class="row">
+          <div class="col-12">
+            <div class="card mb-3">
+              <div class="card-header d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">Treatment Plan</h4>
+                <button class="btn btn-dynamic-2c btn-icon my-0 mr-0 flex-shrink-0" 
+                 (click)="collapseTreatmentPlan()">
+                  <i *ngIf="treatmentPlan.isCollapsed" class="fa fa-angle-down"></i>
+                  <i *ngIf="!treatmentPlan.isCollapsed" class="fa fa-angle-up"></i>
+                </button>
+              </div>
+              <div class="card-body p-0" mdbCollapse #treatmentPlan="bs-collapse" >
+                <div class="p-3">
+                  <editor id="editorElements" (readonly)="true" (onPostRender)="false" #editor123 [(ngModel)]="rpmCarePlan" (onKeyPress)="triggerPopOverCheck($event)"
+                          appOnDebounce [debounceTime]="2000" (onDebounce)="EditRPMCarePLan()"
+                          apiKey="d8t35ignh0gnngobzvmdpf3pnxi74f0gcqhmr0xgu5xt0qr5"
+                          [init]="{
+                            height: 383,
+                            menubar: false,
+                            readonly: true,
+                            disabled:true,
+                            plugins: [
+                              'advlist autolink lists link image charmap print preview anchor',
+                              'searchreplace visualblocks code fullscreen',
+                              'insertdatetime media table paste code help wordcount'
+                            ],
+                            contextmenu: '',
+                            toolbar:
+                              'undo redo | formatselect | bold italic backcolor | \
+                              alignleft aligncenter alignright alignjustify | \
+                              bullist numlist outdent indent | removeformat | help '
+                          }" readonly></editor>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <div class="card mb-3">
+              <div class="card-header d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">Goals / Interventions</h4>
+                <button class="btn btn-dynamic-2c btn-icon my-0 mr-0 flex-shrink-0" 
+                  (click)="collapse()">
+                  <i *ngIf="showGoalIntervention.isCollapsed" class="fa fa-angle-down"></i>
+                  <i *ngIf="!showGoalIntervention.isCollapsed" class="fa fa-angle-up"></i>
+                </button>
+              </div>
+              <div class="card-body p-0" mdbCollapse #showGoalIntervention="bs-collapse">
+                <app-rpm-interventions (onRpmNoteUpdate)="onRpmNoteText($event)" ></app-rpm-interventions>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <div class="form-group">
+              <label><strong>RPM Notes</strong></label>
+             <app-two-c-text-area #myFIeldRefRPMNotes [value]="rpmNotes" [height]="'140px'" [PatientId]="patientId" (valueChanged)="rpmNotes=$event"></app-two-c-text-area>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button [disabled]="!rpmNotes" class="relative waves-light btn btn-dynamic-2c btn-sm" (click)="copyRpmNotesToEncounterNotes();treatmentPlanModal.hide()" >Save</button>
+          <button type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close" (click)="treatmentPlanModal.hide();"
+          mdbWavesEffect>Cancel
+        </button>
+
+      </div>
+    </div>
+  </div>
+</div>

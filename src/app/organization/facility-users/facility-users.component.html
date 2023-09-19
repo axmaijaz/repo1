@@ -1,0 +1,521 @@
+<!-- <div class="d-flex align-items-center justify-content-between mb-3"> -->
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <div class="d-flex align-items-center justify-content-start">
+    <h4 *ngIf="!isConfigRoute" class="mr-3 mb-0"><a class="text-dark"><i class="fa fa-arrow-left" (click)="goBack()"></i></a></h4>
+    <h1 class="page-title mb-0">Facility User</h1>
+  </div>
+  <button type="button" class="btn btn-dynamic-2c btn-sm" *hasClaim="'CanModifyFacilityUsers'"
+    (click)="isEditingfacilityUser=false;resetFacilityUser();f.reset();addFacility.show();">Add
+    New</button>
+
+</div>
+
+
+
+<form autocomplete="off" class="mb-5">
+  <div class="form-group">
+    <label for="searchByFacility">Search Facility</label>
+    <input type="text" class="form-control form-control-sm box-shadow" autocomplete="off" id="searchByFacility"
+      placeholder="Search by Name" (keyup)="updateFilter($event)" />
+  </div>
+</form>
+<div *ngIf="subVendorNotInList && isFacilitySubVendor" class="alert alert-danger" role="alert">
+<i class="fa fa-exclamation-triangle fa-lg"></i>There is no user has been defined as SubVendor</div>
+
+
+
+<div class="table-data-list">
+  <div class="d-flex align-items-center justify-content-between">
+    <mdb-checkbox [(ngModel)]="showInActiveUsers" (ngModelChange)="loadFacilityUsers()" [default]="true" >Show InActive
+    </mdb-checkbox>
+  </div>
+  <!-- <mdb-checkbox
+      [default]="true"
+      [(ngModel)]="isShownDeletedUsers"
+      (change)="showUsersList()"
+      >Show Deleted Users
+    </mdb-checkbox> -->
+  <div *ngIf="isLoading" class="d-flex justify-content-center text-center">
+    <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+  </div>
+  <ngx-datatable #table class="material" [columnMode]="'force'" [headerHeight]="50" [footerHeight]="50" [rowHeight]="50"
+    [scrollbarV]="false" [scrollbarH]="true" [rows]="rows" [limit]="15" (activate)="onActivate($event)"
+    [sorts]="[{prop: 'firstName', dir: 'asc'}]">
+    <ngx-datatable-column name="#" width="50">
+      <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+        {{rowIndex + 1}}
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Name" width="350">
+      <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+        <div class="d-flex justify-content-between align-items-center">
+          <div style="width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display: block;">
+            {{row.lastName}} {{row.firstName}}
+          </div>
+          <div>
+            <fieldset [disabled]="row.isLocumCareProvider == true" >
+              <div *ngIf="!isShownDeletedUsers" class="d-flex justify-content-start">
+              <button class="btn btn-dynamic-2c btn-icon mr-2" mdbTooltip="Active" placement="left" *ngIf="row.isDisabled === false;"
+                (click)="setFacilityUserActive(row)" >
+                  <span class="fa fa-toggle-on"></span>
+              </button>
+              <bitton class="btn btn-danger btn-icon ml-0 mr-2" mdbTooltip="Deactive" placement="left" *ngIf="row.isDisabled === true;"
+              (click)="setFacilityUserActive(row)">
+                <span class="fa fa-toggle-off"></span>
+              </bitton>
+              <button class="btn btn-dynamic-2c btn-icon ml-0 mr-2" mdbTooltip="Edit" placement="left"
+                (click)="isEditingfacilityUser=true;editfacilityUser(row)"><span class="fa fa-pencil"></span></button>
+              <button class="btn btn-dynamic-2c btn-icon ml-0 mr-2" mdbTooltip="Assign Facilities" placement="left"
+                (click)="selectedFacilityUser=row.id;selectedFacilityUserObj=row;getFacilitiesbyUserId();assignFacilitiesMOdal.show()"><span
+                  class="fa fa-gear"></span> </button>
+              <button class="btn btn-dynamic-2c btn-icon ml-0 mr-2" mdbTooltip="Assign Roles" placement="left"
+                (click)="selectedFacilityUser=row.id;selectedFacilityUserObj=row;getRolesByUserId();assignRolesModal.show()"><span
+                  class="fa fa-lock"></span> </button>
+                  </div>
+                  <div *ngIf="isShownDeletedUsers">
+                    <button class="btn btn-dynamic-2c btn-icon ml-0" mdbTooltip="Recover User" placement="left"
+                (click)="openConfirmModalForRecoverUser(row.id)" ><span class="fa fa-sign-in-alt"></span></button>
+              </div>
+            </fieldset>
+          </div>
+        </div>
+      </ng-template>
+    </ngx-datatable-column>
+    <!-- <ngx-datatable-column name="Last Name">
+    </ngx-datatable-column> -->
+    <ngx-datatable-column name="Roles">
+    </ngx-datatable-column>
+    <ngx-datatable-column name="User Name">
+      <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+
+          <div class="facility-email py-3">
+            <p class="mb-0" title="{{row.userName}}">{{row.userName}}</p>
+          </div>
+
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Email">
+      <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+        <div class="facility-email py-3">
+          <p class="mb-0" title="{{row.email}}">{{row.email}}</p>
+          <!-- <a class="link text-danger" *ngIf="row.email && row.isEmailVerified === false;" (click)="sendVerifyEmail(row)">verify email</a>
+          <strong class=" text-dynamic-2c" *ngIf="row.email && row.isEmailVerified === true;">(Verified)</strong> -->
+        </div>
+
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Phone No">
+      <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+        <div class="facility-email py-3">
+          <p class="mb-0" title="{{row.phoneNo | mask: '(000)000-0000'}}">{{row.phoneNo | mask: '(000)000-0000'}}</p>
+          <!-- <a class="link text-danger" *ngIf="row.phoneNo && row.isPhoneNumberVerified === false;"
+            (click)="sendPhoneNoVerificationToken(row);">verify phone</a> -->
+          <strong class=" text-dynamic-2c" *ngIf="row.phoneNo && row.isPhoneNumberVerified === true;">(Verified)</strong>
+          <!-- <strong class=" text-dynamic-2c" *ngIf="(row.id == securityService.securityObject.id) && row.phoneNo && row.isPhoneNumberVerified === false;">(Not Verified)</strong> -->
+        </div>
+      </ng-template>
+
+    </ngx-datatable-column>
+
+    <ngx-datatable-column *ngIf="isFacilitySubVendor" prop="isSubVendorUser" name="Contractor">
+      <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+          <button class="btn btn-dynamic-2c btn-icon mr-2" mdbTooltip="Active" placement="left" *ngIf="row.isSubVendorUser === true;"
+                (click)="markFacilityUserAsSubVendor(row, false)">
+                  <span class="fa fa-toggle-on"></span>
+              </button>
+              <bitton class="btn btn-danger btn-icon mr-2" mdbTooltip="Deactive" placement="left" *ngIf="row.isSubVendorUser === false;"
+              (click)="markFacilityUserAsSubVendor(row, true)">
+                <span class="fa fa-toggle-off"></span>
+              </bitton>
+     </ng-template>
+    </ngx-datatable-column>
+    <!-- <ngx-datatable-column name="Action" [canAutoResize]=true [minWidth]=250>
+      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+        <fieldset [disabled]="row.isLocumCareProvider == true" >
+        <div *ngIf="!isShownDeletedUsers" class="d-flex justify-content-start" style="width:250px;">
+          <a class="btn btn-dynamic-2c btn-icon mx-2" title="Active" placement="left" *ngIf="row.isDisabled === false;"
+            (click)="setFacilityUserActive(row)">
+              <span class="fa fa-toggle-on"></span>
+            </a>
+            <a class="btn btn-danger btn-icon mr-2" title="Deactive" placement="left" *ngIf="row.isDisabled === true;"
+            (click)="setFacilityUserActive(row)">
+              <span class="fa fa-toggle-off"></span>
+            </a>
+        <a class="btn btn-dynamic-2c btn-icon" mdbTooltip="Edit" placement="left"
+          (click)="isEditingfacilityUser=true;editfacilityUser(row)"><i class="fa fa-pencil"></i></a>
+        <a class="btn btn-dynamic-2c btn-icon" mdbTooltip="Assign Facilities" placement="left"
+          (click)="selectedFacilityUser=row.id;selectedFacilityUserObj=row;getFacilitiesbyUserId();assignFacilitiesMOdal.show()"><i
+            class="fa fa-gear"></i> </a>
+        <a class="btn btn-dynamic-2c btn-icon" mdbTooltip="Assign Roles" placement="left"
+          (click)="selectedFacilityUser=row.id;selectedFacilityUserObj=row;getRolesByUserId();assignRolesModal.show()"><i
+            class="fa fa-lock"></i> </a>
+            </div>
+            <div *ngIf="isShownDeletedUsers">
+              <a class="btn btn-dynamic-2c btn-icon" title="Recover User" placement="left"
+          (click)="openConfirmModalForRecoverUser(row.id)"><i class="fa fa-sign-in-alt"></i></a>
+        </div>
+      </fieldset>
+      </ng-template>
+    </ngx-datatable-column> -->
+
+
+
+  </ngx-datatable>
+
+
+  <div style="overflow-y: auto" mdbModal #addFacility="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  [config]="{backdrop: true, ignoreBackdropClick: true}"  aria-labelledby="myroleManagementModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg flat-modal" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close pull-right" aria-label="Close" (click)="addFacility.hide()">
+            <span aria-hidden="true">×</span>
+          </button>
+          <h4 class="modal-title w-100" id="myModalLabel" *ngIf="!isEditingfacilityUser">Add Facility User</h4>
+          <h4 class="modal-title w-100" id="myModalLabel" *ngIf="isEditingfacilityUser">Edit Facility User</h4>
+        </div>
+
+        <div class="modal-body">
+          <form name="form" #f="ngForm" novalidate>
+            <div class="row">
+              <div class="col-sm-12 mb-2">
+                <small class="text-dynamic-2c text-uppercase font-500">User Information</small>
+              </div>
+              <div class="col-sm-12" *ngIf="!isEditingfacilityUser">
+                <div class="form-group">
+                  <label for="title">Role</label>
+                  <ng-select class="ng-select-small" [(ngModel)]="facilityUser.title" name="title" [multiple]="false"
+                    [searchable]="true" placeholder="Select Title">
+                    <ng-option [value]="item.name" *ngFor="let item of rolesList">{{item.name}} </ng-option>
+                    <!-- <ng-option [value]="'Billing Provider'">Billing Provider</ng-option>
+                  <ng-option [value]="'Care Coordinator'">Care Coordinator</ng-option>
+                  <ng-option [value]="'Biller'">Biller</ng-option> -->
+                  </ng-select>
+                </div>
+              </div>
+              <!-- <div class="col-sm-6">
+              <div class="form-group">
+                  <label>Is Billing Provider</label>
+                  <div class="ml-auto d-flex">
+                    <mdb-checkbox [default]="true" [(ngModel)]="facilityUser.isBillingProvider"></mdb-checkbox>
+                  </div>
+              </div>
+            </div> -->
+              <div class="col-sm-4">
+                <div class="form-group">
+                  <label for="firstName">First Name<small class="text-danger">*</small></label>
+                  <input type="text" [(ngModel)]="facilityUser.firstName" class="form-control form-control-sm"
+                    placeholder="First Name" required name="firstName" #firstName="ngModel"
+                    [ngClass]="{ 'is-invalid': firstName.touched && firstName.invalid }">
+                  <div *ngIf="firstName.touched && firstName.invalid" class="invalid-feedback">
+                    <div *ngIf="firstName.errors.required">First Name is required</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-sm-4">
+                <div class="form-group">
+                  <label for="isChronic">Middle Name</label>
+                  <input type="text" [(ngModel)]="facilityUser.middleName" name="middleName" class="form-control form-control-sm"
+                    id="isChronic" placeholder="Middle Name">
+                </div>
+              </div>
+
+              <div class="col-sm-4">
+                <div class="form-group">
+                  <label for="lastName">Last Name<small class="text-danger">*</small></label>
+                  <input type="text" [(ngModel)]="facilityUser.lastName" class="form-control form-control-sm"
+                    placeholder="Last Name" name="lastName" required #lastName="ngModel"
+                    [ngClass]="{ 'is-invalid': lastName.touched && lastName.invalid }">
+                  <!-- <div *ngIf="lastName.invalid && (lastName.dirty || lastName.touched)" class="invalid invalid-text">
+                  <div *ngIf="lastName.errors.required">
+                    <small class="text-danger">Last name must be filled out.</small>
+                  </div>
+                </div> -->
+                  <div *ngIf="lastName.touched && lastName.invalid" class="invalid-feedback">
+                    <div *ngIf="lastName.errors.required">Last Name is required</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-sm-6" *ngIf="!isEditingfacilityUser">
+                <div class="form-group">
+                  <div class="d-flex justify-content-between">
+                    <label for="email">Email
+                      <small class="text-danger">*</small><small
+                        *ngIf="emailinvalid" class="text-danger"> Email already exist.</small>
+                    </label>
+                    <mdb-checkbox [default]="true" [checked]="false"
+                      (change)="FillUserNameUserName($event.checked)">Make this Email my Username as well
+                    </mdb-checkbox>
+                  </div>
+                  <!-- <label for="email">Email<small class="text-danger">*</small><small *ngIf="emailinvalid"
+                    class="text-danger"> Email already exist.</small></label> -->
+                  <input type="text" [(ngModel)]="facilityUser.email" class="form-control form-control-sm"
+                    placeholder="sample@mail.com" (blur)="checkAvailibility(facilityUser.email)"pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,3}$" required name="email" #email="ngModel"
+                    [ngClass]="{ 'is-invalid': email.touched && email.invalid }">
+                  <!-- <div *ngIf="email.invalid && (email.dirty || email.touched)" class="invalid invalid-text">
+                  <div *ngIf="email.errors.required || email.errors.touched">
+                    <small class="text-danger">Email must be filled out.</small>
+                  </div>
+                </div> -->
+                  <div *ngIf="email.touched && email.invalid" class="d-flex invalid-feedback">
+                    <div >Example: sample@mail.com</div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group col-sm-6 " *ngIf="!isEditingfacilityUser">
+                <label for="icdcodesystem23">UserName
+                  <small class="text-danger">*</small>
+                  <!-- <small *ngIf="emailinvalid && !patientId" class="text-danger">
+                    User Name already
+                    registered</small> -->
+                </label>
+                <input type="text" [(ngModel)]="facilityUser.userName" class="form-control form-control-sm"
+                    placeholder="sample@mail.com" (blur)="checkAvailibility(facilityUser.userName)" required name="userName" #userName="ngModel"
+                    [ngClass]="{ 'is-invalid': userName.touched && userName.invalid }">
+              </div>
+
+              <div class="col-sm-4">
+                <div class="form-group">
+                  <label for="phn1">Country Calling Code<small class="text-danger">*</small></label>
+                  <ng-select #countryCallingCode="ngModel" id="countryCallingCode" class="ng-select-small" [ngModelOptions]="{standalone: true}" [(ngModel)]="facilityUser.countryCallingCode" [multiple]="false" [searchable]="true"
+                        placeholder="Select Country Calling Code">
+                        <ng-option *ngFor="let item of countriesList" [value]="item.callingCode">{{item.callingCode}} {{item.name}}
+                        </ng-option>
+                </ng-select>
+
+                  <div *ngIf="countryCallingCode.touched && countryCallingCode.invalid" class="invalid-feedback">
+                    <div *ngIf="countryCallingCode.errors.required">Phone No is required</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-8">
+                <div class="form-group">
+                  <label for="phn1">Phone No<small class="text-danger">*</small></label>
+                  <input type="text" [(ngModel)]="facilityUser.phoneNo"
+                    class="form-control form-control-sm" placeholder="Phone" name="phoneNo" #phoneNo="ngModel" id="phn1"
+                    autocomplete="nope" mask="(000)000-0000" required [ngClass]="{ 'is-invalid': phoneNo.touched && phoneNo.invalid }">
+                  <!-- <div *ngIf="phoneNo.invalid && (phoneNo.dirty || phoneNo.touched)" class="invalid invalid-text">
+                  <div *ngIf="phoneNo.errors.required">
+                    <small class="text-danger">Phone No must be filled out.</small>
+                  </div>
+                  </div> -->
+
+                  <div *ngIf="phoneNo.touched && phoneNo.invalid" class="invalid-feedback">
+                    <div *ngIf="phoneNo.errors.required">Phone No is required</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6" *ngIf="!isEditingfacilityUser">
+                <div class="form-group">
+                  <label for="password">Password<small class="text-danger">*</small></label>
+                  <input [(ngModel)]="facilityUser.password" type="password" class="form-control form-control-sm"
+                    autocomplete="new-password" placeholder="Minimum 6 characters " required name="password"
+                    #password="ngModel" minlength="6"
+                    [ngClass]="{ 'is-invalid': password.touched && password.invalid }">
+                  <!-- <div *ngIf="password.invalid && (password.dirty || password.touched)" class="invalid invalid-text">
+                  <div *ngIf="password.errors.required">
+                    <small class="text-danger">Password must be filled out.</small>
+                  </div>
+                </div> -->
+
+                  <div *ngIf="password.touched && password.invalid" class="invalid-feedback">
+                    <div *ngIf="password.errors.required">Password is required</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6" *ngIf="!isEditingfacilityUser">
+                <div class="form-group">
+                  <label for="confirmPassword">Confirm Password<small class="text-danger">*</small></label>
+                  <input [(ngModel)]="facilityUser.confirmPassword" class="form-control form-control-sm" rows="3"
+                    placeholder="Confirm Password" type="password" minlength="6" required name="confirmPassword"
+                    #confirmPassword="ngModel"
+                    [ngClass]="{ 'is-invalid': confirmPassword.touched && confirmPassword.invalid }">
+                  <!-- <div *ngIf="confirmPassword.invalid && (confirmPassword.dirty || confirmPassword.touched)"
+                  class="invalid invalid-text">
+                  <div *ngIf="confirmPassword.errors.required">
+                    <small class="text-danger">Confirm Password must be filled out.</small>
+                  </div>
+
+                </div> -->
+
+                  <div *ngIf="confirmPassword.touched && confirmPassword.invalid" class="invalid-feedback">
+                    <div *ngIf="confirmPassword.errors.required">Confirm Password is required</div>
+                  </div>
+                  <div *ngIf="(facilityUser.password !== facilityUser.confirmPassword)">
+                    <small class="text-danger">Those passwords didn't match. Try again.</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button
+            [disabled]="!facilityUser.email || !facilityUser.password || emailinvalid ||!facilityUser.confirmPassword || f.invalid || !facilityUser.phoneNo || !facilityUser.countryCallingCode || !facilityUser.firstName || !facilityUser.lastName || (facilityUser.password !== facilityUser.confirmPassword)"
+            type="submit" class="btn btn-dynamic-2c btn-sm" *ngIf="!isEditingfacilityUser"
+            (click)="addFacility.hide();addUpdateFacility()">Add</button>
+          <button [disabled]="!facilityUser.firstName || !facilityUser.lastName || f.invalid || !facilityUser.countryCallingCode || !facilityUser.phoneNo"
+            type="submit" class="btn btn-dynamic-2c btn-sm" *ngIf="isEditingfacilityUser"
+            (click)="addFacility.hide();addUpdateFacility()">Update</button>
+          <button type="submit" class="btn btn-dynamic-secondary-2c btn-sm"
+            (click)="addFacility.hide()">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div mdbModal #assignFacilitiesMOdal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+    [config]="{ignoreBackdropClick: true}" aria-labelledby="myassignFacilitiesMOdalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close pull-right" aria-label="Close" (click)="assignFacilitiesMOdal.hide()">
+            <span aria-hidden="true">×</span>
+          </button>
+          <h4 class="modal-title w-100" id="myModalLabel">Assign Facilities</h4>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label for="Facilities">Facilities</label>
+                <ng-select [(ngModel)]="selectedFacilities"
+                  [ngModelOptions]="{standalone: true}" [multiple]="true" [searchable]="true"
+                  placeholder="Select Facilities">
+                  <ng-option [value]="item.id" *ngFor="let item of facilityList">{{item.facilityName}}</ng-option>
+                </ng-select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="waves-light btn-sm btn btn-dynamic-secondary-2c" aria-label="Close"
+            (click)="assignFacilitiesMOdal.hide()" mdbWavesEffect>Close</button>
+          <button type="button" (click)="assignFacilitiesMOdal.hide();AssignFacilitiesToUsers();"
+            class="relative waves-light btn btn-sm btn-dynamic-2c" mdbWavesEffect>Save
+            changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div mdbModal #assignRolesModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+    [config]="{ignoreBackdropClick: true}" aria-labelledby="myassignRolesModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close pull-right" aria-label="Close" (click)="assignRolesModal.hide()">
+            <span aria-hidden="true">×</span>
+          </button>
+          <h4 class="modal-title w-100" id="myModalLabel">Assign Roles</h4>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label for="Roles">Roles</label>
+                <ng-select  [(ngModel)]="selectedRoles" [ngModelOptions]="{standalone: true}"
+                  [multiple]="true" [searchable]="true" placeholder="Select Roles">
+                  <ng-option [value]="item.id" *ngFor="let item of rolesList">{{item.name}}</ng-option>
+                </ng-select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+            (click)="assignRolesModal.hide()" mdbWavesEffect>Close</button>
+          <button type="button" (click)="assignRolesModal.hide();AssignRolesToUsers();"
+            class="relative btn waves-light btn-sm btn-dynamic-2c" mdbWavesEffect>Save
+            changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div mdbModal #verificationModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="myBasicModalLabel" [config]="{ignoreBackdropClick: true}" aria-hidden="true">
+    <div class="modal-dialog modal-md" role="document">
+      <div class="modal-content">
+        <button type="button" class="close pull-right mt-2" style="z-index: 1" aria-label="Close"
+          (click)="verificationModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <div class="modal-body p-4">
+          <div class="text-center">
+            <h3 class="mb-3">SMS Verification</h3>
+            <p>An OTP (One Time Password) has been sent to the following number. Please enter the OTP in the field below to verify. </p>
+            <div class="mf-info">
+              <p class="d-flex mb-0 justify-content-between align-items-center"><span>Name:</span> {{verificationUserName}}</p>
+              <p class="d-flex mb-0 justify-content-between align-items-center"><span>Country Calling Code:</span> {{selectedUserCountryCallingCode}}</p>
+              <p class="d-flex justify-content-between align-items-center"><span>Mobile:</span> {{sendPhoneNoVerifictionDto.phoneNumber}}</p>
+            </div>
+
+            <div class="verification-code">
+              <input type="text" [(ngModel)]="verifyPhoneNoDto.code" [minLength]="0" mask="000000"
+                placeholder="Enter Code" [maxLength]="6">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+
+            <button class="btn btn-dynamic-2c btn-sm" (click)="verifyPhoneNumber()">Verify</button>
+          </div>
+        </div>
+        <!-- <div class="modal-footer">
+        <button type="button" mdbBtn color="secodary" class="waves-light" aria-label="Close"
+          (click)="verificationModal.hide()" mdbWavesEffect>Close</button>
+        <button type="button" mdbBtn color="primry" class="relative waves-light" mdbWavesEffect>Save!</button>
+      </div> -->
+      </div>
+    </div>
+  </div>
+  <div mdbModal #transferAndDleteModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title w-100 text-center" id="myModalLabel">Transfer and Delete User
+        </h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="form-group">
+              <label for="Roles">From:</label>
+              <ng-select  [(ngModel)]="transferAndDeleteFacilityUserDto.id" disabled [ngModelOptions]="{standalone: true}"
+                [multiple]="false" [searchable]="true" placeholder="Select user">
+                <ng-option [value]="item.id" *ngFor="let item of facilityUsersList">{{item.lastName}},{{item.firstName}}</ng-option>
+              </ng-select>
+            </div>
+          </div>
+
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label for="Roles">To:</label>
+                <ng-select  [(ngModel)]="transferAndDeleteFacilityUserDto.assignToFacilityUser" [ngModelOptions]="{standalone: true}"
+                  [multiple]="false" [searchable]="true" placeholder="Select User">
+                  <ng-option [value]="0">None</ng-option>
+                  <ng-option [value]="item.id" *ngFor="let item of flteredFacilityUsersList">{{item.lastName}},{{item.firstName}}</ng-option>
+                </ng-select>
+              </div>
+            </div>
+
+        </div>
+      </div>
+      <div class="modal-footer" >
+      <div class="d-flex justify-content-center mt-3">
+        <button [disabled]="transferingUser || transferAndDeleteFacilityUserDto.assignToFacilityUser < 1" type="button" class="btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+          (click)="changeFacilityUser()">Transfer And Delete</button>
+        <button type="button" class="btn-sm btn btn-dynamic-2c" aria-label="Close"
+          (click)="transferAndDleteModal.hide()">Close</button>
+      </div>
+    </div>
+    </div>
+  </div>
+</div>

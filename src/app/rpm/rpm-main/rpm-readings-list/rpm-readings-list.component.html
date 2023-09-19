@@ -1,0 +1,140 @@
+<div class="d-flex align-items-center flex-wrap justify-content-between mb-3">
+  <h4 class="mr-3 mb-0"><a class="text-dark" (click)="navigateBack()"><i
+    class="fa fa-arrow-left"></i></a></h4>
+  <h1 class="page-title mb-0 flex-sm-grow-1">RPM Readings</h1>
+</div>
+
+<div class="row mb-3">
+  <div class="col-lg-6 col-sm-6">
+    <div class="form-group mb-0">
+      <label class="w-100">Modality</label>
+      <ng-select [searchable]="false" class="ng-select-small" placeholder="Select Month" [(ngModel)]="filterPatientDto.modalityCode"
+        (ngModelChange)="filterPatients()" (click)="$event.stopPropagation();" >
+        <ng-option [value]="''">All</ng-option>
+        <ng-option *ngFor="let item of devicesList" [value]="item.code">{{item.name}}</ng-option>
+      </ng-select>
+    </div>
+  </div>
+  <div class="col-lg-6 col-sm-6">
+            <div class="form-group mb-0">
+              <label class="w-100">Reading Date</label>
+                 <input type="text" #datePicker1 class="form-control form-control-sm" [(ngModel)]="selectedDateRange" name="daterangeInput1" daterangepicker
+                 [options]="options" (selected)="selectedDate($event, daterange);filterPatients()" (cancelDaterangepicker)="clearDate()" />
+            </div>
+  </div>
+</div>
+
+<div *ngIf="isLoading" class="d-flex justify-content-center text-center loadingrow">
+  <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+</div>
+
+<!-- <ngx-datatable class="material z-depth-0" [columnMode]="'force'" [headerHeight]="50" [footerHeight]="50"
+    [rowHeight]="35" [scrollbarV]="false" [scrollbarH]="true" [rows]="rpmReadingsList" [limit]="15"
+    (activate)="onActivate($event)">
+    <ngx-datatable-column name="#" [maxWidth]=50>
+      <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+        {{rowIndex + 1}}
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Modality" prop="modalityName">
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Reading" prop="reading">
+    </ngx-datatable-column>
+
+
+    <ngx-datatable-column name="Measurement Date" prop="measurementDate">
+      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+        {{row.measurementDate | date: 'MMM dd yyyy hh:mm'}}
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Alert threshold" prop="threshold">
+    </ngx-datatable-column>
+
+  </ngx-datatable> -->
+  <table datatable [dtOptions]="dtOptions" id="example" [dtTrigger]="dtTrigger"
+    class="cell-border hover text-nowrap ccm-datatable rpm-patients-list">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Patient Name</th>
+        <th>
+          <span style="white-space: nowrap; display: block;">Modality</span>
+        </th>
+        <!-- <th>
+
+          <div class="custom-control custom-checkbox">
+            <input class="custom-control-input" type="checkbox" id="selectAll" [(ngModel)]="gridCheckAll"
+              (change)="gridAllRowsCheckBoxChecked($event)">
+            <label class="custom-control-label" for="selectAll"></label>
+          </div>
+        </th> -->
+        <th>Reading</th>
+        <th>Measurement Date</th>
+        <th>Alert threshold</th>
+        <!-- <th>Rpm Manager Name</th>
+        <th>CP Name</th>
+        <th>Action</th> -->
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let row of rows; let i = index">
+        <!-- (click)="row.checked = !row.checked; selectRow(row)" -->
+        <td>
+          <small class="mr-3">{{ i + 1 + rowIndex }}</small>
+        </td>
+        <td>
+          {{ row.patientName }}
+        </td>
+        <td>
+          {{ row.modalityName }}
+          <!-- <div class="d-flex justify-content-between align-items-center">
+            <a class="mb-0 text-capitalize link text-dynamic-2c text-left ml-2" style="white-space: nowrap; width: 200px;"
+              (click)="onClickRow(row)">
+              {{ row.fullName }}</a>
+          </div> -->
+        </td>
+        <td>
+         {{row.reading}}
+          <!-- {{ row.psychiatristName }} -->
+        </td>
+        <td>
+          <span *ngIf="row.measurementDate != '0001-01-01T00:00:00'">
+
+            {{row.measurementDate | dateFormatPipe}}
+          </span>
+        </td>
+        <!-- <td>
+          <span *ngIf="row.lastLogDate != '0001-01-01T00:00:00'">
+            {{row.lastLogDate | dateFormatPipe}}
+          </span>
+        </td> -->
+
+        <td>
+
+          {{row.threshold}}
+        </td>
+
+        <!-- <td>
+          <div class="row">
+            <div class="action-button d-flex justify-content-center">
+              <button routerLink="/admin/logsHistory/{{row.id}}" class="btn btn-dynamic-2c btn-icon my-1"
+              ><i class="fa fa-history"></i></button>
+            </div>
+            <div class="action-button d-flex justify-content-center">
+              <button routerLink="/rpm/patients/readings/{{row.id}}"
+                class="btn btn-dynamic-2c btn-icon my-1" ><i
+                  class="fa fa-eye"></i></button>
+            </div>
+            <div class="action-button d-flex justify-content-center">
+              <button routerLink="/alertManager/alertList/{{row.id}}"
+                class="btn btn-dynamic-2c btn-icon my-1" ><i
+                  class="fa fa-exclamation-triangle"></i></button>
+            </div>
+          </div>
+        </td> -->
+      </tr>
+    </tbody>
+    <!-- <tbody *ngIf="rows.length === 0">
+      <td class="bg-white p-3 text-danger" colspan="12">No Record Found</td>
+     </tbody> -->
+  </table>

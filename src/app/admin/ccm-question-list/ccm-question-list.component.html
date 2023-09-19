@@ -1,0 +1,357 @@
+<div class="d-flex align-item-center justify-content-start">
+  <h4 class="mr-3 mb-0"><a class="text-dark" (click)="restrictNavigation();test.hide();">
+      <i class="fa fa-arrow-left"></i></a></h4>
+  <h1 class="page-title">CCM Monthly Review</h1>
+</div> 
+
+<app-patient-details></app-patient-details>
+<div class="ccm-care-plan-header mt-2" [ngClass]="{disabledDiv: disableCounterTime}">
+  <div class="d-flex">
+    <!-- <h5 (click)="restrictNavigation();test.hide();" class="ml-3 mb-0 text-dynamic-2c" style="cursor: pointer"> <i
+        class="fa fa-arrow-left fa-lg"></i></h5> -->
+    <strong class="font-500 px-3">CCM Encounter</strong>
+  </div>
+  <!-- <div class="ccm-time">
+      <p class="mb-0 text-dark">CCM Time Completed: <strong
+          class="text-dynamic-2c">{{ ccmEncounterList?.ccmTimeCompleted }}</strong> </p>
+    </div> -->
+  <div class="ml-auto px-3 timer-container">
+    <div class="input-group form-group mb-0">
+      <!-- <label class="w-100">Record Time</label> -->
+      <input type="text" #timerInput class="form-control form-control-sm text-danger"
+        style="width: 100px;font-weight: 700;letter-spacing: 2px;" placeholder="00:00:00" id="category">
+      <a class="input-group-append play-counter"
+        (click)="stopTimer();$event.stopPropagation();watchSectionionTimeLog(2);test.show();" title="Stop"
+        date-placement="Pause">
+        <span class="input-group-text text-white bg-dynamic-2c" id="category"><i class="fa fa-stop fa-lg"></i></span>
+      </a>
+      <a *ngIf="timerStart" class="input-group-append play-counter"
+        (click)="pauseTimer();$event.stopPropagation();watchSectionionTimeLog(0)" date-placement="right"
+        title="Pause" date-placement="right">
+        <span class="input-group-text text-white bg-dynamic-2c" id="category"><i class="fa fa-pause fa-lg"></i></span>
+      </a>
+      <a *ngIf="!timerStart" class="input-group-append play-counter"
+        (click)="startTimer();$event.stopPropagation();watchSectionionTimeLog(1)" date-placement="right"
+        title="Start" date-placement="right">
+        <span class="input-group-text text-white bg-dynamic-2c" id="category"><i class="fa fa-play fa-lg"></i></span>
+      </a>
+    </div>
+  </div>
+  <a appDebounceClick (debounceClick)="test.toggle();encounterTimeForm.get('note').reset();" class="collapse-btn">
+    <i *ngIf="test.isCollapsed" class="fa fa-angle-down"></i>
+    <i *ngIf="!test.isCollapsed" class="fa fa-angle-up"></i>
+  </a>
+
+</div>
+
+<div class="ccm-care-plan-body" mdbCollapse #test="bs-collapse">
+  <div class="ccm-body z-depth-0">
+    <div class="encounter-section">
+      <div class="encounter-header flex-wrap d-flex align-items-center justify-content-between p-3">
+        <div class="d-flex col-xl-4 col-lg-5 col-sm-6 p-0">
+          <div class="month col p-0 pr-2">
+            <ng-select [searchable]="false" [(ngModel)]="currentMonth" class="ng-select-small" placeholder="Select Month"
+              (click)="$event.stopPropagation();" (change)="searchLogsByMonth()">
+              <ng-option [value]="1">January</ng-option>
+              <ng-option [value]="2">February</ng-option>
+              <ng-option [value]="3">March</ng-option>
+              <ng-option [value]="4">April</ng-option>
+              <ng-option [value]="5">May</ng-option>
+              <ng-option [value]="6">June</ng-option>
+              <ng-option [value]="7">July</ng-option>
+              <ng-option [value]="8">August</ng-option>
+              <ng-option [value]="9">September</ng-option>
+              <ng-option [value]="10">October</ng-option>
+              <ng-option [value]="11">November</ng-option>
+              <ng-option [value]="12">December</ng-option>
+            </ng-select>
+          </div>
+          <div class="month col p-0 pl-2">
+            <ng-select [searchable]="false" [appendTo]="'body'" class="ng-select-small" placeholder="Select Month"
+              [(ngModel)]="yearNum" (ngModelChange)="searchLogsByMonth()"
+              (click)="$event.stopPropagation();">
+              <ng-option *ngFor="let year of listOfYears" [value]="year">{{year}}</ng-option>
+            </ng-select>
+          </div>
+        </div>
+       
+        <div class="ccm-date mr-lg-auto">
+          <!-- <div class="cons-date">
+          <div class="input-group form-group mb-0">
+        <label>Consent Date:</label>
+        <input type="text" [(ngModel)]="consentDate" class="form-control form-control-sm" #dateDPicker="dpDayPicker" [dpDayPicker]="datePickerConfig"  [theme]="'dp-material ccm-date-picker'" [mode]="'day'" />
+                <a (click)="updateConsentDate(consentDate);" class="input-group-append">
+                  <span class="input-group-text text-white bg-dynamic-2c"><i class="fa fa-save fa-lg"></i></span>
+                </a>
+      </div>
+      </div> -->
+          <!-- <div class="follow-date">
+            <div class="input-group form-group mb-0">
+              <label>Follow up Date:</label>
+              <input type="text" [(ngModel)]="followUpDate" class="form-control form-control-sm"
+                #dateDPicker="dpDayPicker" [dpDayPicker]="datePickerConfig" [theme]="'dp-material ccm-date-picker'"
+                [mode]="'day'" />
+              <a (click)="updateFollowUpDate(followUpDate);" class="input-group-append">
+                <span class="input-group-text text-white bg-dynamic-2c" id="category"><i
+                    class="fa fa-save fa-lg"></i></span>
+              </a>
+            </div>
+          </div> -->
+        </div>
+
+        <div class="ccm-time ml-md-auto mt-md-2 mt-sm-2">
+          <p class="mb-0 text-dark"><i class="fa fa-clock-o fa-lg"></i> CCM Time Completed: <strong
+              class="text-dynamic-2c">{{ ccmEncounterList?.ccmTimeCompleted }}</strong> </p>
+        </div>
+      </div>
+
+      <div class="encounter-body px-3">
+        <div class="row">
+          <div class="enc-time col-xl-6 col-lg-12 col-md-12 col-sm-12 py-3">
+            <form [formGroup]="encounterTimeForm" (ngSubmit)="SubmitEncounterTimeForm();encounterTimeForm.get('note').reset();">
+              <strong class="text-dynamic-2c mb-3 d-block">Encounter Time</strong>
+              <div class="row">
+                <div class="col-sm-6">
+                  <div class="input-group form-group mb-0">
+                    <label class="w-100">Record Time</label>
+                    <input type="text" #timerInput1 class="form-control form-control-sm" placeholder="00:00:00"
+                      id="category">
+                    <!-- <a class="input-group-append" title="Reset" date-placement="right">
+                  <span class="input-group-text text-white bg-dynamic-2c" id="category"><i
+                      class="fa fa-refresh fa-lg"></i></span>
+                </a> -->
+                    <a class="input-group-append play-counter" (click)="stopTimer();watchSectionionTimeLog(2)" title="Stop"
+                      date-placement="Pause">
+                      <span class="input-group-text text-white bg-dynamic-2c" id="category"><i
+                          class="fa fa-stop fa-lg"></i></span>
+                    </a>
+                    <a *ngIf="timerStart" class="input-group-append play-counter" (click)="pauseTimer();watchSectionionTimeLog(0)"
+                      date-placement="right" title="Pause" date-placement="right">
+                      <span class="input-group-text text-white bg-dynamic-2c" id="category"><i
+                          class="fa fa-pause fa-lg"></i></span>
+                    </a>
+                    <a *ngIf="!timerStart" class="input-group-append play-counter" (click)="startTimer();watchSectionionTimeLog(1)"
+                      date-placement="right" title="Start" date-placement="right">
+                      <span class="input-group-text text-white bg-dynamic-2c" id="category"><i
+                          class="fa fa-play fa-lg"></i></span>
+                    </a>
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="input-group form-group">
+                    <label class="w-100">Date</label>
+                    <input type="text" class="form-control form-control-sm" #dateDPicker="dpDayPicker"
+                      formControlName="encounterDate" [dpDayPicker]="datePickerConfig"
+                      [theme]="'dp-material ccm-date-picker'" [mode]="'day'" />
+                    <a (click)="dateDPicker.api.open();" class="input-group-append">
+                      <span class="input-group-text text-white bg-dynamic-2c" id="category"><i
+                          class="fa fa-calendar fa-lg"></i></span>
+                    </a>
+                  </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                  <div class="form-group">
+                    <label class="w-100">Start Time</label>
+                    <input type="text" class="form-control form-control-sm" #dateDpTime="dpDayPicker"
+                      [dpDayPicker]="timePickerConfig" formControlName="startTime"
+                      [theme]="'dp-material ccm-date-picker'" [mode]="'time'" />
+                    <!-- <a (click)="dateDpTime.api.open()" class="input-group-append">
+                  <span class="input-group-text text-white bg-dynamic-2c" id="category"><i
+                      class="fa fa-clock-o fa-lg"></i></span>
+                </a> -->
+                  </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                  <div class="form-group">
+                    <label class="w-100">End Time</label>
+                    <input type="text" readonly class="form-control form-control-sm" formControlName="endTime">
+                    <!-- <input type="text" readonly class="form-control form-control-sm" #dateDpEndTime="dpDayPicker"
+                    [dpDayPicker]="timePickerConfig" formControlName="endTime" [theme]="'dp-material ccm-date-picker'"
+                    [mode]="'time'" />
+                  <a (click)="dateDpEndTime.api.open()" class="input-group-append">
+                    <span class="input-group-text text-white bg-dynamic-2c" id="category"><i
+                        class="fa fa-clock-o fa-lg"></i></span>
+                  </a> -->
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label class="w-100">Duration: <small class="text-info">Enter in Minutes</small></label>
+                    <input #durationInput type="text" [disabled]="!encounterTimeForm.get('startTime').value"
+                      class="form-control form-control-sm" OnlyNumbers (input)="stopCounterOnDuration = false;stopTimer();durationChanged($event.target.value)">
+                    <!-- <a (click)="dateDpEndTime.api.open()" class="input-group-append">
+                    <span class="input-group-text text-white bg-dynamic-2c" id="category"><i
+                        class="fa fa-clock-o fa-lg"></i></span>
+                  </a> -->
+                  </div>
+                </div>
+
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label>Care Provide</label>
+                    <ng-select [searchable]="true" formControlName="careProviderId" class="ng-select-small"
+                          placeholder="Select Provider" (click)="$event.stopPropagation();">
+                          <ng-option [value]="item.id" *ngFor="let item of providerList">{{item.lastName}},{{item.firstName}}</ng-option>
+                        </ng-select>
+                    <!-- <ng-select class="ng-select-small" formControlName="careProviderId" [closeOnSelect]="true"
+                      [multiple]="false" [searchable]="true" appendTo="body" placeholder="Select Provider" (click)="$event.stopPropagation();">
+                      <ng-option *ngFor="let item of providerList" [value]="item.id">{{item.lastName}},{{item.firstName}}
+                      </ng-option>
+                    </ng-select> -->
+                  </div>
+
+                </div>
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label>Service Name</label>
+                    <ng-select [searchable]="true" formControlName="ccmServiceTypeId"
+                      class="ng-select-small" placeholder="Select Service Type" (click)="$event.stopPropagation();">
+                      <ng-option [value]="item.id" *ngFor="let item of serviceTypes">{{item.name}}</ng-option>
+                    </ng-select>
+                  </div>
+                </div>
+                <div class="col-sm-12">
+                  <div class="form-form form-group">
+                    <label for="form12">Notes <sup class="text-danger">*</sup> </label>
+                    <textarea type="text" id="form12" formControlName="note" rows="6" [ngClass]="{ 'is-invalid': (encounterTimeForm.get('note').touched ||
+                  encounterTimeForm.get('note').dirty) &&
+                  !encounterTimeForm.get('note').valid }" class="form-control" required></textarea>
+                  <div class="invalid invalid-text">
+                    <small *ngIf="encounterTimeForm.get('note').invalid && encounterTimeForm.get('note').touched" class="text-danger">Please write some note.</small>
+                  </div>
+                </div>
+                </div>
+                <div class="col-sm-12" *ngIf="loading">
+                  <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate"></mdb-progress-bar>
+                </div>
+                <div #alert *ngIf="showAlertFEncounter" class="alert alert-warning alert-dismissible animated fade show col-sm-12" role="alert">
+                  <!-- <button type="button" class="close" aria-label="Close" >
+                    <span aria-hidden="true">&times;</span>
+                  </button> -->
+                  <strong>End Time must be greater than Start Time!</strong>
+                </div>
+                <div class="col-sm-12 d-flex justify-content-end">
+                  <button [disabled]="addingEncounter ||!encounterTimeForm.valid" type="submit" mdbBtn
+                    class="btn btn-dynamic-2c btn-sm m-o">
+                    <span *ngIf="addingEncounter" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    Add Encounter</button>
+                </div>
+              </div>
+            </form>
+          </div>
+
+          <!-- Logs -->
+          <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 py-3">
+            <p class="mb-3"> <strong class="text-dynamic-2c ">Encounter Logs</strong></p>
+
+
+            <!-- <button mdbBtn class="btn btn-dynamic-2c btn-sm waves-light" type="button" (click)="test.toggle()" mdbWavesEffect>
+              Toggle collapse
+            </button>
+
+            <div class="" mdbCollapse #test="bs-collapse">
+              <p>Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim
+                keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.</p>
+            </div> -->
+
+            <!-- <strong>{{ccm.encounterDate | dateFormatPipe}}</strong>  -->
+            <div class="logs-container" malihu-scrollbar [scrollbarOptions]="dropdownScroll" style="position: relative;">
+              <div class="logs">
+                <div class="log-item" *ngFor="let ccm of ccmEncounterList?.ccmEncountersList">
+                  <p class="log-title" [attr.date-time]="ccm.encounterDate| dateFormatPipe">
+                    <span class="log-bullet"></span><span class="font-400 pl-3"><strong
+                        class="text-gray">{{ccm.ccmServiceType}}</strong></span>
+                    <a *ngIf="ccm.note" class="float-right">
+
+
+                      <i [class.fa-angle-down]="logs.isCollapsed" [class.fa-angle-up]="!logs.isCollapsed" appDebounceClick (debounceClick)="logs.toggle()" [debounceTime]="200"  class="fa"></i>
+                      <!-- <i *ngIf="!logs.isCollapsed" class="fa fa-angle-up"></i> -->
+                    </a></p>
+
+                  <div class="log-info">
+                    <div class="" mdbCollapse #logs="bs-collapse"  style="height: auto;">
+                      <div class="border border-grey p-2 rounded mt-2">
+                        <strong class="text-dynamic-2c">Encounter Note:</strong>
+                        <p class="mb-0">{{ccm.note}}</p>
+                      </div>
+                    </div>
+                    <p class="mb-0"></p>
+                    <small class="font-400 mr-2"><span class="text-unique-color">Date:</span>
+                      {{ccm.encounterDate| dateFormatPipe}}</small>
+                    <small class="mr-2"><span class="text-unique-color">Created By :</span> <strong
+                        class="text-dynamic-2c"> {{ccm.careProviderName}}</strong></small>
+                    <small class="text-unique-color mr-2">Start Time: {{ccm.startTime}}</small>
+                    <small class="text-unique-color">Duration: {{ccm.duration}}</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Logs End -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--
+<mdb-accordion [multiple]="false" aria-multiselectable="true" class="encounter-accordion">
+  <mdb-accordion-item [collapsed]="true" (click)='$event.stopPropagation()'>
+    <mdb-accordion-item-head>
+
+    </mdb-accordion-item-head>
+    <mdb-accordion-item-body class="ccm-encounter" >
+
+    </mdb-accordion-item-body>
+  </mdb-accordion-item>
+</mdb-accordion> -->
+
+
+<app-care-plan [actionType]="inputActionType" (emitNoteValue)="encounterTimeForm.get('note').setValue($event)">
+</app-care-plan>
+
+
+
+<div mdbModal #startTimerModal="mdbModal" class="modal fade top" tabindex="-1" role="dialog"
+  aria-labelledby="myModalLabel" aria-hidden="true" [config]="{backdrop: true, ignoreBackdropClick: true}">
+  <div class="modal-dialog modal-frame modal-top modal-notify modal-info" role="document">
+    <!--Content-->
+    <div class="modal-content rounded-0">
+      <!--Body-->
+      <div class="modal-body">
+        <div class="row d-flex justify-content-center align-items-center">
+          <p class="pt-3 pr-2">Do you want to start Encounter Timer?</p>
+          <a type="button"
+            (click)="this.disableCounterTime = false;startTimer();startTimerModal.hide();watchSectionionTimeLog(1)" class="waves-light btn btn-dynamic-2c btn-sm"
+            mdbWavesEffect>Yes</a>
+          <a type="button" outline="true" class="waves-light btn btn-dynamic-2c btn-sm"  data-dismiss="modal"
+            (click)="this.disableCounterTime = false;startTimerModal.hide()">No</a>
+        </div>
+      </div>
+    </div>
+    <!--/.Content-->
+  </div>
+</div>
+
+<div mdbModal #tabCloseModal="mdbModal" class="modal fade top" tabindex="-1" role="dialog"
+  [config]="{backdrop: true, ignoreBackdropClick: true}" aria-labelledby="mytabCloseModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-frame modal-top modal-notify modal-info" role="document">
+
+    <div class="modal-content rounded-0">
+      <!--Body-->
+      <div class="modal-body">
+        <div class="row d-flex justify-content-center align-items-center">
+          <p class="pt-3 pr-2">You have unsaved <span class="text-warning">Encounter data</span> ,If you go back changes would be lost. Please click <span class="text-info">Proceed</span> to Go back.</p>
+          <button type="button"  (click)="navigateBack()" class="relative waves-light btn btn-dynamic-2c btn-sm"
+          mdbWavesEffect>Proceed</button>
+          <button type="button"  outline="true"  class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+            (click)="tabCloseModal.hide()" mdbWavesEffect>Cancel</button>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+

@@ -1,0 +1,769 @@
+<div class="d-flex align-items-center flex-wrap justify-content-between mb-3">
+  <h4 class="mr-3 mb-3"><a class="text-dark" (click)="navigateBack()"><i class="fa fa-arrow-left"></i></a></h4>
+  <h1 class="page-title mb-0 flex-sm-grow-1 mb-3">PCM Status</h1>
+  <!-- <div>
+    <button type="button" class="btn btn-dynamic-2c btn-sm mr-0" (click)="addPcmGap.show()"><i
+        class="fa fa-plus fa-lg"></i> Add New</button>
+  </div> -->
+</div>
+
+
+<div class="row d-flex form-group">
+  <div class="d-flex align-items-end col-lg-12 col-sm-12">
+    <div class="flex-grow-1">
+      <label for="searchBy">Search Patient </label>
+      <div class="d-flex align-items-end justify-content-start">
+        <input type="text" #searchPatient [(ngModel)]="filterPatientDto.searchParam" autocomplete="off"
+          class="form-control form-control-sm box-shadow w-100" id="searchBy" placeholder="Search by Name" />
+      </div>
+    </div>
+  <div>
+    <button type="button" class="btn btn-dynamic-2c btn-sm mb-0 flex-shrink-0 mr-0" appDebounceClick
+      (debounceClick)="assignFacilityGapsDto();careGap.toggle()"><i class="fa fa-filter fa-lg"></i> Filter</button>
+      <button type="button" (click)="resetFilter();filterPatients()"
+      class="btn btn-dynamic-secondary-2c btn-sm mr-0 flex-shrink-0 mb-0"><i class="fa fa-refresh fa-lg"></i>
+      Reset</button>
+  </div>
+  </div>
+</div>
+<div class="row py-2">
+  <div class="col-md-3 d-flex align-items-center">
+    <div class="dataTables_length" id="example_length">
+      <label class="m-0">Show
+        <select name="example_length" [(ngModel)]="filterPatientDto.pageSize"
+          (ngModelChange)="filterPatientDto.pageNumber=1;filterPatients();" aria-controls="example" class="">
+          <option value="10">10</option>
+          <option value="25">25</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+        </select>
+        entries
+      </label>
+    </div>
+  </div>
+  <div class="col-md-9">
+    <div class="custom-status-colors">
+      <ul>
+        <li><a class="pcm-status-badge status-dark mr-2" style="min-width:17px; width: 17px;"></a>Not Started & Eligible
+        </li>
+        <!-- <li><a class="pcm-status-badge status-success mr-2" style="min-width:17px; width: 17px;"></a>Eligible</li> -->
+        <li><a class="pcm-status-badge status-danger mr-2" style="min-width:17px; width: 17px;"></a>Refused & Due</li>
+        <li><a class="pcm-status-badge status-success mr-2" style="min-width:17px; width: 17px;"></a>Upto Date & Not
+          Applicable</li>
+        <!-- <li><a class="pcm-status-badge status-dark mr-2" style="min-width:17px; width: 17px;"></a>NotStarted</li>
+        <li><a class="pcm-status-badge status-success mr-2" style="min-width:17px; width: 17px;"></a>Eligible</li>
+        <li><a class="pcm-status-badge status-danger mr-2" style="min-width:17px; width: 17px;"></a>Refused</li>
+        <li><a class="pcm-status-badge status-info mr-2" style="min-width:17px; width: 17px;"></a>UptoDate</li>
+        <li><a class="pcm-status-badge status-warning mr-2" style="min-width:17px; width: 17px;"></a>Due</li>
+        <li><a class="pcm-status-badge status-white mr-2" style="min-width:17px; width: 17px;"></a>NotApplicable</li> -->
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="search-filter collapseable" mdbCollapse #careGap="bs-collapse">
+  <div class="panel" style="overflow: visible;">
+    <div class="panel-header d-flex justify-content-between align-items-center">
+      <h3>Search Filter</h3>
+      <div>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="careGap.toggle()">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div class="row">
+        <!-- <div class="col-sm-4">
+          <div class="form-group">
+            <label for="insurancePLan">Isurance PLan<small class="text-danger"></small></label>
+            <ng-select [loading]="isLoadingPayersList" id="insurancePLan" [(ngModel)]="filterPatientDto.insurancePlanId" [multiple]="false" [searchable]="true"
+                    placeholder="Select Insurance PLan">
+                    <ng-option *ngFor="let item of insurancePLanList" [value]="item.id">{{item.name}}-{{item.payerName}}
+                    </ng-option>
+            </ng-select>
+          </div>
+        </div> -->
+
+        <!-- <div class="col-sm-4">
+          <div class="form-group">
+            <label for="status">Status</label>
+            <ng-select id="status" [searchable]="false" [(ngModel)]="filterPatientDto.status"
+              placeholder="Select Status" [closeOnSelect]="true">
+              <ng-option [value]="-1">All</ng-option>
+              <ng-option *ngFor="let item of gapStatusENumList" [value]="item.value">{{item.name}}</ng-option>
+            </ng-select>
+          </div>
+        </div> -->
+
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label for="measure">Insurance</label>
+            <!-- <ng-select class="ng-select-small" id="measure" [searchable]="false" [(ngModel)]="filterPatientDto.payerId" [multiple]="false"
+              placeholder="Select Measure" [closeOnSelect]="true">
+              <ng-option [value]="0">None</ng-option>
+              <ng-option [value]="item.id" *ngFor="let item of insurancePLanList">{{item.payerName}}</ng-option>
+            </ng-select> -->
+            <ng-select class="ng-select-small" id="measure" [searchable]="false" [(ngModel)]="SelectedinsurancePLan"
+              (ngModelChange)="insuranceGaps()" [multiple]="false" placeholder="Select Measure" [closeOnSelect]="true">
+              <ng-option [value]="-1">Facility Defaults</ng-option>
+              <!-- <ng-option [value]="0">None</ng-option> -->
+              <ng-option [value]="item" *ngFor="let item of insurancePLanList1">{{item.payerName}}</ng-option>
+            </ng-select>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label for="gaps">Gaps</label>
+            <ng-select class="ng-select-small" id="gaps" [searchable]="false" [(ngModel)]="filterPatientDto.gapIds"
+              [multiple]="true" placeholder="Select gaps" [closeOnSelect]="false">
+              <!-- <ng-option [value]="0">None</ng-option> -->
+              <ng-option [value]="item.pcmMeasureInfoId" *ngFor="let item of tempFacilityGapsListDto1">{{item.name}}
+              </ng-option>
+            </ng-select>
+          </div>
+        </div>
+        <div class="col-xl-4 col-lg-6 col-sm-6">
+          <div class="form-group">
+            <label for="isChronic1">Select Chronic Condition</label>
+          <ng-select [virtualScroll]="true" [(ngModel)]="filterPatientDto.conditionsIds"
+            [ngModelOptions]="{standalone: true}" [clearable]="false" [hideSelected]="false"
+            (ngModelChange)="applyChronicFilterLogic();getDependentDiseases(filterPatientDto.conditionsIds)" (remove)="filterPatientDto.diseaseIds = ['0']" [multiple]="true"
+            [searchable]="true" placeholder="Select chronic Condition" id="isChronic1">
+            <ng-option [value]="'0'">All</ng-option>
+            <ng-option [value]="item.id" *ngFor="let item of cronicConditionsLIst">{{item.algorithm}}</ng-option>
+          </ng-select>
+          </div>
+        </div>
+
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label for="cd1">ICD Codes</label>
+            <ng-select class="ng-select-small" id="cd1" [(ngModel)]="filterPatientDto.diseaseIds" [multiple]="true"
+              placeholder="Select Diseases" [closeOnSelect]="false" (ngModelChange)="applyICDFilterLogic()">
+              <ng-option [value]="'0'">All</ng-option>
+              <ng-option *ngFor="let item of cronicDiseaseList1" [value]="item.id"> {{item.icdCode}} {{item.detail}}</ng-option>
+              <!-- <ng-option [value]="item.id" *ngFor="let item of cronicDiseaseList">{{item.algorithm}}</ng-option> -->
+            </ng-select>
+          </div>
+        </div>
+
+        <!-- <div class="col-sm-4">
+          <div class="form-group">
+            <label for="cd">Chronic Diseases</label>
+            <ng-select class="ng-select-small" id="cd" [(ngModel)]="filterPatientDto.diseaseIds" [multiple]="true"
+              placeholder="Select Diseases" [closeOnSelect]="false" (search)="filterChronicDisease($event)">
+              <ng-option *ngFor="let item of cronicDiseaseList1" [value]="item.id">{{item.detail}}</ng-option>
+            </ng-select>
+          </div>
+        </div> -->
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label for="name">CCM Status</label>
+            <ng-select [(ngModel)]="filterPatientDto.ccmStatus" appendTo="body" [searchable]="false"
+              [closeOnSelect]="true" class="ng-select-small" placeholder="Ccm Status">
+              <ng-option [value]="-1">All</ng-option>
+              <ng-option [value]="item.value" *ngFor="let item of ccmStatusList1">{{item.text}} </ng-option>
+            </ng-select>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label for="practiceName">Select Care Facilitator</label>
+            <ng-select class="ng-select-small" [(ngModel)]="filterPatientDto.careFacilitatorId" [closeOnSelect]="true"
+              [multiple]="false" [searchable]="true" placeholder="Select Care Facilitator">
+              <ng-option [value]="0">All</ng-option>
+              <ng-option *ngFor="let item of CareFacilitatorsList1" [value]="item.id">{{item.lastName}},{{item.firstName}}
+              </ng-option>
+            </ng-select>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label class="w-100">Last Done</label>
+            <input class="form-control form-control-sm box-shadow w-100" type="text" autocomplete="nope"
+              name="daterangeInput" daterangepicker [(ngModel)]="selectedDateRange" [options]="options"
+              (selected)="selectedDate($event, daterange)" placeholder="Date" (cancelDaterangepicker)="clearDate()" />
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label for="practiceName">Select Care Manager</label>
+            <ng-select class="ng-select-small" [(ngModel)]="filterPatientDto.careManagerId" [closeOnSelect]="true"
+              [multiple]="false" [searchable]="true" placeholder="Select Care Cordinator">
+              <ng-option [value]="0">All</ng-option>
+              <ng-option *ngFor="let item of careManagerList1" [value]="item.id">{{item.lastName}},{{item.firstName}}
+              </ng-option>
+            </ng-select>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label for="practiceName">Select Billing Provider</label>
+            <ng-select class="ng-select-small" [(ngModel)]="filterPatientDto.billingProviderId" [closeOnSelect]="true"
+              [multiple]="false" [searchable]="true" placeholder="Billing Provider">
+              <ng-option [value]="0">All Billing Providers </ng-option>
+              <ng-option *ngFor="let item of billingProviderList1" [value]="item.id">{{item.lastName}},{{item.firstName}}
+              </ng-option>
+            </ng-select>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label for="practiceName">Select Care Provider</label>
+            <ng-select class="ng-select-small" [(ngModel)]="filterPatientDto.careProviderId" [closeOnSelect]="true"
+              [multiple]="false" [searchable]="true" placeholder="Select Care Provider">
+              <ng-option [value]="0">All</ng-option>
+              <ng-option *ngFor="let item of CareProvidersList1" [value]="item.id">{{item.lastName}},{{item.firstName}}
+              </ng-option>
+            </ng-select>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label for="practiceName">Schedule Flag</label>
+            <ng-select class="ng-select-small" [(ngModel)]="filterPatientDto.scheduleFlags" [closeOnSelect]="false"
+              [multiple]="true" [searchable]="true" placeholder="Select Schedule Flag">
+              <ng-option [value]="item.number" *ngFor="let item of ScheduleFlagEnumList">{{item.word}} </ng-option>
+            </ng-select>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label for="practiceName">Gap Status</label>
+            <ng-select class="ng-select-small" [(ngModel)]="filterPatientDto.gapStatuses" [closeOnSelect]="false"
+              [multiple]="true" [searchable]="true" placeholder="Select gap Status">
+              <ng-option [value]="item.number" *ngFor="let item of GapStatusEnumList">{{item.word}} </ng-option>
+            </ng-select>
+          </div>
+        </div>
+        <div class="col-sm-4">
+        </div>
+      </div>
+      <div class="d-flex justify-content-end align-items-center mt-2">
+        <div class="mr-3">
+          <mdb-checkbox class="ml-auto" [default]="true" [(ngModel)]="filterPatientDto.includeGapDetails">Include Gap
+            Detail
+          </mdb-checkbox>
+        </div>
+        <div class="btn-group">
+          <button type="button" (click)="GetPcmPatientsCareGapsExcel()"
+            class="btn btn-dynamic-2c btn-sm mx-0 flex-shrink-0"><i class="fa fa-filter fa-lg"></i>
+            Export Excel</button>
+          <button type="button" (click)="filterPatients()" class="btn btn-dynamic-2c btn-sm mx-0 flex-shrink-0"><i
+              class="fa fa-filter fa-lg"></i>
+            Search</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="isLoading && !loadingOnStart" class="d-flex justify-content-center text-center" style="top: 100px;">
+  <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+</div>
+<div class="table-responsive">
+  <table class="table btn-table table-nowrap table-borderd gaps-table">
+    <colgroup>
+      <col>
+      <col span="38" style="width: 30px">
+    </colgroup>
+    <thead>
+      <tr>
+
+        <th style="min-width: 30px; max-width:30px; white-space:pre">#</th>
+        <th style="min-width: 200px; max-width:250px; white-space:pre">Name</th>
+        <ng-container *ngFor="let item of headers">
+          <th class="vertical-text" title="{{item}}" ><span>{{item | ellipsis:15 }}</span></th>
+        </ng-container>
+        <!-- <ng-container *ngFor="let item of measureInfoList">
+          <th class="vertical-text" *ngIf="item.isShowColumn" title="{{item.measureName}}" ><span>{{item.measureName | ellipsis:15 }}</span></th>
+        </ng-container> -->
+      </tr>
+    </thead>
+    <tbody *ngIf="rows.length === 0 && !isLoading">
+      <td class="bg-white p-3 text-danger" colspan="37">No Record Found</td>
+    </tbody>
+    <tbody>
+      <tr *ngFor="let row of rows; let i =index">
+        <td>
+          <small class="mr-3">{{(i + 1) + ((pagingData.pageNumber -1 ) * pagingData.pageSize )}}</small>
+        </td>
+        <td style="min-width: 200px; max-width:250px; white-space:pre">
+          <div class="d-flex align-items-center justify-content-between">
+            <span class="pt-name text-dynamic-2c">{{row.fullName}}</span>
+            <i class="fa fa-pencil text-dynamic-2c  ml-2" placement="right" [mdbTooltip]="popTemplate"
+              style="font-size: 20px; cursor: pointer;"
+              (click)="selectedPatient= row;patientSchedulingNote = row.patientSchedulingNote;scduleModal.show()"></i>
+          </div>
+
+          <ng-template #popTemplate>
+            <div class="p-2">
+              <p class="mb-0"><strong>Sch Note:</strong> {{row.patientSchedulingNote}} </p>
+              <!-- <p class="mb-0"><strong>EMR ID:</strong> {{row.patientEmrId}} </p> -->
+            </div>
+
+          </ng-template>
+
+        </td>
+        <ng-container *ngFor="let item of row.measureInfoList">
+
+          <td>
+              <ng-container *ngIf="!item.removeHeader">
+                <div (click)="selectedMeasure=item;getMeasureDataByCode(row.id, item, pcmMOdel)">
+                  <a *ngIf="item.qualityChecked" class="pcm-status-badge status-{{item.color}} quailty-check-sign-green"
+                  title="{{item.measureName}}" >
+                  <span *ngIf="item.hasAttachment">
+                    <i class="fa fa-paperclip fa-lg"></i>
+                  </span>
+                </a>
+                <a *ngIf="!item.qualityChecked" class="pcm-status-badge status-{{item.color}} quailty-check-sign-red"
+                  title="{{item.measureName}}">
+                  <span *ngIf="item.hasAttachment">
+                    <i class="fa fa-paperclip fa-lg"></i>
+                  </span>
+                </a>
+              </div>
+            </ng-container>
+          </td>
+        </ng-container>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div class="d-flex justify-content-between">
+  <div *ngIf="pagingData">
+    <p>Number Of Patients : {{pagingData.elementsCount}}</p>
+  </div>
+  <nav aria-label="Page navigation example ml-auto">
+    <ul class="pagination">
+      <li *ngFor="let item of pagingObj" [class.active]="item.active" class="page-item current"
+        (click)="filterPatientDto.pageNumber=+item.display;filterPatients()"><a
+          class="page-link active">{{item.display}}</a></li>
+    </ul>
+  </nav>
+</div>
+
+<div class="position-relative patients-list" style="display: none;">
+  <div appCcmLoader>
+    <div class="loader-wrap" *ngIf="loadingOnStart">
+      <div class="text-dynamic-2c la-ball-pulse ccm-loader">
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+    </div>
+  </div>
+
+  <table datatable [dtOptions]="dtOptions" id="example" [dtTrigger]="dtTrigger"
+    class="cell-border hover text-nowrap ccm-datatable">
+    <thead>
+      <tr>
+        <th style="width:50px;">ID</th>
+        <th style="width:250px;"><span style="white-space: nowrap; display: block;">Name</span></th>
+        <th>Care Gaps</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let row of rows; let i = index">
+        <td>
+          <small class="mr-3">{{(i + 1) + rowIndex}}</small>
+        </td>
+        <td>
+          <div class="d-flex justify-content-between align-items-center">
+            <a class="mb-0 text-capitalize link text-dynamic-2c text-left ml-2" style="white-space: nowrap; width: 200px;"
+              (click)="onClickRow(row)">
+              {{row.fullName}}</a>
+          </div>
+        </td>
+        <td class="d-flex justify-content-start p-2">
+          <div class="pcm-status-container">
+            <div class="pcm-status">
+              <ul>
+                <li *ngFor="let item of row.measureInfoList">
+                  <ng-container *ngIf="item.isPayerGap">
+                    <a container="body" class="status-{{item.color}}"
+                      (click)="selectedMeasure=item;getMeasureDataByCode(row.id, item, pcmMOdel)"
+                      title="{{item.measureName}}" container="body">
+                      <span>{{item.code}}</span>
+                    </a>
+                  </ng-container>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="pcm-status-container">
+            <div class="pcm-status">
+              <ul>
+                <li *ngFor="let item of row.measureInfoList">
+                  <ng-container *ngIf="!item.isPayerGap">
+                    <a container="body" ng-reflect-container="body" class="status-{{item.color}} quailty-check-sign"
+                      (click)="selectedMeasure=item;getMeasureDataByCode(row.id, item, pcmMOdel)"
+                      title="{{item.measureName}}" container="body">
+                      <span>{{item.code}}</span>
+                    </a>
+                  </ng-container>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </td>
+
+      </tr>
+    </tbody>
+    <tbody *ngIf="rows.length === 0">
+      <td class="bg-white p-3 text-danger" colspan="12">No Record Found</td>
+    </tbody>
+  </table>
+
+</div>
+
+<div mdbModal (close)="selectedMeasure={}" #pcmMOdel="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="mypcmMOdelLabel" aria-hidden="true" (opened)="isDetectValueChanges = false">
+  <div class="modal-dialog modal-dialog-scrollable" role="document">
+    <div class="modal-content" *ngIf="pcmMOdel.isShown">
+      <div class="modal-header py-2">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="pcmMOdel.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+
+        <div class="d-flex align-items-center">
+          <ng-container *ngIf="selectedMeasure && selectedMeasure.measureName">
+            <h4 class="modal-title w-100" title="{{selectedMeasure.measureName}}">
+              {{selectedMeasure.measureName | ellipsis:30 }} </h4>
+          </ng-container>
+
+
+          <a id="popTemplate" #popupInfo="bs-mdbPopover" class="ml-3" container="body" [mdbPopover]="popTemplate"
+            placement="bottom" (click)="popoverToggle(popupQustion);" triggers="focus"><i
+              class="fa fa-exclamation-circle fa-lg"></i></a>
+
+          <a id="popTemplateTwo" #popupQustion="bs-mdbPopover" *ngIf="pcmMOdelData.guideline" class="ml-3"
+            container="body" [mdbPopover]="popTemplateTwo" (click)="popupInfo.toggle();" placement="bottom"
+            triggers="focus"><i class="fa  fa-question-circle fa-lg"></i></a>
+
+          <ng-template #popTemplate>
+            <div class="bg-dark text-white py-3 pl-3 pr-2" style="width: 300px;">
+              <div class="who-covered" (click)="$event.stopPropagation()" [innerHTML]="whoIsCovered" malihu-scrollbar
+                [scrollbarOptions]="scrollbarOptionsTimeline" style="max-height: 350px;"></div>
+            </div>
+          </ng-template>
+
+          <ng-template #popTemplateTwo>
+            <div class="bg-dark text-white py-3 pl-2 pr-2" style="width: 300px;">
+              <div class="who-covered" (click)="$event.stopPropagation()" [innerHTML]="pcmMOdelData.guideline"
+                malihu-scrollbar [scrollbarOptions]="scrollbarOptionsTimeline" style="max-height: 350px;">
+              </div>
+            </div>
+          </ng-template>
+
+        </div>
+
+      </div>
+      <div class="modal-body">
+        <skltn-root *ngIf="pcmModelLoading" duration="2000" [rectRadius]="0" flareWidth="50%" bgFill="#f2f3f8"
+          flareFill="rgba(255,255,255, 0.5)">
+          <!-- Card with Avatar -->
+          <div class="skltn-card">
+            <div skltn-bone class="skltn-card__avatar" type="circle"></div>
+            <div class="skltn-card__body">
+              <div skltn-bone class="skltn-card__title"></div>
+              <div skltn-bone class="skltn-card__line"></div>
+              <div skltn-bone class="skltn-card__line"></div>
+            </div>
+          </div>
+        </skltn-root>
+        <ng-container *ngIf="!pcmModelLoading">
+          <form #form="ngForm">
+
+            <div class="d-flex align-items-center justify-content-between mb-2">
+              <div class="d-flex align-items-center">
+                <p class="m-0">Status:</p>
+                <div class="btn-group ml-3" *ngIf="selectedGapStatus" mdbDropdown>
+                  <mdb-badge mdbDropdownToggle success="true">{{selectedGapStatus.name}}</mdb-badge>
+
+                  <div class="dropdown-menu status-dropdown">
+                    <div>
+                      <!-- <span [ngStyle]="{'backgroupcmMOdelDatand': item.color}"></span> -->
+                      <a [class.active]="pcmMOdelData.currentStatus===item.value"
+                        (click)="pcmMOdelData.currentStatus=item.value;selectedGapStatus=item;valueChanges();"
+                        *ngFor="let item of pcmMOdelData.statusList" class="dropdown-item">{{item.name}}</a>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+              <div class="btn-group ml-3">
+                <div>
+                  <div class="custom-control custom-checkbox custom-control-inline">
+                    <input type="checkbox" [(ngModel)]="pcmMOdelData.controlled" class="custom-control-input"
+                      id="Controlled232" name="Controlleds" #Controlleds="ngModel" (ngModelChange)="valueChanges()">
+                    <label class="custom-control-label" for="Controlled232">Controlled</label>
+                  </div>
+                </div>
+              </div>
+              <div class="btn-group ml-3" *ngIf="pcmMOdelData.hasEncounters" mdbDropdown>
+                <a mdbDropdownToggle class="btn btn-dynamic-2c btn-icon" placement="right"><i class="fa fa-plus"></i></a>
+                <div class="dropdown-menu dropdown-menu-right status-dropdown">
+                  <div>
+                    <button *ngIf="selectedMeasure.code !== 'AW'" [disabled]="isCreatingScreening"
+                      (click)="$event.stopPropagation();AddScreening()" class="dropdown-item">{{selectedMeasure.code}}
+                      Screening <span *ngIf="isCreatingScreening" class="spinner-border spinner-border-sm" role="status"
+                        aria-hidden="true"></span></button>
+                    <button *ngIf="selectedMeasure.code !== 'AW'" [disabled]="isCreatingCounselling"
+                      (click)="$event.stopPropagation();AddCounselling()" class="dropdown-item">{{selectedMeasure.code}}
+                      Counselling <span *ngIf="isCreatingCounselling" class="spinner-border spinner-border-sm"
+                        role="status" aria-hidden="true"></span></button>
+                    <button *ngIf="selectedMeasure.code === 'AW'" [disabled]="isCreatingAWEncounter"
+                      (click)="$event.stopPropagation();AddAWEncounter()" class="dropdown-item">Add Encounter <span
+                        *ngIf="isCreatingAWEncounter" class="spinner-border spinner-border-sm" role="status"
+                        aria-hidden="true"></span></button>
+                    <!-- <button class="dropdown-item">Counselling</button> -->
+                  </div>
+
+                </div>
+              </div>
+            </div>
+            <div class="border p-2 border-bottom-0">
+              <!-- <p class="mb-3"><label> Reference Link: </label> <a>Demo Link</a></p> -->
+              <div class="input-group form-group">
+                <label style="width: 70px;" class="flex-shrink-0">Last Done</label>
+                <input type="text" class="form-control form-control-sm ml-3" [(ngModel)]="pcmMOdelData.lastDone"
+                  #date="dpDayPicker" [dpDayPicker]="datePickerConfig" (close)="valueChanges()"
+                  [theme]="'dp-material ccm-date-picker'" [mode]="'day'" name="lastdone" #lastdone="ngModel" />
+                <a (click)="date.api.open();" class="input-group-append">
+                  <span class="input-group-text text-white bg-dynamic-2c" id="category1"><i
+                      class="fa fa-calendar fa-lg"></i></span> </a>
+              </div>
+              <!-- <div class="d-flex" *ngIf="!pcmMOdelData.isResultNumeric">
+              <label style="width: 70px;" class="flex-shrink-0" for="result" >Result</label>
+              <div class="form-group flex-1 ml-3">
+                <input [(ngModel)]="pcmMOdelData.result" type="text" name="result" (ngModelChange)="valueChanges()" #result="ngModel" class="form-control" id="result"
+                  placeholder="Risk Level">
+              </div>
+            </div>
+            <div class="d-flex" *ngIf="pcmMOdelData.isResultNumeric">
+              <label style="width: 70px;" class="flex-shrink-0" for="result" >Result</label>
+              <div class="form-group flex-1 ml-3">
+                <input [(ngModel)]="pcmMOdelData.result" name="result1" #result1="ngModel" (ngModelChange)="valueChanges()" OnlyNumbers type="text" class="form-control" id="result"
+                  placeholder="Risk Level">
+              </div>
+            </div> -->
+              <ng-container *ngIf="pcmMOdelData.pcmMeasureInfoResultType == 0">
+                <div class="d-flex" *ngIf="!pcmMOdelData.isResultNumeric">
+                  <label style="width: 70px;" class="flex-shrink-0" for="result1">Result</label>
+                  <div class="form-group flex-1 ml-3">
+                    <input [(ngModel)]="pcmMOdelData.result" type="text" (ngModelChange)="valueChanges()"
+                      class="form-control" id="result1" placeholder="" name="result">
+                  </div>
+                </div>
+                <div class="d-flex" *ngIf="pcmMOdelData.isResultNumeric">
+                  <label style="width: 70px;" class="flex-shrink-0" for="result">Result</label>
+                  <div class="form-group flex-1 ml-3">
+                    <input [(ngModel)]="pcmMOdelData.result" Numeric (ngModelChange)="valueChanges()" type="text"
+                      class="form-control" id="result" placeholder="" name="result1">
+                  </div>
+                </div>
+              </ng-container>
+              <ng-container *ngIf="pcmMOdelData.pcmMeasureInfoResultType == 1">
+                <div class="d-flex">
+                  <!-- <div class="col-lg-6 col-sm-12"> -->
+                  <label style="width: 70px;" class="flex-shrink-0">Result</label>
+                  <div class="form-group  w-100 ml-3">
+                    <ng-select class="ng-select-small" [(ngModel)]="pcmMOdelData.result" name="myresult"
+                      [multiple]="false" [searchable]="false" (ngModelChange)="valueChanges()"
+                      placeholder="Select Result">
+                      <ng-option [value]="item.value" *ngFor="let item of pcmMOdelData.pcmMeasureDropdownResultValues">
+                        {{item.value}}</ng-option>
+
+                      <!-- <ng-container *ngIf="pcmMOdelData.pcmMeasureInfoDropdownResultValue == 0">
+                        <ng-option [value]="'Yes'">Yes</ng-option>
+                        <ng-option [value]="'No'">No</ng-option>
+                      </ng-container>
+                      <ng-container *ngIf="pcmMOdelData.pcmMeasureInfoDropdownResultValue == 1">
+                        <ng-option [value]="'Normal'">Normal</ng-option>
+                        <ng-option [value]="'Abnormal'">Abnormal</ng-option>
+                      </ng-container> -->
+
+                    </ng-select>
+                  </div>
+                  <!-- </div> -->
+                </div>
+
+              </ng-container>
+
+              <!-- <div *ngFor="let item of pcmMOdelData.insuranceGapFlags">
+              <div class="custom-control custom-checkbox custom-control-inline">
+                  <mdb-checkbox [(ngModel)]="item.checked" [default]="true" [checked]="false">
+                                    {{item.name}}
+                                </mdb-checkbox>
+              </div>
+            </div> -->
+              <div class="form-form form-group d-flex mb-0">
+                <label style="width: 70px;" class="flex-shrink-0" for="note">Notes</label>
+                <textarea [(ngModel)]="pcmMOdelData.note" type="text" (ngModelChange)="valueChanges()" name="note"
+                  #note="ngModel" id="note" style="height:55px" rows="2" class="form-control ml-3"></textarea>
+              </div>
+
+            </div>
+            <div class="border p-2 border-bottom-0"
+              *ngIf="pcmMOdelData.insuranceGapFlags && pcmMOdelData.insuranceGapFlags.length > 0">
+              <div class="row">
+                <div class="col-6 mb-2" *ngFor="let item of pcmMOdelData.insuranceGapFlags">
+                  <div class="custom-control custom-checkbox custom-control-inline pl-0">
+                    <mdb-checkbox [(ngModel)]="item.checked" name="{{item.name}}" (ngModelChange)="valueChanges()"
+                      [default]="true" [checked]="false">
+                      {{item.name}}
+                    </mdb-checkbox>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="border p-2 border-bottom-0">
+              <div class="input-group form-group">
+                <label style="width: 70px;" class="flex-shrink-0 ">Next Due</label>
+                <input [(ngModel)]="pcmMOdelData.nextDue" (close)="valueChanges()" type="text" name="nextDue"
+                  #nextDue="ngModel" class="form-control form-control-sm ml-3" #dateDPicker="dpDayPicker"
+                  [dpDayPicker]="datePickerConfig" [theme]="'dp-material ccm-date-picker'" [mode]="'day'" />
+                <a (click)="dateDPicker.api.open();" class="input-group-append">
+                  <span class="input-group-text text-white bg-dynamic-2c" id="category"><i
+                      class="fa fa-calendar fa-lg"></i></span> </a>
+              </div>
+              <div class="d-flex align-items-start">
+                <label for="file" class="flex-shrink-0" style="width: 70px;">Attachment</label>
+                <div class="file-field flex-wrap align-items-center w-100 ml-3">
+                  <div class="btn btn-success btn-sm mx-0 mt-0">
+                    <span class="w-100"><i class="fa fa-paperclip fa-lg"></i> Attach File<span *ngIf="uploadImg"
+                        class="mr-1 spinner-border spinner-border-sm" role="status" aria-hidden="true"></span></span>
+                    <input type="file" mdbFileSelect accept=".pdf, .xlsx,.docx, .doc, .odt , .txt, .ppt, .pptx"
+                      (change)="onUploadOutput($event);" #select>
+                  </div>
+                </div>
+              </div>
+              <div class="w-100" *ngIf="pcmMOdelData.pcmDocuments && pcmMOdelData.pcmDocuments.length > 0">
+                <div class="file-field flex-wrap align-items-center">
+                  <div *ngFor="let doc of pcmMOdelData.pcmDocuments" class="file-item">
+                    <small class="mb-0"><a (click)="viewDoc(doc)">{{doc.title | slice:0:40}}</a><a
+                        (click)="DeleteDoc(doc)"><i class="ml-2 fa fa-times fa-lg text-danger"></i>
+                      </a></small>
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex m-0 justify-content-between align-items-center w-100">
+                <div *ngIf="pcmMOdelData.updatedUser">
+                  <label class="mb-0" style="font-size: 14px;font-weight: 500;">Last updated by:</label>
+                  {{pcmMOdelData.updatedUser}}
+                </div>
+                <div *ngIf="pcmMOdelData.updatedOn">{{pcmMOdelData.updatedOn | dateFormatPipe}}</div>
+              </div>
+            </div>
+            <div class="border p-2" style="background-color: #4eb04814;">
+              <!-- <p class="mb-3"><label> Reference Link: </label> <a>Demo Link</a></p> -->
+              <!-- <div class="col-xl-3 col-lg-6 col-sm-6"> -->
+              <div class="input-group form-group">
+                <label style="width: 70px;" class="flex-shrink-0 mr-3" for="scheduleflag">Sch Flag</label>
+                <ng-select [(ngModel)]="pcmMOdelData.scheduleFlag" name="schdulefl" appendTo="body" [searchable]="false"
+                  [closeOnSelect]="true" class=" flex-grow-1 ng-select-small" placeholder="Select Schedule Flag"
+                  (ngModelChange)="valueChanges()">
+                  <!-- <ng-option [value]="-1">All</ng-option> -->
+                  <ng-option [value]="item.number" *ngFor="let item of ScheduleFlagEnumList">{{item.word}} </ng-option>
+                </ng-select>
+              </div>
+              <!-- </div> -->
+              <div class="input-group form-group">
+                <label style="width: 70px;" class="flex-shrink-0">Event Date</label>
+                <input type="text" class="form-control form-control-sm ml-3" name="eventDate11"
+                  [(ngModel)]="pcmMOdelData.eventDate" #date1="dpDayPicker" [dpDayPicker]="disableDatePickerConfig"
+                  [minDate]="currentDate" [theme]="'dp-material ccm-date-picker'" (ngModelChange)="valueChanges()"
+                  [mode]="'day'" />
+                <a (click)="date1.api.open();" class="input-group-append">
+                  <span class="input-group-text text-white bg-dynamic-2c" id="eventDate1"><i
+                      class="fa fa-calendar fa-lg"></i></span> </a>
+              </div>
+              <div class="form-form form-group d-flex mb-0">
+                <label style="width: 70px;" class="flex-shrink-0" for="scheduleNote">Note</label>
+                <textarea [(ngModel)]="pcmMOdelData.scheduleNote" (ngModelChange)="valueChanges()" type="text"
+                  id="scheduleNote" name="note12" style="height:55px" rows="2" class="form-control ml-3"></textarea>
+              </div>
+              <div class="d-flex mt-2 justify-content-between align-items-center w-100">
+                <div *ngIf="pcmMOdelData.scheduleUpdatedUser">
+                  <label class="mb-0" style="font-size: 14px;font-weight: 500;">Last updated by:</label>
+                  {{pcmMOdelData.scheduleUpdatedUser}}
+                </div>
+                <div *ngIf="pcmMOdelData.scheduleUpdatedOn">{{pcmMOdelData.scheduleUpdatedOn | dateFormatPipe}}</div>
+              </div>
+            </div>
+
+
+          </form>
+        </ng-container>
+      </div>
+      <div class="modal-footer py-2">
+
+        <div class="d-flex m-0 justify-content-between align-items-center w-100">
+          <div >
+            <button type="button" *ngIf="!pcmMOdelData.qualityChecked" title="Quality Check" size="sm" mdbBtn
+              color="danger" class="waves-light" aria-label="Close" (click)="setCareGapQualityChecked(pcmMOdelData)"
+              mdbWavesEffect> <i class="fa fa-times fa-lg"></i> Quality Checked</button>
+            <button type="button" *ngIf="pcmMOdelData.qualityChecked" title="Quality Check" size="sm" mdbBtn
+              class="btn btn-dynamic-2c btn-sm waves-light" aria-label="Close" mdbWavesEffect> <i class="fa fa-check fa-lg"></i>
+              Quality Checked</button>
+          </div>
+          <div>
+            <button type="button"  class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+              (click)="pcmMOdel.hide()" mdbWavesEffect>Cancel</button>
+            <button [disabled]="editingPcmData || !isDetectValueChanges" type="submit" 
+              (click)="AddEditMeasureData(pcmMOdel)" class="relative waves-light btn btn-sm btn-dynamic-2c" mdbWavesEffect><span
+                *ngIf="editingPcmData" class="mr-1 spinner-border spinner-border-sm" role="status"
+                aria-hidden="true"></span> Update</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div mdbModal #viewPdfModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" [config]="{backdrop: true, ignoreBackdropClick: true}" aria-hidden="true"
+  (close)="objectURLStrAW=''">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-body" style="height:calc(100vh - 50px); padding: 0px;">
+        <button type="button" class="close pull-right document-close" aria-label="Close" (click)="viewPdfModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <app-pdf-view *ngIf="objectURLStrAW" [documentUrl]="objectURLStrAW"></app-pdf-view>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div mdbModal #scduleModal="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myBasicModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-md flat-modal modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="scduleModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100">Patient Scheduling</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-12">
+
+            <div class="form-group">
+              <label for="scheduleNote">Patient's Note<sup class="text-danger">*</sup></label>
+              <textarea type="text" id="scheduleNote" rows="15" [(ngModel)]="patientSchedulingNote" placeholder="Note"
+                class="form-control" style="height: 150px;"></textarea>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-dark btn-sm" (click)="scduleModal.hide()">Close</button>
+        <button type="submit" class="btn btn-dynamic-2c btn-sm" (click)="scduleModal.hide();AddEditPatientSchedulingNote()"
+          [disabled]="!patientSchedulingNote">Update</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,57 @@
+@import "theme";
+:host {
+  display: block;
+  box-sizing: border-box;
+}
+
+pre {
+  text-align: center;
+  padding: 8px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.mat-list-item {
+  margin: 2px;
+  border: 1px solid gray;
+}
+
+.dndList {
+  transition: all 300ms ease;
+}
+
+li.dndDragging,.dndDraggingSource{
+  &:active{
+    cursor: grabbing !important;
+  }
+}
+
+.dndDraggingSource {
+
+  display: none;
+
+}
+
+.dndPlaceholder {
+  min-height: 50px;
+  border-left: 1px solid rgba(0, 0, 0, 0.125);
+  border-right: 1px solid rgba(0, 0, 0, 0.125);
+  transition: all 300ms ease-in-out;
+  background: rgba(0, 0, 0, 0.05);
+  transition: all 300ms ease-in-out;
+  &:active{
+    cursor: grabbing !important;
+  }
+}
+li.list-group-item:hover a.dragable-btn i{
+  color: $dynamic-colour;
+  &:active{
+    cursor: grabbing !important;
+  }
+}
+
+.dndList{
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}

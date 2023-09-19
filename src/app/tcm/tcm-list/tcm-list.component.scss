@@ -1,0 +1,86 @@
+@import "theme";
+ul.status-list {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+    li {
+      margin: 5px;
+      a {
+        border: 1px solid lighten($grey, 5%);
+        padding: 4px 10px;
+        border-radius: 4px;
+        padding-left: 25px;
+        display: block;
+        position: relative;
+        color: $dark;
+        &:before {
+          content: " ";
+          width: 10px;
+          height: 10px;
+          border-radius: 12px;
+          display: inline-block;
+          background: lighten($grey, 5%);
+          position: absolute;
+          left: 7px;
+          top: 8px;
+        }
+        &:hover {
+          border: 1px solid $dynamic-colour;
+          background: #f4f4f4;
+          &::before {
+            background: $dynamic-colour;
+          }
+        }
+      }
+
+      &.active {
+        a {
+          border: 1px solid $dynamic-colour;
+          background: #f4f4f4;
+          &:before {
+            background: $dynamic-colour;
+          }
+        }
+      }
+    }
+  }
+  .tcm-table{
+    thead{
+      th{
+        padding: .9rem .3rem;
+      }
+    }
+  }
+  a.pcm-status-badge{
+    width: 100%;
+    min-width: 15px;
+    height: 20px;
+    border-radius: 0;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    span{
+      font-size: 11px;
+      font-weight: 500;
+    }
+  }
+
+
+.care-gaps-status {
+  display: flex;
+  align-items: center;
+}
+
+.care-gaps-status a {
+  margin: 0 1px;
+  width: 20px;
+  height: 20px;
+  flex: 0 0 20px;
+  border-radius: 4px;
+}
+.md-outline>.datepicker-inline-icon {
+  top: 0px !important;
+}

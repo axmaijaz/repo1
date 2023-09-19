@@ -1,0 +1,156 @@
+<div class="d-flex align-item-center justify-content-start">
+  <!-- <h4 class="mr-3 mb-0"><a class="text-dark" (click)="navigateBack()">
+      <i class="fa fa-arrow-left"></i></a></h4> -->
+  <h1 class="page-title">Medicare EOB  <span>Loaded ({{entryList.length}}) out of ({{total}})</span></h1>
+</div>
+<div *ngIf="loadingEobData" class="d-flex justify-content-center text-center loadingrow">
+  <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+</div>
+<div>
+  <mdb-tabset #FStepTabs [buttonClass]="'modality-tabs rounded-0'"
+  [contentClass]="'m-0 p-0 z-depth-0 bg-transparent'" class="modality-tabs">
+    <mdb-tab heading="Categories">
+      <div class="row">
+        <div class="col-12">
+          <mdb-tabset #FStepTabs2 [buttonClass]="'modality-tabs rounded-0'" [contentClass]="'m-0 p-0 z-depth-0 bg-transparent'" class="modality-tabs">
+            <mdb-tab heading="{{cat.key}}" *ngFor="let cat of groupedData">
+              <div class="table-responsive">
+                <table class="table table-bordered btn-table u-small-table eob-table mb-0">
+                  <thead>
+                    <tr>
+                      <th>Line Number</th>
+                      <th>Date of Service</th>
+                      <th>Revenue Code / Description</th>
+                      <th>Procedure Code / Description</th>
+                      <th>Modifier / Description</th>
+                      <th>Quantity Billed / Units</th>
+                      <th>Submitted Amount / Charges</th>
+                      <th>Allowed Amount</th>
+                      <th>Non-Covered</th>
+                      <th>Place of Service / Description</th>
+                      <th>Type of Service / Description</th>
+                      <th>Rendering Provider</th>
+                    </tr>
+                  </thead>
+                  <tbody *ngIf="!loadingEobData">
+
+                    <tr *ngFor="let value of cat.value;let index = index">
+
+                      <td>{{index + 1}}</td>
+                      <td title="Start: {{value.eobItem.dateOfService.startDate}} End: {{value.eobItem.dateOfService.endDate}}">Start:
+                        {{value.eobItem.dateOfService.startDate}} End: {{value.eobItem.dateOfService.endDate}}</td>
+                      <td>{{value.eobItem.revenueCode_Desc}}</td>
+                      <td>{{value.eobItem.procedureCode_Desc}}</td>
+                      <td>{{value.eobItem.modifier_Desc}}</td>
+                      <td>{{value.eobItem.quantityBuildUnits}}</td>
+                      <td>{{value.eobItem.submittedAmountCharges}}</td>
+                      <td>{{value.eobItem.allowedAmount}}</td>
+                      <td>{{value.eobItem.non_Covered}}</td>
+                      <td>{{value.eobItem.placeOfService}}</td>
+                      <td>{{value.eobItem.typeOfService}}</td>
+                      <td>{{value.eobItem.renderingProviderNpi}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </mdb-tab>
+          </mdb-tabset>
+        </div>
+      </div>
+    </mdb-tab>
+    <mdb-tab heading="Claims" >
+      <ng-container *ngFor="let claim of eobClaimsList; let cIndex = index">
+        <div class="panel">
+          <div class="panel-header">
+            <h3>{{cIndex + 1}} Claim - {{claim.claimId}}</h3>
+          </div>
+          <div class="panel-body">
+            <div class="table-responsive">
+              <table class="table btn-table u-small-table mb-0 eob-table">
+                <thead>
+                  <tr>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Amount</th>
+                    <th>Diagnose Codes</th>
+                  </tr>
+                </thead>
+                <tbody *ngIf="!loadingEobData">
+                  <tr>
+                    <td title="Start: {{claim.claimStartDate}}">{{claim.claimStartDate}}</td>
+                    <td title="End: {{claim.claimEndDate}}">{{claim.claimEndDate}}</td>
+                    <td title="Amount: {{claim.claimAmount}}">{{claim.claimAmount}}</td>
+                    <td title="Diagnoses: {{claim.diagnoseCodes}}">{{claim.diagnoseCodes}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="text-dark my-2 font-500">Claim Line Details </p>
+            <div class="table-responsive">
+              <table class="table table-bordered btn-table u-small-table eob-table mb-0">
+                <thead>
+                  <tr>
+                    <th>Line Number</th>
+                    <th>Date of Service</th>
+                    <th>Revenue Code / Description</th>
+                    <th>Procedure Code / Description</th>
+                    <th>Modifier / Description</th>
+                    <th>Quantity Billed / Units</th>
+                    <th>Submitted Amount / Charges</th>
+                    <th>Allowed Amount</th>
+                    <th>Non-Covered</th>
+                    <th>Place of Service / Description</th>
+                    <th>Type of Service / Description</th>
+                    <th>Rendering Provider</th>
+                  </tr>
+                </thead>
+                <tbody *ngIf="!loadingEobData">
+
+                  <tr *ngFor="let eobItem of claim.detailItems;let index = index">
+
+                    <td>{{index + 1}}</td>
+                    <td title="Start: {{eobItem.dateOfService.startDate}} End: {{eobItem.dateOfService.endDate}}">Start:
+                      {{eobItem.dateOfService.startDate}} End: {{eobItem.dateOfService.endDate}}</td>
+                    <td>{{eobItem.revenueCode_Desc}}</td>
+                    <td>{{eobItem.procedureCode_Desc}}</td>
+                    <td>{{eobItem.modifier_Desc}}</td>
+                    <td>{{eobItem.quantityBuildUnits}}</td>
+                    <td>{{eobItem.submittedAmountCharges}}</td>
+                    <td>{{eobItem.allowedAmount}}</td>
+                    <td>{{eobItem.non_Covered}}</td>
+                    <td>{{eobItem.placeOfService}}</td>
+                    <td>{{eobItem.typeOfService}}</td>
+                    <td>{{eobItem.renderingProviderNpi}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </ng-container>
+    </mdb-tab>
+    <mdb-tab heading="Diagnoses">
+      <div class="table-responsive">
+        <table class="table btn-table u-small-table mb-0 eob-table">
+          <thead>
+            <tr>
+              <th>Code</th>
+              <th>Display</th>
+              <!-- <th>Amount</th>
+              <th>Diagnose Codes</th> -->
+            </tr>
+          </thead>
+          <tbody *ngIf="!loadingEobData">
+            <tr *ngFor="let item of claimsDiagnoseArr">
+              <td title="Start: {{item.code}}">{{item.code}}</td>
+              <td title="End: {{item.display}}">{{item.display}}</td>
+              <!-- <td title="Amount: {{claim.claimAmount}}">{{claim.claimAmount}}</td>
+              <td title="Diagnoses: {{claim.diagnoseCodes}}">{{claim.diagnoseCodes}}</td> -->
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </mdb-tab>
+  </mdb-tabset>
+</div>

@@ -1,0 +1,16 @@
+<div class="d-flex mt-1">
+    <div title="Normal sticky notes" class="w-100 mr-2">
+        <textarea type="text" id="low"  (blur)="EditStickyNotes()" [(ngModel)]="stickyNotesDto.stickyNoteLow"   style="height: 76px;margin-bottom:3px;font-size: 12px;resize: none;"  class="form-control form-control-sm bg-sticky-green custom--scroll"></textarea>
+    </div>
+    <div title="Moderate sticky notes" class="w-100 mr-2">
+        <textarea type="text" id="medium" (blur)="EditStickyNotes()" [(ngModel)]="stickyNotesDto.stickyNoteMedium"  style="height: 76px;margin-bottom:2px;font-size: 12px;resize: none;" class="form-control form-control-sm  bg-sticky-yellow custom--scroll"></textarea>
+    </div>
+    <div title="Critical sticky notes" class="w-100 mr-2">
+        <textarea type="text" id="high" (blur)="EditStickyNotes()" [(ngModel)]="stickyNotesDto.stickyNoteHigh"  style="height: 76px;margin-bottom:3px;font-size: 12px;resize: none;" class="form-control form-control-sm bg-sticky-red custom--scroll"></textarea>
+    </div>
+    <div title="Remarks" class="w-100">
+        <textarea type="text" id="remarks" appOnDebounce [debounceTime]="1500"
+        (onDebounce)="EditPatientReviewNote()"[(ngModel)]="reviewNote"  style="height: 76px;margin-bottom:3px;font-size: 12px;resize: none;" class="form-control form-control-sm bg-sticky-blue custom--scroll"></textarea>
+    </div>
+    
+</div>

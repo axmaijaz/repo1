@@ -1,0 +1,347 @@
+<div class="logs-history">
+    <div class="panel">
+      <div class="panel-header d-flex align-items-center flex-sm-wrap justify-content-between">
+        <h3>BHI Logs History</h3>
+        <div class="d-flex col-xl-3 col-lg-5 col-md-5 p-0 mt-sm-0 mt-2">
+          <div class="ml-auto col p-0 mr-2">
+            <div class="month">
+              <ng-select [searchable]="false" [clearable]="false" [appendTo]="'body'" [(ngModel)]="monthId"
+                (ngModelChange)="getBhiEncountersByPatientId()" class=" ng-select-small"
+                placeholder="Select Month" (click)="$event.stopPropagation();">
+                <ng-option [value]="1">January</ng-option>
+                <ng-option [value]="2">February</ng-option>
+                <ng-option [value]="3">March</ng-option>
+                <ng-option [value]="4">April</ng-option>
+                <ng-option [value]="5">May</ng-option>
+                <ng-option [value]="6">June</ng-option>
+                <ng-option [value]="7">July</ng-option>
+                <ng-option [value]="8">August</ng-option>
+                <ng-option [value]="9">September</ng-option>
+                <ng-option [value]="10">October</ng-option>
+                <ng-option [value]="11">November</ng-option>
+                <ng-option [value]="12">December</ng-option>
+              </ng-select>
+            </div>
+          </div>
+          <div class="month col p-0 ml-2">
+            <ng-select [searchable]="false" [clearable]="false" [appendTo]="'body'" class=" ng-select-small"
+              placeholder="Select Year" [(ngModel)]="yearNum" (ngModelChange)="getBhiEncountersByPatientId()"
+              (click)="$event.stopPropagation();">
+              <ng-option *ngFor="let year of listOfYears" [value]="year">{{year}}</ng-option>
+            </ng-select>
+          </div>
+        </div>
+      </div>
+      <div class="panel-body px-3">
+        <div class="row" *ngIf="IsEncounterLoading">
+            <div class="col-12 mb-3">
+            <div class="box-cdma mb-2">
+                <div >
+                <skltn-root duration="1000" [rectRadius]="0" flareWidth="50%" bgFill="#f2f3f8"
+                    flareFill="rgba(255,255,255, 0.5)">
+                    <!-- Card with Avatar -->
+                    <div class="skltn-card">
+                        <div class="skltn-card__body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div skltn-bone class="skltn-card__line width-size-200"></div>
+                            <div skltn-bone class="skltn-card__line width-size-200"></div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div skltn-bone class="skltn-card__line width-size-200"></div>
+                            <div skltn-bone class="skltn-card__line width-size-200"></div>
+                        </div>
+                        <div skltn-bone class="skltn-card__line"></div>
+                        <div skltn-bone class="skltn-card__title mb-0"></div>
+                    </div>
+                    </div>
+                </skltn-root>
+                </div>
+            </div>
+            </div>
+            <div class="col-12 mb-3">
+            <div class="box-cdma mb-2">
+                <div >
+                <skltn-root duration="1000" [rectRadius]="0" flareWidth="50%" bgFill="#f2f3f8"
+                    flareFill="rgba(255,255,255, 0.5)">
+                    <!-- Card with Avatar -->
+                    <div class="skltn-card">
+                        <div class="skltn-card__body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div skltn-bone class="skltn-card__line width-size-200"></div>
+                            <div skltn-bone class="skltn-card__line width-size-200"></div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div skltn-bone class="skltn-card__line width-size-200"></div>
+                            <div skltn-bone class="skltn-card__line width-size-200"></div>
+                        </div>
+                        <div skltn-bone class="skltn-card__line"></div>
+                        <div skltn-bone class="skltn-card__title mb-0"></div>
+                    </div>
+                    </div>
+                </skltn-root>
+                </div>
+            </div>
+            </div>
+       </div>
+       <div class="row" *ngIf="bhiEncountersList && bhiEncountersList.length > 0">
+        <div class="col-12" *ngFor="let item of bhiEncountersList">
+          <div class="mb-3 w-100" >
+            <div class="box-cdma bg-green-cdma">
+              <div class="d-flex justify-content-between align-items-center w-100">
+                <div class="d-inline-flex align-items-center justify-content-between w-100">
+                  <p class="align-items-center d-inline-flex flex-shrink-0 mb-1 mr-3"><strong class="mr-2" style="font-size: 16px;">BHI CC:</strong> <strong >{{item.bhiCareCoordinatorName}} </strong> </p>
+                  <p class="mb-1 mr-2" ><strong class="mr-2" style="font-size: 16px;">BHI Care Manager:</strong> <strong >{{item.bhiCareManagerName}} </strong> </p>
+                  <p class="mb-1 mr-2" ><strong class="mr-2" style="font-size: 16px;">Psychiatrist Name:</strong> <strong >{{item.psychiatristName}} </strong> </p>
+                  <div class="d-inline-flex">
+                    <p class="mb-1 mr-3"><strong class="mr-2 text-dynamic-2c"  style="font-size: 16px;">Date:</strong><strong >{{item.encounterDate}} </strong></p>
+                    <span  (click)="OpenEditBhiEncounter(item, editBhiEncounterModal)" title="Edit" class="box-right-btn " style="cursor: pointer;">
+                      <i class="fa fa-pencil fa-lg"  ></i>
+                    </span>
+                  </div>
+
+                </div>
+
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <p class="mb-1"><strong class="mr-2" style="font-size: 16px;">Service Type:</strong> <strong > {{serviceTypeEnum[item.bhiServiceType]}}</strong></p>
+                <p class="mb-1"><strong class="mr-2" style="font-size: 16px;">Provider Encounter:</strong>
+                  <strong >
+                    <span *ngIf="item.isProviderEncounter == true">
+                      <span class="ccm-active"><i class="fa fa-toggle-on text-success fa-lg"></i></span>
+                    </span>
+                    <span *ngIf="item.isProviderEncounter == false ">
+                      <span class="ccm-inactive"><i class="fa fa-toggle-off text-danger fa-lg"></i></span>
+                    </span>
+                  </strong>
+                </p>
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <p class="mb-2"><strong class="mr-2" style="font-size: 16px;">Start Time:</strong><strong >{{item.startTime}} </strong></p>
+                <p class="mb-2"><strong class="mr-2" style="font-size: 16px;">End Time:</strong><strong >{{item.endTime}}</strong></p>
+                <p class="mb-2"><strong class="mr-2" style="font-size: 16px;">Duration:</strong><strong >{{item.duration}} </strong></p>
+
+              </div>
+              <div class="d-flex justify-content-between align-items-center w-100">
+                <div class="mb-1 w-100"><strong class="mr-2" style="font-size: 16px;">Notes:</strong>
+                  <div style="max-height: 150px;
+                  overflow-y: auto;" [innerText]="item.note"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row" *ngIf="!IsEncounterLoading && bhiEncountersList && bhiEncountersList.length === 0">
+        <div class="col-12" >
+          <div class="mb-3 w-100" >
+            <div class="box-cdma bg-green-cdma">
+              <div class="alert alert-danger mb-0" role="alert">
+                <i class="fa fa-exclamation-triangle fa-lg"></i> No Record found!
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+        </div>
+    </div>
+</div>
+
+<div mdbModal #editBhiEncounterModal="mdbModal" (close)="OnCloseEditEncounter()" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myeditBhiEncounterModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="editBhiEncounterModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">Edit Bhi Encounter</h4>
+      </div>
+      <div class="modal-body">
+        <ng-container *ngTemplateOutlet="bhiAddEditEncounterTemplate"></ng-container>
+      </div>
+
+      <div class="modal-footer">
+        <button *ngIf="addBhiEncounterDto.id > 0" [disabled]="IsaddingEncounterLoading || !addBhiEncounterDto.cptCode || !addBhiEncounterDto.note || !addBhiEncounterDto.startTime || !addBhiEncounterDto.endTime
+          || !addBhiEncounterDto.bhiCareManagerId || !addBhiEncounterDto.bhiCareCoordinatorId || (!addBhiEncounterDto.psychiatristId && bhiStatus !== 4)" (click)="editBhiEncounter(editBhiEncounterModal)" type="button" mdbBtn class="btn btn-dynamic-2c btn-sm m-o">
+          <span *ngIf="isEditingBhiEncounter"  class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          Edit Encounter</button>
+        <button type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+          (click)="editBhiEncounterModal.hide()" mdbWavesEffect>Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #bhiAddEditEncounterTemplate>
+  <div class="row">
+
+    <div class="col-sm-6">
+      <div class="input-group form-group">
+        <label class="w-100">Date <sup class="text-danger">*</sup> </label>
+        <input type="text" class="form-control form-control-sm" #dateDPicker="dpDayPicker"
+          [dpDayPicker]="datePickerConfig" [ngModel]="addBhiEncounterDto.encounterDate | dateFormatPipe"
+          (ngModelChange)="addBhiEncounterDto.encounterDate=$event" [theme]="'dp-material ccm-date-picker'"
+          [mode]="'day'" />
+        <a (click)="dateDPicker.api.open();" class="input-group-append">
+          <span class="input-group-text text-white bg-dynamic-2c"><i class="fa fa-calendar fa-lg"></i></span>
+        </a>
+      </div>
+    </div>
+    <div class="col-lg-3 col-md-6 col-sm-6">
+      <div class="form-group">
+        <label class="w-100">Start Time <sup class="text-danger">*</sup> </label>
+        <input type="text" class="form-control form-control-sm" #dateDpTime="dpDayPicker"
+          [dpDayPicker]="timePickerConfig" [(ngModel)]="addBhiEncounterDto.startTime"
+          [theme]="'dp-material ccm-date-picker'" [mode]="'time'" />
+      </div>
+    </div>
+    <div class="col-lg-3 col-md-6 col-sm-6">
+      <div class="form-group">
+        <label class="w-100">End Time <sup class="text-danger">*</sup> </label>
+        <input type="text" readonly class="form-control form-control-sm"
+          [(ngModel)]="addBhiEncounterDto.endTime">
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <div class="form-group">
+        <label class="w-100">Duration: <small class="text-info">Enter in Minutes</small></label>
+        <input #durationInput [(ngModel)]="durationNO" type="text" [readOnly]="!addBhiEncounterDto.startTime"
+          class="form-control form-control-sm"
+          (input)="stopCounterOnDuration = false;durationChanged($event.target.value)">
+
+      </div>
+    </div>
+
+    <div class="col-sm-6">
+      <div class="form-group" >
+        <label>BHI Manager <sup class="text-danger">*</sup> </label>
+        <ng-select [searchable]="true" [loading]=loadingBhiUsers class="ng-select-small"
+          [(ngModel)]="addBhiEncounterDto.bhiCareManagerId" placeholder="Select Provider"
+          (click)="$event.stopPropagation();">
+          <ng-option [value]="item.id" *ngFor="let item of (facilityUsersList | filterFUsersByRole:  'Care Manager')">{{item.lastName}},{{item.firstName}}
+            </ng-option>
+        </ng-select>
+      </div>
+
+    </div>
+    <div class="col-sm-6">
+      <div class="form-group" *ngIf="bhiStatus !== 4">
+        <label>Psychiatrist <sup class="text-danger">*</sup> </label>
+        <ng-select [searchable]="true" [loading]=loadingPsy class="ng-select-small"
+          [(ngModel)]="addBhiEncounterDto.psychiatristId" placeholder="Select Provider"
+          (click)="$event.stopPropagation();">
+          <ng-option [value]="item.id" *ngFor="let item of psyfacilityUserList">{{item.lastName}},{{item.firstName}}</ng-option>
+        </ng-select>
+      </div>
+
+      <div class="form-group" *ngIf="bhiStatus == 4">
+        <label class="w-100">Psychiatrist </label>
+        <input class="form-control form-control-sm" [(ngModel)]="addBhiEncounterDto.gbhiPsychiatrist" type="text">
+
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <div class="form-group">
+        <label>Care Coordinator <sup class="text-danger">*</sup> </label>
+        <ng-select [searchable]="true" [loading]=loadingPsy class="ng-select-small"
+          [(ngModel)]="addBhiEncounterDto.bhiCareCoordinatorId" placeholder="Care Coordinator"
+          (click)="$event.stopPropagation();">
+          <ng-option [value]="item.id" *ngFor="let item of (facilityUsersList | filterFUsersByRole: 'Care Coordinator')">{{item.lastName}},{{item.firstName}}</ng-option>
+        </ng-select>
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <div class="form-group">
+        <label>Service Name <sup class="text-danger">*</sup> </label>
+        <ng-select [searchable]="true" class="ng-select-small"
+          [(ngModel)]="addBhiEncounterDto.bhiServiceTypeId" placeholder="Select Service Type"
+          (click)="$event.stopPropagation();">
+          <ng-option [value]="0">Evaluation Counselling </ng-option>
+          <ng-option [value]="1">Initial Assessment </ng-option>
+          <!-- <ng-option [value]="item.id" *ngFor="let item of serviceTypes">{{item.name}}</ng-option> -->
+        </ng-select>
+      </div>
+    </div>
+    <div class="col-sm-12">
+      <div class="form-form form-group">
+        <label for="form12">Notes <sup class="text-danger">*</sup> </label>
+        <!-- <textarea type="text" style="min-height: 200px;" class="form-control form-control-sm" id="form12"
+          rows="6" [(ngModel)]="addBhiEncounterDto.note"></textarea> -->
+          <app-two-c-text-area #myFIeldRefBHI [value]="addBhiEncounterDto.note" [height]="'200px'" [PatientId]="patientId" (valueChanged)="addBhiEncounterDto.note=$event"></app-two-c-text-area>
+        <!-- <div class="invalid invalid-text">
+            <small *ngIf="encounterTimeForm.get('note').invalid && encounterTimeForm.get('note').touched"
+              class="text-danger">Please write some note.</small>
+          </div> -->
+      </div>
+    </div>
+
+    <div class="col-sm-12 mt-2">
+      <div class="form-check pl-0 form-check-inline" *ngIf="bhiStatus === bhiStatusEnum['Active CoCM']">
+        <input [(ngModel)]="addBhiEncounterDto.cptCode" name="TakeMedications"
+          [value]="'99492'" type="radio" class="form-check-input" mdbInput id="TakeMedications1">
+        <label class="form-check-label" for="TakeMedications1">Initial (CPT 99492)</label>
+      </div>
+      <div class="form-check pl-0 form-check-inline" *ngIf="bhiStatus === bhiStatusEnum['Active CoCM']">
+        <input [(ngModel)]="addBhiEncounterDto.cptCode" name="TakeMedications"
+          [value]="'99493'" type="radio" class="form-check-input" mdbInput id="TakeMedications2">
+        <label class="form-check-label" for="TakeMedications2">Subsequent (CPT 99493)</label>
+      </div>
+      <div class="form-check pl-0 form-check-inline" *ngIf="bhiStatus === bhiStatusEnum['Active G-BHI']">
+        <input [(ngModel)]="addBhiEncounterDto.cptCode" name="TakeMedications"
+          [value]="'99484'" type="radio" class="form-check-input" mdbInput id="TakeMedications3">
+        <label class="form-check-label" for="TakeMedications3">G Bhi (CPT 99484)</label>
+      </div>
+      <!-- <div class="form-check pl-0 form-check-inline" *ngIf="bhiStatus === bhiStatusEnum['Active Pcm']">
+        <label class="form-check-label" for="TakeMedications4">PCM (CPT 99426)</label>
+        <button id="activePcm99426PopOver"  style="background-color: transparent;border: 0;" class="ml-3" container="body" [mdbPopover]="activePcm99426PopOver" placement="bottom"
+      triggers="focus"><i class="fa fa-exclamation-circle text-success fa-lg"></i></button>
+      </div>
+      <div class="form-check pl-0 form-check-inline" *ngIf="bhiStatus === bhiStatusEnum['Active Pcm']">
+        <label class="form-check-label" for="TakeMedications5">PCM (CPT 99427) </label>
+        <button id="activePcm99427PopOver" class="ml-3" style="background-color: transparent;border: 0;" container="body" [mdbPopover]="activePcm99427PopOver" placement="bottom"
+      triggers="focus"><i class="fa fa-exclamation-circle text-success fa-lg"></i></button>
+      </div> -->
+
+      <a *ngIf="bhiStatus === bhiStatusEnum['Active CoCM'] || bhiStatus === bhiStatusEnum['Active G-BHI']" id="tobaccoCessation" class="ml-3" container="body" [mdbPopover]="tobaccoCessation" placement="bottom"
+      triggers="focus"><i class="fa fa-exclamation-circle text-success fa-lg"></i></a>
+      <div class="d-flex ml-1 w-100">
+        <div class="form-check pl-0 form-check-inline" >
+          <div class="form-group">
+            <div class="custom-control custom-checkbox w-info-90">
+              <input type="checkbox"
+                [(ngModel)]="addBhiEncounterDto.isProviderEncounter" class="custom-control-input" id="cptcheck">
+              <label class="custom-control-label" for="cptcheck">Provider Encounter</label>
+            </div>
+          </div>
+        </div>
+      </div>
+        <ng-template #tobaccoCessation>
+        <div class="bg-dark text-white py-3 pl-3 pr-2">
+          <div class="who-covered" (click)="$event.stopPropagation()" [innerHTML]="bhiINfoHtml"
+            malihu-scrollbar [scrollbarOptions]="scrollbarOptionsTimeline" style="max-height: 300px;"></div>
+        </div>
+      </ng-template>
+        <!-- <ng-template #activePcm99426PopOver>
+        <div class="bg-dark text-white py-3 pl-3 pr-2">
+          <div class="who-covered" (click)="$event.stopPropagation()" [innerHTML]="activePcm99426PopOvers"
+            malihu-scrollbar [scrollbarOptions]="scrollbarOptionsTimeline" style="max-height: 300px;"></div>
+        </div>
+      </ng-template>
+        <ng-template #activePcm99427PopOver>
+        <div class="bg-dark text-white py-3 pl-3 pr-2">
+          <div class="who-covered" (click)="$event.stopPropagation()" [innerHTML]="activePcm99427PopOvers"
+            malihu-scrollbar [scrollbarOptions]="scrollbarOptionsTimeline" style="max-height: 300px;"></div>
+        </div>
+      </ng-template> -->
+    </div>
+    <div class="w-100 px-3 d-flex justify-content-end" *ngIf="!editBhiEncounterModal.isShown">
+      <button *ngIf="addBhiEncounterDto.id === 0" [disabled]="IsaddingEncounterLoading || !addBhiEncounterDto.bhiCareCoordinatorId || !addBhiEncounterDto.cptCode || !addBhiEncounterDto.note || !addBhiEncounterDto.startTime || !addBhiEncounterDto.endTime
+           || !addBhiEncounterDto.bhiCareManagerId || (!addBhiEncounterDto.psychiatristId && bhiStatus !== 4)" type="submit" (click)="addBhiEncounter()" mdbBtn
+        class="btn btn-dynamic-2c btn-sm m-o">
+        <span *ngIf="IsaddingEncounterLoading" class="spinner-border spinner-border-sm" role="status"
+          aria-hidden="true"></span>
+        Add Encounter</button>
+    </div>
+  </div>
+</ng-template>

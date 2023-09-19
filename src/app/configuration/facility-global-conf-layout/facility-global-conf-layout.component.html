@@ -1,0 +1,41 @@
+<div class="d-flex align-items-center flex-wrap justify-content-between mb-3">
+    <h4 class="mr-3 mb-0"><a class="text-dark" (click)="navigateBack()"><i class="fa fa-arrow-left"></i></a></h4>
+    <h1 class="page-title mb-0 flex-sm-grow-1 mb-0"> Global Facility Config</h1>
+</div>
+<div class="position-relative">
+    <div class="side-bar-ex">
+        <ul>
+            <li routerLinkActive="active">
+                <a class="px-1" routerLink="/config/global/cpt-configration" [skipLocationChange]="true">
+                    CPT Configuration
+                </a>
+            </li>
+            <li routerLinkActive="active">
+                <a class="px-1" routerLink="/config/global/verification" [skipLocationChange]="true">
+                    Verification
+                </a>
+            </li>
+            <li routerLinkActive="active">
+                <a class="px-1" routerLink="/config/global/insightsadmin/settings" [skipLocationChange]="true">
+                    Quick View
+                </a>
+            </li>
+            <li routerLinkActive="active">
+                <a class="px-1" routerLink="/config/global/phdevices" [skipLocationChange]="true">
+                    RPM Pricing
+                </a>
+            </li>
+
+        </ul>
+    </div>
+
+    <div class="main-layout-in">
+        <div class="main-outlet">
+            <div class="row justify-content-center">
+                <div class="col-12 ">
+                    <router-outlet></router-outlet>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

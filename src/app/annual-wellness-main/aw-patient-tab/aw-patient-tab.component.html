@@ -1,0 +1,1658 @@
+<ng-container *ngIf="isPatientForm">
+  <app-patient-details [hideChatBtn]="true"></app-patient-details>
+</ng-container>
+<fieldset [disabled]="awEncounterPTabQuestions && awEncounterPTabQuestions.status !== 1"
+  [class.disable]="awEncounterPTabQuestions && awEncounterPTabQuestions.status !== 1">
+  <div class="scroll-spy-container">
+    <div class="scroll-spy-nav" *ngIf="!isPatientForm" id="scorll-spy" (scroll)="onWindowScroll($event);">
+      <div class="current-section" [class.active]="currentSection === 'section1'" [ngxScrollTo]="section1"
+        [ngxScrollToOffset]="-120" [ngxScrollToDuration]="200" title="Self-assessment of health status">
+        {{"Self-assessment of health status" | ellipsis: 30}}
+      </div>
+      <div class="current-section" [class.active]="currentSection === 'section2'" [ngxScrollTo]="section2"
+        [ngxScrollToOffset]="-160" [ngxScrollToDuration]="200" title="Behavioral risks">{{"Behavioral risks" | ellipsis
+        : 25 }}
+      </div>
+      <div class="current-section" [class.active]="currentSection === 'section3'" [ngxScrollTo]="section3"
+        [ngxScrollToOffset]="-120" [ngxScrollToDuration]="200" title="Functional Ability Assessment">
+        {{"Functional Ability Assessment" | ellipsis : 30 }}
+      </div>
+      <div class="current-section" [class.active]="currentSection === 'section4'" [ngxScrollTo]="section4"
+        [ngxScrollToOffset]="-120" [ngxScrollToDuration]="200" title="Home Safety">{{"Home Safety" | ellipsis : 30 }}
+      </div>
+      <div class="current-section" [class.active]="currentSection === 'section5'" [ngxScrollTo]="section5"
+        [ngxScrollToOffset]="-120" [ngxScrollToDuration]="200" title="Hearing Screening">{{"Hearing Screening" |
+        ellipsis : 30 }}
+      </div>
+      <div class="current-section" [class.active]="currentSection === 'section6'" [ngxScrollTo]="section6"
+        [ngxScrollToOffset]="-120" [ngxScrollToDuration]="200" title="Vision Screening">{{"Vision Screening" | ellipsis
+        : 30 }}
+      </div>
+      <div *ngIf="isPainScreening" class="current-section" [class.active]="currentSection === 'section7'"
+        [ngxScrollTo]="section7" [ngxScrollToOffset]="-120" [ngxScrollToDuration]="200" title="Screening Assessment">
+        {{"Screening Assessment" | ellipsis : 30 }}
+      </div>
+      <div class="current-section" [class.active]="currentSection === 'section8'" [ngxScrollTo]="section8"
+        [ngxScrollToOffset]="-120" [ngxScrollToDuration]="200" title="Depression Screening">{{"Depression Screening" |
+        ellipsis : 30 }}
+      </div>
+      <div class="current-section" [class.active]="currentSection === 'section9'" [ngxScrollTo]="section9"
+        [ngxScrollToOffset]="-120" [ngxScrollToDuration]="200" title="Alcohol Screening">{{"Alcohol Screening" |
+        ellipsis : 30 }}
+      </div>
+    </div>
+
+
+
+    <div class="row">
+      <div class="col-lg-{{(isPatientForm) ? '12' : '9'}}">
+        <div>
+          <div class="panel z-depth-0 rounded-0" #section1>
+            <div class="panel-header" id="section1">
+              <h3>Self-Assessment of Health Status</h3>
+            </div>
+            <ng-container *ngIf="isLoadingPTABData;then loadingSkelton"></ng-container>
+            <div class="panel-body" *ngIf="!isLoadingPTABData">
+              <div class="form-group border-bottom pb-3">
+                <p class="mb-2"><strong>1. In general, how is your health?</strong>
+                </p>
+
+                <div class="form-check pl-0 form-check-inline">
+                  <input [(ngModel)]="pTabDataObj['GeneralHealth'].answer"
+                    (change)="saveQuestion(pTabDataObj['GeneralHealth'], 'GeneralHealth')" name="GeneralHealth"
+                    type="radio" [value]="'Excellent'" class="form-check-input" mdbInput id="GeneralHealth1">
+                  <label class="form-check-label" for="GeneralHealth1">Excellent</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input [(ngModel)]="pTabDataObj['GeneralHealth'].answer"
+                    (change)="saveQuestion(pTabDataObj['GeneralHealth'], 'GeneralHealth')" name="GeneralHealth"
+                    type="radio" [value]="'Verygood'" class="form-check-input" mdbInput id="GeneralHealth2">
+                  <label class="form-check-label" for="GeneralHealth2">Very good</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input [(ngModel)]="pTabDataObj['GeneralHealth'].answer"
+                    (change)="saveQuestion(pTabDataObj['GeneralHealth'], 'GeneralHealth')" name="GeneralHealth"
+                    type="radio" [value]="'Good'" class="form-check-input" mdbInput id="GeneralHealth3">
+                  <label class="form-check-label" for="GeneralHealth3">Good</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input [(ngModel)]="pTabDataObj['GeneralHealth'].answer"
+                    (change)="saveQuestion(pTabDataObj['GeneralHealth'], 'GeneralHealth')" name="GeneralHealth"
+                    type="radio" [value]="'Fair'" class="form-check-input" mdbInput id="GeneralHealth4">
+                  <label class="form-check-label" for="GeneralHealth4">Fair</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input [(ngModel)]="pTabDataObj['GeneralHealth'].answer"
+                    (change)="saveQuestion(pTabDataObj['GeneralHealth'], 'GeneralHealth')" name="GeneralHealth"
+                    type="radio" [value]="'Poor'" class="form-check-input" mdbInput id="GeneralHealth5">
+                  <label class="form-check-label" for="GeneralHealth5">Poor</label>
+                </div>
+
+              </div>
+              <!-- <div class="form-group border-bottom pb-3">
+                <p class="mb-2"><strong>2. In general, would you say your hearing is?</strong>
+                </p>
+
+                <div class="form-check pl-0 form-check-inline">
+                  <input [(ngModel)]="pTabDataObj['HearingIs'].answer"
+                    (change)="saveQuestion(pTabDataObj['HearingIs'], 'HearingIs')" name="HearingIs" type="radio"
+                    [value]="'Excellent'" class="form-check-input" mdbInput id="HearingIs1">
+                  <label class="form-check-label" for="HearingIs1">Excellent</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input [(ngModel)]="pTabDataObj['HearingIs'].answer"
+                    (change)="saveQuestion(pTabDataObj['HearingIs'], 'HearingIs')" name="HearingIs" type="radio"
+                    [value]="'Good'" class="form-check-input" mdbInput id="HearingIs3">
+                  <label class="form-check-label" for="HearingIs3">Good</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input [(ngModel)]="pTabDataObj['HearingIs'].answer"
+                    (change)="saveQuestion(pTabDataObj['HearingIs'], 'HearingIs')" name="HearingIs" type="radio"
+                    [value]="'Fair'" class="form-check-input" mdbInput id="HearingIs4">
+                  <label class="form-check-label" for="HearingIs4">Fair</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input [(ngModel)]="pTabDataObj['HearingIs'].answer"
+                    (change)="saveQuestion(pTabDataObj['HearingIs'], 'HearingIs')" name="HearingIs" type="radio"
+                    [value]="'Poor'" class="form-check-input" mdbInput id="HearingIs5">
+                  <label class="form-check-label" for="HearingIs5">Poor</label>
+                </div>
+
+              </div> -->
+
+              <div class="form-group border-bottom pb-3">
+                <p class="mb-2"><strong>2. Please describe the current condition of your mouth and teeth (Including
+                    false teeth or dentures)?</strong>
+                </p>
+
+                <div class="form-check pl-0 form-check-inline">
+                  <input [(ngModel)]="pTabDataObj['MouthTeethCondition'].answer"
+                    (change)="saveQuestion(pTabDataObj['MouthTeethCondition'], 'MouthTeethCondition')"
+                    name="MouthTeethCondition" type="radio" [value]="'Excellent'" class="form-check-input" mdbInput
+                    id="MouthTeethCondition1">
+                  <label class="form-check-label" for="MouthTeethCondition1">Excellent</label>
+                </div>
+                <!-- <div class="form-check pl-0 form-check-inline">
+                  <input [(ngModel)]="pTabDataObj['MouthTeethCondition'].answer"
+                    (change)="saveQuestion(pTabDataObj['MouthTeethCondition'], 'MouthTeethCondition')" name="MouthTeethCondition"
+                    type="radio" [value]="'Verygood'" class="form-check-input" mdbInput id="MouthTeethCondition2">
+                  <label class="form-check-label" for="MouthTeethCondition2">Very good</label>
+                </div> -->
+                <div class="form-check pl-0 form-check-inline">
+                  <input [(ngModel)]="pTabDataObj['MouthTeethCondition'].answer"
+                    (change)="saveQuestion(pTabDataObj['MouthTeethCondition'], 'MouthTeethCondition')"
+                    name="MouthTeethCondition" type="radio" [value]="'Good'" class="form-check-input" mdbInput
+                    id="MouthTeethCondition3">
+                  <label class="form-check-label" for="MouthTeethCondition3">Good</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input [(ngModel)]="pTabDataObj['MouthTeethCondition'].answer"
+                    (change)="saveQuestion(pTabDataObj['MouthTeethCondition'], 'MouthTeethCondition')"
+                    name="MouthTeethCondition" type="radio" [value]="'Fair'" class="form-check-input" mdbInput
+                    id="MouthTeethCondition4">
+                  <label class="form-check-label" for="MouthTeethCondition4">Fair</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input [(ngModel)]="pTabDataObj['MouthTeethCondition'].answer"
+                    (change)="saveQuestion(pTabDataObj['MouthTeethCondition'], 'MouthTeethCondition')"
+                    name="MouthTeethCondition" type="radio" [value]="'Poor'" class="form-check-input" mdbInput
+                    id="MouthTeethCondition5">
+                  <label class="form-check-label" for="MouthTeethCondition5">Poor</label>
+                </div>
+
+              </div>
+              <div class="form-group border-bottom pb-3">
+                <p class="mb-2"><strong>3. Current physical activity as compared to last year is?</strong>
+                </p>
+
+                <div class="form-check pl-0 form-check-inline">
+                  <input [(ngModel)]="pTabDataObj['PhysicalActivity'].answer"
+                    (change)="saveQuestion(pTabDataObj['PhysicalActivity'], 'PhysicalActivity')" name="PhysicalActivity"
+                    type="radio" [value]="'More'" class="form-check-input" mdbInput id="PhysicalActivity1">
+                  <label class="form-check-label" for="PhysicalActivity1">More</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input [(ngModel)]="pTabDataObj['PhysicalActivity'].answer"
+                    (change)="saveQuestion(pTabDataObj['PhysicalActivity'], 'PhysicalActivity')" name="PhysicalActivity"
+                    type="radio" [value]="'Less'" class="form-check-input" mdbInput id="PhysicalActivity2">
+                  <label class="form-check-label" for="PhysicalActivity2">Less</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input [(ngModel)]="pTabDataObj['PhysicalActivity'].answer"
+                    (change)="saveQuestion(pTabDataObj['PhysicalActivity'], 'PhysicalActivity')" name="PhysicalActivity"
+                    type="radio" [value]="'Same'" class="form-check-input" mdbInput id="PhysicalActivity3">
+                  <label class="form-check-label" for="PhysicalActivity3">Same</label>
+                </div>
+                <!-- <div class="form-check pl-0 form-check-inline">
+                  <input [(ngModel)]="pTabDataObj['PhysicalActivity'].answer"
+                    (change)="saveQuestion(pTabDataObj['PhysicalActivity'], 'PhysicalActivity')" name="PhysicalActivity"
+                    type="radio" [value]="'Fair'" class="form-check-input" mdbInput id="PhysicalActivity4">
+                  <label class="form-check-label" for="PhysicalActivity4">Fair</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input [(ngModel)]="pTabDataObj['PhysicalActivity'].answer"
+                    (change)="saveQuestion(pTabDataObj['PhysicalActivity'], 'PhysicalActivity')" name="PhysicalActivity"
+                    type="radio" [value]="'Poor'" class="form-check-input" mdbInput id="PhysicalActivity5">
+                  <label class="form-check-label" for="PhysicalActivity5">Poor</label>
+                </div> -->
+
+              </div>
+              <div class="form-group border-bottom pb-3">
+                <p class="mb-2"><strong>4. Do you take all your medications as prescribed?</strong>
+                </p>
+
+                <div class="form-check pl-0 form-check-inline">
+                  <input [(ngModel)]="pTabDataObj['TakeMedications'].answer"
+                    (change)="saveQuestion(pTabDataObj['TakeMedications'], 'TakeMedications')" name="TakeMedications"
+                    [value]="'Yes'" type="radio" class="form-check-input" mdbInput id="TakeMedications1">
+                  <label class="form-check-label" for="TakeMedications1">Yes</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input [(ngModel)]="pTabDataObj['TakeMedications'].answer"
+                    (change)="saveQuestion(pTabDataObj['TakeMedications'], 'TakeMedications')" name="TakeMedications"
+                    [value]="'No'" type="radio" class="form-check-input" mdbInput id="TakeMedications2">
+                  <label class="form-check-label" for="TakeMedications2">No</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input [(ngModel)]="pTabDataObj['TakeMedications'].answer"
+                    (change)="saveQuestion(pTabDataObj['TakeMedications'], 'TakeMedications')" name="TakeMedications"
+                    [value]="'Sometimes'" type="radio" class="form-check-input" mdbInput id="TakeMedications3">
+                  <label class="form-check-label" for="TakeMedications3">Sometimes</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input [(ngModel)]="pTabDataObj['TakeMedications'].answer"
+                    (change)="saveQuestion(pTabDataObj['TakeMedications'], 'TakeMedications')" name="TakeMedications"
+                    [value]="'AlmostNever'" type="radio" class="form-check-input" mdbInput id="TakeMedications4">
+                  <label class="form-check-label" for="TakeMedications4">Almost Never</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input [(ngModel)]="pTabDataObj['TakeMedications'].answer"
+                    (change)="saveQuestion(pTabDataObj['TakeMedications'], 'TakeMedications')" name="TakeMedications"
+                    [value]="'DontTake'" type="radio" class="form-check-input" mdbInput id="TakeMedications5">
+                  <label class="form-check-label" for="TakeMedications5">I don't take medication</label>
+                </div>
+              </div>
+              <div class="form-group border-bottom pb-3">
+                <p class="mb-2"><strong>5. In the last six months, how many times were you admitted to the
+                    hospital?</strong>
+                </p>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" [(ngModel)]="pTabDataObj['HospitalAdmissions'].answer"
+                    (change)="saveQuestion(pTabDataObj['HospitalAdmissions'], 'HospitalAdmissions')"
+                    name="HospitalAdmissions" [value]="'0'" mdbInput id="HospitalAdmissions1">
+                  <label class="form-check-label" for="HospitalAdmissions1">0</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="HospitalAdmissions2"
+                    [(ngModel)]="pTabDataObj['HospitalAdmissions'].answer"
+                    (change)="saveQuestion(pTabDataObj['HospitalAdmissions'], 'HospitalAdmissions')"
+                    name="HospitalAdmissions" [value]="'1-2'">
+                  <label class="form-check-label" for="HospitalAdmissions2">1 - 2</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="HospitalAdmissions3"
+                    [(ngModel)]="pTabDataObj['HospitalAdmissions'].answer"
+                    (change)="saveQuestion(pTabDataObj['HospitalAdmissions'], 'HospitalAdmissions')"
+                    name="HospitalAdmissions" [value]="'3-4'">
+                  <label class="form-check-label" for="HospitalAdmissions3">3 - 4</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="HospitalAdmissions4"
+                    [(ngModel)]="pTabDataObj['HospitalAdmissions'].answer"
+                    (change)="saveQuestion(pTabDataObj['HospitalAdmissions'], 'HospitalAdmissions')"
+                    name="HospitalAdmissions" [value]="'5+'">
+                  <label class="form-check-label" for="HospitalAdmissions4">5+</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="HospitalAdmissions5"
+                    [(ngModel)]="pTabDataObj['HospitalAdmissions'].answer"
+                    (change)="saveQuestion(pTabDataObj['HospitalAdmissions'], 'HospitalAdmissions')"
+                    name="HospitalAdmissions" [value]="'dontKnow'">
+                  <label class="form-check-label" for="HospitalAdmissions5">I don't know</label>
+                </div>
+              </div>
+              <div class="form-group border-bottom pb-3">
+                <p class="mb-2"><strong>6. In the last six months, how many times have you been to the emergency
+                    room?</strong>
+                </p>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="EmergencyRoomAdmission1"
+                    [(ngModel)]="pTabDataObj['EmergencyRoomAdmission'].answer"
+                    (change)="saveQuestion(pTabDataObj['EmergencyRoomAdmission'], 'EmergencyRoomAdmission')"
+                    name="EmergencyRoomAdmission" [value]="'0'">
+                  <label class="form-check-label" for="EmergencyRoomAdmission1">0</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="EmergencyRoomAdmission2"
+                    [(ngModel)]="pTabDataObj['EmergencyRoomAdmission'].answer"
+                    (change)="saveQuestion(pTabDataObj['EmergencyRoomAdmission'], 'EmergencyRoomAdmission')"
+                    name="EmergencyRoomAdmission" [value]="'1-2'">
+                  <label class="form-check-label" for="EmergencyRoomAdmission2">1 - 2</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="EmergencyRoomAdmission3"
+                    [(ngModel)]="pTabDataObj['EmergencyRoomAdmission'].answer"
+                    (change)="saveQuestion(pTabDataObj['EmergencyRoomAdmission'], 'EmergencyRoomAdmission')"
+                    name="EmergencyRoomAdmission" [value]="'3-4'">
+                  <label class="form-check-label" for="EmergencyRoomAdmission3">3 - 4</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="EmergencyRoomAdmission4"
+                    [(ngModel)]="pTabDataObj['EmergencyRoomAdmission'].answer"
+                    (change)="saveQuestion(pTabDataObj['EmergencyRoomAdmission'], 'EmergencyRoomAdmission')"
+                    name="EmergencyRoomAdmission" [value]="'5+'">
+                  <label class="form-check-label" for="EmergencyRoomAdmission4">5+</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="EmergencyRoomAdmission5"
+                    [(ngModel)]="pTabDataObj['EmergencyRoomAdmission'].answer"
+                    (change)="saveQuestion(pTabDataObj['EmergencyRoomAdmission'], 'EmergencyRoomAdmission')"
+                    name="EmergencyRoomAdmission" [value]="'dontKnow'">
+                  <label class="form-check-label" for="EmergencyRoomAdmission5">I don't know</label>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="">Self Assessment Note</label>
+                <textarea [readOnly]="isPatientForm" name="" class="form-control" id=""
+                  [(ngModel)]="pTabDataObj['EmergencyRoomAdmission'].section.staffNote"
+                  (blur)="editStaffNote(pTabDataObj['EmergencyRoomAdmission'].section.id, pTabDataObj['EmergencyRoomAdmission'].section.staffNote)"
+                  style="height: 40px;" cols="30" rows="10"></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="panel z-depth-0" #section2>
+            <div class="panel-header" id="section2">
+              <h3>Behavioral Risks</h3>
+            </div>
+            <ng-container *ngIf="isLoadingPTABData;then loadingSkelton"></ng-container>
+            <div class="panel-body" *ngIf="!isLoadingPTABData">
+
+              <p class="sub-title font-600 text-dynamic-2c">Emotional Support</p>
+              <div class="form-group border-bottom pb-3">
+                <p class="mb-2"><strong>1. How often do you get the social and emotional support you need?</strong>
+                </p>
+
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="SocialEmotionalSupport1"
+                    [(ngModel)]="pTabDataObj['SocialEmotionalSupport'].answer"
+                    (change)="saveQuestion(pTabDataObj['SocialEmotionalSupport'], 'SocialEmotionalSupport')"
+                    name="SocialEmotionalSupport" [value]="'always'">
+                  <label class="form-check-label" for="SocialEmotionalSupport1">Always</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="SocialEmotionalSupport2"
+                    [(ngModel)]="pTabDataObj['SocialEmotionalSupport'].answer"
+                    (change)="saveQuestion(pTabDataObj['SocialEmotionalSupport'], 'SocialEmotionalSupport')"
+                    name="SocialEmotionalSupport" [value]="'usually'">
+                  <label class="form-check-label" for="SocialEmotionalSupport2">Usually</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="SocialEmotionalSupport3"
+                    [(ngModel)]="pTabDataObj['SocialEmotionalSupport'].answer"
+                    (change)="saveQuestion(pTabDataObj['SocialEmotionalSupport'], 'SocialEmotionalSupport')"
+                    name="SocialEmotionalSupport" [value]="'sometimes'">
+                  <label class="form-check-label" for="SocialEmotionalSupport3">Sometimes</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="SocialEmotionalSupport4"
+                    [(ngModel)]="pTabDataObj['SocialEmotionalSupport'].answer"
+                    (change)="saveQuestion(pTabDataObj['SocialEmotionalSupport'], 'SocialEmotionalSupport')"
+                    name="SocialEmotionalSupport" [value]="'rarely'">
+                  <label class="form-check-label" for="SocialEmotionalSupport4">Rarely</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="SocialEmotionalSupport5"
+                    [(ngModel)]="pTabDataObj['SocialEmotionalSupport'].answer"
+                    (change)="saveQuestion(pTabDataObj['SocialEmotionalSupport'], 'SocialEmotionalSupport')"
+                    name="SocialEmotionalSupport" [value]="'never'">
+                  <label class="form-check-label" for="SocialEmotionalSupport5">Never</label>
+                </div>
+
+              </div>
+
+              <p class="sub-title font-600 text-dynamic-2c">Stress / Anger</p>
+              <div class="form-group border-bottom pb-3">
+                <p class="mb-2"><strong>1. How often is stress/anger a problem for you?</strong>
+                </p>
+
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="StressAngerProblem1"
+                    [(ngModel)]="pTabDataObj['StressAngerProblem'].answer"
+                    (change)="saveQuestion(pTabDataObj['StressAngerProblem'], 'StressAngerProblem')"
+                    name="StressAngerProblem" [value]="'Never&Rarely'">
+                  <label class="form-check-label" for="StressAngerProblem1">Never / Rarely</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="StressAngerProblem2"
+                    [(ngModel)]="pTabDataObj['StressAngerProblem'].answer"
+                    (change)="saveQuestion(pTabDataObj['StressAngerProblem'], 'StressAngerProblem')"
+                    name="StressAngerProblem" [value]="'sometimes'">
+                  <label class="form-check-label" for="StressAngerProblem2">Sometimes</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="StressAngerProblem3"
+                    [(ngModel)]="pTabDataObj['StressAngerProblem'].answer"
+                    (change)="saveQuestion(pTabDataObj['StressAngerProblem'], 'StressAngerProblem')"
+                    name="StressAngerProblem" [value]="'often'">
+                  <label class="form-check-label" for="StressAngerProblem3">Often</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="StressAngerProblem4"
+                    [(ngModel)]="pTabDataObj['StressAngerProblem'].answer"
+                    (change)="saveQuestion(pTabDataObj['StressAngerProblem'], 'StressAngerProblem')"
+                    name="StressAngerProblem" [value]="'always'">
+                  <label class="form-check-label" for="StressAngerProblem4">Always</label>
+                </div>
+
+
+              </div>
+              <div class="form-group border-bottom pb-3">
+                <p class="mb-2"><strong>2. How well do you handle the stress/anger in your life?</strong>
+                </p>
+
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="HandleStressAnger1"
+                    [(ngModel)]="pTabDataObj['HandleStressAnger'].answer"
+                    (change)="saveQuestion(pTabDataObj['HandleStressAnger'], 'HandleStressAnger')"
+                    name="HandleStressAnger" [value]="'copeEffectively'">
+                  <label class="form-check-label" for="HandleStressAnger1">I’m usually able to cope effectively</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="HandleStressAnger2"
+                    [(ngModel)]="pTabDataObj['HandleStressAnger'].answer"
+                    (change)="saveQuestion(pTabDataObj['HandleStressAnger'], 'HandleStressAnger')"
+                    name="HandleStressAnger" [value]="'timeProblemsCoping'">
+                  <label class="form-check-label" for="HandleStressAnger2">At times I have problems coping</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="HandleStressAnger3"
+                    [(ngModel)]="pTabDataObj['HandleStressAnger'].answer"
+                    (change)="saveQuestion(pTabDataObj['HandleStressAnger'], 'HandleStressAnger')"
+                    name="HandleStressAnger" [value]="'problemsCoping'">
+                  <label class="form-check-label" for="HandleStressAnger3">I often have problems coping</label>
+                </div>
+
+              </div>
+
+              <p class="sub-title font-600 text-dynamic-2c">Pain / Fatigue </p>
+              <div class="form-group border-bottom pb-3">
+                <p class="mb-2"><strong>1. How often do you feel unusually tired?</strong>
+                </p>
+
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="FeelTired1"
+                    [(ngModel)]="pTabDataObj['FeelTired'].answer"
+                    (change)="saveQuestion(pTabDataObj['FeelTired'], 'FeelTired')" name="FeelTired"
+                    [value]="'Never&Rarely'">
+                  <label class="form-check-label" for="FeelTired1">Never / Rarely</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="FeelTired2"
+                    [(ngModel)]="pTabDataObj['FeelTired'].answer"
+                    (change)="saveQuestion(pTabDataObj['FeelTired'], 'FeelTired')" name="FeelTired"
+                    [value]="'sometimes'">
+                  <label class="form-check-label" for="FeelTired2">Sometimes</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="FeelTired3"
+                    [(ngModel)]="pTabDataObj['FeelTired'].answer"
+                    (change)="saveQuestion(pTabDataObj['FeelTired'], 'FeelTired')" name="FeelTired" [value]="'often'">
+                  <label class="form-check-label" for="FeelTired3">Often</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="FeelTired4"
+                    [(ngModel)]="pTabDataObj['FeelTired'].answer"
+                    (change)="saveQuestion(pTabDataObj['FeelTired'], 'FeelTired')" name="FeelTired" [value]="'always'">
+                  <label class="form-check-label" for="FeelTired4">Always</label>
+                </div>
+              </div>
+              <div class="form-group border-bottom pb-3">
+                <p class="mb-2"><strong>2. Do you have pain that interferes with daily activities?</strong>
+                </p>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="PainPerformingActivities1"
+                    [(ngModel)]="pTabDataObj['PainPerformingActivities'].answer"
+                    (change)="saveQuestion(pTabDataObj['PainPerformingActivities'], 'PainPerformingActivities')"
+                    name="PainPerformingActivities" [value]="'Never&Rarely'">
+                  <label class="form-check-label" for="PainPerformingActivities1">Never / Rarely</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="PainPerformingActivities2"
+                    [(ngModel)]="pTabDataObj['PainPerformingActivities'].answer"
+                    (change)="saveQuestion(pTabDataObj['PainPerformingActivities'], 'PainPerformingActivities')"
+                    name="PainPerformingActivities" [value]="'sometimes'">
+                  <label class="form-check-label" for="PainPerformingActivities2">Sometimes</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="PainPerformingActivities3"
+                    [(ngModel)]="pTabDataObj['PainPerformingActivities'].answer"
+                    (change)="saveQuestion(pTabDataObj['PainPerformingActivities'], 'PainPerformingActivities')"
+                    name="PainPerformingActivities" [value]="'often'">
+                  <label class="form-check-label" for="PainPerformingActivities3">Often</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="PainPerformingActivities4"
+                    [(ngModel)]="pTabDataObj['PainPerformingActivities'].answer"
+                    (change)="saveQuestion(pTabDataObj['PainPerformingActivities'], 'PainPerformingActivities')"
+                    name="PainPerformingActivities" [value]="'always'">
+                  <label class="form-check-label" for="PainPerformingActivities4">Always</label>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="">Behavioral Assessment Note</label>
+                <textarea [readOnly]="isPatientForm" name="" class="form-control" id=""
+                  [(ngModel)]="pTabDataObj['PainPerformingActivities'].section.staffNote"
+                  (blur)="editStaffNote(pTabDataObj['PainPerformingActivities'].section.id, pTabDataObj['PainPerformingActivities'].section.staffNote)"
+                  style="height: 40px;" cols="30" rows="10"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel z-depth-0" #section3>
+            <div class="panel-header" id="section3">
+              <h3>Functional Ability Assessment</h3>
+            </div>
+            <ng-container *ngIf="isLoadingPTABData;then loadingSkelton"></ng-container>
+            <div class="panel-body" *ngIf="!isLoadingPTABData">
+              <p class="sub-title font-600 text-dynamic-2c">Ability to manage health problems</p>
+              <div class="form-group border-bottom pb-3">
+                <p class="mb-2"><strong>1. How confident are you that you can control and manage most of your health
+                    problems?</strong>
+                </p>
+
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="ConfidentManageHealth1"
+                    [(ngModel)]="pTabDataObj['ConfidentManageHealth'].answer"
+                    (change)="saveQuestion(pTabDataObj['ConfidentManageHealth'], 'ConfidentManageHealth')"
+                    name="ConfidentManageHealth" [value]="'confident'">
+                  <label class="form-check-label" for="ConfidentManageHealth1">Confident</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="ConfidentManageHealth2"
+                    [(ngModel)]="pTabDataObj['ConfidentManageHealth'].answer"
+                    (change)="saveQuestion(pTabDataObj['ConfidentManageHealth'], 'ConfidentManageHealth')"
+                    name="ConfidentManageHealth" [value]="'notConfident'">
+                  <label class="form-check-label" for="ConfidentManageHealth2">Not very confident</label>
+                </div>
+              </div>
+
+
+
+              <p class="sub-title font-600 text-dynamic-2c">Instrumental Daily Activities</p>
+
+              <div class="form-group border-bottom pb-3">
+                <p class="mb-2"><strong>2. Which of the following can you do on your own?</strong>
+                </p>
+
+                <div class="custom-control custom-checkbox custom-control-inline">
+                  <input type="checkbox" class="custom-control-input" id="DailyLiving1"
+                    [(ngModel)]="DailyLivingObj['Bath']"
+                    (change)="DailyLivingObj['Bath'] ? DailyLivingObj['None']=false : '';saveDailyLivingObj()"
+                    name="DailyLiving">
+                  <label class="custom-control-label" for="DailyLiving1">Bath</label>
+                </div>
+                <div class="custom-control custom-checkbox custom-control-inline">
+                  <input type="checkbox" class="custom-control-input" id="DailyLiving2"
+                    [(ngModel)]="DailyLivingObj['Walk']"
+                    (change)="DailyLivingObj['Walk'] ? DailyLivingObj['None']=false : '';saveDailyLivingObj()"
+                    name="DailyLiving">
+                  <label class="custom-control-label" for="DailyLiving2">Walk</label>
+                </div>
+                <div class="custom-control custom-checkbox custom-control-inline">
+                  <input type="checkbox" class="custom-control-input" id="DailyLiving3"
+                    [(ngModel)]="DailyLivingObj['Dress']"
+                    (change)="DailyLivingObj['Dress'] ? DailyLivingObj['None']=false : '';saveDailyLivingObj()"
+                    name="DailyLiving">
+                  <label class="custom-control-label" for="DailyLiving3">Dress</label>
+                </div>
+                <div class="custom-control custom-checkbox custom-control-inline">
+                  <input type="checkbox" class="custom-control-input" id="DailyLiving4"
+                    [(ngModel)]="DailyLivingObj['Eat']"
+                    (change)="DailyLivingObj['Eat'] ? DailyLivingObj['None']=false : '';saveDailyLivingObj()"
+                    name="DailyLiving">
+                  <label class="custom-control-label" for="DailyLiving4">Eat</label>
+                </div>
+                <div class="custom-control custom-checkbox custom-control-inline">
+                  <input type="checkbox" class="custom-control-input" id="DailyLiving5"
+                    [(ngModel)]="DailyLivingObj['Transfer']"
+                    (change)="DailyLivingObj['Transfer'] ? DailyLivingObj['None']=false : '';saveDailyLivingObj()"
+                    name="DailyLiving">
+                  <label class="custom-control-label" for="DailyLiving5">Transfer in/out of chair, etc.</label>
+                </div>
+                <div class="custom-control custom-checkbox custom-control-inline">
+                  <input type="checkbox" class="custom-control-input" id="DailyLiving6"
+                    [(ngModel)]="DailyLivingObj['restroom']"
+                    (change)="DailyLivingObj['restroom'] ? DailyLivingObj['None']=false : '';saveDailyLivingObj()"
+                    name="DailyLiving">
+                  <label class="custom-control-label" for="DailyLiving6">Use the restroom</label>
+                </div>
+                <div class="custom-control custom-checkbox custom-control-inline">
+                  <input type="checkbox" class="custom-control-input" id="DailyLiving7"
+                    [(ngModel)]="DailyLivingObj['None']" (change)="NoneCheckedDailyLiving()" name="DailyLiving">
+                  <label class="custom-control-label" for="DailyLiving7">None</label>
+                </div>
+              </div>
+
+
+
+
+              <p class="sub-title font-600 text-dynamic-2c">Activities of daily living</p>
+              <div class="form-group border-bottom pb-3">
+                <p class="mb-2"><strong>3. Which of the following can you do on your own?</strong>
+                </p>
+
+                <!-- <div class="custom-control custom-checkbox custom-control-inline">
+          <input type="checkbox" class="custom-control-input" id="InstrumentalActivities1" [(ngModel)]="pTabDataObj['InstrumentalActivities'].answer"
+          (change)="saveQuestion(pTabDataObj['InstrumentalActivities'], 'InstrumentalActivities')"
+          name="InstrumentalActivities" [value]="'dontKnow'">
+          <label class="custom-control-label" for="InstrumentalActivities1">Shop for groceries </label>
+        </div> -->
+
+                <div class="custom-control custom-checkbox custom-control-inline">
+                  <input type="checkbox" class="custom-control-input" id="InstrumentalActivities2"
+                    [(ngModel)]="InstrumentalActivitiesObj['ShopGroceries']"
+                    (change)="InstrumentalActivitiesObj['ShopGroceries'] ? InstrumentalActivitiesObj['None']=false: '';saveInstrumentalActivitiesObj()"
+                    name="InstrumentalActivities">
+                  <label class="custom-control-label" for="InstrumentalActivities2">Shop for groceries </label>
+                </div>
+                <div class="custom-control custom-checkbox custom-control-inline">
+                  <input type="checkbox" class="custom-control-input" id="InstrumentalActivities3"
+                    [(ngModel)]="InstrumentalActivitiesObj['telephone']"
+                    (change)="InstrumentalActivitiesObj['telephone'] ? InstrumentalActivitiesObj['None']=false: '';saveInstrumentalActivitiesObj()"
+                    name="InstrumentalActivities">
+                  <label class="custom-control-label" for="InstrumentalActivities3">Use the telephone </label>
+                </div>
+                <div class="custom-control custom-checkbox custom-control-inline">
+                  <input type="checkbox" class="custom-control-input" id="InstrumentalActivities4"
+                    [(ngModel)]="InstrumentalActivitiesObj['Housework']"
+                    (change)="InstrumentalActivitiesObj['Housework'] ? InstrumentalActivitiesObj['None']=false: '';saveInstrumentalActivitiesObj()"
+                    name="InstrumentalActivities">
+                  <label class="custom-control-label" for="InstrumentalActivities4">Housework </label>
+                </div>
+                <div class="custom-control custom-checkbox custom-control-inline">
+                  <input type="checkbox" class="custom-control-input" id="InstrumentalActivities5"
+                    [(ngModel)]="InstrumentalActivitiesObj['finances']"
+                    (change)="InstrumentalActivitiesObj['finances'] ? InstrumentalActivitiesObj['None']=false: '';saveInstrumentalActivitiesObj()"
+                    name="InstrumentalActivities">
+                  <label class="custom-control-label" for="InstrumentalActivities5">Handle finances </label>
+                </div>
+                <div class="custom-control custom-checkbox custom-control-inline">
+                  <input type="checkbox" class="custom-control-input" id="InstrumentalActivities6"
+                    [(ngModel)]="InstrumentalActivitiesObj['transportation']"
+                    (change)="InstrumentalActivitiesObj['transportation'] ? InstrumentalActivitiesObj['None']=false: '';saveInstrumentalActivitiesObj()"
+                    name="InstrumentalActivities">
+                  <label class="custom-control-label" for="InstrumentalActivities6">Drive/use public transportation
+                  </label>
+                </div>
+                <div class="custom-control custom-checkbox custom-control-inline">
+                  <input type="checkbox" class="custom-control-input" id="InstrumentalActivities7"
+                    [(ngModel)]="InstrumentalActivitiesObj['meals']"
+                    (change)="InstrumentalActivitiesObj['meals'] ? InstrumentalActivitiesObj['None']=false: '';saveInstrumentalActivitiesObj()"
+                    name="InstrumentalActivities">
+                  <label class="custom-control-label" for="InstrumentalActivities7">Make meals</label>
+                </div>
+                <div class="custom-control custom-checkbox custom-control-inline">
+                  <input type="checkbox" class="custom-control-input" id="InstrumentalActivities8"
+                    [(ngModel)]="InstrumentalActivitiesObj['medications']"
+                    (change)="InstrumentalActivitiesObj['medications'] ? InstrumentalActivitiesObj['None']=false: '';saveInstrumentalActivitiesObj()"
+                    name="InstrumentalActivities">
+                  <label class="custom-control-label" for="InstrumentalActivities8">Take medications </label>
+                </div>
+                <div class="custom-control custom-checkbox custom-control-inline">
+                  <input type="checkbox" class="custom-control-input" id="InstrumentalActivities9"
+                    [(ngModel)]="InstrumentalActivitiesObj['None']" (change)="NoneCheckedInstrument()"
+                    name="InstrumentalActivities">
+                  <label class="custom-control-label" for="InstrumentalActivities9">None</label>
+                </div>
+              </div>
+              <div class="form-group border-bottom pb-3">
+                <p class="mb-2"><strong>4. During the past 4 weeks, was someone available to help you if you needed and
+                    wanted help?</strong>
+                </p>
+
+                <!-- <div class="custom-control custom-checkbox custom-control-inline">
+          <input type="checkbox" class="custom-control-input" id="InstrumentalActivities1" [(ngModel)]="pTabDataObj['InstrumentalActivities'].answer"
+          (change)="saveQuestion(pTabDataObj['InstrumentalActivities'], 'InstrumentalActivities')"
+          name="InstrumentalActivities" [value]="'dontKnow'">
+          <label class="custom-control-label" for="InstrumentalActivities1">Shop for groceries </label>
+        </div> -->
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="HelpAvailable1"
+                    [(ngModel)]="pTabDataObj['HelpAvailable'].answer"
+                    (change)="saveQuestion(pTabDataObj['HelpAvailable'], 'HelpAvailable')" name="HelpAvailable"
+                    [value]="'notAll'">
+                  <label class="form-check-label" for="HelpAvailable1">No, Not at all</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="HelpAvailable2"
+                    [(ngModel)]="pTabDataObj['HelpAvailable'].answer"
+                    (change)="saveQuestion(pTabDataObj['HelpAvailable'], 'HelpAvailable')" name="HelpAvailable"
+                    [value]="'yesSometime'">
+                  <label class="form-check-label" for="HelpAvailable2">Yes, Sometimes</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="HelpAvailable3"
+                    [(ngModel)]="pTabDataObj['HelpAvailable'].answer"
+                    (change)="saveQuestion(pTabDataObj['HelpAvailable'], 'HelpAvailable')" name="HelpAvailable"
+                    [value]="'yesAlways'">
+                  <label class="form-check-label" for="HelpAvailable3">Yes, Always</label>
+                </div>
+                <!-- <div class="custom-control custom-checkbox custom-control-inline">
+                  <input type="checkbox" class="custom-control-input" id="HelpAvailableObj2"
+                    [(ngModel)]="HelpAvailableObj['NotAtAll']" (change)="HelpAvailableObj['NotAtAll'] ? HelpAvailableObj['None']=false: '';saveHelpAvailableObj()"
+                    name="HelpAvailableObj">
+                  <label class="custom-control-label" for="HelpAvailableObj2">No,Not at all </label>
+                </div>
+                <div class="custom-control custom-checkbox custom-control-inline">
+                  <input type="checkbox" class="custom-control-input" id="HelpAvailableObj3"
+                    [(ngModel)]="HelpAvailableObj['Sometimes']" (change)="HelpAvailableObj['Sometimes'] ? HelpAvailableObj['None']=false: '';saveHelpAvailableObj()"
+                    name="HelpAvailableObj">
+                  <label class="custom-control-label" for="HelpAvailableObj3">Yes, Sometimes </label>
+                </div>
+                <div class="custom-control custom-checkbox custom-control-inline">
+                  <input type="checkbox" class="custom-control-input" id="HelpAvailableObj4"
+                    [(ngModel)]="HelpAvailableObj['Always']" (change)="HelpAvailableObj['Always'] ? HelpAvailableObj['None']=false: '';saveHelpAvailableObj()"
+                    name="HelpAvailableObj">
+                  <label class="custom-control-label" for="HelpAvailableObj4">Yes,Always </label>
+                </div> -->
+
+              </div>
+              <div class="form-group border-bottom pb-3">
+                <p class="mb-2"><strong>5. Do you always fasten your seat belt when in a vehicle? </strong>
+                </p>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="FastenSeatbelt2"
+                    [(ngModel)]="pTabDataObj['FastenSeatbelt'].answer"
+                    (change)="saveQuestion(pTabDataObj['FastenSeatbelt'], 'FastenSeatbelt')" name="FastenSeatbelt"
+                    [value]="'yes'">
+                  <label class="form-check-label" for="FastenSeatbelt2">Yes</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="FastenSeatbelt1"
+                    [(ngModel)]="pTabDataObj['FastenSeatbelt'].answer"
+                    (change)="saveQuestion(pTabDataObj['FastenSeatbelt'], 'FastenSeatbelt')" name="FastenSeatbelt"
+                    [value]="'no'">
+                  <label class="form-check-label" for="FastenSeatbelt1">No</label>
+                </div>
+              </div>
+              <div class="form-group border-bottom pb-3">
+                <p class="mb-2"><strong>6. During the past 4 weeks, what was the hardest physical activity you could do for at least 2 minutes?</strong>
+                </p>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="HardestPhysicalActivity1"
+                    [(ngModel)]="pTabDataObj['HardestPhysicalActivity'].answer"
+                    (change)="saveQuestion(pTabDataObj['HardestPhysicalActivity'], 'HardestPhysicalActivity')" name="HardestPhysicalActivity"
+                    [value]="'heavy'">
+                  <label class="form-check-label" for="HardestPhysicalActivity1">Heavy</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="HardestPhysicalActivity2"
+                    [(ngModel)]="pTabDataObj['HardestPhysicalActivity'].answer"
+                    (change)="saveQuestion(pTabDataObj['HardestPhysicalActivity'], 'HardestPhysicalActivity')" name="HardestPhysicalActivity"
+                    [value]="'moderate'">
+                  <label class="form-check-label" for="HardestPhysicalActivity2">Moderate</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="HardestPhysicalActivity3"
+                    [(ngModel)]="pTabDataObj['HardestPhysicalActivity'].answer"
+                    (change)="saveQuestion(pTabDataObj['HardestPhysicalActivity'], 'HardestPhysicalActivity')" name="HardestPhysicalActivity"
+                    [value]="'Light'">
+                  <label class="form-check-label" for="HardestPhysicalActivity3">Light</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="HardestPhysicalActivity4"
+                    [(ngModel)]="pTabDataObj['HardestPhysicalActivity'].answer"
+                    (change)="saveQuestion(pTabDataObj['HardestPhysicalActivity'], 'HardestPhysicalActivity')" name="HardestPhysicalActivity"
+                    [value]="'veryLight'">
+                  <label class="form-check-label" for="HardestPhysicalActivity4">Very Light</label>
+                </div>
+              </div>
+              <div class="form-group border-bottom pb-3">
+                <p class="mb-2"><strong>7. Do you exercise for 20 minutes, 3 or more days a week?</strong>
+                </p>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="ExerciseFor20Mins1"
+                    [(ngModel)]="pTabDataObj['ExerciseFor20Mins'].answer"
+                    (change)="saveQuestion(pTabDataObj['ExerciseFor20Mins'], 'ExerciseFor20Mins')" name="ExerciseFor20Mins"
+                    [value]="'yesMostTime'">
+                  <label class="form-check-label" for="ExerciseFor20Mins1">Yes, most of the time</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="ExerciseFor20Mins2"
+                    [(ngModel)]="pTabDataObj['ExerciseFor20Mins'].answer"
+                    (change)="saveQuestion(pTabDataObj['ExerciseFor20Mins'], 'ExerciseFor20Mins')" name="ExerciseFor20Mins"
+                    [value]="'yesSometime'">
+                  <label class="form-check-label" for="ExerciseFor20Mins2">Yes, some of the time</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="ExerciseFor20Mins3"
+                    [(ngModel)]="pTabDataObj['ExerciseFor20Mins'].answer"
+                    (change)="saveQuestion(pTabDataObj['ExerciseFor20Mins'], 'ExerciseFor20Mins')" name="ExerciseFor20Mins"
+                    [value]="'NoNotAtAll'">
+                  <label class="form-check-label" for="ExerciseFor20Mins3">No, not at all</label>
+                </div>
+              </div>
+              <div class="form-group border-bottom pb-3">
+                <p class="mb-2"><strong>8. Have you been given information to help you with the following:</strong>
+                </p>
+                <div class="row">
+                  <div class="col-sm-6">
+                    <ul class="ml-0 pl-4 mb-2">
+                      <li> <p class="mb-2"><strong>Hazards in the home which may hurt you?</strong>
+                      </p></li>
+                    </ul>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-check pl-0 form-check-inline">
+                      <input type="radio" class="form-check-input" mdbInput id="HurtfulHazards1"
+                        [(ngModel)]="pTabDataObj['HurtfulHazards'].answer"
+                        (change)="saveQuestion(pTabDataObj['HurtfulHazards'], 'HurtfulHazards')" name="HurtfulHazards"
+                        [value]="'yes'">
+                      <label class="form-check-label" for="HurtfulHazards1">Yes</label>
+                    </div>
+                    <div class="form-check pl-0 form-check-inline">
+                      <input type="radio" class="form-check-input" mdbInput id="HurtfulHazards2"
+                        [(ngModel)]="pTabDataObj['HurtfulHazards'].answer"
+                        (change)="saveQuestion(pTabDataObj['HurtfulHazards'], 'HurtfulHazards')" name="HurtfulHazards"
+                        [value]="'no'">
+                      <label class="form-check-label" for="HurtfulHazards2">No</label>
+                    </div>
+
+                  </div>
+                  <div class="col-sm-6">
+                    <ul class="ml-0 pl-4 mb-2">
+                      <li>
+                    <p class="mb-2"><strong>Keeping track of your medications?</strong>
+                    </p>
+                    </li>
+                    </ul>
+
+                  </div>
+                  <div class="col-sm-6">
+
+                    <div class="form-check pl-0 form-check-inline">
+                      <input type="radio" class="form-check-input" mdbInput id="TrackMedications1"
+                        [(ngModel)]="pTabDataObj['TrackMedications'].answer"
+                        (change)="saveQuestion(pTabDataObj['TrackMedications'], 'TrackMedications')" name="TrackMedications"
+                        [value]="'yes'">
+                      <label class="form-check-label" for="TrackMedications1">Yes</label>
+                    </div>
+                    <div class="form-check pl-0 form-check-inline">
+                      <input type="radio" class="form-check-input" mdbInput id="TrackMedications2"
+                        [(ngModel)]="pTabDataObj['TrackMedications'].answer"
+                        (change)="saveQuestion(pTabDataObj['TrackMedications'], 'TrackMedications')" name="TrackMedications"
+                        [value]="'no'">
+                      <label class="form-check-label" for="TrackMedications2">No</label>
+                    </div>
+                  </div>
+                </div>
+
+
+
+
+
+              </div>
+
+
+              <p class="sub-title font-600 text-dynamic-2c">Ambulation Status</p>
+              <div class="form-group border-bottom pb-3">
+                <p class="mb-2"><strong>9. How long can you walk or move around?</strong>
+                </p>
+
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="HowLongWalk1"
+                    [(ngModel)]="pTabDataObj['HowLongWalk'].answer"
+                    (change)="saveQuestion(pTabDataObj['HowLongWalk'], 'HowLongWalk')" name="HowLongWalk"
+                    [value]="'0-15'">
+                  <label class="form-check-label" for="HowLongWalk1">0 - 5</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="HowLongWalk2"
+                    [(ngModel)]="pTabDataObj['HowLongWalk'].answer"
+                    (change)="saveQuestion(pTabDataObj['HowLongWalk'], 'HowLongWalk')" name="HowLongWalk"
+                    [value]="'5-15'">
+                  <label class="form-check-label" for="HowLongWalk2">5 -15</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="HowLongWalk3"
+                    [(ngModel)]="pTabDataObj['HowLongWalk'].answer"
+                    (change)="saveQuestion(pTabDataObj['HowLongWalk'], 'HowLongWalk')" name="HowLongWalk"
+                    [value]="'15-30'">
+                  <label class="form-check-label" for="HowLongWalk3">15 - 30</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="HowLongWalk4"
+                    [(ngModel)]="pTabDataObj['HowLongWalk'].answer"
+                    (change)="saveQuestion(pTabDataObj['HowLongWalk'], 'HowLongWalk')" name="HowLongWalk"
+                    [value]="'hours'">
+                  <label class="form-check-label" for="HowLongWalk4">More than 1 hour</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="HowLongWalk5"
+                    [(ngModel)]="pTabDataObj['HowLongWalk'].answer"
+                    (change)="saveQuestion(pTabDataObj['HowLongWalk'], 'HowLongWalk')" name="HowLongWalk"
+                    [value]="'dontKnow'">
+                  <label class="form-check-label" for="HowLongWalk5">I don't know</label>
+                </div>
+              </div>
+
+              <div class="form-group border-bottom pb-3">
+                <p class="mb-2"><strong>10. Do you feel unsteady when standing or walking?</strong>
+                </p>
+
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="FeelUnsteadyStanding1"
+                    [(ngModel)]="pTabDataObj['FeelUnsteadyStanding'].answer"
+                    (change)="saveQuestion(pTabDataObj['FeelUnsteadyStanding'], 'FeelUnsteadyStanding')"
+                    name="FeelUnsteadyStanding" [value]="'yes'">
+                  <label class="form-check-label" for="FeelUnsteadyStanding1">Yes</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="FeelUnsteadyStanding2"
+                    [(ngModel)]="pTabDataObj['FeelUnsteadyStanding'].answer"
+                    (change)="saveQuestion(pTabDataObj['FeelUnsteadyStanding'], 'FeelUnsteadyStanding')"
+                    name="FeelUnsteadyStanding" [value]="'no'">
+                  <label class="form-check-label" for="FeelUnsteadyStanding2">No</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="FeelUnsteadyStanding3"
+                    [(ngModel)]="pTabDataObj['FeelUnsteadyStanding'].answer"
+                    (change)="saveQuestion(pTabDataObj['FeelUnsteadyStanding'], 'FeelUnsteadyStanding')"
+                    name="FeelUnsteadyStanding" [value]="'sometimes'">
+                  <label class="form-check-label" for="FeelUnsteadyStanding3">Sometimes</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="FeelUnsteadyStanding4"
+                    [(ngModel)]="pTabDataObj['FeelUnsteadyStanding'].answer"
+                    (change)="saveQuestion(pTabDataObj['FeelUnsteadyStanding'], 'FeelUnsteadyStanding')"
+                    name="FeelUnsteadyStanding" [value]="'dontKnow'">
+                  <label class="form-check-label" for="FeelUnsteadyStanding4">I don't Know</label>
+                </div>
+              </div>
+
+              <div class="form-group border-bottom pb-3">
+                <p class="mb-2"><strong>11. Which of these assistive devices do you use?</strong>
+                </p>
+
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="AssistiveDevicesUse1"
+                    [(ngModel)]="pTabDataObj['AssistiveDevicesUse'].answer"
+                    (change)="saveQuestion(pTabDataObj['AssistiveDevicesUse'], 'AssistiveDevicesUse')"
+                    name="AssistiveDevicesUse" [value]="'cane'">
+                  <label class="form-check-label" for="AssistiveDevicesUse1">Cane</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="AssistiveDevicesUse2"
+                    [(ngModel)]="pTabDataObj['AssistiveDevicesUse'].answer"
+                    (change)="saveQuestion(pTabDataObj['AssistiveDevicesUse'], 'AssistiveDevicesUse')"
+                    name="AssistiveDevicesUse" [value]="'walker'">
+                  <label class="form-check-label" for="AssistiveDevicesUse2">Walker</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="AssistiveDevicesUse3"
+                    [(ngModel)]="pTabDataObj['AssistiveDevicesUse'].answer"
+                    (change)="saveQuestion(pTabDataObj['AssistiveDevicesUse'], 'AssistiveDevicesUse')"
+                    name="AssistiveDevicesUse" [value]="'wheelChair'">
+                  <label class="form-check-label" for="AssistiveDevicesUse3">Wheelchair</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="AssistiveDevicesUse4"
+                    [(ngModel)]="pTabDataObj['AssistiveDevicesUse'].answer"
+                    (change)="saveQuestion(pTabDataObj['AssistiveDevicesUse'], 'AssistiveDevicesUse')"
+                    name="AssistiveDevicesUse" [value]="'crutches'">
+                  <label class="form-check-label" for="AssistiveDevicesUse4">Crutches</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="AssistiveDevicesUse5"
+                    [(ngModel)]="pTabDataObj['AssistiveDevicesUse'].answer"
+                    (change)="saveQuestion(pTabDataObj['AssistiveDevicesUse'], 'AssistiveDevicesUse')"
+                    name="AssistiveDevicesUse" [value]="'other'">
+                  <label class="form-check-label" for="AssistiveDevicesUse5">Other</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="AssistiveDevicesUse6"
+                    [(ngModel)]="pTabDataObj['AssistiveDevicesUse'].answer"
+                    (change)="saveQuestion(pTabDataObj['AssistiveDevicesUse'], 'AssistiveDevicesUse')"
+                    name="AssistiveDevicesUse" [value]="'none'">
+                  <label class="form-check-label" for="AssistiveDevicesUse6">None</label>
+                </div>
+              </div>
+
+
+              <div class="form-group border-bottom pb-3">
+                <p class="mb-2"><strong>12. Do you feel dizzy when you get up from a bed or chair?</strong>
+                </p>
+
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="FeelDizzy1"
+                    [(ngModel)]="pTabDataObj['FeelDizzy'].answer"
+                    (change)="saveQuestion(pTabDataObj['FeelDizzy'], 'FeelDizzy')" name="FeelDizzy" [value]="'yes'">
+                  <label class="form-check-label" for="FeelDizzy1">Yes</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="FeelDizzy2"
+                    [(ngModel)]="pTabDataObj['FeelDizzy'].answer"
+                    (change)="saveQuestion(pTabDataObj['FeelDizzy'], 'FeelDizzy')" name="FeelDizzy" [value]="'no'">
+                  <label class="form-check-label" for="FeelDizzy2">No</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="FeelDizzy3"
+                    [(ngModel)]="pTabDataObj['FeelDizzy'].answer"
+                    (change)="saveQuestion(pTabDataObj['FeelDizzy'], 'FeelDizzy')" name="FeelDizzy"
+                    [value]="'sometimes'">
+                  <label class="form-check-label" for="FeelDizzy3">Sometimes</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="FeelDizzy4"
+                    [(ngModel)]="pTabDataObj['FeelDizzy'].answer"
+                    (change)="saveQuestion(pTabDataObj['FeelDizzy'], 'FeelDizzy')" name="FeelDizzy"
+                    [value]="'dontKnow'">
+                  <label class="form-check-label" for="FeelDizzy4">I don't know</label>
+                </div>
+              </div>
+
+              <div class="form-group border-bottom pb-3">
+                <p class="mb-2"><strong>13. Are you afraid to leave the house alone due to dizziness or imbalance
+                    problems?</strong>
+                </p>
+
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="AfraidLeavingHouse1"
+                    [(ngModel)]="pTabDataObj['AfraidLeavingHouse'].answer"
+                    (change)="saveQuestion(pTabDataObj['AfraidLeavingHouse'], 'AfraidLeavingHouse')"
+                    name="AfraidLeavingHouse" [value]="'yes'">
+                  <label class="form-check-label" for="AfraidLeavingHouse1">Yes</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="AfraidLeavingHouse2"
+                    [(ngModel)]="pTabDataObj['AfraidLeavingHouse'].answer"
+                    (change)="saveQuestion(pTabDataObj['AfraidLeavingHouse'], 'AfraidLeavingHouse')"
+                    name="AfraidLeavingHouse" [value]="'No'">
+                  <label class="form-check-label" for="AfraidLeavingHouse2">No</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="AfraidLeavingHouse3"
+                    [(ngModel)]="pTabDataObj['AfraidLeavingHouse'].answer"
+                    (change)="saveQuestion(pTabDataObj['AfraidLeavingHouse'], 'AfraidLeavingHouse')"
+                    name="AfraidLeavingHouse" [value]="'Sometimes'">
+                  <label class="form-check-label" for="AfraidLeavingHouse3">Sometimes</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="AfraidLeavingHouse4"
+                    [(ngModel)]="pTabDataObj['AfraidLeavingHouse'].answer"
+                    (change)="saveQuestion(pTabDataObj['AfraidLeavingHouse'], 'AfraidLeavingHouse')"
+                    name="AfraidLeavingHouse" [value]="'dontKnow'">
+                  <label class="form-check-label" for="AfraidLeavingHouse4">I don't know</label>
+                </div>
+              </div>
+
+
+
+              <p class="sub-title font-600 text-dynamic-2c">Fall Risk Assessment</p>
+              <div class="form-group border-bottom pb-3">
+                <p class="mb-2"><strong>14. Have you fallen in the past year?</strong>
+                </p>
+
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="FallenLastYear1"
+                    [(ngModel)]="pTabDataObj['FallenLastYear'].answer"
+                    (change)="saveQuestion(pTabDataObj['FallenLastYear'], 'FallenLastYear')" name="FallenLastYear"
+                    [value]="'yes'">
+                  <label class="form-check-label" for="FallenLastYear1">Yes</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="FallenLastYear2"
+                    [(ngModel)]="pTabDataObj['FallenLastYear'].answer"
+                    (change)="saveQuestion(pTabDataObj['FallenLastYear'], 'FallenLastYear')" name="FallenLastYear"
+                    [value]="'no'">
+                  <label class="form-check-label" for="FallenLastYear2">No</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="FallenLastYear3"
+                    [(ngModel)]="pTabDataObj['FallenLastYear'].answer"
+                    (change)="saveQuestion(pTabDataObj['FallenLastYear'], 'FallenLastYear')" name="FallenLastYear"
+                    [value]="'dontKnow'">
+                  <label class="form-check-label" for="FallenLastYear3">I don't know</label>
+                </div>
+              </div>
+              <div class="form-group border-bottom pb-3">
+                <p class="mb-2"><strong>15. How many times have you fallen in the past year?</strong>
+                </p>
+
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="TimesFallen1"
+                    [(ngModel)]="pTabDataObj['TimesFallen'].answer"
+                    (change)="saveQuestion(pTabDataObj['TimesFallen'], 'TimesFallen')" name="TimesFallen" [value]="'0'">
+                  <label class="form-check-label" for="TimesFallen1">0</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="TimesFallen2"
+                    [(ngModel)]="pTabDataObj['TimesFallen'].answer"
+                    (change)="saveQuestion(pTabDataObj['TimesFallen'], 'TimesFallen')" name="TimesFallen" [value]="'1'">
+                  <label class="form-check-label" for="TimesFallen2">1</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="TimesFallen3"
+                    [(ngModel)]="pTabDataObj['TimesFallen'].answer"
+                    (change)="saveQuestion(pTabDataObj['TimesFallen'], 'TimesFallen')" name="TimesFallen"
+                    [value]="'2+'">
+                  <label class="form-check-label" for="TimesFallen3">2+</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="TimesFallen4"
+                    [(ngModel)]="pTabDataObj['TimesFallen'].answer"
+                    (change)="saveQuestion(pTabDataObj['TimesFallen'], 'TimesFallen')" name="TimesFallen"
+                    [value]="'dontKnow'">
+                  <label class="form-check-label" for="TimesFallen4">I don't know</label>
+                </div>
+                <!-- <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="TimesFallen5"
+                    [(ngModel)]="pTabDataObj['TimesFallen'].answer"
+                    (change)="saveQuestion(pTabDataObj['TimesFallen'], 'TimesFallen')" name="TimesFallen"
+                    [value]="'didntfall'">
+                  <label class="form-check-label" for="TimesFallen5">I did not fall+</label>
+                </div> -->
+              </div>
+              <div class="form-group border-bottom pb-3">
+                <p class="mb-2"><strong>16. Do you worry about falling?</strong>
+                </p>
+
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="WorryAboutFalling1"
+                    [(ngModel)]="pTabDataObj['WorryAboutFalling'].answer"
+                    (change)="saveQuestion(pTabDataObj['WorryAboutFalling'], 'WorryAboutFalling')"
+                    name="WorryAboutFalling" [value]="'yes'">
+                  <label class="form-check-label" for="WorryAboutFalling1">Yes</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="WorryAboutFalling2"
+                    [(ngModel)]="pTabDataObj['WorryAboutFalling'].answer"
+                    (change)="saveQuestion(pTabDataObj['WorryAboutFalling'], 'WorryAboutFalling')"
+                    name="WorryAboutFalling" [value]="'no'">
+                  <label class="form-check-label" for="WorryAboutFalling2">No</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="WorryAboutFalling3"
+                    [(ngModel)]="pTabDataObj['WorryAboutFalling'].answer"
+                    (change)="saveQuestion(pTabDataObj['WorryAboutFalling'], 'WorryAboutFalling')"
+                    name="WorryAboutFalling" [value]="'sometimes'">
+                  <label class="form-check-label" for="WorryAboutFalling3">Sometimes</label>
+                </div>
+              </div>
+              <!-- <div class="form-group border-bottom pb-3">
+                <p class="mb-2"><strong>17. During the last 12 months, have you had a fall that resulted in an
+                    injury?</strong>
+                </p>
+
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="FallResult1"
+                    [(ngModel)]="pTabDataObj['FallResult'].answer"
+                    (change)="saveQuestion(pTabDataObj['FallResult'], 'FallResult')" name="FallResult" [value]="'yes'">
+                  <label class="form-check-label" for="FallResult1">Yes</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="FallResult2"
+                    [(ngModel)]="pTabDataObj['FallResult'].answer"
+                    (change)="saveQuestion(pTabDataObj['FallResult'], 'FallResult')" name="FallResult" [value]="'no'">
+                  <label class="form-check-label" for="FallResult2">No</label>
+                </div>
+              </div> -->
+
+              <div class="form-group">
+                <label for="">Functional Behavior Assessment Note</label>
+                <textarea [readOnly]="isPatientForm" name="selfAssesment"
+                  [(ngModel)]="pTabDataObj['WorryAboutFalling'].section.staffNote"
+                  (blur)="editStaffNote(pTabDataObj['WorryAboutFalling'].section.id, pTabDataObj['WorryAboutFalling'].section.staffNote)"
+                  class="form-control" id="" style="height: 40px;" cols="30" rows="10"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel z-depth-0" #section4>
+            <div class="panel-header" id="section4">
+              <h3>Home Safety</h3>
+            </div>
+            <ng-container *ngIf="isLoadingPTABData;then loadingSkelton"></ng-container>
+            <div class="panel-body" *ngIf="!isLoadingPTABData">
+              <div class="form-group border-bottom pb-3">
+                <p class="mb-2"><strong>1. What is your living situation?</strong>
+                </p>
+
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="LivingSituation1"
+                    [(ngModel)]="pTabDataObj['LivingSituation'].answer"
+                    (change)="saveQuestion(pTabDataObj['LivingSituation'], 'LivingSituation')" name="LivingSituation"
+                    [value]="'alone'">
+                  <label class="form-check-label" for="LivingSituation1">Alone</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="LivingSituation2"
+                    [(ngModel)]="pTabDataObj['LivingSituation'].answer"
+                    (change)="saveQuestion(pTabDataObj['LivingSituation'], 'LivingSituation')" name="LivingSituation"
+                    [value]="'partner&spouse'">
+                  <label class="form-check-label" for="LivingSituation2">Partner / Spouse</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="LivingSituation3"
+                    [(ngModel)]="pTabDataObj['LivingSituation'].answer"
+                    (change)="saveQuestion(pTabDataObj['LivingSituation'], 'LivingSituation')" name="LivingSituation"
+                    [value]="'extendedFamily'">
+                  <label class="form-check-label" for="LivingSituation3">Extended Family</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="LivingSituation4"
+                    [(ngModel)]="pTabDataObj['LivingSituation'].answer"
+                    (change)="saveQuestion(pTabDataObj['LivingSituation'], 'LivingSituation')" name="LivingSituation"
+                    [value]="'other'">
+                  <label class="form-check-label" for="LivingSituation4">Other</label>
+                </div>
+              </div>
+              <div class="form-group border-bottom pb-3">
+                <p class="mb-2"><strong>2. Does your bathroom at home have grab bars?</strong>
+                </p>
+
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="GrabBarsInBathroom1"
+                    [(ngModel)]="pTabDataObj['GrabBarsInBathroom'].answer"
+                    (change)="saveQuestion(pTabDataObj['GrabBarsInBathroom'], 'GrabBarsInBathroom')"
+                    name="GrabBarsInBathroom" [value]="'yes'">
+                  <label class="form-check-label" for="GrabBarsInBathroom1">Yes</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="GrabBarsInBathroom2"
+                    [(ngModel)]="pTabDataObj['GrabBarsInBathroom'].answer"
+                    (change)="saveQuestion(pTabDataObj['GrabBarsInBathroom'], 'GrabBarsInBathroom')"
+                    name="GrabBarsInBathroom" [value]="'no'">
+                  <label class="form-check-label" for="GrabBarsInBathroom2">No</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="GrabBarsInBathroom3"
+                    [(ngModel)]="pTabDataObj['GrabBarsInBathroom'].answer"
+                    (change)="saveQuestion(pTabDataObj['GrabBarsInBathroom'], 'GrabBarsInBathroom')"
+                    name="GrabBarsInBathroom" [value]="'dontKnow'">
+                  <label class="form-check-label" for="GrabBarsInBathroom3">I don't know</label>
+                </div>
+
+              </div>
+
+              <div class="form-group border-bottom pb-3">
+                <p class="mb-2"><strong>3. Is there any clutter in your walking space at home?</strong>
+                </p>
+
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="ClutterInWalkingSpace1"
+                    [(ngModel)]="pTabDataObj['ClutterInWalkingSpace'].answer"
+                    (change)="saveQuestion(pTabDataObj['ClutterInWalkingSpace'], 'ClutterInWalkingSpace')"
+                    name="ClutterInWalkingSpace" [value]="'yes'">
+                  <label class="form-check-label" for="ClutterInWalkingSpace1">Yes</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="ClutterInWalkingSpace2"
+                    [(ngModel)]="pTabDataObj['ClutterInWalkingSpace'].answer"
+                    (change)="saveQuestion(pTabDataObj['ClutterInWalkingSpace'], 'ClutterInWalkingSpace')"
+                    name="ClutterInWalkingSpace" [value]="'no'">
+                  <label class="form-check-label" for="ClutterInWalkingSpace2">No</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="ClutterInWalkingSpace3"
+                    [(ngModel)]="pTabDataObj['ClutterInWalkingSpace'].answer"
+                    (change)="saveQuestion(pTabDataObj['ClutterInWalkingSpace'], 'ClutterInWalkingSpace')"
+                    name="ClutterInWalkingSpace" [value]="'dontKnow'">
+                  <label class="form-check-label" for="ClutterInWalkingSpace3">I don't know</label>
+                </div>
+
+              </div>
+
+              <div class="form-group border-bottom pb-3">
+                <p class="mb-2"><strong>4. Does your home have functioning smoke alarms?</strong>
+                </p>
+
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="SmokeAlarms1"
+                    [(ngModel)]="pTabDataObj['SmokeAlarms'].answer"
+                    (change)="saveQuestion(pTabDataObj['SmokeAlarms'], 'SmokeAlarms')" name="SmokeAlarms"
+                    [value]="'yes'">
+                  <label class="form-check-label" for="SmokeAlarms1">Yes</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="SmokeAlarms2"
+                    [(ngModel)]="pTabDataObj['SmokeAlarms'].answer"
+                    (change)="saveQuestion(pTabDataObj['SmokeAlarms'], 'SmokeAlarms')" name="SmokeAlarms"
+                    [value]="'no'">
+                  <label class="form-check-label" for="SmokeAlarms2">No</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="SmokeAlarms3"
+                    [(ngModel)]="pTabDataObj['SmokeAlarms'].answer"
+                    (change)="saveQuestion(pTabDataObj['SmokeAlarms'], 'SmokeAlarms')" name="SmokeAlarms"
+                    [value]="'dontKnow'">
+                  <label class="form-check-label" for="SmokeAlarms3">I don't know</label>
+                </div>
+
+              </div>
+
+              <div class="form-group border-bottom pb-3">
+                <p class="mb-2"><strong>5. Does your home have handrails on the stairs and/or steps?</strong>
+                </p>
+
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="HandrailsOnStairs1"
+                    [(ngModel)]="pTabDataObj['HandrailsOnStairs'].answer"
+                    (change)="saveQuestion(pTabDataObj['HandrailsOnStairs'], 'HandrailsOnStairs')"
+                    name="HandrailsOnStairs" [value]="'yes'">
+                  <label class="form-check-label" for="HandrailsOnStairs1">Yes</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="HandrailsOnStairs2"
+                    [(ngModel)]="pTabDataObj['HandrailsOnStairs'].answer"
+                    (change)="saveQuestion(pTabDataObj['HandrailsOnStairs'], 'HandrailsOnStairs')"
+                    name="HandrailsOnStairs" [value]="'no'">
+                  <label class="form-check-label" for="HandrailsOnStairs2">No</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="HandrailsOnStairs3"
+                    [(ngModel)]="pTabDataObj['HandrailsOnStairs'].answer"
+                    (change)="saveQuestion(pTabDataObj['HandrailsOnStairs'], 'HandrailsOnStairs')"
+                    name="HandrailsOnStairs" [value]="'dontKnow'">
+                  <label class="form-check-label" for="HandrailsOnStairs3">I don't know</label>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="">Home Safety Assessment Note</label>
+                <textarea [readOnly]="isPatientForm" name="" class="form-control" id=""
+                  [(ngModel)]="pTabDataObj['HandrailsOnStairs'].section.staffNote"
+                  (blur)="editStaffNote(pTabDataObj['HandrailsOnStairs'].section.id, pTabDataObj['HandrailsOnStairs'].section.staffNote)"
+                  style="height: 40px;" cols="30" rows="10"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel z-depth-0" #section5>
+            <div class="panel-header" id="section5">
+              <h3>Hearing Screening</h3>
+            </div>
+            <ng-container *ngIf="isLoadingPTABData;then loadingSkelton"></ng-container>
+            <div class="panel-body" *ngIf="!isLoadingPTABData">
+              <div class="form-group border-bottom pb-3">
+                <p class="mb-2"><strong>1. Do you have a problem or have others showed concern about your
+                    hearing?</strong>
+                </p>
+
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="ProblemWithHearing1"
+                    [(ngModel)]="pTabDataObj['ProblemWithHearing'].answer"
+                    (change)="saveQuestion(pTabDataObj['ProblemWithHearing'], 'ProblemWithHearing')"
+                    name="ProblemWithHearing" [value]="'yes'">
+                  <label class="form-check-label" for="ProblemWithHearing1">Yes</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="ProblemWithHearing2"
+                    [(ngModel)]="pTabDataObj['ProblemWithHearing'].answer"
+                    (change)="saveQuestion(pTabDataObj['ProblemWithHearing'], 'ProblemWithHearing')"
+                    name="ProblemWithHearing" [value]="'no'">
+                  <label class="form-check-label" for="ProblemWithHearing2">No</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="ProblemWithHearing3"
+                    [(ngModel)]="pTabDataObj['ProblemWithHearing'].answer"
+                    (change)="saveQuestion(pTabDataObj['ProblemWithHearing'], 'ProblemWithHearing')"
+                    name="ProblemWithHearing" [value]="'dontKnow'">
+                  <label class="form-check-label" for="ProblemWithHearing3">I don't know</label>
+                </div>
+              </div>
+              <div class="form-group border-bottom pb-3">
+                <p class="mb-2"><strong>2. Do you use hearing aids or other devices to help you hear?</strong>
+                </p>
+
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="UseHearingAids1"
+                    [(ngModel)]="pTabDataObj['UseHearingAids'].answer"
+                    (change)="saveQuestion(pTabDataObj['UseHearingAids'], 'UseHearingAids')" name="UseHearingAids"
+                    [value]="'yes'">
+                  <label class="form-check-label" for="UseHearingAids1">Yes</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="UseHearingAids2"
+                    [(ngModel)]="pTabDataObj['UseHearingAids'].answer"
+                    (change)="saveQuestion(pTabDataObj['UseHearingAids'], 'UseHearingAids')" name="UseHearingAids"
+                    [value]="'no'">
+                  <label class="form-check-label" for="UseHearingAids2">No</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="UseHearingAids3"
+                    [(ngModel)]="pTabDataObj['UseHearingAids'].answer"
+                    (change)="saveQuestion(pTabDataObj['UseHearingAids'], 'UseHearingAids')" name="UseHearingAids"
+                    [value]="'dontKnow'">
+                  <label class="form-check-label" for="UseHearingAids3">I don't know</label>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="">Hearing Screening Note</label>
+                <textarea [readOnly]="isPatientForm" name="" class="form-control" id=""
+                  [(ngModel)]="pTabDataObj['UseHearingAids'].section.staffNote"
+                  (blur)="editStaffNote(pTabDataObj['UseHearingAids'].section.id, pTabDataObj['UseHearingAids'].section.staffNote)"
+                  style="height: 40px;" cols="30" rows="10"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel z-depth-0" #section6>
+            <div class="panel-header" id="section6">
+              <h3>Vision Screening</h3>
+            </div>
+            <ng-container *ngIf="isLoadingPTABData;then loadingSkelton"></ng-container>
+            <div class="panel-body" *ngIf="!isLoadingPTABData">
+              <div class="form-group border-bottom pb-3">
+                <p class="mb-2"><strong>1. Do you have problems or have others showed concern regarding your
+                    vision?</strong>
+                </p>
+
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="ProblemWithVision1"
+                    [(ngModel)]="pTabDataObj['ProblemWithVision'].answer"
+                    (change)="saveQuestion(pTabDataObj['ProblemWithVision'], 'ProblemWithVision')"
+                    name="ProblemWithVision" [value]="'yes'">
+                  <label class="form-check-label" for="ProblemWithVision1">Yes</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="ProblemWithVision2"
+                    [(ngModel)]="pTabDataObj['ProblemWithVision'].answer"
+                    (change)="saveQuestion(pTabDataObj['ProblemWithVision'], 'ProblemWithVision')"
+                    name="ProblemWithVision" [value]="'no'">
+                  <label class="form-check-label" for="ProblemWithVision2">No</label>
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <input type="radio" class="form-check-input" mdbInput id="ProblemWithVision3"
+                    [(ngModel)]="pTabDataObj['ProblemWithVision'].answer"
+                    (change)="saveQuestion(pTabDataObj['ProblemWithVision'], 'ProblemWithVision')"
+                    name="ProblemWithVision" [value]="'dontKnow'">
+                  <label class="form-check-label" for="ProblemWithVision3">I don't know</label>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="">Vision Screening Note</label>
+                <textarea [readOnly]="isPatientForm" name=""
+                  [(ngModel)]="pTabDataObj['ProblemWithVision'].section.staffNote"
+                  (blur)="editStaffNote(pTabDataObj['ProblemWithVision'].section.id, pTabDataObj['ProblemWithVision'].section.staffNote)"
+                  class="form-control" id="" style="height: 40px;" cols="30" rows="10"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- <div class="panel z-depth-0" #section7 >
+          <div class="panel-header" id="section7">
+            <h3>Depression Screening</h3>
+          </div>
+          <ng-container *ngIf="isLoadingPTABData;then loadingSkelton"></ng-container>
+          <div class="panel-body" *ngIf="!isLoadingPTABData">
+            To administer the depression screening follow the Link
+            <strong>G0444 Annual depression screening</strong>
+            <app-depression-screening></app-depression-screening>
+            <div class="form-group">
+              <label for="">Self Assessment Note</label>
+              <textarea [readOnly]="isPatientForm" name="" class="form-control" id="" style="height: 40px;" cols="30" rows="10"></textarea>
+            </div> -->
+          <div class="panel z-depth-0 rounded-0" #section7>
+            <div id="section7">
+              <ng-container *ngIf="isPainScreening">
+
+                <div class="panel-header">
+                  <div class="current-section">
+                    <h3>Screening Assessment</h3>
+                  </div>
+                </div>
+                <ng-container *ngIf="isLoadingPTABData;then loadingSkelton"></ng-container>
+                <div class="panel-body" *ngIf="!isLoadingPTABData">
+                  <div class="row justify-content-center align-items-center">
+                    <div class="col-md-12">
+                      <p>Pain Screening - Please circle the level of pain patient is in on a daily basis</p>
+                    </div>
+                    <div class="col-lg-8 col-md-12 text-center">
+                      <ul class="pain-check p-0">
+                        <li class="m-0"><img src="/assets/img/emoji.png" width="30" alt="Emoji"></li>
+                        <li
+                          (click)="pTabDataObj['PainLevel'].answer='0';saveQuestion(pTabDataObj['PainLevel'], 'PainLevel')">
+                          <span [class.active]="pTabDataObj['PainLevel'].answer==='0'">0</span></li>
+                        <li
+                          (click)="pTabDataObj['PainLevel'].answer='1';saveQuestion(pTabDataObj['PainLevel'], 'PainLevel')">
+                          <span [class.active]="pTabDataObj['PainLevel'].answer==='1'">1</span></li>
+                        <li
+                          (click)="pTabDataObj['PainLevel'].answer='2';saveQuestion(pTabDataObj['PainLevel'], 'PainLevel')">
+                          <span [class.active]="pTabDataObj['PainLevel'].answer==='2'">2</span></li>
+                        <li
+                          (click)="pTabDataObj['PainLevel'].answer='3';saveQuestion(pTabDataObj['PainLevel'], 'PainLevel')">
+                          <span [class.active]="pTabDataObj['PainLevel'].answer==='3'">3</span></li>
+                        <li
+                          (click)="pTabDataObj['PainLevel'].answer='4';saveQuestion(pTabDataObj['PainLevel'], 'PainLevel')">
+                          <span [class.active]="pTabDataObj['PainLevel'].answer==='4'">4</span></li>
+                        <li
+                          (click)="pTabDataObj['PainLevel'].answer='5';saveQuestion(pTabDataObj['PainLevel'], 'PainLevel')">
+                          <span [class.active]="pTabDataObj['PainLevel'].answer==='5'">5</span></li>
+                        <li
+                          (click)="pTabDataObj['PainLevel'].answer='6';saveQuestion(pTabDataObj['PainLevel'], 'PainLevel')">
+                          <span [class.active]="pTabDataObj['PainLevel'].answer==='6'">6</span></li>
+                        <li
+                          (click)="pTabDataObj['PainLevel'].answer='7';saveQuestion(pTabDataObj['PainLevel'], 'PainLevel')">
+                          <span [class.active]="pTabDataObj['PainLevel'].answer==='7'">7</span></li>
+                        <li
+                          (click)="pTabDataObj['PainLevel'].answer='8';saveQuestion(pTabDataObj['PainLevel'], 'PainLevel')">
+                          <span [class.active]="pTabDataObj['PainLevel'].answer==='8'">8</span></li>
+                        <li
+                          (click)="pTabDataObj['PainLevel'].answer='9';saveQuestion(pTabDataObj['PainLevel'], 'PainLevel')">
+                          <span [class.active]="pTabDataObj['PainLevel'].answer==='9'">9</span></li>
+                        <li
+                          (click)="pTabDataObj['PainLevel'].answer='10';saveQuestion(pTabDataObj['PainLevel'], 'PainLevel')">
+                          <span [class.active]="pTabDataObj['PainLevel'].answer==='10'">10</span></li>
+                        <li><img src="/assets/img/sad.png" width="30" alt="Emoji"></li>
+                      </ul>
+                      <div class="row">
+                        <div class="col-md-4 col-xs-4 col">
+                          <p class="text-center pr-4">No pain</p>
+                        </div>
+                        <div class="col-md-4 col-xs-4 col">
+                          <p class="text-center">Moderate Pain</p>
+                        </div>
+                        <div class="col-md-4 col-xs-4 col">
+                          <p class="text-center">Extreme pain</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div *ngIf="!isPatientForm" class="border-top w-100 mb-3"></div>
+                  <div *ngIf="!isPatientForm" class="row">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <mdb-checkbox [default]="true" [checked]="false" appOnDebounce [debounceTime]="500"
+                          (onDebounce)="saveQuestion(pTabDataObj['PainMang'], 'PainMang')"
+                          [(ngModel)]="pTabDataObj['PainMang'].answer">
+                          If pain , evidence of pain management
+                        </mdb-checkbox>
+                      </div>
+                      <!-- <div class="custom-control custom-checkbox custom-control-inline">
+                              <input type="checkbox" class="custom-control-input" id="PainMang"
+                                [(ngModel)]="pTabDataObj['PainMang'].answer" (change)="saveQuestion(pTabDataObj['PainMang'], 'PainMang')"
+                                name="PainMang1">
+                              <label class="custom-control-label" for="PainMang">If pain , evidence of pain management </label>
+                            </div> -->
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <mdb-checkbox [default]="true" [checked]="false" appOnDebounce [debounceTime]="500"
+                          (onDebounce)="saveQuestion(pTabDataObj['PrescribedMed'], 'PrescribedMed')"
+                          [(ngModel)]="pTabDataObj['PrescribedMed'].answer">
+                          If currently prescribed pain medication
+                        </mdb-checkbox>
+                      </div>
+
+
+                    </div>
+                    <div class="col-sm-12">
+                      <div class="form-group">
+                        <label for="">Location and description of pain</label>
+                        <input name="PainLocation" class="form-control" id="PainLocation"
+                          [(ngModel)]="pTabDataObj['PainLocation'].answer" appOnDebounce [debounceTime]="500"
+                          (onDebounce)="saveQuestion(pTabDataObj['PainLocation'], 'PainLocation')"
+                          style="height: 40px;">
+                      </div>
+                      <!-- (blur)="editStaffNote(pTabDataObj['UseHearingAids'].section.id, pTabDataObj['UseHearingAids'].section.staffNote)" -->
+                      <!-- <div class="custom-control custom-checkbox custom-control-inline">
+                              <input type="checkbox" class="custom-control-input" id="PrescribedMed"
+                                [(ngModel)]="pTabDataObj['PrescribedMed'].answer" (change)="saveQuestion(pTabDataObj['PrescribedMed'], 'PrescribedMed')"
+                                name="PrescribedMed1">
+                              <label class="custom-control-label" for="PrescribedMed">If currently prescribed pain medication</label>
+                            </div> -->
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+          <div class="panel z-depth-0" #section8>
+            <div class="panel-header" id="section8">
+              <h3>Depression Screening</h3>
+            </div>
+            <ng-container *ngIf="isLoadingPTABData;then loadingSkelton"></ng-container>
+            <div class="panel-body" *ngIf="!isLoadingPTABData">
+              <!-- To administer the depression screening follow the Link
+        <strong>G0444 Annual depression screening</strong> -->
+              <app-depression-screening *ngIf="awEncounterPTabQuestions.depressionScreeningId"
+                [awSId]="awEncounterPTabQuestions.depressionScreeningId"></app-depression-screening>
+              <!-- <div class="form-group">
+          <label for="">Self Assessment Note</label>
+          <textarea [readOnly]="isPatientForm" name="" class="form-control" id="" style="height: 40px;" cols="30" rows="10"></textarea>
+        </div> -->
+
+            </div>
+          </div>
+          <div class="panel z-depth-0" #section9>
+            <div class="panel-header" id="section9">
+              <h3>Alcohol Screening</h3>
+            </div>
+            <ng-container *ngIf="isLoadingPTABData;then loadingSkelton"></ng-container>
+            <div class="panel-body" *ngIf="!isLoadingPTABData">
+              <!-- To administer the depression screening follow the Link
+        <strong>G0444 Annual depression screening</strong> -->
+              <app-alcohol-screening *ngIf="awEncounterPTabQuestions.amScreeningId"
+                [awSId]="awEncounterPTabQuestions.amScreeningId"></app-alcohol-screening>
+              <!-- <div class="form-group">
+          <label for="">Self Assessment Note</label>
+          <textarea [readOnly]="isPatientForm" name="" class="form-control" id="" style="height: 40px;" cols="30" rows="10"></textarea>
+        </div> -->
+
+            </div>
+          </div>
+          <!-- <div class="panel z-depth-0" >
+      <div class="panel-header" id="section9">
+        <h3>ٖFamily History</h3>
+      </div>
+      <ng-container *ngIf="isLoadingPTABData;then loadingSkelton"></ng-container>
+      <div class="panel-body" *ngIf="!isLoadingPTABData">
+        <app-family-history></app-family-history>
+        <div class="form-group">
+          <label for="">Self Assessment Note</label>
+          <textarea [readOnly]="isPatientForm" name="" class="form-control" id="" style="height: 40px;" cols="30" rows="10"></textarea>
+        </div>
+
+      </div>
+    </div> -->
+          <!-- </div>
+    </div> -->
+        </div>
+        <div class="d-flex justify-content-end" *ngIf="isPatientForm">
+          <a class="btn btn-dynamic-2c btn-sm" href="https://2chealthsolutions.com/">close</a>
+        </div>
+        <!-- <div class="d-flex justify-content-end">
+    <button class="btn btn-dynamic-2c btn-sm">Save</button>
+    <button class="btn btn-dynamic-secondary-2c btn-sm">Save & Quit</button>
+  </div> -->
+      </div>
+    </div>
+  </div>
+</fieldset>
+<ng-template #loadingSkelton>
+  <div class="panel-body">
+    <div class="row">
+      <div class="col-sm-12 p-0">
+        <skltn-root duration="2000" [rectRadius]="0" flareWidth="50%" bgFill="#f2f3f8"
+          flareFill="rgba(255,255,255, 0.5)">
+          <!-- Card with Avatar -->
+          <div class="p-3">
+            <div class="skltn-card">
+              <div class="skltn-card__body">
+                <div skltn-bone class="skltn-card__line"></div>
+                <div skltn-bone class="skltn-card__line"></div>
+                <div skltn-bone class="skltn-card__line"></div>
+                <div skltn-bone class="skltn-card__line"></div>
+              </div>
+            </div>
+          </div>
+        </skltn-root>
+      </div>
+    </div>
+  </div>
+</ng-template>

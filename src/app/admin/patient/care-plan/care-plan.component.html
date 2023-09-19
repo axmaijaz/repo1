@@ -1,0 +1,324 @@
+
+<div>
+  <div class="ccm-body mt-3 mb-5" *ngIf="!PatientTemplate || PatientTemplate && (!PatientTemplate.id || PatientTemplate.id === 0 || !PatientTemplate.carePlanQuestionnaires || PatientTemplate.carePlanQuestionnaires.length < 1)">
+    <div class="ccm-template"
+      >
+      <skltn-root duration="2000" [rectRadius]="0" flareWidth="50%" bgFill="#f2f3f8"
+      flareFill="rgba(255,255,255, 0.5)">
+      <div class="p-3">
+        <div class="skltn-card">
+          <div class="skltn-card__body">
+            <div skltn-bone class="skltn-card__line"></div>
+            <div skltn-bone class="skltn-card__line"></div>
+            <div skltn-bone class="skltn-card__line"></div>
+            <div skltn-bone class="skltn-card__line"></div>
+          </div>
+        </div>
+      </div>
+    </skltn-root>
+    </div>
+  </div>
+
+  <div class="ccm-body mt-3 mb-5"
+    *ngIf="PatientTemplate && (PatientTemplate.id && PatientTemplate.id > 0 && PatientTemplate.carePlanQuestionnaires && PatientTemplate.carePlanQuestionnaires.length > 0)">
+    <div class="ccm-template">
+      <div *ngIf="isLoading">
+        <skltn-root duration="2000" [rectRadius]="0" flareWidth="50%" bgFill="#f2f3f8"
+          flareFill="rgba(255,255,255, 0.5)">
+          <!-- Card with Avatar -->
+          <div class="p-3">
+            <div class="skltn-card">
+              <div class="skltn-card__body">
+                <div skltn-bone class="skltn-card__line"></div>
+                <div skltn-bone class="skltn-card__line"></div>
+                <div skltn-bone class="skltn-card__line"></div>
+                <div skltn-bone class="skltn-card__line"></div>
+              </div>
+            </div>
+          </div>
+        </skltn-root>
+      </div>
+      <div class="template-body p-3">
+        <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
+          <div class="disease-info">
+            <p class="font-500 m-0 mr-3">Monthly Review </p>
+            <!-- <p class="mb-0"> - GERD Without Esophagitis, Heart Disease - <strong class="text-dynamic-2c">Richard</strong>
+            11-08-2018</p> -->
+          </div>
+          <div>
+            <a class="btn btn-dynamic-secondary-2c btn-sm ml-auto"
+              (click)="canEditTemplate=true;editTemplateModal.show()"><i class="fa fa-pencil fa-lg"></i> Edit
+              Template</a>
+          </div>
+        </div>
+        <div class="ccm-header mb-3">
+          <div class="row d-flex flex-wrap follow-up-date">
+            <div class="col-sm-4">
+              <label class="mt-1">Recent PCP Appointment </label>
+              <div class="form-group mb-0">
+                <!-- <input type="text" [(ngModel)]="" class="form-control form-control-sm"
+                #dateDPicker="dpDayPicker" [dpDayPicker]="datePickerConfig" [theme]="'dp-material ccm-date-picker'"
+                [mode]="'daytime'" mask="0000-00-00 00:00 SS"/> -->
+                <input type="text" disabled [(ngModel)]="followUpDataObj.recentPcpAppointment"
+                  class="form-control form-control-sm" #dateToDp="dpDayPicker" [dpDayPicker]="datePickerConfig"
+                  [theme]="'dp-material ccm-date-picker'" [mode]="'daytime'" />
+                <!-- <a (click)="updateFollowUpDate();" class="input-group-append">
+                  <span class="input-group-text text-white bg-dynamic-2c" id="category"><i class="fa fa-check"></i></span>
+                </a> -->
+              </div>
+            </div>
+
+            <div class="col-sm-4 ">
+              <label class="mt-1">Follow up Date </label>
+              <div class="input-group form-group mb-0">
+                <input type="text" [(ngModel)]="followUpDataObj.followUpDate" class="form-control form-control-sm"
+                  #dateDPicker="dpDayPicker" [dpDayPicker]="datePickerConfig" [theme]="'dp-material ccm-date-picker'"
+                  [mode]="'daytime'" />
+                <a (click)="updateFollowUpDate();" class="input-group-append">
+                  <span class="input-group-text text-white bg-dynamic-2c" id="category"><i class="fa fa-check"></i></span>
+                </a>
+              </div>
+            </div>
+
+            <div class="col-sm-4">
+              <label class="mt-1">Hospital Discharge </label>
+              <div class="input-group form-group mb-0">
+                <input type="text" [(ngModel)]="followUpDataObj.recentHospitalizationDate"
+                  class="form-control form-control-sm" #dateDPicker="dpDayPicker" [dpDayPicker]="onlydatePickerConfig"
+                  [theme]="'dp-material ccm-date-picker'" [mode]="'day'" />
+                <a (click)="updateFollowUpDate();" routerLinkActive="router-link-active" class="input-group-append">
+                  <span class="input-group-text text-white bg-dynamic-2c" id="category"><i class="fa fa-check"></i></span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+
+
+          <div class="col-sm-12 px-0" *ngIf="carePlanViewModel.length !== 0">
+            <mdb-tabset #staticTabs [vertical]="true" [buttonClass]="'ccm-tabs main-category'" [contentClass]="'p-0'">
+              <mdb-tab heading="{{category.key}}" [disabled]="category.parentId === 0"
+                *ngFor="let category of carePlanViewModel; let catIndex = index"
+                (select)="activeTab=catIndex+1;tabChanged($event);RearrangeCategoryId=category.value[0].questionCategoryId"
+                (deselect)="saveTemplateData()">
+
+                <div class="row" class="ques-section">
+                  <div class="col-12">
+                    <div class="d-flex justify-content-between mb-4 section-title">
+                      <h5 class="mb-0"><strong> {{category.key}} </strong></h5>
+                      <div class="tabs-arrow d-flex justify-content-end flex-nowrap">
+                        <a (click)="RearrangeCategory(category.value);reOrderQuestions.show()"><small>Re-order
+                            Questions</small></a>
+                        <a class="btn btn-icon transparent mr-0 my-0" (click)="activePrevTab()"><i
+                            class="fa fa-angle-left text-white"></i></a>
+                        <a class="btn btn-icon transparent mr-0  my-0" (click)="activeNextTab()"><i
+                            class="fa fa-angle-right text-white"></i></a>
+                      </div>
+                    </div>
+
+                    <div class="section-body"
+                      *ngFor="let item of category.value | sortBy:'questionOrder'; let QusIndex = index">
+                      <div class="row" *ngIf="item.questionType === 1">
+                        <div class="col-lg-6 col-md-6 col-sm-12">
+                          <p>{{item.question}}
+                          </p>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-12">
+                          <div class="d-flex align-items-start flex-nowrap justify-content-start">
+                            <div class="form-group w-100">
+                              <input *ngIf="templateData && templateData[item.id]"
+                                [(ngModel)]="templateData[item.id].answer"
+                                (ngModelChange)="templateData[item.id].isChanged = true" type="text"
+                                id="form7{{item.id}}" class="form-control form-control-sm">
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row" *ngIf="item.questionType === 2">
+                        <div class="col-lg-6 col-md-6 col-sm-12">
+                          <p>{{item.question}}</p>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-12">
+                          <div class="form-group">
+                            <textarea *ngIf="templateData && templateData[item.id]"
+                              [(ngModel)]="templateData[item.id].answer"
+                              (ngModelChange)="templateData[item.id].isChanged = true" type="text" id="form7{{item.id}}"
+                              class="form-control form-control-sm"></textarea>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row" *ngIf="item.questionType === 4">
+                        <div class="col-lg-6 col-md-6 col-sm-12">
+                          <p>{{item.question}}</p>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-12">
+                          <div class="d-flex align-items-start flex-nowrap justify-content-start">
+                            <div class="radio w-100" style="margin: 0 -5px">
+                              <div class="form-group">
+                                <!-- Material inline 1 -->
+                                <div class="form-check form-check-inline"
+                                  *ngFor="let options of item.cpQuestionOptions; let optindex = index">
+                                  <input type="radio" *ngIf="templateData && templateData[item.id]"
+                                    class="form-check-input" [(ngModel)]="templateData[item.id].answer"
+                                    value="{{options.id}}" (ngModelChange)="templateData[item.id].isChanged = true"
+                                    id="mterialInline1{{QusIndex}}{{catIndex}}{{optindex}}"
+                                    name="inlineMterialRadiosExample{{QusIndex}}" mdbInput>
+                                  <label class="form-check-label"
+                                    for="mterialInline1{{QusIndex}}{{catIndex}}{{optindex}}">{{options.text}}</label>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row" *ngIf="item.questionType === 3">
+                        <div class="col-lg-6 col-md-6 col-sm-12">
+                          <p>{{item.question}}</p>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-12">
+                          <div class="d-flex align-items-start flex-nowrap justify-content-start">
+                            <div class="checkb w-100" *ngIf="templateData && templateData[item.id]">
+                              <mdb-checkbox [inline]="true"
+                                [(ngModel)]="templateData[item.id].optionsSelected[options.id]"
+                                (change)="templateData[item.id].isChanged = true" [default]="true"
+                                *ngFor="let options of item.cpQuestionOptions">{{options.text}}</mdb-checkbox>
+                            </div>
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+                    <!-- <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil odit magnam minima, soluta doloribus
+                        reiciendis molestiae placeat unde eos molestias. Quisquam aperiam, pariatur. Tempora, placeat ratione
+                        porro voluptate odit minima.</p> -->
+                  </div>
+                </div>
+                <!-- <div class="d-flex justify-content-end" *ngIf="catIndex + 1  === carePlanViewModel.length">
+                <button type="button" mdbBtn class="btn btn-dynamic-2c btn-md ml-auto" block="true"
+                  (click)="saveTemplateData()">Submit</button>
+              </div> -->
+              </mdb-tab>
+            </mdb-tabset>
+          </div>
+
+        </div>
+
+        <!-- <div class="ques-section" *ngFor="let category of carePlanViewModel; let catIndex = index">
+        <div class="d-flex align-items-center justify-content-between question-header">
+          <p> <strong>{{category.key}}</strong></p>
+        </div>
+        <div class="section-body" *ngFor="let item of category.value; let QusIndex = index">
+          <div class="row" *ngIf="item.questionType === 1">
+            <div class="col-sm-6">
+              <p>{{item.question}}
+              </p>
+            </div>
+            <div class="col-sm-6">
+              <div class="d-flex align-items-start flex-nowrap justify-content-start">
+                <div class="form-group w-100">
+                  <input *ngIf="templateData && templateData[item.id]" [(ngModel)]="templateData[item.id].answer"
+                    (ngModelChange)="templateData[item.id].isChanged = true" type="text" id="forsdsdm7"
+                    class="form-control form-control-sm">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row" *ngIf="item.questionType === 2">
+            <div class="col-sm-6">
+              <p>{{item.question}}</p>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <textarea *ngIf="templateData && templateData[item.id]" [(ngModel)]="templateData[item.id].answer"
+                  (ngModelChange)="templateData[item.id].isChanged = true" type="text" id="form7{{item.id}}"
+                  class="form-control form-control-sm"></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="row" *ngIf="item.questionType === 4">
+            <div class="col-sm-6">
+              <p>{{item.question}}</p>
+            </div>
+            <div class="col-sm-6">
+              <div class="d-flex align-items-start flex-nowrap justify-content-start">
+                <div class="radio w-100" style="margin: 0 -5px">
+                  <div class="form-group">
+                    <div class="form-check form-check-inline"
+                      *ngFor="let options of item.cpQuestionOptions; let optindex = index">
+                      <input type="radio" *ngIf="templateData && templateData[item.id]" class="form-check-input"
+                        [(ngModel)]="templateData[item.id].answer" value="{{options.id}}"
+                        (ngModelChange)="templateData[item.id].isChanged = true"
+                        id="mterialInline1{{QusIndex}}{{catIndex}}{{optindex}}"
+                        name="inlineMterialRadiosExample{{QusIndex}}" mdbInput>
+                      <label class="form-check-label"
+                        for="mterialInline1{{QusIndex}}{{catIndex}}{{optindex}}">{{options.text}}</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row" *ngIf="item.questionType === 3">
+            <div class="col-sm-6">
+              <p>{{item.question}}</p>
+            </div>
+            <div class="col-sm-6">
+              <div class="d-flex align-items-start flex-nowrap justify-content-start">
+                <div class="checkb w-100" *ngIf="templateData && templateData[item.id]">
+                  <mdb-checkbox [inline]="true" [(ngModel)]="templateData[item.id].optionsSelected[options.id]"
+                    (change)="templateData[item.id].isChanged = true" [default]="true"
+                    *ngFor="let options of item.cpQuestionOptions">{{options.text}}</mdb-checkbox>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div> -->
+        <!-- <div class="d-flex justify-content-end">
+        <button type="button" mdbBtn class="btn btn-dynamic-2c btn-sm ml-auto" (click)="saveTemplateData()">Submit</button>
+      </div> -->
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<div style="overflow-y:auto" mdbModal #editTemplateModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  id="addQuestionModal" aria-labelledby="myBasicModalLabel" aria-hidden="true"
+  (close)="getPatientTemplateByID(PatientId)" [config]="{backdrop: true, ignoreBackdropClick: true}">
+  <div class="modal-dialog modal-fluid flat-modal p-4 modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="editTemplateModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+
+        <h4 class="text-dynamic-2c modal-title font-500 mr-3">Care Plan </h4>
+      </div>
+      <div class="modal-body" *ngIf="canEditTemplate">
+        <app-edit-care-plan (SaveTemplate)="saveTemplate()"></app-edit-care-plan>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="overflow-y:auto" mdbModal #reOrderQuestions="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  id="reOrderQuestions" aria-labelledby="myBasicModalLabel" aria-hidden="true"
+  [config]="{backdrop: true, ignoreBackdropClick: true}">
+  <div class="modal-dialog modal-lg flat-modal p-4 modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="reOrderQuestions.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+
+        <h4 class="text-dynamic-2c modal-title font-500 mr-3">Re-order Questions</h4>
+      </div>
+      <app-re-order-questions *ngIf="PatientTemplate && PatientTemplate.id" [CarePLanId]="PatientTemplate.id"
+        [CategoryId]="RearrangeCategoryId" (closeModal)="CloseReorderModal($event)"></app-re-order-questions>
+    </div>
+  </div>
+</div>

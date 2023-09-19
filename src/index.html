@@ -2,13 +2,29 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>TestApp</title>
-  <base href="/">
+  <title>2C Health Solutions</title>
+  <base href="/ ">
+
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link id="appFavicon" rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="apple-touch-icon" href="assets/icons/icon-512x512.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="assets/icons/icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="192x192" href="assets/icons/icon-192x192.png">
+  <link rel="apple-touch-icon" sizes="128x128" href="assets/icons/icon-128x128.png">
+  <script src="assets/js/socket.io.js"></script>
+  <script src="assets/BlueButtonLib/bluebutton.min.js"></script>
+  <!-- <script src="assets/js/LogRocket.min.js"></script> -->
+  <script> if (global === undefined) { var global = window; } </script>
+  <style >.p{opacity:0.5;animation:opacity 1s infinite;animation-fill-mode:forwards;animation-timing-function:cubic-bezier(.69,.42,.53,.77);animation-direction:alternate-reverse}.p1{animation-delay:.1s}.p2{animation-delay:.2s}.p3{animation-delay:.3s}.p4{animation-delay:.4s}.p5{animation-delay:.5s}.p6{animation-delay:.6s}@keyframes opacity{from{opacity:1;left:0}50%{opacity:.2}to{opacity:1;left:50%}}</style>
+
+
+  <link rel="manifest" href="manifest.json">
+  <!-- <meta name="theme-color" content="#1976d2"> -->
+
 </head>
-<body>
-  <app-root></app-root>
-  <h1>Welcome Asma Ijaz! Hello world from Angular!</h1>
+<body class="default-theme">
+  <app-root>
+
+  </app-root>
 </body>
 </html>

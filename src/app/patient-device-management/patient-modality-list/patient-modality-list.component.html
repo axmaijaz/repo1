@@ -1,0 +1,317 @@
+<h1 class="page-title mb-3">HealthCare Devices</h1>
+
+<div class="d-flex justify-content-center">
+
+  <app-record-not-found *ngIf="isLoading === false && modalityList.length === 0"></app-record-not-found>
+</div>
+<mdb-progress-bar *ngIf="isLoading" class="progress primary-color-dark" mode="indeterminate"></mdb-progress-bar>
+<div class="c-blocks">
+
+  <div class="c-item bg-white" *ngFor="let item of modalityList; let index = index">
+    <div class="icon modalityListImages">
+      <img src="/assets/rpm-devices/blood-pressure.jpg" *ngIf="item.code == 'BP'" alt="Blood Pressure">
+      <img src="/assets/rpm-devices/weight.jpg" *ngIf="item.code == 'WT'" alt="Weight">
+      <img src="/assets/rpm-devices/pluse.jpg" *ngIf="item.code == 'PO'" alt="Pulse Oximetry">
+      <img src="/assets/rpm-devices/blood-glucose.jpg" *ngIf="item.code == 'BG'" alt="Blood Glucose">
+      <img src="/assets/rpm-devices/activity.jpg" *ngIf="item.code == 'AT'" alt="Activity">
+    </div>
+    <div>
+      <p class="title">{{item.name}}</p>
+    </div>
+    <input type="file" id="file-input{{index}}" accept="image/*" style="display: none;" capture="environment"
+      (change)="dataChanged($event.target.files, item.id)">
+    <div class="entry-buttons">
+      <button class="bg-dynamic-2c" (click)="manualEntry.show();selectedmodality(item);">Manual Entry</button>
+      <button *ngIf="item.code !== 'BG'" class="bg-dynamic-secondary-2c"  (click)="getALLUserMedia(item, index)">Upload Image</button>
+
+      <div class="dropdown btn-group flex-1" mdbDropdown *ngIf="item.code == 'BG'">
+        <button mdbDropdownToggle (click)="uploadModalityInfo=''" class="bg-dynamic-secondary-2c">Upload Image</button>
+        <div class="dropdown-menu dropdown dropdown-menu-right custom-dropdown" >
+          <a class="dropdown-item" (click)="uploadModalityInfo='Pre-Meal';getALLUserMedia(item, index)">Pre-Meal</a>
+          <a class="dropdown-item" (click)="uploadModalityInfo='2 Hour Post Meal';getALLUserMedia(item, index)">2 Hour Post Meal</a>
+          <a class="dropdown-item" (click)="uploadModalityInfo='Fasting';getALLUserMedia(item, index)">Fasting</a>
+          <!-- <div class="divider dropdown-divider"></div> -->
+          <a class="dropdown-item" (click)="uploadModalityInfo='Random';getALLUserMedia(item, index)">Random</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+
+
+<div mdbModal #imageCaptureMOdal="mdbModal" class="modal fade" tabindex="-1" role="dialog" (close)="destroyAllStreams()"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true" [config]="{backdrop: true, ignoreBackdropClick: true}">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="imageCaptureMOdal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">Capture Image
+        </h4>
+      </div>
+      <div class="modal-body p-0 d-flex justify-content-center">
+        <video #cameraPLayer class="camera-size" width="320" height="320" [muted]="true" volume="0" [controls]="false"
+          playsinline autoplay></video>
+        <canvas #imgCanvas class="camera-size" width="320" height="320"></canvas>
+        <img #output1 id="output1" class="camera-size" style="display: none;">
+      </div>
+      <div class="modal-footer">
+        <div class="d-flex justify-content-between ">
+          <!-- <button type="button" mdbBtn color="secondar" class="btn-sm">Mannual Entry</button> -->
+          <div>
+            <button type="button" class="btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+              (click)="imageCaptureMOdal.hide()">Close</button>
+            <button *ngIf="!currentImage" type="button" (click)="capturePhoto()"
+              class="relative btn btn-sm btn-dynamic-2c">Capture</button>
+
+            <button [disabled]="isUpLoading" *ngIf="currentImage" type="button"
+              (click)="uploadImageToS3()" class="relative btn btn-sm btn-dynamic-2c">
+              <span *ngIf="isUpLoading" class="spinner-border spinner-border-sm" role="status"
+                aria-hidden="true"></span>
+              Upload</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+<div mdbModal #manualEntry="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myBasicModalLabel"
+  aria-hidden="true" [config]="{ignoreBackdropClick: true, backdrop: true}">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="manualEntry.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" *ngIf="selectedModalityDto && selectedModalityDto.code === 'BP'"
+          id="myModalLabel">Blood Pressure</h4>
+        <h4 class="modal-title w-100" *ngIf="selectedModalityDto && selectedModalityDto.code === 'WT'"
+          id="myModalLabel">Body Weight</h4>
+        <h4 class="modal-title w-100" *ngIf="selectedModalityDto && selectedModalityDto.code === 'BG'"
+          id="myModalLabel">Blood Glucose</h4>
+        <h4 class="modal-title w-100" *ngIf="selectedModalityDto && selectedModalityDto.code === 'AT'"
+          id="myModalLabel">Activity</h4>
+        <h4 class="modal-title w-100" *ngIf="selectedModalityDto && selectedModalityDto.code === 'PO'"
+          id="myModalLabel">Pulse Oximetry</h4>
+      </div>
+
+      <ng-container *ngIf="selectedModalityDto && selectedModalityDto.code === 'BP'">
+        <div class="modal-body">
+          <div class="info-form">
+            <div>
+              <div class="row">
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label>Systolic</label>
+                    <div class="form-group mb-0 flex-grow-1">
+                      <input type="text" mask="000" min="0" placeholder="50 - 300" appOnDebounce [debounceTime]="1000"
+                        (onDebounce)="CheckMinMaxvalue()" [(ngModel)]="recordImgData.lowPressure" name=""
+                        class="form-control form-control-sm">
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label>Diastolic</label>
+                    <div class="form-group mb-0 flex-grow-1">
+                      <input type="text" mask="000" min="0" placeholder="30 - 150" appOnDebounce [debounceTime]="1000"
+                        (onDebounce)="CheckMinMaxvalue()" [(ngModel)]="recordImgData.highPressure" name=""
+                        class="form-control form-control-sm">
+                    </div>
+                  </div>
+
+                </div>
+                <div class="col-sm-12">
+                  <div class="form-group">
+                    <label>Heart Rate</label>
+                    <div class="form-group mb-0 flex-grow-1">
+                      <input type="text" mask="000" min="0" placeholder="20 - 200" appOnDebounce [debounceTime]="1000"
+                        (onDebounce)="CheckMinMaxvalue()" [(ngModel)]="recordImgData.heartRate" name=""
+                        class="form-control form-control-sm">
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" 
+            [disabled]="!recordImgData.lowPressure || !recordImgData.highPressure || savingData"
+            class="relative waves-light pull-right btn btn-dynamic-2c btn-sm" (click)="RecordBPDeviceReading(manualEntry)">Save</button>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="selectedModalityDto && selectedModalityDto.code === 'WT'">
+        <div class="modal-body">
+          <div class="info-form">
+            <div class="row">
+              <div class="col-sm-12">
+                <label>Weight</label>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <div class="form-group">
+                    <input type="text" mask="000" min="0" placeholder="50 - 700" appOnDebounce [debounceTime]="1000"
+                      (onDebounce)="CheckMinMaxvalue()" name="" [(ngModel)]="recordImgData.weightValue"
+                      class="form-control form-control-sm">
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-check form-check-inline">
+                  <input type="radio" class="form-check-input" id="pound" name="pound" [(ngModel)]="weightIn"
+                    [value]="'pound'" (click)="weightIn = 'pound';" mdbInput>
+                  <label class="form-check-label" for="pound">Pound</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input type="radio" class="form-check-input" id="kg" name="kg" [(ngModel)]="weightIn" [value]="'kg'"
+                    (click)="weightIn = 'kg';" mdbInput>
+                  <label class="form-check-label" for="kg">Kg</label>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" [disabled]="!recordImgData.weightValue || savingData"
+            class="relative waves-light pull-right btn btn-dynamic-2c btn-sm"
+            (click)="RecordWTDeviceReading(manualEntry); weightIn = ''">Save</button>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="selectedModalityDto && selectedModalityDto.code === 'PO'">
+        <div class="modal-body">
+          <div class="info-form">
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <label>Oxygen Saturation</label>
+                  <div class="form-group mb-0 flex-grow-1">
+                    <input type="text" mask="000" placeholder="60 - 100" appOnDebounce [debounceTime]="1000"
+                      (onDebounce)="CheckMinMaxvalue()" min="0" name="" [(ngModel)]="recordImgData.bloodOxygen"
+                      class="form-control form-control-sm">
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <label>Heart Rate</label>
+                  <div class="form-group mb-0 flex-grow-1">
+                    <input type="text" mask="000" min="0" name="" placeholder="20 - 200" appOnDebounce
+                      [debounceTime]="1000" (onDebounce)="CheckMinMaxvalue()" [(ngModel)]="recordImgData.heartRate"
+                      class="form-control form-control-sm">
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" 
+            [disabled]="!recordImgData.bloodOxygen || !recordImgData.heartRate || savingData"
+            class="relative waves-light pull-right btn btn-dynamic-2c btn-sm" (click)="RecordPODeviceReading(manualEntry)">Save</button>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="selectedModalityDto && selectedModalityDto.code === 'BG'">
+
+        <div class="modal-body">
+          <div class="info-form">
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <label for="bloodGlucose">Blood Glucose</label>
+                  <div class="form-group mb-0 flex-grow-1">
+                    <input type="text" mask="000" id="bloodGlucose" placeholder="20 - 600" appOnDebounce
+                      [debounceTime]="1000" (onDebounce)="CheckMinMaxvalue()" min="0" name=""
+                      [(ngModel)]="recordImgData.bg" class="form-control form-control-sm">
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <label>Meal Situation</label>
+                  <div class="form-group mb-0 flex-grow-1">
+                    <!-- <input type="text" name="dinnerSituation" [(ngModel)]="recordImgData.dinnerSituation"
+                    class="form-control form-control-sm"> -->
+                    <ng-select class="ng-select-small" [(ngModel)]="recordImgData.dinnerSituation"
+                      name="dinnerSituation" [multiple]="false" [searchable]="true" placeholder="Select situation">
+                      <ng-option value="Pre-Meal">Pre-Meal</ng-option>
+                      <ng-option value="2 Hour Post Meal">2 Hour Post Meal</ng-option>
+                      <ng-option value="Fasting">Fasting</ng-option>
+                      <ng-option value="Random">Random</ng-option>
+                    </ng-select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" 
+            [disabled]="!recordImgData.dinnerSituation || !recordImgData.bg || savingData"
+            class="relative waves-light pull-right btn btn-dynamic-2c btn-sm" (click)="RecordBGDeviceReading(manualEntry)">Save</button>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="selectedModalityDto && selectedModalityDto.code === 'AT'">
+        <div class="modal-body">
+          <div class="info-form">
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label>Min Steps</label>
+                  <div class="form-group mb-0 flex-grow-1">
+                    <input type="text" mask="000" min="0" appOnDebounce [debounceTime]="1000"
+                      (onDebounce)="CheckMinMaxvalue()" name="" [(ngModel)]="recordImgData.calories"
+                      class="form-control form-control-sm">
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label>Max Steps</label>
+                  <div class="form-group mb-0 flex-grow-1">
+                    <input type="text" mask="000" min="0" name="" appOnDebounce [debounceTime]="1000"
+                      (onDebounce)="CheckMinMaxvalue()" [(ngModel)]="recordImgData.distanceTraveled"
+                      class="form-control form-control-sm">
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <label>Max Steps</label>
+                  <div class="form-group mb-0 flex-grow-1">
+                    <input type="text" mask="000" min="0" name="" appOnDebounce [debounceTime]="1000"
+                      (onDebounce)="CheckMinMaxvalue()" [(ngModel)]="recordImgData.steps"
+                      class="form-control form-control-sm">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" 
+            [disabled]="!recordImgData.calories || !recordImgData.distanceTraveled || !recordImgData.steps || savingData"
+            class="relative waves-light pull-right btn btn-dynamic-2c btn-sm" (click)="RecordATDeviceReading(manualEntry)">Save</button>
+        </div>
+      </ng-container>
+
+
+    </div>
+  </div>
+</div>

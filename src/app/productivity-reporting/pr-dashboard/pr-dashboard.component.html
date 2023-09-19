@@ -1,0 +1,433 @@
+<div class="d-flex align-items-center flex-wrap justify-content-between mb-3">
+  <h1 class="page-title mb-0 flex-sm-grow-1 mb-3">Productivity Reporting</h1>
+</div>
+<div class="d-flex align-items-end flex-wrap justify-content-between mb-3">
+  <div class="d-flex align-items-end">
+    <div class="form-group ml-2 mb-0 mr-2" *ngIf="cUserType === UserTypeEnum.AppAdmin">
+      <label f class="mb-0 mr-1 "or="namea"><strong> Facilities</strong></label>
+      <ng-select style="min-width:230px;max-width: 230px;" class="ng-select-small " [clearable]="false"  [closeOnSelect]="false" [(ngModel)]="facilityIds" appendTo="body"
+        [loading]="isLoading" (ngModelChange)="getDataOnFilter()" (add)="filterFacility($event)" [multiple]="true" [searchable]="true" placeholder="Facility">
+        <ng-option [value]="-1">All</ng-option>
+        <ng-option *ngFor="let item of facilityList" [value]="item.id">{{item.facilityName}}</ng-option>
+      </ng-select>
+    </div>
+    <div class="input-group mb-0" style="width: 280px;">
+      <div class="form-group input-group mb-0">
+        <input type="text" class="form-control form-control-sm" style="min-height: 33px;" autocomplete="nope" [(ngModel)]="selectedDateRange" name="daterangeInput" daterangepicker [options]="options"
+        (selected)="selectedDate($event, daterange)" placeholder="Date" (cancelDaterangepicker)="clearDate()"/>
+            <div class="input-group-append custom-append"  style="min-height: 33px;">
+             <span class="input-group-text text-white bg-dynamic-2c"><i class="fa fa-calendar"></i></span>
+            </div>
+       </div>
+    </div>
+
+
+    <button class="btn btn-dynamic-2c btn-sm mr-2  ml-2" style="margin: 0px;height: 33px;" [disabled]="LoadingPR"
+      (click)="GetProductivityReport()"> <span *ngIf="LoadingPR" class="spinner-border spinner-border-sm mr-1" role="status" aria-hidden="true"> </span>Load</button>
+  </div>
+  <div class="">
+      <div class="w-100 d-flex align-items-start flex-wrap justify-content-end">
+        <!-- <div class="form-group d-flex align-items-center ml-3 mr-3">
+          <label class="mb-0 mr-1" for="namea"><strong>Care Coordinator</strong></label>
+          <ng-select (add)="filterChanges($event)" style="min-width:230px;max-width: 230px;" [searchable]="false" [(ngModel)]="GetPRDataParamObj.facilityUserIds" [searchable]="true" [appendTo]="'body'" class="ng-select-small" placeholder="Care Coordinator" [clearable]="false"
+            [closeOnSelect]="true" [multiple]="true" [loading]="CPLoader"
+            (click)="$event.stopPropagation();">
+            <ng-option [value]="0">All Care Coordinator {{this.totalCCMEncounterCount}} {{this.totalRPMEncounterCount}} {{this.totalAWVEncounterCount}}</ng-option>
+            <ng-option *ngFor="let item of careCoordinatorsListWithCredit" [value]="item.facilityUserId">{{item.facilityUserName}} {{item.lastName}} {{item.ccmEncounterCOunt}} {{item.rpmEncounterCOunt}} {{item.awvEncounterCOunt}}</ng-option>
+
+          </ng-select>
+
+        </div> -->
+          <div class=" ml-auto d-flex">
+            <button class="d-flex  btn btn-dynamic-2c btn-sm m-0 " style="margin: 0px;height: 33px;"  [disabled]="isDownloadingExcelFile"
+              (click)="getProductivityReportExcelFile()"> <span *ngIf="isDownloadingExcelFile" class="spinner-border spinner-border-sm mr-1" role="status" aria-hidden="true"> </span>Download</button>
+          </div>
+      </div>
+  </div>
+</div>
+<div class="row mb-2">
+  <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 mb-3 pr-xl-0  ">
+    <div class="card" style="height: 100%;">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <strong class="text-left w-100 font-size-1" >Care Coordinator</strong>
+        <!-- <div class="d-inline-flex">
+          <span class="btn btn-icon btn-dynamic-2c my-0 ml-2">5</span>
+          <span class="btn btn-icon btn-dynamic-secondary-2c m-0 ml-2">5</span>
+        </div> -->
+        </div>
+        <div class="card-body  px-1 py-1" >
+          <div class="main-coordinator-height">
+            <div>
+              <div style="cursor: pointer;" (click)="getAllCareCoordinatorsReport()" [class.active-coordinator]="getAllCareCareCoordinator" class="border rounded p-2 mb-1 d-flex justify-content-between align-items-center">
+                <h6 class="m-0" style="font-size: 12px;"><strong>All Care Coordinators</strong></h6>
+                <div class="d-inline-flex">
+                  <span title="CCM"class="number-index bg-dynamic-2c m-0 ml-1 ">{{this.totalCCMEncounterCount}}</span>
+                  <span title="RPM"class="number-index bg-dynamic-secondary-2c m-0 ml-1">{{this.totalRPMEncounterCount}}</span>
+                  <span  title="AWV"class="number-index bg-dynamic-secondary-2c m-0 ml-1">{{this.totalAWVEncounterCount}}</span>
+                </div>
+              </div>
+              <div style="height: 200px;">
+                <div style="height: 100%;overflow-y: auto;">
+                  <div style="cursor: pointer;" (click)="getReport(item)" *ngFor="let item of careCoordinatorsListWithCredit" [class.active-coordinator]="item.selected == true"
+                  class="border rounded p-2 mb-1 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0" style="font-size: 12px;" title="{{item.facilityUserName}} {{item.lastName}}"><strong
+                      style="width: 90px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;display: block;">{{item.facilityUserName}} {{item.lastName}}</strong></h6>
+                    <div class="d-inline-flex">
+                      <span title="CCM" class="number-index bg-dynamic-2c m-0 ml-1 ">{{item.ccmEncounterCOunt}}</span>
+                      <span title="RPM" class="number-index bg-dynamic-secondary-2c m-0 ml-1"> {{item.rpmEncounterCOunt}}</span>
+                      <span title="AWV" class="number-index bg-dynamic-secondary-2c m-0 ml-1">{{item.awvEncounterCOunt}}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 mb-3 pr-xl-0  ">
+    <div class="card" style="height: 100%;">
+      <div class="card-header d-flex justify-content-between align-items-center">
+      <strong (click)="updateDateRange()" class="text-center w-100 font-size-1" > Productivity Summary</strong>
+      <p class="mb-0 number-index bg-dynamic-2c text-white">
+        <span >{{summaryViewObj.Total}}</span>
+      </p>
+      </div>
+      <div class="card-body px-1 py-1 " >
+        <div class="d-flex justify-content-center mb-1">
+          <div class="d-inline-flex w-100">
+            <div [class.active-coordinator]="prSummaryFilter == 'All'" (click)="prSummaryFilter='All';EncunterType=[-1];FilterTableData();InitializePaging()" class="border rounded px-2 cursor-pointer main-index-box py-2 mb-0 bg-white w-100">
+              <div class="d-flex justify-content-between align-items-center">
+                <p style="font-size: 12px;" class="title mb-0 mr-1"><strong>All </strong></p>
+                <p class="mb-0 number-index bg-dynamic-2c text-white">
+                  <span >{{summaryViewObj.Total}}</span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="d-flex justify-content-center ">
+
+          <div class="d-inline-flex mr-1 w-100 ">
+            <div [class.active-coordinator]="prSummaryFilter == 'CCM'" (click)="prSummaryFilter='CCM';EncunterType=[0,1,2];FilterTableData();InitializePaging()" class="border rounded px-2 cursor-pointer main-index-box py-2 mb-1 bg-white w-100">
+              <div class="d-flex justify-content-between align-items-center">
+                <p style="font-size: 12px;" class="title mb-0 mr-1"><strong>CCM</strong></p>
+                <p class="mb-0 number-index bg-dynamic-2c text-white">
+                  <span >{{ summaryViewObj.CCM }}</span>
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="d-inline-flex mr-1 w-100 ">
+            <div [class.active-coordinator]="prSummaryFilter == 'RPM'" (click)="prSummaryFilter='RPM';EncunterType=[3,4];FilterTableData();InitializePaging()" class="border rounded px-2 cursor-pointer main-index-box py-2 mb-1 bg-white w-100">
+              <div class="d-flex justify-content-between align-items-center">
+                <p style="font-size: 12px;" class="title mb-0 mr-1"><strong>RPM</strong></p>
+                <p class="mb-0 number-index bg-dynamic-2c text-white">
+                  <span >{{ summaryViewObj.RPM }}</span>
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="d-inline-flex  w-100 ">
+            <div [class.active-coordinator]="prSummaryFilter == 'AWV'" (click)="prSummaryFilter='AWV';EncunterType=[6];FilterTableData();InitializePaging()" class="border rounded px-2 cursor-pointer main-index-box py-2 mb-1 bg-white w-100">
+              <div class="d-flex justify-content-between align-items-center">
+                <p style="font-size: 12px;" class="title mb-0 mr-1"><strong>AWV</strong></p>
+                <p class="mb-0 number-index bg-dynamic-2c text-white">
+                  <span >{{ summaryViewObj.AWV }}</span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="d-flex justify-content-center flex-wrap ">
+          <div class="d-inline-flex  w-100 ">
+            <div [class.active-coordinator]="prSummaryFilter == 'CCM20'" (click)="prSummaryFilter='CCM20';EncunterType=[0];FilterTableData();InitializePaging()" class="border rounded px-2 cursor-pointer main-index-box py-2 mb-1 bg-white w-100">
+              <div class="d-flex justify-content-between align-items-center">
+                <p style="font-size: 12px;" class="title mb-0 mr-1"><strong>CCM 20</strong></p>
+                <p class="mb-0 number-index bg-dynamic-2c text-white">
+                  <span >{{summaryViewObj.CCM20}}</span>
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="d-inline-flex w-100 ">
+            <div [class.active-coordinator]="prSummaryFilter == 'CCM40'" (click)="prSummaryFilter='CCM40';EncunterType=[1];FilterTableData();InitializePaging()" class="border rounded px-2 cursor-pointer main-index-box py-2 mb-1 bg-white w-100" >
+              <div class="d-flex justify-content-between align-items-center">
+                <p style="font-size: 12px;" class="title mb-0 mr-1"><strong>CCM 40</strong></p>
+                <p class="mb-0 number-index bg-dynamic-2c text-white">
+                  <span >{{summaryViewObj.CCM40}}</span>
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="d-inline-flex w-100">
+            <div [class.active-coordinator]="prSummaryFilter == 'CCM60'" (click)="prSummaryFilter='CCM60';EncunterType=[2];FilterTableData();InitializePaging()" class="border rounded px-2 cursor-pointer main-index-box py-2 mb-1 bg-white w-100">
+              <div class="d-flex justify-content-between align-items-center">
+                <p style="font-size: 12px;" class="title mb-0 mr-1"><strong>CCM 60</strong></p>
+                <p class="mb-0 number-index bg-dynamic-2c text-white">
+                  <span >{{summaryViewObj.CCM60}}</span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="d-flex justify-content-center ">
+          <div class="d-inline-flex mr-1 w-100 ">
+            <div [class.active-coordinator]="prSummaryFilter == 'RPM99457'" (click)="prSummaryFilter='RPM99457';EncunterType=[3];FilterTableData();InitializePaging()" class="border rounded px-2 cursor-pointer main-index-box py-2 mb-1 bg-white w-100">
+              <div class="d-flex justify-content-between align-items-center">
+                <p style="font-size: 12px;" class="title mb-0 mr-1"><strong>RPM 99457</strong></p>
+                <p class="mb-0 number-index bg-dynamic-2c text-white">
+                  <span >{{summaryViewObj.RPM99457}}</span>
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="d-inline-flex  w-100 ">
+            <div [class.active-coordinator]="prSummaryFilter == 'RPM99458'" (click)="prSummaryFilter='RPM99458';EncunterType=[4];FilterTableData();InitializePaging()" class="border rounded px-2 cursor-pointer main-index-box py-2 mb-1 bg-white w-100">
+              <div class="d-flex justify-content-between align-items-center">
+                <p style="font-size: 12px;" class="title mb-0 mr-1"><strong>RPM 99458</strong></p>
+                <p class="mb-0 number-index bg-dynamic-2c text-white">
+                  <span >{{summaryViewObj.RPM99458}}</span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="d-flex justify-content-center ">
+          <div class="d-inline-flex w-100">
+            <div [class.active-coordinator]="prSummaryFilter == 'Transmission'" (click)="prSummaryFilter='Transmission';EncunterType=[5];FilterTableData();InitializePaging()" class="border rounded px-2 cursor-pointer main-index-box py-2 mb-0 bg-white w-100">
+              <div class="d-flex justify-content-between align-items-center">
+                <p style="font-size: 12px;" class="title mb-0 mr-1"><strong>Transmission </strong></p>
+                <p class="mb-0 number-index bg-dynamic-2c text-white">
+                  <span >{{summaryViewObj.Transmission}}</span>
+                </p>
+              </div>
+            </div>
+          </div>
+          <!-- <div class="d-inline-flex  w-100 ">
+            <div class="border rounded px-2 cursor-pointer main-index-box py-2 mb-0 bg-white w-100">
+              <div class="d-flex justify-content-between align-items-center">
+                <p style="font-size: 12px;" class="title mb-0 mr-4"><strong>AWV</strong></p>
+                <p class="mb-0 number-index bg-dynamic-2c text-white">
+                  <span >0</span>
+                </p>
+              </div>
+            </div>
+          </div> -->
+        </div>
+      </div>
+    </div>
+  </div>
+  <div  class="col-xl-6 col-lg-12 col-md-12 col-sm-12 mb-3">
+    <div class="row" style="height: 100%;">
+      <div class="col-xl-5 col-lg-6 col-md-6 col-sm-12 pr-xl-0">
+        <div class="card" style="height: 100%;">
+          <div class="card-header text-center font-size-1 d-flex justify-content-center align-items-center">
+          <strong> CCM Call Stats </strong>
+          </div>
+          <div  class="card-body py-2 d-flex flex-wrap justify-content-center align-items-center">
+            <div class="legend-ccm-graph">
+              <ul>
+                <li *ngFor="let item of pieLegendsArr" ><strong>{{item.name}}</strong><span [style.background-color]="item.color">{{item.value}}</span></li>
+              </ul>
+            </div>
+            <div style="min-width: 150px;">
+              <canvas mdbChart width="150" height="150"
+              [chartType]="chartTypePie"
+              [datasets]="chartDatasetsPie"
+              [labels]="chartLabelsPie"
+              [colors]="chartColorsPie"
+              [options]="chartOptionsPie"
+              [legend]="false">
+            </canvas>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-7 col-lg-6 col-md-6 col-sm-12   ">
+        <div class="card" style="height: 100%;">
+          <div class="card-header text-center font-size-1">
+            <strong> Encounter Activity</strong>
+          </div>
+          <div class="card-body p-0 pt-3 pr-3 d-flex justify-content-center align-items-center">
+            <div style="min-height: 200px;width:100%;object-fit: contains;">
+              <canvas mdbChart height="200"
+                  [chartType]="chartTypeBar"
+                  [datasets]="chartDatasetsBar"
+                  [labels]="chartLabelsBar"
+                  [colors]="chartColorsBar"
+                  [options]="chartOptionsBar"
+                  [legend]="false"
+                  >
+              </canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row d-flex form-group">
+  <div class="col-lg-8 col-sm-8">
+    <label for="searchBy">Search Patient</label>
+    <div class="d-flex align-items-center justify-content-start">
+      <input type="text" #searchPatient autocomplete="off" [(ngModel)]="filterStr" appOnDebounce [debounceTime]="500" (onDebounce)="FilterTableData();InitializePaging()"
+        class="form-control form-control-sm box-shadow w-100" id="searchBy" placeholder="Search By Name" />
+        <div class="flex-grow-1 ml-3" style="min-width:86px;">
+          <mdb-checkbox [default]="true" [(ngModel)]="qualityCheck" (ngModelChange)="FilterTableData();InitializePaging()">QC</mdb-checkbox>
+        </div>
+        <div class="flex-grow-1 ml-3" style="min-width:86px;">
+          <mdb-checkbox [default]="true" [(ngModel)]="PRCredit" (ngModelChange)="FilterTableData();InitializePaging()">PR-Credit</mdb-checkbox>
+        </div>
+    </div>
+  </div>
+  <div class="d-flex align-items-end col-lg-4 col-sm-4 pl-1">
+
+    <div *hasClaim="['IsAppAdmin']" class="flex-grow-1">
+      <label for="namea">Paid</label>
+      <ng-select class="ng-select-small" [(ngModel)]="payEncounter" (add)="checkFilter($event)" (ngModelChange)="FilterTableData();InitializePaging()" [clearable]="false"  [closeOnSelect]="false" [multiple]="true" [searchable]="true" placeholder="Paid">
+        <ng-option [value]="-1" >All </ng-option>
+        <ng-option [value]="0" >Paid </ng-option>
+        <ng-option [value]="1" >Unpaid </ng-option>
+      </ng-select>
+    </div>
+    <div class="flex-grow-1 ml-2">
+      <label for="namea">Encounter Type</label>
+      <ng-select class="ng-select-small" [(ngModel)]="EncunterType" (ngModelChange)="FilterTableData();InitializePaging()" [clearable]="false"  [closeOnSelect]="false" [multiple]="true" [searchable]="true" placeholder="Encounter Type">
+        <!-- <ng-option [value]="-1">All </ng-option> -->
+        <ng-option [value]="item.value" *ngFor="let item of EncounterTypeEnumList">{{item.name}} </ng-option>
+      </ng-select>
+      <!-- <div>
+
+      </div> -->
+    </div>
+    <!-- <button appDebounceClick (debounceClick)="careGap.toggle()" type="button"
+      class="btn btn-dynamic-2c btn-sm my-0 flex-shrink-0 mr-0">
+      <i class="fa fa-filter fa-lg"></i> Filter
+    </button> -->
+  </div>
+</div>
+<div>
+  <div id="example_length" class="dataTables_length">
+    <label >Show
+      <select name="example_length" aria-controls="example" ng-reflect-name="example_length" [(ngModel)]="rowsLimit" (ngModelChange)="InitializePaging()" ng-reflect-model="25" class="ng-pristine ng-valid ng-touched">
+        <option value="15">15</option>
+        <option value="25">25</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+      </select> entries
+    </label>
+  </div>
+  <div class="table-responsive">
+    <div *ngIf="LoadingPR" class="d-flex justify-content-center text-center">
+      <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+    </div>
+    <table class="table productivity-table mb-0">
+      <thead class="bg-dynamic-2c text-white">
+        <tr>
+          <th>#</th>
+          <th (click)="sortData('Date')" style="min-width: 100px;">Date <i class="ml-1 fa fa-sort sortCursor"></i></th>
+          <th (click)="sortData('Patient')">Patient <i class="ml-1 fa fa-sort sortCursor"></i></th>
+          <th (click)="sortData('FacilityName')" *ngIf="cUserType === UserTypeEnum.AppAdmin" style="min-width: 110px;">Facility Name <i class="ml-1 fa fa-sort sortCursor"></i></th>
+          <th (click)="sortData('FacilityUser')">Facility User <i class="ml-1 fa fa-sort sortCursor"></i></th>
+          <th (click)="sortData('EncounterType')">Encounter Type <i class="ml-1 fa fa-sort sortCursor"></i></th>
+          <th (click)="sortData('Status')">Status <i class="ml-1 fa fa-sort sortCursor"></i></th>
+          <th (click)="sortData('EncounterTime')">Encounter Time <i class="ml-1 fa fa-sort sortCursor"></i></th>
+          <th (click)="sortData('QualityChecked')">Quality Check <i class="ml-1 fa fa-sort sortCursor"></i></th>
+          <th (click)="sortData('CummulativeEncounterTime')">Cumulative Time <i class="ml-1 fa fa-sort sortCursor"></i></th>
+          <th>Credit</th>
+          <th *hasClaim="['IsAppAdmin']" >Pay</th>
+          <!-- <th *ngIf="!isAppAdmin">Action</th> -->
+        </tr>
+      </thead>
+      <tbody *ngIf="prstatsList && prstatsList.length > 0">
+        <tr *ngFor="let item of displayList; let i = index">
+          <td>{{item['index']}}</td>
+          <td>{{item.encounterDate | dateFormatPipe }}</td>
+          <td>
+            <div class="d-flex justify-content-between align-items-center">
+              <span style="width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display: block;">
+                {{item.patientName}}
+              </span>
+              <div  *ngIf="!isAppAdmin">
+                <button *ngIf="!isAppAdmin" class="btn btn-icon btn-dynamic-secondary-2c my-0 mx-0" (click)="OpenEncounterDetails(item)"><i class="fa fa-eye"></i></button>
+              </div>
+            </div>
+          </td>
+          <td *ngIf="cUserType === UserTypeEnum.AppAdmin">{{item.facilityName}}</td>
+          <td>{{item.facilityUserName}}</td>
+          <td>{{ProductivityEncounterTypeEnumObj[item.encounterType]}}</td>
+          <td>{{item.status}}</td>
+          <td>{{item.encounterTime}}</td>
+          <td><span *ngIf="item.encounterType == 0 || item.encounterType == 1 || item.encounterType == 2" (click)="openQualityCheckModal(item)" class="status-bullet"  [class.bg-success]="item.qualityChecked == 1" [class.bg-danger]="item.qualityChecked == 0"
+            title="Monthly Review"></span>
+            <span *ngIf=" item.encounterType == 3|| item.encounterType == 4" (click)="openQualityCheckModal(item)" class="status-bullet"  [class.bg-success]="item.qualityChecked == 1" [class.bg-danger]="item.qualityChecked == 0"
+            title="Monthly Review"></span>
+          </td>
+          <td>{{item.cummulativeEncounterTime}}</td>
+          <td>{{item.credit}}</td>
+          <td *hasClaim="['IsAppAdmin']" >
+            <div class="custom-control custom-checkbox pl-1">
+              <mdb-checkbox [default]="true" [disabled]="item.paid || item.credit == 0" [(ngModel)]="item.paid" (ngModelChange)="checkPrPaymentValidity(item)" [checked]="false"></mdb-checkbox>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+      <tbody *ngIf="(!prstatsList || prstatsList.length === 0) && !LoadingPR">
+        <tr >
+          <td colspan="9" >
+            <p class="mb-0"><i class="fa fa-exclamation-triangle fa-lg"></i> No Record found!</p>
+          </td>
+        </tr>
+      </tbody>
+
+      <!-- <div *ngIf="prstatsList && prstatsList.length === 0">
+        <div class="alert alert-danger" role="alert">
+          <i class="fa fa-exclamation-triangle fa-lg"></i> No Record found!
+        </div>
+      </div> -->
+    </table>
+   </div>
+</div>
+<div class="d-flex justify-content-between mt-3">
+  <div *ngIf="pagingData">
+    <p>Number Of Patients : {{pagingData.elementsCount}}</p>
+  </div>
+  <nav aria-label="Page navigation example">
+    <ul class="pagination ">
+      <!-- <li class="page-item " [ngClass]="{ disabled : pagingData.pageNumber === 1 }" (click)="PreviousFirst();"><a class="page-link" >First</a></li> -->
+      <li class="page-item " [ngClass]="{ disabled : pagingData.pageNumber === 1 }" (click)="pagingData.pageNumber=pagingData.pageNumber-1;ApplyPageFilter();">
+        <a class="page-link" aria-label="Previous" >
+          <span aria-hidden="true"><</span>
+          <span class="sr-only">Previous</span>
+        </a>
+      </li>
+      <!-- <li class="page-item" *ngIf="pagingData.pageNumber > 1 " [class.active]="pagingObj[1].active"  (click)="pagingData.pageNumber=+1;GetPriorAuthsByFacilityId()">
+        <a class="page-link" >{{1}}</a>
+      </li> -->
+      <!-- <li class="page-item" *ngIf="pagingData.pageNumber > 1 " >
+        <a class="page-link" >...</a>
+      </li> -->
+      <li class="page-item" *ngFor="let list of pagesDisplayArr"  [class.active]="list===pagingData.pageNumber" (click)="pagingData.pageNumber=+list;ApplyPageFilter()">
+        <a class="page-link" >{{list}}</a>
+      </li>
+
+      <!-- <li class="page-item" *ngIf="(lastPagePagination - pagingData.pageNumber) > 3 "  >
+        <a class="page-link" >...</a>
+      </li> -->
+      <!-- <li class="page-item" *ngIf="(lastPagePagination - pagingData.pageNumber) > 2 " [class.active]="pagingObj[lastPagePagination-1].active"  (click)="pagingData.pageNumber=+lastPagePagination;GetPriorAuthsByFacilityId()">
+        <a class="page-link" >{{lastPagePagination}}</a>
+      </li> -->
+      <li class="page-item" [ngClass]="{ disabled : pagingData.pageNumber === prstatsList?.length }" (click)="pagingData.pageNumber=pagingData.pageNumber+1;ApplyPageFilter()">
+        <a class="page-link"  aria-label="Next" >
+          <span aria-hidden="true">></span>
+          <span class="sr-only">Next</span>
+        </a>
+      </li>
+      <!-- <li class="page-item" [ngClass]="{ disabled : pagingData.pageNumber === lastPagePagination }" (click)="Last();GetPriorAuthsByFacilityId()"><a class="page-link" >Last</a></li> -->
+    </ul>
+  </nav>
+</div>
+<app-ccm-quality-check></app-ccm-quality-check>
+<app-rpm-quality-check></app-rpm-quality-check>

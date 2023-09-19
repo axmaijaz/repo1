@@ -1,0 +1,33 @@
+@import "theme";
+
+.form-temp-view:after {
+  content: " ";
+  position: absolute;
+  width: calc(100% - 30px);
+  height: 100%;
+  display: block;
+  background: #0000001c;
+  top: 0px;
+  left: 15px;
+  margin: 0 auto;
+  border-radius: 5px;
+  // box-shadow: $box-shadow;
+}
+
+.form-temp-view {
+  position: relative;
+  padding: 1rem 2rem;
+}
+
+
+.input-group-text {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  text-align: center;
+  margin: 0 auto;
+  justify-content: center;
+  border: 1px solid $dynamic-colour;
+  border-top-right-radius: 3px !important;
+  border-bottom-right-radius: 3px !important;
+}

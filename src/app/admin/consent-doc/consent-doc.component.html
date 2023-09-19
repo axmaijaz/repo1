@@ -1,0 +1,858 @@
+<div class="d-flex align-items-center justify-content-start mb-3">
+  <!-- <h4 class="mr-3 mb-0"><a class="text-dark"><i class="fa fa-arrow-left" (click)="navigateBack()"></i></a></h4> -->
+  <h4 *ngIf="!hideActionButtons" class="mr-3 mb-0"><a class="text-dark"><i class="fa fa-arrow-left" [routerLink]="['/admin/patient/' + patientId + '/summary']"></i></a></h4>
+  <h1 class="page-title mb-0">Patient Consent</h1>
+  <!-- <button (click)="openLazyConsentModal()">consent</button> -->
+</div>
+
+<div *ngIf="isLoading" class="d-flex justify-content-center text-center">
+  <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+</div>
+<div class="row">
+  <div class="col-xl-12 col-lg-12 col-sm-12" *ngFor="let item of listOfConsents.patientConsentsDto">
+    <div class="panel consent-panel-main">
+      <div class="conset-panel">
+        <div class="title">
+          {{item.consentNature}}
+        </div>
+        <div class="w-100">
+          <div class="d-inline-flex justify-content-between align-items-start w-100">
+            <div class="body">
+              <div class="row" *ngIf="item?.isConsentTaken && !item.isRevoked;">
+                <div class="col-lg-6 ">
+                  <div class="pb-info ">
+                    <p id="Consent Date" *ngIf="item.isConsentTaken && !item.isRevoked" class="mb-0"><strong class="pr-2">Consent Date:</strong> <span *ngIf="item.isConsentTaken && !item.isRevoked">{{item.consentDate | dateFormatPipe}}</span></p>
+                  </div>
+                </div>
+                <div class="col-lg-6 ">
+
+                  <div class="pb-info " >
+                    <p *ngIf="item.consentType !== 1 && !item.consentDocUrl" class="mb-0"><strong class="pr-2">Consent Type:</strong>
+                    {{consentTypeEnum[item.consentType]}}</p>
+                    <p *ngIf="item.consentType === 1 && item.consentDocUrl" class="mb-0 d-flex align-items-center"><strong class="pr-2">Consent Type:</strong>
+                    {{consentTypeEnum[item.consentType]}}
+                    <a class="link text-amber ml-2" (click)="getPublicUrl(item.consentDocUrl)"> click here to download</a></p>
+                  </div>
+                </div>
+              </div>
+              <div class="row" *ngIf="!item?.isConsentTaken || item.isRevoked;">
+                <div class="col-12">
+                    <div class="pb-info ">
+                      <p class="mb-0"><span style="font-weight: 600;">Patient consent has not been taken.
+                      </span></p>
+                    </div>
+                </div>
+              </div>
+
+              <div class="pb-info ">
+                <p *ngIf="item && item.isConsentTaken && !item.isRevoked && item.consentType === 2" class="mb-0" >I, <b style="margin:0 5px;">{{item.createdBy}}</b> certify that patient verbally gave the consent
+                  for {{item.consentNature}}.</p>
+            </div>
+
+                <!-- <p *ngIf="item.note && item.isConsentTaken && !item.isRevoked" class="mb-0"><strong>Note:</strong>{{item.note}}</p> -->
+
+            </div>
+            <div class="action d-inline-flex flex-shrink-0">
+              <div *ngIf="item.isRevoked" class="revoke">
+                <p>Revoked on</p>
+                <p>{{item.revokeDate | dateFormatPipe}}</p>
+              </div>
+              <!-- <a *ngIf="item.isConsentTaken && !item.isRevoked  " class="btn btn-dynamic-2c btn-icon m-0 my-2 " title="View"  (click)="patientBhiConsentType = item.consentType;openConsentConfirmModal(item)"><i
+                  class="fa fa-eye"></i> </a> -->
+              
+              <button  *ngIf="item.isConsentTaken && !item.isRevoked" title="Copy Consent Data"  (click)="copyConsentData(item)" class="btn btn-icon btn-dynamic-secondary-2c border-left m-2"><span class="fa fa-copy"></span></button>
+              <button  [disabled]="item['pdfProcess']" *ngIf="item.isConsentTaken && !item.isRevoked" title="Download Consent"  (click)="DownloadConsentPdf(item)" class="btn btn-icon btn-dynamic-secondary-2c border-left my-2 mr-2 ml-0"><span *ngIf="!item.isDownloadingConsentPdf" class="fa fa-download"></span> <span *ngIf="item.isDownloadingConsentPdf" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span></button>
+              <button  *ngIf="!item.isConsentTaken || item.isRevoked" title="Add Consent"  (click)="patientBhiConsentType = item.consentType;openConsentConfirmModal(item)" class="btn btn-icon btn-dynamic-2c border-left my-2 mr-2 ml-0"><span class="fa fa-plus"></span></button>
+              <button *ngIf="item.isConsentTaken && !item.isRevoked"  title="Revoke Consent"  (click)="selectedConsent=item;revokeConsentModal.show()" class="btn btn-icon btn-danger border-left my-2 mr-2 ml-0"><span class="fa fa-ban"></span></button>
+              <!-- <div>
+                <a (click)="patientBhiConsentType = item.consentType;openConsentConfirmModal(item)"><i class="fa fa-pencil"></i></a>
+                <a *ngIf="item && item.isConsentTaken" (click)="selectedConsent = item;revokeConsentModal.show();"><i class="fa fa-ban"></i></a>
+              </div> -->
+            </div>
+          </div>
+          <div class="bg-custom bg-custom mt-0 ml-2 mr-2 mb-2" *ngIf="item.isConsentTaken && !item.isRevoked && item.note">
+            <div class="who-covered" style="white-space: break-spaces;    word-break: break-all;" (click)="$event.stopPropagation()"  malihu-scrollbar
+              [scrollbarOptions]="scrollbarOptionsTimeline">
+              <div [innerHTML]="item.note" class="consent-note-pre"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <!-- <div class="col-xl-12 col-lg-12 col-sm-12">
+    <div class="panel consent-panel-main">
+      <div class="conset-panel">
+        <div class="title">
+          CCM
+        </div>
+        <div class="body">
+          <p class="mb-0"><strong>Consent Date:</strong> {{patientCcmConsent.consentDate | dateFormatPipe}}</p>
+          <div *ngIf="patientCcmConsent && patientCcmConsent.isConsentTaken; else ccmConsent1">
+          <p *ngIf="patientCcmConsent.consentType !== 1 && !patientCcmConsent.consentDocUrl" class="mb-2"><strong>Consent Type:</strong>
+            {{consentTypeEnum[patientCcmConsent.consentType]}}</p>
+             <p *ngIf="patientCcmConsent.consentType === 1 && patientCcmConsent.consentDocUrl" class="mb-2"><strong>Consent Type:</strong>
+              {{consentTypeEnum[patientCcmConsent.consentType]}}
+              <a class="link text-amber" (click)="getPublicUrl(patientCcmConsent.consentDocUrl)"> click here to download</a></p>
+            </div>
+
+
+
+              <ng-template #ccmConsent1>
+                <p class="mb-2"><strong>Patient consent has not been taken.
+                </strong></p>
+              </ng-template>
+
+          <p *ngIf="patientCcmConsent && patientCcmConsent.isConsentTaken && patientCcmConsent.consentType === 2" class="mb-0">I, <strong>{{patientCcmConsent.createdBy}}</strong> certify that patient verbally gave the consent
+            for CCM.</p>
+        </div>
+        <div class="action">
+          <div>
+            <a (click)="patientCcmConsentType = patientCcmConsent.consentType;openConfirmModalForCcm();"><i class="fa fa-pencil"></i></a>
+            <a *ngIf="patientCcmConsent && patientCcmConsent.isConsentTaken" (click)="selectedConsent = patientCcmConsent;revokeConsentModal.show();"><i class="fa fa-ban"></i></a>
+          </div>
+          <div *ngIf="patientCcmConsent.isRevoked" class="revoke">
+            <div>Revoked on</div>
+            <div>{{patientCcmConsent.revokeDate | dateFormatPipe}}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-12 col-lg-12 col-sm-12">
+    <div class="panel consent-panel-main">
+      <div class="conset-panel">
+        <div class="title">
+          RPM
+        </div>
+        <div class="body">
+          <p class="mb-0"><strong>Consent Date:</strong> {{patientRpmConcent.consentDate | dateFormatPipe}}</p>
+          <div *ngIf="patientRpmConcent && patientRpmConcent.isConsentTaken; else ccmConsent1">
+          <p *ngIf="patientRpmConcent.consentType !== 1 && !patientRpmConcent.consentDocUrl" class="mb-2"><strong>Consent Type:</strong>
+            {{consentTypeEnum[patientRpmConcent.consentType]}}</p>
+             <p *ngIf="patientRpmConcent.consentType === 1 && patientRpmConcent.consentDocUrl" class="mb-2"><strong>Consent Type:</strong>
+              {{consentTypeEnum[patientRpmConcent.consentType]}}
+              <a class="link text-amber" (click)="getPublicUrl(patientRpmConcent.consentDocUrl)"> click here to download</a></p>
+            </div>
+
+              <ng-template #ccmConsent1>
+                <p class="mb-2"><strong>Patient consent has not been taken.
+                </strong></p>
+              </ng-template>
+
+          <p  *ngIf="patientRpmConcent && patientRpmConcent.isConsentTaken && patientRpmConcent.consentType === 2" class="mb-0">I, <strong>{{patientRpmConcent.createdBy}}</strong> certify that patient verbally gave the consent
+            for RPM.</p>
+        </div>
+        <div class="action">
+          <div>
+            <a (click)="patientRpmConsentType = patientRpmConcent.consentType;openConfirmModalForRpm();"><i class="fa fa-pencil"></i></a>
+            <a *ngIf="patientRpmConcent && patientRpmConcent.isConsentTaken" (click)="selectedConsent = patientRpmConcent;revokeConsentModal.show();"><i class="fa fa-ban"></i></a>
+          </div>
+          <div *ngIf="patientRpmConcent.isRevoked" class="revoke">
+            <div>Revoked on</div>
+            <div>{{patientRpmConcent.revokeDate | dateFormatPipe}}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> -->
+</div>
+
+<div class="row">
+  <div class="col-lg-6">
+    <!-- <div class="panel">
+      <div class="panel-header primary">
+        <h3>CCM Consent </h3>
+
+      </div>
+      <div *ngIf="isLoading" class="d-flex justify-content-center text-center">
+        <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+      </div>
+      <div class="panel-body p-4" *ngIf="!isLoading">
+        <div class="ccm-consent mb-3" *ngIf="patientConsents && patientConsents.isConsentTaken; else ccmConsent1">
+          Patient Consent Taken <strong class="text-dynamic-2c">{{consentTypeEnum[patientConsents.consentType]}}
+          </strong> {{patientConsents.consentDate}}
+          <span *ngIf="patientConsents.consentType === 1 && patientConsents.consentDocUrl"><a class="link text-amber"
+              (click)="getPublicUrl(patientConsents.consentDocUrl)"> click here to download</a></span>
+        </div>
+        <ng-template #ccmConsent1>
+          <div class="ccm-consent mb-3">
+            Patient consent has not been taken.
+          </div>
+        </ng-template>
+        <div class="ccm-consent mb-3">
+          <p><strong>Select Consent Type</strong></p>
+          <div class="row">
+
+            <div class="col-sm-12" *ngIf="!IsPatientLoginId">
+              <div class="border rounded p-3 mb-3">
+                <div class="form-check form-check-inline m-0">
+                  <div class="custom-control custom-radio">
+
+                    <input [(ngModel)]="patientCcmConsentType" [ngModelOptions]="{standalone: true}"
+                      (click)="patientCcmConsentType = 2;openConfirmModalForCcm();" type="radio"
+                      class="custom-control-input" [value]="2" id="defaultUnchecked" name="defaultExampleRadios"
+                      mdbInput>
+                    <label class="custom-control-label" for="defaultUnchecked">Verbal Communication</label>
+                  </div>
+
+                </div>
+                <div class="flex-grow-1 w-100">
+                  <p class="mb-0">I, <strong>{{UserFullName}}</strong> certify that patient verbally gave the consent
+                    for CCM.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-12" *ngIf="!IsPatientLoginId">
+
+              <div class="border rounded p-3 mb-3 flex-wrap">
+                <div class="form-check form-check-inline m-0 mb-3">
+                  <div class="custom-control custom-radio">
+                    <input [(ngModel)]="patientCcmConsentType" [ngModelOptions]="{standalone: true}" type="radio"
+                      (click)="patientCcmConsentType = 1;openConfirmModalForCcm();" class="custom-control-input"
+                      [value]="1" id="defaultUnchecked23" name="defaultExampleRadios" mdbInput>
+                    <label class="custom-control-label" for="defaultUnchecked23">Written Document</label>
+                  </div>
+                </div>
+                <div class="w-100" *ngIf="!uploadFileName">
+                  <div class="file-field flex-wrap align-items-center" [ngClass]="{disabledDiv: inputLoading}">
+                    <div class="btn btn-success btn-icon mx-0 mt-0">
+                      <span class="w-100"><i (click)="patientCcmConsentType = 1" class="fa fa-paperclip"></i></span>
+                      <input type="file" mdbFileSelect #select (change)="onUploadOutput($event);">
+                    </div>
+                    <div class="file-path-wrapper">
+                      <input *ngIf="files[0] && files[0].name" class="file-path" type="text"
+                        class="form-control form-control-sm" readonly placeholder="Upload your file"
+                        [value]="files[0].name">
+                      <input *ngIf="!files[0]" class="file-path" type="text" class="form-control form-control-sm "
+                        placeholder="Upload your file" [disabled]="patientCcmConsentType !== 1" [value]="">
+                    </div>
+                    <span *ngIf="ccmInputLoading " class="spinner-border spinner-border-sm ml-2 mb-1" role="status"
+                      aria-hidden="true"></span>
+
+                  </div>
+                </div>
+                <div class="w-100" *ngIf="uploadFileName">
+                  <div class="file-field flex-wrap align-items-center">
+                    <div>
+                      <p>{{uploadFileName}} <a (click)="DeleteWrittenDoc()"><i
+                            class="ml-2 fa fa-times fa-lg text-danger"></i>
+                        </a></p>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            <div class="col-sm-12">
+              <div class="border rounded p-3 mb-3">
+                <div class="form-check form-check-inline m-0">
+
+                  <div class="custom-control custom-radio">
+                    <input [(ngModel)]="patientCcmConsentType" [ngModelOptions]="{standalone: true}"
+                      (click)="patientCcmConsentType = 0;openConfirmModalForCcm();" type="radio"
+                      class="custom-control-input" [value]="0" id="defaultUnchecked3" name="defaultExampleRadios"
+                      mdbInput>
+                    <label class="custom-control-label" for="defaultUnchecked3">Online</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button [disabled]="ccmInputLoading || !patientCcmConsentType || (patientCcmConsentType === 1 && !files[0])"
+          class="pull-right btn btn-dynamic-2c btn-sm" type="submit"
+          (click)="startUpload();uploadCCMDocToS3()">Save</button>
+      </div>
+    </div> -->
+  </div>
+  <div class="col-lg-6">
+    <!-- <div class="panel">
+      <div class="panel-header primary">
+        <h3>RPM Consent</h3>
+      </div>
+      <div *ngIf="isLoading" class="d-flex justify-content-center text-center">
+        <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+      </div>
+      <div class="panel-body p-4" *ngIf="!isLoading">
+        <div class="ccm-consent mb-3" *ngIf="patientRpmConcent && patientRpmConcent.isConsentTaken else rpmConsent1">
+          Patient Consent Taken <strong class="text-dynamic-2c">{{consentTypeEnum[patientRpmConcent.consentType]}}
+          </strong>
+          <span *ngIf="patientRpmConcent && patientRpmConcent.consentType === 1 && patientRpmConcent.consentDocUrl"><a
+              class="link" (click)="getPublicUrl(patientRpmConcent.consentDocUrl)"> click here to download</a></span>
+        </div>
+        <ng-template #rpmConsent1>
+          <div class="ccm-consent mb-3">
+            Patient consent has not been taken.
+          </div>
+        </ng-template>
+        <div class="ccm-consent mb-3">
+          <p><strong>Select Consent Type</strong></p>
+          <div class="row">
+            <div class="col-sm-12" *ngIf="!IsPatientLoginId">
+              <div class="border rounded p-3 mb-3">
+                <div class="form-check form-check-inline m-0">
+                  <div class="custom-control custom-radio">
+
+                    <input [(ngModel)]="patientRpmConsentType" [ngModelOptions]="{standalone: true}"
+                      (click)="patientRpmConsentType = 2;openConfirmModalForRpm();" type="radio"
+                      class="custom-control-input" [value]="2" id="defaultUnchecked01" name="defaultExampleRadios1"
+                      mdbInput>
+                    <label class="custom-control-label" for="defaultUnchecked01">Verbal Communication</label>
+                  </div>
+
+                </div>
+                <div class="flex-grow-1 w-100">
+                  <p class="mb-0">I, <strong>{{UserFullName}}</strong> certify that patient verbally gave the consent
+                    for RPM.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-12" *ngIf="!IsPatientLoginId">
+              <div class="border rounded p-3 mb-3 flex-wrap">
+                <div class="form-check form-check-inline m-0 mb-3">
+                  <div class="custom-control custom-radio">
+                    <input [(ngModel)]="patientRpmConsentType" [ngModelOptions]="{standalone: true}" type="radio"
+                      (click)="patientRpmConsentType = 1;openConfirmModalForRpm();" class="custom-control-input"
+                      [value]="1" id="defaultUnchecked013" name="defaultExampleRadios1" mdbInput>
+                    <label class="custom-control-label" for="defaultUnchecked013">Written Document</label>
+                  </div>
+                </div>
+                <div class="w-100" *ngIf="!uploadFileName2">
+                  <div class="file-field flex-wrap align-items-center" [ngClass]="{disabledDiv: inputLoading}">
+                    <div class="btn btn-success btn-icon mx-0 mt-0">
+                      <span class="w-100"><i (click)="patientRpmConsentType = 1" class="fa fa-paperclip"></i></span>
+                      <input type="file" mdbFileSelect #select2 (change)="onUploadOutput2($event);">
+                    </div>
+                    <div class="file-path-wrapper">
+                      <input class="file-path" type="text" *ngIf="files2[0] && files2[0].name"
+                        class="form-control form-control-sm" readonly placeholder="Upload your file"
+                        [value]="files2[0].name">
+                      <input *ngIf="!files2[0]" class="file-path" type="text" class="form-control form-control-sm "
+                        placeholder="Upload your file" [disabled]="patientRpmConsentType !== 1" [value]="">
+                    </div>
+                    <span *ngIf="rpmInputLoading" class="spinner-border spinner-border-sm ml-2 mb-1" role="status"
+                      aria-hidden="true"></span>
+                  </div>
+                </div>
+                <div class="w-100" *ngIf="uploadFileName2">
+                  <div class="file-field flex-wrap align-items-center">
+                    <div>
+                      <p>{{uploadFileName2}} <a (click)="DeleteWrittenDoc()"><i
+                            class="ml-2 fa fa-times fa-lg text-danger"></i>
+                        </a></p>
+
+                    </div>
+
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            <div class="col-sm-12">
+              <div class="border rounded p-3 mb-3">
+                <div class="form-check form-check-inline m-0">
+                  <div class="custom-control custom-radio">
+                    <input [(ngModel)]="patientRpmConsentType"
+                      (click)="patientRpmConsentType = 0;openConfirmModalForRpm();"
+                      [ngModelOptions]="{standalone: true}" type="radio" disabled class="custom-control-input"
+                      [value]="0" id="defaultUnchecked0345" name="defaultExampleRadios1" mdbInput>
+                    <label class="custom-control-label" for="defaultUnchecked0345">Online</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button [disabled]="rpmInputLoading || !patientRpmConsentType || (patientRpmConsentType === 1 && !files2[0])"
+          class="pull-right btn btn-dynamic-2c btn-sm" type="submit"
+          (click)="RpmConsentStartUpload();uploadRPMDocToS3()">Save</button>
+      </div>
+
+    </div> -->
+  </div>
+</div>
+
+
+<!-- <div mdbModal #onlineConsentModal="mdbModal" class="modal fade" role="dialog" aria-labelledby="myBasicModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="onlineConsentModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">Consent Document</h4>
+      </div>
+      <div class="modal-body">
+        <div class="onlineConset" id="onlineConset">
+
+          <div [innerHTML]="consentDocument"></div>
+
+        </div>
+        <br>
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="form-group">
+              <label for="signeture">Signature</label>
+              <input [(ngModel)]="Signature" type="text" (keyup)="appenDsignature()" style="font-style: italic"
+                class="form-control" id="signeture" placeholder="Signature">
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+
+      <div class="modal-footer">
+        <a (click)="MakePDF()" class="btn btn-dynamic-2c btn-sm mr-auto">Download Pdf</a>
+        <button type="button" (click)="patientCcmConsentType=null;" class="btn btn-dark btn-sm" data-dismiss="modal"
+          (click)="onlineConsentModal.hide()">Decline</button>
+          <button [disabled]="!Signature" type="button" class="btn btn-dynamic-2c btn-sm"
+            (click)="DeleteCcmWrittenDoc(patientCcmConsent.consentDocUrl);addPatientCcmConsent();onlineConsentModal.hide();">Accept</button>
+        </div>
+    </div>
+  </div>
+</div> -->
+
+<!-- <div mdbModal #ccmConsentModal="mdbModal" class="modal fade" role="dialog" aria-labelledby="myBasicModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="ccmConsentModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">CCM Consent</h4>
+      </div>
+      <div class="modal-body pb-0">
+        <div class="panel mb-0">
+          <div *ngIf="isLoading" class="d-flex justify-content-center text-center">
+            <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+          </div>
+          <div class="panel-body px-4" *ngIf="!isLoading">
+            <div class="ccm-consent mb-b">
+              <p><strong>Select Consent Type</strong></p>
+              <div class="row">
+
+                <div class="col-sm-3">
+                  <div class="form-group">
+                    <label>Date</label>
+                    <input type="text" [ngModel]="ccmConsentDate | dateFormatPipe"
+                        (ngModelChange)="ccmConsentDate=$event;"
+                        class="form-control" #dateDPicker="dpDayPicker" [dpDayPicker]="datePickerConfig"
+                        placeholder="MM-DD-YYYY" [theme]="'dp-material ccm-date-picker'" [mode]="'daytime'" />
+                  </div>
+
+                </div>
+                <div class="col-sm-9">
+                  <div class="form-group">
+                    <label>Note</label>
+                    <textarea type="text" rows="1"  class="form-control" [(ngModel)]="ccmConsentNote" placeholder="Note"></textarea>
+                  </div>
+                </div>
+
+                <div class="col-sm-12" *ngIf="!IsPatientLoginId">
+                  <div class="border rounded p-3 mb-3">
+                    <div class="form-check form-check-inline m-0">
+                      <div class="custom-control custom-radio">
+
+                        <input [(ngModel)]="patientCcmConsentType" [ngModelOptions]="{standalone: true}"
+                          (click)="patientCcmConsentType = 2;" type="radio"
+                          class="custom-control-input" [value]="2" id="defaultUnchecked1" name="defaultExampleRadios1"
+                          mdbInput>
+                        <label class="custom-control-label" for="defaultUnchecked1">Verbal Communication</label>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-12" *ngIf="!IsPatientLoginId">
+
+                  <div class="border rounded p-3 mb-3 flex-wrap">
+                    <div class="form-check form-check-inline m-0 mb-3">
+                      <div class="custom-control custom-radio">
+                        <input [(ngModel)]="patientCcmConsentType" [ngModelOptions]="{standalone: true}" type="radio"
+                          (click)="patientCcmConsentType = 1" class="custom-control-input"
+                          [value]="1" id="defaultUnchecked231" name="defaultExampleRadios1" mdbInput>
+                        <label class="custom-control-label" for="defaultUnchecked231">Written Document</label>
+                      </div>
+                    </div>
+                    <div class="w-100" *ngIf="!patientCcmConsent.consentDocName">
+                      <div class="file-field flex-wrap align-items-center" [ngClass]="{disabledDiv: inputLoading}">
+                        <div class="btn btn-success btn-icon mx-0 mt-0">
+                          <span class="w-100"><i (click)="patientCcmConsentType = 1" class="fa fa-paperclip"></i></span>
+                          <input type="file" mdbFileSelect #select (change)="onUploadOutput($event);">
+                        </div>
+                        <div class="file-path-wrapper">
+                          <input *ngIf="files[0] && files[0].name" class="file-path" type="text"
+                            class="form-control form-control-sm" readonly placeholder="Upload your file"
+                            [value]="files[0].name">
+                          <input *ngIf="!files[0]" class="file-path" type="text" class="form-control form-control-sm "
+                            placeholder="Upload your file" [disabled]="patientCcmConsentType !== 1" [value]="">
+                        </div>
+
+                      </div>
+                    </div>
+                    <div class="w-100" *ngIf="patientCcmConsent.consentDocName">
+                      <div class="file-field flex-wrap align-items-center">
+                        <div>
+                          <p>{{patientCcmConsent.consentDocName}} <a (click)="DeleteCcmWrittenDoc(patientCcmConsent.consentDocUrl)"><i
+                                class="ml-2 fa fa-times fa-lg text-danger"></i>
+                            </a></p>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+                <div class="col-sm-12">
+                  <div class="border rounded p-3 mb-3">
+                    <div class="form-check form-check-inline m-0">
+
+                      <div class="custom-control custom-radio">
+                        <input [(ngModel)]="patientCcmConsentType" [ngModelOptions]="{standalone: true}"
+                          (click)="patientCcmConsentType = 0;ccmConsentModal.hide();getonlineCCMConsentDoc();onlineConsentModal.show()" type="radio"
+                          class="custom-control-input" [value]="0" id="defaultUnchecked31" name="defaultExampleRadios1"
+                          mdbInput>
+                        <label class="custom-control-label" for="defaultUnchecked31">Online</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-dark btn-sm" data-dismiss="modal"
+          (click)="ccmConsentModal.hide()">Close</button>
+          <button  [disabled]="!patientCcmConsentType || (patientCcmConsentType === 1 && !files[0]) || patientCcmConsentType === 0 || (currentDate !== ccmConsentDate && !ccmConsentNote)"
+          class="pull-right btn btn-dynamic-2c btn-sm" type="submit"
+          (click)="DeleteCcmWrittenDoc(patientCcmConsent.consentDocUrl);patientCcmConsent.consentType = patientCcmConsentType;addPatientCcmConsent();uploadCCMDocToS3()">Save</button>
+      </div>
+
+    </div>
+  </div>
+</div> -->
+<!-- <div mdbModal #rpmConsentModal="mdbModal" class="modal fade" role="dialog" aria-labelledby="myBasicModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="rpmConsentModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">RPM Consent</h4>
+      </div>
+      <div class="modal-body pb-0">
+        <div class="panel mb-0">
+          <div *ngIf="isLoading" class="d-flex justify-content-center text-center">
+            <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+          </div>
+          <div class="panel-body px-4" *ngIf="!isLoading">
+            <div class="ccm-consent mb-0">
+              <p><strong>Select Consent Type</strong></p>
+              <div class="row">
+                <div class="col-sm-3">
+                  <div class="form-group">
+                    <label>Date</label>
+                    <input type="text" [ngModel]="rpmConsentDate | dateFormatPipe"
+                        (ngModelChange)="rpmConsentDate=$event;"
+                        class="form-control form-control-sm" #dateDPicker="dpDayPicker" [dpDayPicker]="datePickerConfig"
+                        placeholder="MM-DD-YYYY" [theme]="'dp-material ccm-date-picker'" [mode]="'daytime'" />
+                  </div>
+
+                </div>
+                <div class="col-sm-9">
+                  <div class="form-group">
+                    <label>Note</label>
+                    <textarea type="text" rows="1" class="form-control" [(ngModel)]="rpmConsentNote" placeholder="Note"></textarea>
+                  </div>
+                </div>
+                <div class="col-sm-12" *ngIf="!IsPatientLoginId">
+                  <div class="border rounded p-3 mb-3">
+                    <div class="form-check form-check-inline m-0">
+                      <div class="custom-control custom-radio">
+
+                        <input [(ngModel)]="patientRpmConsentType" [ngModelOptions]="{standalone: true}"
+                          (click)="patientRpmConsentType = 2;" type="radio"
+                          class="custom-control-input" [value]="2" id="defaultUnchecked01" name="defaultExampleRadios1"
+                          mdbInput>
+                        <label class="custom-control-label" for="defaultUnchecked01">Verbal Communication</label>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-12" *ngIf="!IsPatientLoginId">
+                  <div class="border rounded p-3 mb-3 flex-wrap">
+                    <div class="form-check form-check-inline m-0 mb-3">
+                      <div class="custom-control custom-radio">
+                        <input [(ngModel)]="patientRpmConsentType" [ngModelOptions]="{standalone: true}" type="radio"
+                          (click)="patientRpmConsentType = 1;" class="custom-control-input"
+                          [value]="1" id="defaultUnchecked013" name="defaultExampleRadios1" mdbInput>
+                        <label class="custom-control-label" for="defaultUnchecked013">Written Document</label>
+                      </div>
+                    </div>
+                    <div class="w-100" *ngIf="!patientRpmConcent.consentDocName">
+                      <div class="file-field flex-wrap align-items-center" [ngClass]="{disabledDiv: inputLoading}">
+                        <div class="btn btn-success btn-icon mx-0 mt-0">
+                          <span class="w-100"><i (click)="patientRpmConsentType = 1" class="fa fa-paperclip"></i></span>
+                          <input type="file" mdbFileSelect #select2 (change)="onUploadOutput2($event);">
+                        </div>
+                        <div class="file-path-wrapper">
+                          <input class="file-path" type="text" *ngIf="files2[0] && files2[0].name"
+                            class="form-control form-control-sm" readonly placeholder="Upload your file"
+                            [value]="files2[0].name">
+                          <input *ngIf="!files2[0]" class="file-path" type="text" class="form-control form-control-sm "
+                            placeholder="Upload your file" [disabled]="patientRpmConsentType !== 1" [value]="">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="w-100" *ngIf="patientRpmConcent.consentDocName">
+                      <div class="file-field flex-wrap align-items-center">
+                        <div>
+                          <p>{{patientRpmConcent.consentDocName}} <a (click)="DeleteRpmWrittenDoc(patientRpmConcent.consentDocUrl)"><i
+                                class="ml-2 fa fa-times fa-lg text-danger"></i>
+                            </a></p>
+
+                        </div>
+
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+                <div class="col-sm-12">
+                  <div class="border rounded p-3 mb-3">
+                    <div class="form-check form-check-inline m-0">
+                      <div class="custom-control custom-radio">
+                        <input [(ngModel)]="patientRpmConsentType"
+                          (click)="patientRpmConsentType = 0;openConfirmModalForRpm();"
+                          [ngModelOptions]="{standalone: true}" type="radio" disabled class="custom-control-input"
+                          [value]="0" id="defaultUnchecked0345" name="defaultExampleRadios1" mdbInput>
+                        <label class="custom-control-label" for="defaultUnchecked0345">Online</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-dark btn-sm" data-dismiss="modal"
+          (click)="rpmConsentModal.hide()">Close</button>
+          <button [disabled]="!patientRpmConsentType || (patientRpmConsentType === 1 && !files2[0]) || patientRpmConsentType === 0 || (currentDate !== rpmConsentDate && !rpmConsentNote)"
+          class="pull-right btn btn-dynamic-2c btn-sm" type="submit"
+          (click)="DeleteRpmWrittenDoc(patientRpmConcent.consentDocUrl);patientRpmConcent.consentType = patientRpmConsentType;addPatientRpmConsent();uploadRPMDocToS3()">Save</button>
+      </div>
+
+    </div>
+  </div>
+</div> -->
+<!-- <div mdbModal #bhiConsentModal="mdbModal" class="modal fade" role="dialog" aria-labelledby="myBasicModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="bhiConsentModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">BHI Consent</h4>
+      </div>
+      <div class="modal-body pb-0">
+        <div class="panel mb-0">
+          <div *ngIf="isLoading" class="d-flex justify-content-center text-center">
+            <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+          </div>
+          <div class="panel-body px-4" *ngIf="!isLoading">
+            <div class="ccm-consent mb-0">
+              <p><strong>Select Consent Type</strong></p>
+              <div class="row">
+                <div class="col-sm-3">
+                  <div class="form-group">
+                    <label>Date</label>
+                    <input type="text" [ngModel]="bhiConsentDate | dateFormatPipe"
+                      (ngModelChange)="bhiConsentDate=$event;"
+                      class="form-control form-control-sm" #dateDPicker="dpDayPicker" [dpDayPicker]="datePickerConfig"
+                      placeholder="MM-DD-YYYY" [theme]="'dp-material ccm-date-picker'" [mode]="'daytime'" />
+                  </div>
+                </div>
+                <div class="col-sm-9">
+                  <div class="form-group">
+                    <label>Note</label>
+                    <textarea type="text" rows="1" class="form-control" [(ngModel)]="bhiConsentNote" placeholder="Note"></textarea>
+                  </div>
+                </div>
+                <div class="col-sm-12" *ngIf="!IsPatientLoginId">
+                  <div class="border rounded p-3 mb-3">
+                    <div class="form-check form-check-inline m-0">
+                      <div class="custom-control custom-radio">
+
+                        <input [(ngModel)]="patientBhiConsentType" [ngModelOptions]="{standalone: true}"
+                          (click)="patientBhiConsentType = 2;" type="radio"
+                          class="custom-control-input" [value]="2" id="defaultUnchecked012" name="defaultExampleRadios12"
+                          mdbInput>
+                        <label class="custom-control-label" for="defaultUnchecked012">Verbal Communication</label>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-12" *ngIf="!IsPatientLoginId">
+                  <div class="border rounded p-3 mb-3 flex-wrap">
+                    <div class="form-check form-check-inline m-0 mb-3">
+                      <div class="custom-control custom-radio">
+                        <input [(ngModel)]="patientBhiConsentType" [ngModelOptions]="{standalone: true}" type="radio"
+                          (click)="patientBhiConsentType = 1;" class="custom-control-input"
+                          [value]="1" id="defaultUnchecked0132" name="defaultExampleRadios12" mdbInput>
+                        <label class="custom-control-label" for="defaultUnchecked0132">Written Document</label>
+                      </div>
+                    </div>
+                    <div class="w-100" *ngIf="!patientBhiConcent.consentDocName">
+                      <div class="file-field flex-wrap align-items-center" [ngClass]="{disabledDiv: inputLoading}">
+                        <div class="btn btn-success btn-icon mx-0 mt-0">
+                          <span class="w-100"><i (click)="patientBhiConsentType = 1" class="fa fa-paperclip"></i></span>
+                          <input type="file" mdbFileSelect #select3 (change)="onUploadOutput3($event);">
+                        </div>
+                        <div class="file-path-wrapper">
+                          <input class="file-path" type="text" *ngIf="files3[0] && files3[0].name"
+                            class="form-control form-control-sm" readonly placeholder="Upload your file"
+                            [value]="files3[0].name">
+                          <input *ngIf="!files3[0]" class="file-path" type="text" class="form-control form-control-sm "
+                            placeholder="Upload your file" [disabled]="patientBhiConsentType !== 1" [value]="">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="w-100" *ngIf="patientBhiConcent.consentDocName">
+                      <div class="file-field flex-wrap align-items-center">
+                        <div>
+                          <p>{{patientBhiConcent.consentDocName}} <a (click)="DeleteBhiWrittenDoc(patientBhiConcent.consentDocUrl)"><i
+                                class="ml-2 fa fa-times fa-lg text-danger"></i>
+                            </a></p>
+
+                        </div>
+
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+                <div class="col-sm-12">
+                  <div class="border rounded p-3 mb-3">
+                    <div class="form-check form-check-inline m-0">
+                      <div class="custom-control custom-radio">
+                        <input [(ngModel)]="patientBhiConsentType"
+                          (click)="patientBhiConsentType = 0;"
+                          [ngModelOptions]="{standalone: true}" type="radio" disabled class="custom-control-input"
+                          [value]="0" id="defaultUnchecked03452" name="defaultExampleRadios12" mdbInput>
+                        <label class="custom-control-label" for="defaultUnchecked03452">Online</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-dark btn-sm" data-dismiss="modal"
+          (click)="bhiConsentModal.hide()">Close</button>
+          <button [disabled]="!patientBhiConsentType || (patientBhiConsentType === 1 && !files3[0]) || patientBhiConsentType === 0 || (currentDate !== bhiConsentDate && !bhiConsentNote)"
+          class="pull-right btn btn-dynamic-2c btn-sm" type="submit"
+          (click)="DeleteBhiWrittenDoc(patientBhiConcent.consentDocUrl);patientBhiConcent.consentType = patientBhiConsentType;addPatientBhiConsent();uploadBhiDocToS3()">Save</button>
+      </div>
+
+    </div>
+  </div>
+</div> -->
+<!-- <div mdbModal #revokeConsentModal="mdbModal" class="modal fade" (open)="selectedConsent.revokedReason = ''" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title w-100 text-center" id="myModalLabel"><i
+            class="fa fa-exclamation-triangle yellow-text"></i>Warning
+        </h4>
+      </div>
+      <div class="modal-body">
+        <p class="text-center"><i class="fa fa-exclamation-triangle text-danger" style="font-size: 3rem;"></i> </p>
+        <p class="text-center"> Consent has already been taken, are you sure you want to revoke the consent?</p>
+        <div class="col-sm-12">
+          <div class="form-group">
+            <label for="note">Reason</label>
+            <textarea [(ngModel)]="selectedConsent.revokedReason" class="md-textarea form-control " rows="3" id="note"
+              type="text"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="d-flex justify-content-center mt-3">
+        <button type="button" mdbBtn class="btn btn-dynamic-2c btn-sm btn-sm" aria-label="Close"
+         [disabled]="!selectedConsent.revokedReason" (click)="revokeConsentModal.hide();revokePatientConsentById()">Revoked</button>
+        <button type="button" mdbBtn color="seondary" class="btn-sm" aria-label="Close"
+          (click)="revokeConsentModal.hide()">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div> -->
+<div mdbModal #viewPdfModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" [config]="{backdrop: true, ignoreBackdropClick: true}" aria-hidden="true"
+  (close)="objectURLStrAW=''">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-body" style="height:calc(100vh - 50px); padding: 0px;">
+        <button type="button" class="close pull-right document-close" aria-label="Close" (click)="viewPdfModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <app-pdf-view *ngIf="objectURLStrAW" [documentUrl]="objectURLStrAW"></app-pdf-view>
+      </div>
+    </div>
+  </div>
+</div>
+<div mdbModal #revokeConsentModal="mdbModal" class="modal fade" (open)="selectedConsent.revokedReason = ''" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title w-100 text-center" id="myModalLabel"><i
+            class="fa fa-exclamation-triangle yellow-text"></i>Warning
+        </h4>
+      </div>
+      <div class="modal-body">
+        <p class="text-center"><i class="fa fa-exclamation-triangle text-danger" style="font-size: 3rem;"></i> </p>
+        <p class="text-center"> Consent has already been taken, are you sure you want to revoke the consent?</p>
+        <div class="col-sm-12">
+          <div class="form-group">
+            <label for="note">Reason</label>
+            <textarea [(ngModel)]="selectedConsent.revokedReason" class="md-textarea form-control " rows="3" id="note"
+              type="text"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="d-flex justify-content-center mt-3">
+        <button type="button" class="btn-sm btn btn-sm btn-dynamic-2c" aria-label="Close"
+         [disabled]="!selectedConsent.revokedReason" (click)="revokeConsentModal.hide();revokePatientConsentById()">Revoked</button>
+        <button type="button" class="btn-sm btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+          (click)="revokeConsentModal.hide()">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>

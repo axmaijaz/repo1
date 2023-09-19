@@ -1,0 +1,128 @@
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <div class="d-flex align-items-center justify-content-start">
+    <h4 class="mr-3 mb-0"><a class="text-dark" (click)="navigateBack()">
+        <i class="fa fa-arrow-left"></i></a></h4>
+    <h1 class="page-title mb-0">Care Plan Approvals</h1>
+  </div>
+
+  <!-- <div>
+    <button type="button" [disabled]="creatingTcm" class="btn btn-dynamic-2c btn-sm text-capitalize"
+      (click)="createTcmEncounter()">
+      <span *ngIf="creatingTcm" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      Add Encounter</button>
+  </div> -->
+</div>
+
+<!-- <div *ngIf="!isLoading" class="d-flex justify-content-center text-center"> -->
+<div class="d-flex justify-content-center text-center">
+  <mdb-progress-bar *ngIf="IsLoading" class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+</div>
+<div class="panel">
+  <!-- <div class="panel-header">
+    <h3 class="mr-3">CP Approvals</h3>
+  </div> -->
+  <div class="panel-body">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <mdb-checkbox [inline]="true" [(ngModel)]="showPending" (ngModelChange)="applyPendingFilter()" [default]="true" >Only Pending</mdb-checkbox>
+      <a class="btn btn-dynamic-2c btn-sm m-0" (click)="ApproveAllPending()">Approve All Pending</a>
+    </div>
+
+    <ngx-datatable #table class="material z-depth-0" appRecalculateNgxTable [columnMode]="'force'" [headerHeight]="50" [footerHeight]="50" [rowHeight]="40"
+   [count]="pagingData.elementsCount" [scrollbarV]="false" [scrollbarH]="true" [rows]="approvalList"
+    [offset]="0" [limit]="pagingData.pageSize">
+    <ngx-datatable-column name="#" [maxWidth]=50>
+      <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+        {{rowIndex + 1}}
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Patient Name" prop="patientName">
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Status" prop="currentApprovalStatus">
+    </ngx-datatable-column>
+    <ngx-datatable-column name="First Approval Date" prop="firstApprovalDate">
+    </ngx-datatable-column>
+     <ngx-datatable-column name="Last Approval Date" prop="lastApprovedDate">
+    </ngx-datatable-column>
+    <!-- <ngx-datatable-column name="Facility" prop="facilityName">
+    </ngx-datatable-column> -->
+    <ngx-datatable-column name="Action" [canAutoResize]=false [frozenRight]=true [width]="210">
+        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+          <div class="action-button" *ngIf="row.currentApprovalStatus === 'Pending'">
+            <button [disabled]="isLoadingCPHistory" (click)="selectedItem=row;getCarePlanHistory()" class="btn btn-dynamic-2c btn-icon"  title="View" placement="left"><span *ngIf="row.isLoading" class="spinner-border spinner-border-sm" role="status"
+              aria-hidden="true"></span><i class="fa fa-eye"></i></button>
+            <a  class="btn btn-dynamic-2c btn-icon" (click)="selectedItem=row;AcceptRejectCarePLan(1)" title="Approve" placement="left"><i class="fa fa-check"></i></a>
+            <a  class="btn btn-danger btn-icon" (click)="selectedItem=row;rejectReasonModal.show()" title="Reject" placement="left"><i class="fa fa-close"></i></a>
+            <!-- <a class="btn btn-dynamic-2c btn-sm" (click)="selectedItem=row;AcceptRejectCarePLan(1)">Approve</a> -->
+            <!-- <a class="btn btn-danger btn-sm" (click)="selectedItem=row;rejectReasonModal.show()">Reject</a> -->
+            <!-- <a class="btn btn-dynamic-2c btn-icon" routerLink="/tcm/dischargeOverview/{{PatientId}}/{{item.id}}"
+              title="View"><i class="fa fa-eye fa-lg text-white"></i> </a> -->
+            <!-- <a class="btn btn-danger btn-icon ml-1" (click)="deleteFaclity(item.id)"><i class="fa fa-trash"></i></a> -->
+          </div>
+      </ng-template>
+      </ngx-datatable-column>
+    <!-- <ngx-datatable-column name="Action" [canAutoResize]=false [frozenRight]=true [width]="150">
+        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+          <ng-select [searchable]="false" appendTo="body" placeholder="Yes" (click)="$event.stopPropagation();">
+            <ng-option [value]="true">Yes</ng-option>
+            <ng-option [value]="false">No</ng-option>
+          </ng-select>
+        </ng-template>
+      </ngx-datatable-column> -->
+  </ngx-datatable>
+  </div>
+  <div mdbModal #rejectReasonModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="rejectReasonModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel"><i class="fa fa-exclamation-triangle yellow-text"></i>Reason of
+          Rejection
+        </h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="form-group">
+              <label for="reason">Reason <sup class="text-danger">*</sup></label>
+              <textarea type="text" id="reason" rows="15" [(ngModel)]="rejectReason" placeholder="Reason"
+                class="form-control" style="height: 150px;"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+          (click)="rejectReasonModal.hide()" mdbWavesEffect>Close</button>
+        <button type="button" 
+          (click)="AcceptRejectCarePLan(2);rejectReasonModal.hide()" class="relative waves-light btn btn-sm btn-dynamic-2c" mdbWavesEffect>Proceed</button>
+      </div>
+    </div>
+  </div>
+</div>
+  <div mdbModal #patientCarePLanDetailModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-fluid modal-full-height"  role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="patientCarePLanDetailModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">Patient Care Plan
+        </h4>
+      </div>
+      <div class="modal-body">
+            <object type="application/pdf" width="100%" height="100%" [data]="carePlanHistoryView"
+              style="zoom: 100% ; right:0; top:0; bottom:0; width:100%;" id="pdf_content"></object>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+          (click)="patientCarePLanDetailModal.hide()" mdbWavesEffect>Close</button>
+        <!-- <button type="button" mdbBtn color="prmary"
+          (click)="AcceptRejectCarePLan(2);patientCarePLanDetailModal.hide()" class="relative waves-light" mdbWavesEffect>Proceed</button> -->
+      </div>
+    </div>
+  </div>
+</div>

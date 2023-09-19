@@ -1,0 +1,297 @@
+
+<app-patient-details (patientInfoEmitter)="patinetDetails=$event"></app-patient-details>
+<div class="mt-3 ">
+  <textarea
+    id="cdaxml"
+    style="width: 100%; height: 20em" class="form-control" [(ngModel)]="ccdDocumentText"
+    placeholder="Your C-CDA document goes here:>"
+  ></textarea>
+  <div class="action-area bg-white">
+    <div class="btn btn-dynamic-secondary-2c btn-sm" *ngIf="displayJsonObj" (click)="CopyJsonData()">
+      <i class="fa fa-copy fa-lg"></i> Copy
+    </div>
+    <div class="btn btn-dynamic-2c btn-sm" (click)="GetJsonFromXml()">
+      <i class="fa fa-eye fa-lg"></i> View
+    </div>
+  </div>
+</div>
+<br>
+<!-- <pre [innerHTML]="displayJson"></pre> -->
+<div class="patient-profile">
+  <div class="patient-info-data">
+
+
+    <div class="profile-block bs-sm m-0">
+      <div class="row">
+        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">
+          <div class="pb-info w-100">
+            <!-- <p class="flex-wrap"><strong> Phone No. </strong> 03214557855 <span  title="Phone No. Verified" class="text-dynamic-2c ml-auto d-none" >Verified</span>
+              <span title="Phone No. Not verified" class="text-danger ml-auto">Not Verified</span></p> -->
+            <p><strong>Name. </strong>{{blueButtonObj?.data?.demographics?.name.given.toString()}} {{blueButtonObj?.data?.demographics?.dob | date}}</p>
+            <p><strong>Personal. </strong>{{blueButtonObj?.data?.demographics?.phone.mobile}}</p>
+            <p><strong>Home Contact. </strong>{{blueButtonObj?.data?.demographics?.phone.home}}</p>
+            <p><strong>Provider</strong>{{blueButtonObj?.data?.demographics?.provider.organization}}</p>
+            <p><strong>Address</strong> {{blueButtonObj?.data?.demographics?.address?.city}} {{blueButtonObj?.data?.demographics?.address?.state}}</p>
+          </div>
+        </div>
+        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">
+          <div class="pb-info w-100">
+
+            <!-- <p class="flex-wrap"><strong> Phone No. </strong> 03214557855 <span  title="Phone No. Verified" class="text-dynamic-2c ml-auto" >Verified</span>
+              <span title="Phone No. Not verified " class="text-danger ml-auto d-none">Not Verified</span></p> -->
+            <p><strong>Name </strong>{{patinetDetails?.fullName}} {{patinetDetails?.dateOfBirth}}</p>
+            <p><strong>Primary No. </strong>{{patinetDetails?.primaryPhoneNumber}}</p>
+            <p><strong>Secondary No. </strong>{{patinetDetails?.homePhone}}</p>
+            <p><strong>Billing Provider</strong> {{patinetDetails?.billingProviderName}}</p>
+            <p><strong>Insurance Plan</strong> {{patinetDetails?.insurancePlanName}}</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-12">
+    <div class="w-100">
+      <div class="custom-tabs-cdma">
+        <ul>
+          <li (click)="selectedCategory='Diagnosis';categoryChanged()" [class.active]="selectedCategory === 'Diagnosis'" style="cursor: pointer"><a >Diagnosis</a></li>
+          <li (click)="selectedCategory='Medications';categoryChanged()" [class.active]="selectedCategory === 'Medications'" style="cursor: pointer"><a >Medications</a></li>
+          <li (click)="selectedCategory='Allergies';categoryChanged()" [class.active]="selectedCategory === 'Allergies'" style="cursor: pointer"><a >Allergies</a></li>
+          <!-- <li (click)="selectedCategory='Immunization';categoryChanged()" [class.active]="selectedCategory === 'Immunization'" style="cursor: pointer"><a >Immunization</a></li> -->
+          <!-- <li (click)="selectedCategory='Care Plan';categoryChanged()" [class.active]="selectedCategory === 'Care Plan'" style="cursor: pointer"><a >Care Plan</a></li>
+          <li (click)="selectedCategory='Providers';categoryChanged()" [class.active]="selectedCategory === 'Providers'" style="cursor: pointer"><a >Providers</a></li>
+          <li (click)="selectedCategory='Family History';categoryChanged()" [class.active]="selectedCategory === 'Family History'" style="cursor: pointer"><a >Family History</a></li>
+          <li (click)="selectedCategory='Surgical History';categoryChanged()" [class.active]="selectedCategory === 'Surgical History'" style="cursor: pointer"><a >Surgical History</a></li> -->
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-6">
+    <div class="row" *ngIf="selectedCategory === 'Diagnosis'">
+      <ng-container *ngIf="!blueButtonObj || !blueButtonObj?.data?.problems">
+        <ng-container *ngTemplateOutlet="loadingSkelton"></ng-container>
+        <ng-container *ngTemplateOutlet="loadingSkelton"></ng-container>
+      </ng-container>
+      <ng-container *ngIf="blueButtonObj && blueButtonObj?.data?.problems" >
+        <ng-container *ngFor="let item of blueButtonObj?.data?.problems">
+          <div class="col-12 mb-3">
+            <div class="box-cdma bg-green-cdma">
+              <div class="d-flex justify-content-between align-items-center">
+                <!-- <p class="mb-0"><strong class="mr-2">Status</strong> <strong style="font-size: 18px;">{{item.status}} </strong></p> -->
+                <p class="mb-0"><strong class="mr-2">ICD Code:</strong> <strong style="font-size: 18px;">{{item.code}} </strong> <span class="badge badge-info">{{item.status}}</span></p>
+                <span class="box-right-btn text-dynamic-2c" style="cursor: pointer;">
+                  <i class="fa fa-plus fa-lg" (click)="OpenAddNewDiagnose(item)"></i>
+                </span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <p class="mb-0"><strong class="mr-2">Diagnose Date:</strong><span *ngIf="item?.date_range?.start">{{item?.date_range?.start | dateFormatPipe}}</span></p>
+                <p class="mb-0"><strong class="mr-2">Resolve Date:</strong><span *ngIf="item?.date_range?.end">{{item?.date_range?.end | dateFormatPipe}}</span> </p>
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <p class="mb-0"><strong class="mr-2">ICD Description:  </strong> {{item.name}} </p>
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <p class="mb-0"><strong class="mr-2">Notes:</strong> {{item.comment}}</p>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+      </ng-container>
+    </div>
+    <div class="row" *ngIf="selectedCategory === 'Medications'">
+      <ng-container *ngIf="!blueButtonObj || !blueButtonObj?.data?.medications">
+        <ng-container *ngTemplateOutlet="loadingSkelton"></ng-container>
+        <ng-container *ngTemplateOutlet="loadingSkelton"></ng-container>
+      </ng-container>
+      <ng-container *ngIf="blueButtonObj && blueButtonObj?.data?.medications" >
+        <ng-container *ngFor="let item of blueButtonObj?.data?.medications">
+          <div class="col-12 mb-3">
+            <div class="box-cdma bg-green-cdma">
+              <div class="d-flex justify-content-between align-items-center">
+                <!-- <p class="mb-0"><strong class="mr-2">Status</strong> <strong style="font-size: 18px;">{{item.status}} </strong></p> -->
+                <p class="mb-0"><strong class="mr-2">Name:</strong> <strong style="font-size: 14px;">{{item.product?.name}} </strong> <span class="badge badge-info">{{item.status}}</span></p>
+                <span class="box-right-btn text-dynamic-2c" style="cursor: pointer;">
+                  <i class="fa fa-plus fa-lg" (click)="OpenAddNewMedication(item)"></i>
+                </span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <p class="mb-0"><strong class="mr-2">Start Date:</strong><span *ngIf="item?.date_range?.start">{{item?.date_range?.start | dateFormatPipe}}</span></p>
+                <p class="mb-0"><strong class="mr-2">End Date:</strong><span *ngIf="item?.date_range?.end">{{item?.date_range?.end | dateFormatPipe}}</span> </p>
+              </div>
+              <!-- <div class="d-flex justify-content-between align-items-center">
+                <p class="mb-0"><strong class="mr-2">ICD Description:  </strong> {{item.name}} </p>
+              </div> -->
+              <div class="d-flex justify-content-between align-items-center">
+                <p class="mb-0"><strong class="mr-2">Dose:</strong> {{item.dose_quantity?.value}} {{item.dose_quantity?.unit}}</p>
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <p class="mb-0"><strong class="mr-2">Prescriber:</strong> {{item.prescriber?.organization}}</p>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+      </ng-container>
+    </div>
+    <div class="row" *ngIf="selectedCategory === 'Allergies'">
+      <ng-container *ngIf="!blueButtonObj || !blueButtonObj?.data?.allergies">
+        <ng-container *ngTemplateOutlet="loadingSkelton"></ng-container>
+        <ng-container *ngTemplateOutlet="loadingSkelton"></ng-container>
+      </ng-container>
+      <ng-container *ngIf="blueButtonObj && blueButtonObj?.data?.allergies" >
+        <ng-container *ngFor="let item of blueButtonObj?.data?.allergies">
+          <div class="col-12 mb-3">
+            <div class="box-cdma bg-green-cdma">
+              <div class="d-flex justify-content-between align-items-center">
+                <!-- <p class="mb-0"><strong class="mr-2">Status</strong> <strong style="font-size: 18px;">{{item.status}} </strong></p> -->
+                <p class="mb-0"><strong class="mr-2">Name:</strong> <strong style="font-size: 14px;">{{item.allergen?.name}} </strong> <span class="badge badge-info">{{item.status}}</span></p>
+                <span class="box-right-btn text-dynamic-2c" style="cursor: pointer;">
+                  <i class="fa fa-plus fa-lg" (click)="OpenAddNewAllergy(item)"></i>
+                </span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <p class="mb-0"><strong class="mr-2">Start Date:</strong><span *ngIf="item?.date_range?.start">{{item?.date_range?.start | dateFormatPipe}}</span></p>
+                <p class="mb-0"><strong class="mr-2">End Date:</strong><span *ngIf="item?.date_range?.end">{{item?.date_range?.end | dateFormatPipe}}</span> </p>
+              </div>
+              <!-- <div class="d-flex justify-content-between align-items-center">
+                <p class="mb-0"><strong class="mr-2">ICD Description:  </strong> {{item.name}} </p>
+              </div> -->
+              <div class="d-flex justify-content-between align-items-center">
+                <p class="mb-0"><strong class="mr-2">Severity:</strong> {{item.severity}}</p>
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <p class="mb-0"><strong class="mr-2">Reaction:</strong> {{item.reaction?.code}} {{item.reaction?.name}}</p>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+      </ng-container>
+    </div>
+  </div>
+  <div class="col-6">
+    <div class="row">
+      <ng-container *ngIf="loading2CItem">
+        <ng-container *ngTemplateOutlet="loadingSkelton"></ng-container>
+        <ng-container *ngTemplateOutlet="loadingSkelton"></ng-container>
+      </ng-container>
+      <ng-container *ngIf="!loading2CItem && selectedCategory === 'Diagnosis' && appDiagnosisList" >
+        <ng-container *ngFor="let item of appDiagnosisList">
+          <div class="col-12 mb-3">
+            <div class="box-cdma">
+              <div class="d-flex justify-content-between align-items-center">
+                <!-- <p class="mb-0"><strong class="mr-2">Status</strong> <strong style="font-size: 18px;"><span *ngIf="item.status">{{diagnoseStatusEnum[item.status]}}</span> </strong></p> -->
+                <p class="mb-0"><strong class="mr-2">ICD Code:</strong> <strong style="font-size: 18px;">{{item.icdCode}} </strong></p>
+                <span class="box-right-btn text-dynamic-2c" style="cursor: pointer;" (click)="OpenEditDiagnose(item)">
+                  <i class="fa fa-pencil fa-lg"></i>
+                </span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <p class="mb-0"><strong class="mr-2">Diagnose Date:</strong><span *ngIf="item.diagnosisDate">{{item.diagnosisDate | dateFormatPipe}}</span></p>
+                <p class="mb-0"><strong class="mr-2">Resolve Date:</strong><span *ngIf="item.resolvedDate">{{item.resolvedDate | dateFormatPipe}}</span> </p>
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <p class="mb-0"><strong class="mr-2">ICD Description:  </strong> {{item.description}} </p>
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <p class="mb-0"><strong class="mr-2">Notes:</strong> {{item.note}}</p>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+      </ng-container>
+      <ng-container *ngIf="!loading2CItem && selectedCategory === 'Medications' && appMedicationsList" >
+        <ng-container *ngFor="let item of appMedicationsList">
+          <div class="col-12 mb-3">
+            <div class="box-cdma">
+              <div class="d-flex justify-content-between align-items-center">
+                <!-- <p class="mb-0"><strong class="mr-2">Status</strong> <strong style="font-size: 18px;"><span *ngIf="item.status">{{diagnoseStatusEnum[item.status]}}</span> </strong></p> -->
+                <p class="mb-0"><strong class="mr-2">Name:</strong> <strong style="font-size: 14px;">{{item.medicationName}}  </strong></p>
+                <span class="box-right-btn text-dynamic-2c" style="cursor: pointer;" (click)="OpenEditMedication(item)">
+                  <i class="fa fa-pencil fa-lg"></i>
+                </span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <p class="mb-0"><strong class="mr-2">Start Date:</strong><span *ngIf="item.startDate">{{item.startDate | dateFormatPipe}}</span></p>
+                <p class="mb-0"><strong class="mr-2">End Date:</strong><span *ngIf="item.stopDate">{{item.stopDate | dateFormatPipe}}</span> </p>
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <p class="mb-0"><strong class="mr-2">Dose:  </strong> {{item.dose}} </p>
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <p class="mb-0"><strong class="mr-2">Prescriber:</strong> {{item.prescriber}}</p>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+      </ng-container>
+      <ng-container *ngIf="!loading2CItem && selectedCategory === 'Allergies' && appAllergiesList" >
+        <ng-container *ngFor="let item of appAllergiesList">
+          <div class="col-12 mb-3">
+            <div class="box-cdma">
+              <div class="d-flex justify-content-between align-items-center">
+                <!-- <p class="mb-0"><strong class="mr-2">Status</strong> <strong style="font-size: 18px;"><span *ngIf="item.status">{{diagnoseStatusEnum[item.status]}}</span> </strong></p> -->
+                <p class="mb-0"><strong class="mr-2">Name:</strong> <strong style="font-size: 14px;">{{item.agent}}  <span *ngIf="item.status">{{[item.status]}}</span></strong></p>
+                <span class="box-right-btn text-dynamic-2c" style="cursor: pointer;" (click)="OpenEditAllergy(item)">
+                  <i class="fa fa-pencil fa-lg"></i>
+                </span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <p class="mb-0"><strong class="mr-2">Date:</strong><span *ngIf="item.date">{{item.date | dateFormatPipe}}</span></p>
+                <!-- <p class="mb-0"><strong class="mr-2">End Date:</strong><span *ngIf="item.stopDate">{{item.stopDate | dateFormatPipe}}</span> </p> -->
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <p class="mb-0"><strong class="mr-2">Severity:</strong> {{item.criticality}}</p>
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <p class="mb-0"><strong class="mr-2">Reaction:  </strong> {{item.reaction}} </p>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+      </ng-container>
+
+    </div>
+  </div>
+</div>
+
+<ng-container >
+  <app-diagnose #diagnoseCompRef *ngIf="selectedCategory === 'Diagnosis'" [hideListView]="true" (diagnosesListEmitter)="DiagnoseDataUpdated($event)"> </app-diagnose>
+  <app-medication #medicationCompRef *ngIf="selectedCategory === 'Medications'" [hideListView]="true" (medicationListEmitter)="MedicationDataUpdated($event)"> </app-medication>
+  <app-allergies #allergiesCompRef *ngIf="selectedCategory === 'Allergies'" [hideListView]="true" (allergiesListEmitter)="AllergiesDataUpdated($event)"> </app-allergies>
+</ng-container>
+
+<ng-template #loadingSkelton>
+  <div class="col-12 mb-2">
+    <div class="box-cdma mb-2">
+      <div >
+        <skltn-root duration="1000" [rectRadius]="0" flareWidth="50%" bgFill="#f2f3f8"
+          flareFill="rgba(255,255,255, 0.5)">
+          <!-- Card with Avatar -->
+          <div class="skltn-card">
+              <div class="skltn-card__body">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div skltn-bone class="skltn-card__line width-size-200"></div>
+                  <div skltn-bone class="skltn-card__avatar" type="circle"></div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                  <div skltn-bone class="skltn-card__line width-size-200"></div>
+                  <div skltn-bone class="skltn-card__line width-size-200"></div>
+                </div>
+                <div skltn-bone class="skltn-card__line"></div>
+                <div skltn-bone class="skltn-card__title mb-0"></div>
+            </div>
+          </div>
+        </skltn-root>
+      </div>
+    </div>
+  </div>
+</ng-template>

@@ -1,0 +1,134 @@
+<div *hasClaim="['IsAppAdmin']" class="col-12">
+  <div class="db-block">
+    <div class="d-flex align-items-center justify-content-end ">
+      <div style="display: block;" class="block-2 w-100 p-0">
+        <p><strong class="mb-3"> Current month CCM progress</strong></p>
+        <div style="display: block">
+          <!-- <canvas  
+
+        [chartType]="chartType"
+        [datasets]="chartDatasets" 
+        [labels]="chartLabels"
+        [colors]="chartColors"
+        [options]="chartOptions"
+        [legend]="true"
+        (chartHover)="chartHovered($event)" 
+        (chartClick)="chartClicked($event)">
+    </canvas> -->
+          <canvas [colors]="chartColors" mdbChart style="display: block; height: 400px !important; width:100%;" chartType="bar"
+            [datasets]="chart.datasets" [labels]="chart.labels" [options]="chart.options" legend="true">
+          </canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- <div *ngIf="facilityId==0" class="d-flex justify-content-end">
+  <button class="btn btn-dynamic-2c btn-sm m-0 mb-3" (click)="filterGrap.toggle()"><i class="fa fa-filter fa-lg"></i>
+    Filter</button>
+</div> -->
+<!-- <div class="panel" mdbCollapse #filterGrap="bs-collapse">
+  <div class="panel-header d-flex justify-content-between align-items-center">
+    <h3>Filter</h3>
+    <div>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="filterGrap.toggle()">
+        <span aria-hidden="true">×</span>
+      </button>
+    </div>
+  </div>
+  <div class="panel-body">
+    <div class="row">
+      <div class="col-xl-3 col-lg-6 col-sm-6">
+        <label for="namea">Select Facility</label>
+        <ng-select class="ng-select-small" [(ngModel)]="selectedFacilityIds" (add)="filterChanges($event)" appendTo="body" [multiple]="true" [searchable]="true" [closeOnSelect]="false"
+          placeholder="Select Facility">
+          <ng-option [value]="0">All</ng-option>
+          <ng-option *ngFor="let item of facilityList" [value]="item.id">{{item.facilityName}}</ng-option>
+        </ng-select>
+      </div>
+      <div class="col-xl-3 col-lg-6 col-sm-6">
+        <label for="namea">Select Date</label>
+        <input type="text" class="form-control form-control-sm" #dateDPicker="dpDayPicker" [(ngModel)]="dateProp"
+          (onChange)="getCcmEodReport();getCcmEodReportGraph()" [dpDayPicker]="assignedDatePickerConfig" placeholder="YYYY-MM-DD"
+          [theme]="'dp-material ccm-date-picker'" [mode]="'day'" />
+      </div>
+    </div>
+  </div>
+</div> -->
+<div class="row mb-3">
+  <div class="col-12">
+    <div *ngIf="isLoadingCcmEodReport" class="d-flex justify-content-center text-center">
+      <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+    </div>
+    <div class="db-block">
+      <div class="d-flex align-items-center justify-content-end ">
+        <div style="display: block;" class="block-2 w-100 p-0">
+          <p><strong class="mb-3">CCM End of Day Report Table</strong></p>
+          <div class="height-table my-custom-scroll">
+            <table class="table table-hover mb-0 dashboard-table">
+              <thead>
+                <tr>
+                  <th>Clinic Name</th>
+                  <th>Added Patients</th>
+                  <th>Eligible Pts</th>
+                  <th>Active</th>
+                  <th>Contacted Patients</th>
+                  <th>Completed Patients</th>
+                  <th>Not Answered</th>
+                  <th>Declined</th>
+                  <th>Deferred</th>
+                  <th>HHC Deferred</th>
+                  <th>Changed Provider</th>
+                  <th>Death</th>
+                  <th>Completed</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngIf="!ccmEodReport || !ccmEodReport.length"> No Record Found </tr>
+                <tr *ngFor="let clinic of ccmEodReport">
+                  <td>{{clinic.facilityName}}</td>
+                  <td>{{clinic.totalAddedPatients}}</td>
+                  <td>{{clinic.eligiblePatients}}</td>
+                  <td>{{clinic.totalActivePatients}}</td>
+                  <td>{{clinic.totalContactedPatients}}</td>
+                  <td>{{clinic.totalCompletedPatients}}</td>
+                  <td>{{clinic.notAnsweredPatients}}</td>
+                  <td>{{clinic.declinedPatients}}</td>
+                  <td>{{clinic.defferedPatients}}</td>
+                  <td>{{clinic.hHCDefferedPatients}}</td>
+                  <td>{{clinic.changedProviderPatients}}</td>
+                  <td>{{clinic.deadPatients}}</td>
+                  <td>
+                    <div style="width: 100px; height: 15px;margin: 0 auto;" id="progress-bar">
+                      <mdb-progress value="{{clinic.completedPercentage}}" min="0" max="100" type="success">
+                        <span class="min-label" data-label="%"> {{clinic.completedPercentage}}</span>
+                      </mdb-progress>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+              <tfoot *hasClaim="'IsAppAdmin'" >
+                <tr>
+                  <th>Total</th>
+                  <th>{{addedPatientsTotal}}</th>
+                  <th>{{eligiblePatientsTotal}}</th>
+                  <th>{{activePatientsTotal}}</th>
+                  <th>{{contactedPatientsTotal}}</th>
+                  <th>{{completedPatientsTotal}}</th>
+                  <th>{{notAnsweredTotal}}</th>
+                  <th>{{declinedPatientsTotal}}</th>
+                  <th>{{deferredPatientsTotal}}</th>
+                  <th>{{hhcDeferredTotal}}</th>
+                  <th>{{changedProviderTotal}}</th>
+                  <th>{{deathPatientsTotal}}</th>
+                  <!-- <th>Completed</th> -->
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+ 
+    

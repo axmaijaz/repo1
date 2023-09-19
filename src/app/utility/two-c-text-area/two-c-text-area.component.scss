@@ -1,0 +1,19 @@
+@import "theme";
+
+.input-area {
+  position: relative;
+  // height: 200px;
+  // width: 400px;
+}
+.speechIcon {
+  position: absolute;
+  // background: red;
+  color: $dynamic-colour;
+  font-size: 18px;
+  width: 16px;
+  height: 16px;
+  left: auto;
+  right: 20px;
+  bottom: 8px;
+  cursor: pointer;
+}

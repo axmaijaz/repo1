@@ -1,0 +1,89 @@
+$border-color: #c4c4c4;
+#supplement-table {
+  table {
+    &.supplement {
+      padding: 0;
+      td {
+        font-size: 12px;
+      }
+    }
+  }
+  table.sup-sec {
+    tr{
+     > td {
+        padding: 0;
+      }
+    }
+
+    margin: 10px 0;
+  }
+
+  .check-cell {
+    width: 60px;
+    text-align: center;
+  }
+  td.cell-code {
+    width: 120px;
+    text-align: center;
+  }
+
+
+// table tr td  {
+//   border: 2px solid orange;
+//   padding: 0px
+// }
+
+table tr td table tr td  {
+  border: 1px solid $border-color;
+  padding: 1px 2px;
+}
+
+table tr td table tr td table tr td:first-child {
+  border-left: none;
+}
+table tr td table tr td table tr td:last-child {
+  border-right:none
+}
+
+
+table tr td table tr td table tr:first-child td {
+  border-top: 0
+}
+
+table tr td table tr td table tr:last-child td {
+  border-bottom: 0
+}
+
+
+}
+
+table.patient-info-table td {
+  width: 50%;
+}
+
+table.patient-info-table td strong {
+  width: 200px;
+  display: inline-block;
+}
+
+td.title{
+  background-color: #BDBDBD;
+}
+.check-cell label{
+  font-size: 12px;
+  line-height: 2;
+}
+
+td.title:hover {
+  // background: #E57373;
+  border: 1px solid #EF5350 !important;
+  cursor: pointer;
+}
+td.title.active{
+  background: #E57373;
+  border: 1px solid #EF5350 !important;
+  cursor: pointer;
+}
+.small-text-p {
+  font-size: 12px !important;
+}

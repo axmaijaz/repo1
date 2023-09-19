@@ -1,0 +1,168 @@
+@import "theme";
+.overlay {
+  height: 100%;
+  width: 100%;
+  display: block;
+  position: fixed;
+  z-index: 9999;
+  top: 0;
+  left: 0;
+  background-color:rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(2px);
+  overflow: hidden;
+}
+
+.overlay-content {
+  position: relative;
+  top: 46%;
+  width: 80%;
+  text-align: center;
+  margin-top: 30px;
+  margin: auto;
+}
+
+.overlay .closebtn {
+  position: absolute;
+  top: 20px;
+  right: 45px;
+  font-size: 60px;
+  cursor: pointer;
+  color: white;
+}
+
+.overlay .closebtn:hover {
+  color: #ccc;
+}
+
+.overlay input {
+  padding: 15px;
+  font-size: 17px;
+  border: none;
+  float: left;
+  width: 80%;
+  background: white;
+}
+
+.overlay input:hover {
+  background: #f1f1f1;
+}
+
+.overlay button {
+  float: left;
+  width: 20%;
+  padding: 15px;
+  background: #ddd;
+  font-size: 17px;
+  border: none;
+  cursor: pointer;
+}
+
+.overlay button:hover {
+  background: #bbb;
+}
+.position-beta {
+  position: relative;
+  span.beta {
+    font-size: 10px;
+    background-color: $dynamic-colour;
+    color: #fff;
+    line-height: 24px;
+    padding: 2px 5px;
+    border-radius: 4px;
+    font-weight: 500;
+    letter-spacing: 1px;
+  }
+}
+@keyframes ldio-8psa3che9fu-1 {
+  0% { top: 30.904px; height: 72.19200000000001px }
+  50% { top: 28.080000000000002px; height: 47.84px }
+  100% { top: 28.080000000000002px; height: 47.84px }
+}
+@keyframes ldio-8psa3che9fu-2 {
+  0% { top: 32.698px; height: 68.604000000000006px }
+  50% { top: 28.080000000000002px; height: 47.84px }
+  100% { top: 28.080000000000002px; height: 47.84px }
+}
+@keyframes ldio-8psa3che9fu-3 {
+  0% { top: 34.492px; height: 65.016px }
+  50% { top: 28.080000000000002px; height: 47.84px }
+  100% { top: 28.080000000000002px; height: 47.84px }
+}
+.ldio-8psa3che9fu div { position: absolute; width: 15.600000000000001px }.ldio-8psa3che9fu div:nth-child(1) {
+  left: 18.2px;
+  background: #4eaf48;
+  animation: ldio-8psa3che9fu-1 1.1s cubic-bezier(0,0.5,0.5,1) infinite;
+  animation-delay: 0s
+}
+.ldio-8psa3che9fu div:nth-child(2) {
+  left: 44.2px;
+  background: #134389;
+  animation: ldio-8psa3che9fu-2 1.3s cubic-bezier(0,0.5,0.5,1) infinite;
+  animation-delay: 0s
+}
+.ldio-8psa3che9fu div:nth-child(3) {
+  left: 70.2px;
+  background: #4eaf48;
+  animation: ldio-8psa3che9fu-3 1.6s cubic-bezier(0,0.5,0.5,1) infinite;
+  animation-delay: 0s
+}
+
+.loadingio-spinner-pulse-kroekw542st {
+  width: 104px;
+  height: 104px;
+  display: inline-block;
+  overflow: hidden;
+  background: none;
+}
+.ldio-8psa3che9fu {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform: translateZ(0) scale(1);
+  backface-visibility: hidden;
+  transform-origin: 0 0; /* see note above */
+}
+.ldio-8psa3che9fu div { box-sizing: content-box; }
+
+.logo-animation-custom {
+  svg {
+    circle {
+      &:nth-child(even) {
+        fill: $dynamic-secondary-colour !important;
+      }
+      &:nth-child(odd) {
+        fill: $dynamic-colour !important;
+      }
+    }
+  }
+}
+.my-window-alert {
+  padding: 10px;
+  background-color: #ffe79d  ;
+  color: #664D06  ;
+  position: fixed;
+  left: 0;
+  right: 0;
+  width: 350px;
+  margin: 5px auto;
+  z-index: 99999;
+  border-radius: 12px;
+  .closebtn {
+    position: absolute;
+    right:12px;
+    top: 10pX;
+    color: #664D06;
+    font-weight: bold;
+    float: right;
+    font-size: 22px;
+    line-height: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  .closebtn:hover {
+    color: #674b00 ;
+    cursor: pointer;
+  }
+}
+

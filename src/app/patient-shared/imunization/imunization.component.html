@@ -1,0 +1,125 @@
+<div class="ccm-body">
+  <div class="d-flex align-items-center justify-content-between p-3">
+    <strong>Immunization Record</strong>
+    <a (click)="resetImmunization();addVaccinationModal.show();Note.reset();vacDate.reset();vaccinationCode.reset()" *hasClaim=" ['CanModifyImmunization']" class="btn btn-dynamic-2c btn-sm m-0"
+      title="Add Immunization" date-placement="left">Add New</a>
+  </div>
+  <div *ngIf="isLoading" class="d-flex justify-content-center text-center">
+    <!-- <div class="d-flex justify-content-center text-center"> -->
+    <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+  </div>
+
+    <ngx-datatable style="width: 100%;" [columnMode]="'force'" class="material z-depth-0"  [headerHeight]="50" [footerHeight]="50"
+    [rowHeight]="35" [scrollbarV]="false" [scrollbarH]="true" [rows]="rows" [limit]="15"
+    (activate)="onActivate($event)">
+    <ngx-datatable-column name="#" [maxWidth]=50>
+      <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+        {{rowIndex + 1}}
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Code" prop="vaccinationCode">
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Description" prop="vaccinationDescription">
+    </ngx-datatable-column>
+    <!-- <ngx-datatable-column name="Generic Name" prop="genericName">
+    </ngx-datatable-column> -->
+    <ngx-datatable-column name="Date" prop="date">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        {{row.date | dateFormatPipe}}
+        <!-- {{row.date | dateFormatPipe}} -->
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Note" prop="note">
+    </ngx-datatable-column>
+    <ngx-datatable-column *hasClaim=" ['CanModifyImmunization']" name="Action" [canAutoResize]=false [frozenRight]=true [width]="150">
+      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+        <button [disabled]="awDisable" class="btn btn-dynamic-2c btn-icon" title="Edit" placement="left"
+          (click)="editVaccination(row);dateformat(vaccinationDto);addVaccinationModal.show()"><i class="fa fa-pencil"></i> </button>
+          <button [disabled]="awDisable" class="btn btn-danger btn-icon" (click)=" openConfirmModal(row)"><i class="fa fa-trash"></i></button>
+      </ng-template>
+    </ngx-datatable-column>
+  </ngx-datatable>
+
+</div>
+
+
+<div style="overflow-y: auto" mdbModal #addVaccinationModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true" (open)="nkdaCheck=false">
+  <div class="modal-dialog modal-lg flat-modal" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="addVaccinationModal.hide(); resetImmunization();">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" *ngIf="vaccinationDto.id === 0" id="myModalLabel">Add Immunization</h4>
+        <h4 class="modal-title w-100" *ngIf="vaccinationDto.id > 0" id="myModalLabel">Edit Immunization</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-12 mb-2 d-flex justify-content-between">
+            <small class="text-dynamic-2c text-uppercase font-500">Immunization Info</small>
+            <div class="custom-control custom-checkbox" *ngIf="(!rows || !rows.length) && !isLoading">
+              <mdb-checkbox [(ngModel)]="nkdaCheck" (ngModelChange)="nkdaChecked()" [default]="true" [checked]="false">No Immunization Record</mdb-checkbox>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="row py-3" [class.overlay-Body]="nkdaCheck === true">
+              <div class="col-sm-4">
+                <div class="form-group">
+                  <label class="w-100">Date<small class="text-danger">*</small></label>
+                  <input type="text" class="form-control form-control-sm" #vacDate="ngModel" [(ngModel)]="vaccinationDto.date"
+                    #dateToDp="dpDayPicker" [dpDayPicker]="datePickerConfig" [displayDate]="displayDate"
+                    [theme]="'dp-material ccm-date-picker'" [mode]="'day'" required (ngModelChange)="checkvalidation()" [ngClass]="{ 'is-invalid': dateValidation || !vacDate.valid }"/>
+
+                      <div *ngIf="dateValidation || !vacDate.valid" class="invalid invalid-text">
+                          <small class="text-danger">Date must be valid or filled out.</small>
+                      </div>
+                </div>
+              </div>
+              <div class="col-sm-8">
+                <div class="form-group">
+                  <label for="medNameSearch">Vaccination Code<small class="text-danger">*</small></label>
+                  <ng-select id="medNameSearch" class="ng-select-small" #vaccinationCode="ngModel" [(ngModel)]="vaccinationDto.vaccinationCodeId"
+                    [ngModelOptions]="{standalone: true}" [multiple]="false" [searchable]="true" [loading]="isLoading" placeholder="Vaccination Code"
+                    required [ngClass]="{ 'is-invalid':(vaccinationCode.touched ||
+                    vaccinationCode.dirty) &&
+                    !vaccinationCode.valid }">
+
+                    <ng-option [value]="item.id" *ngFor="let item of vaccinationCodesList">{{item.code}} {{item.description}}</ng-option>
+                  </ng-select>
+                  <div *ngIf="vaccinationCode.invalid && (vaccinationCode.dirty || vaccinationCode.touched)"
+                    class="invalid invalid-text">
+                    <div *ngIf="!!vaccinationCode.errors.required">
+                      <small class="text-danger">Vaccination name must be filled out.</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <label for="medName">Note</label>
+                  <textarea name="Note" id="" cols="30" rows="10" class="form-control form-control-sm" #Note="ngModel"
+                  [(ngModel)]="vaccinationDto.note" id="medName" placeholder="Note" ></textarea>
+                  <!-- <div *ngIf="Note.invalid && (Note.dirty || Note.touched)"
+                    class="invalid invalid-text">
+                    <div *ngIf="!!Note.errors.required">
+                      <small class="text-danger">Note must be filled out.</small>
+                    </div>
+                  </div> -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-dark btn-sm" aria-label="Close" (click)="addVaccinationModal.hide();"
+          mdbWavesEffect>Close</button>
+        <button *ngIf="vaccinationDto.id === 0" type="button" class="btn btn-dynamic-2c btn-sm"
+          (click)="addVaccinationModal.hide();addMedication()" [disabled]="vaccinationCode.invalid || !vaccinationDto.date || vacDate.invalid">Add</button>
+        <button *ngIf="vaccinationDto.id > 0" type="button" class="btn btn-dynamic-2c btn-sm" [disabled]="vaccinationCode.invalid || !vaccinationDto.date || vacDate.invalid"
+          (click)="addVaccinationModal.hide();addMedication(); vaccinationCode.reset();Note.reset()">Update</button>
+      </div>
+    </div>
+  </div>
+</div>

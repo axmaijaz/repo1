@@ -1,0 +1,94 @@
+<div mdbModal #transferDeviceModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true" (close)="closeTransferModal()">
+  <div class="modal-dialog modal-dialog-scrollable modal-xlx" role="document">
+    <div class="modal-content">
+      <div class="modal-header d-flex justify-content-between">
+        <button (click)="transferDeviceModal.hide()" type="button" class="close" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">Transfer Device</h4>
+      </div>
+      <div class="modal-body py-4">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="row">
+                  <div class="col-12">
+                    <div class="form-group">
+                      <label for="searchBy">Device Search</label>
+                      <ng-select [(ngModel)]="selectedTransferDevice" (ngModelChange)="DeviceSelectionChanged()" class="ng-select-small" [multiple]="false"
+                      [searchable]="true" [loading]="gettingInHandDevices" placeholder="Device Search" [clearable]=false>
+                      <ng-option [value]="item" *ngFor="let item of rpmDevicesList">
+                        Serial: {{item.serialNo}} - Mac/IMEI: {{item.macAddress}}
+                      </ng-option>
+                    </ng-select>
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <h5>Device Detail</h5>
+                  </div>
+                  <div class="col-12 mb-5">
+                    <!-- <div class="pb-info">
+                      <p>Please Select Device</p>
+                    </div> -->
+                    <div class="pb-info">
+                      <p><strong>Vendor</strong> {{selectedTransferDevice.manufacturer}} </p>
+                      <p><strong>Serial No.</strong> {{selectedTransferDevice.serialNo}} </p>
+                      <p><strong>IMEI No.</strong> {{selectedTransferDevice.macAddress}} </p>
+                      <p><strong>Modality</strong> {{selectedTransferDevice.modalityName}} </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="row">
+                  <div class="col-12">
+                    <div class="form-group">
+                      <label for="searchBy">Facility Search</label>
+                      <ng-select [(ngModel)]="selectedFacility" class="ng-select-small" [multiple]="false"
+                      [searchable]="true" [loading]="gettingFacilitiesList" placeholder="Device Search" [clearable]=false>
+                      <ng-option *hasClaim="['IsAppAdmin']" [value]="{id: 0, facilityName: '2C health'}">2C health Inventory</ng-option>
+                      <ng-container *hasClaim="['IsFacilityUser']">
+                        <ng-option [value]="item" *ngFor="let item of facilityList"> {{item.facilityName}} </ng-option>
+                      </ng-container>
+                    </ng-select>
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <h5>Facility Detail</h5>
+                  </div>
+                  <div class="col-12 mb-5">
+                    <div class="pb-info">
+                      <p><strong>Name</strong> {{selectedFacility.facilityName}} </p>
+                      <p><strong>Email</strong> {{selectedFacility.contactEmail}} </p>
+                      <p><strong>Phone Number</strong> {{selectedFacility.phoneNumber}} </p>
+                      <p><strong>Address</strong> {{selectedFacility.address}} </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <ng-container *hasClaim="['IsAppAdmin']">
+              <div *ngIf="selectedTransferDevice?.id && showDeviceSales">
+                <app-device-sale-detail #deviceSaleDetailRef [deviceId]="selectedTransferDevice?.id"></app-device-sale-detail>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer d-flex justify-content-between align-items-center">
+        <div>
+          <p class="mb-0" *ngIf="selectedTransferDevice.status == 0 && selectedFacility.id == 0" >Your selected device status is Active. You're not able to transfer.</p>
+        </div>
+        <div>
+          <button (click)="transferDeviceModal.hide()" type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+          mdbWavesEffect>Close</button>
+          <button type="button" [disabled]="!selectedTransferDevice || !selectedTransferDevice.id  || !selectedFacility.facilityName || (selectedTransferDevice.status == 0 && selectedFacility.id === 0)"
+            (click)="openConfirmModal()" class="waves-light btn btn-sm btn-dynamic-2c" aria-label="Close"
+          mdbWavesEffect>Transfer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

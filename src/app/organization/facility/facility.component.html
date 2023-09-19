@@ -1,0 +1,571 @@
+<!-- <div class="d-flex align-items-center justify-content-between mb-3">
+   -->
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <div class="d-flex align-items-center justify-content-start">
+    <h4 *ngIf="!insideOrg" class="mr-3 mb-0"><a class="text-dark"><i class="fa fa-arrow-left" (click)="goBack()"></i></a></h4>
+    <h1 class="page-title mb-0">Facilities</h1>
+  </div>
+  <div *ngIf="OrganizationId">
+    <button type="button" class="btn btn-dynamic-2c btn-sm"
+      (click)="addFacilityModal.show();resetFacilityDto();f.reset();">Add
+      New</button>
+  </div>
+</div>
+<div class="d-flex w-100">
+  <form autocomplete="off" class="form-group flex-1 mb-4 mr-3">
+    <label for="jsajhas877">Search facility</label>
+    <div id="6544544" class="d-flex align-items-center justify-content-start">
+      <input id="jsajhas877" name="jsajhas877"  autocomplete="off" (keyup)="filterFacility($event)"
+        class="form-control form-control-sm box-shadow w-100" placeholder="Search" />
+    </div>
+  </form>
+  <div class="d-flex align-items-center justify-content-between" *ngIf="OrganizationId">
+    <mdb-checkbox [(ngModel)]="showInActiveFacilities" (ngModelChange)="getFacilities()" [default]="true">Show All
+    </mdb-checkbox>
+  </div>
+</div>
+
+<!-- <div *ngIf="!isLoading" class="d-flex justify-content-center text-center"> -->
+
+  <div class="d-flex justify-content-center text-center">
+    <mdb-progress-bar *ngIf="IsLoading" class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+  </div>
+  <div class="bg-white">
+    <div class="table-responsive">
+      <table class="table table-facility table-bordered">
+        <thead class="bg-dynamic-2c text-white py-2">
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Phone No</th>
+            <th>Email</th>
+            <th>Address</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let item of facilityList; let i= index;">
+            <th scope="row">{{ i + 1}}</th>
+            <td>
+              <div class="d-flex justify-content-between align-items-center">
+                <span style="width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display: block;">
+                {{item.facilityName}}
+                </span>
+                <div class="action-button d-flex">
+                  <a class="btn btn-dynamic-2c btn-icon m-0" title="Edit Facility" container="body"
+                    (click)="editClicked(item);emrId.reset();"><i class="fa fa-pencil"></i> </a>
+                  <a *hasClaim="['IsAppAdmin']" class="btn btn-dynamic-2c btn-icon m-0 ml-2" (click)="OpenFacilityQuick(item)"
+                   title="Facility Configuration" container="body"><i
+                      class="fa fa-wrench text-white"></i>
+                  </a>
+                  <a class="btn btn-dynamic-2c btn-icon m-0 ml-2" title="Active" placement="left"
+                    *ngIf="item.isActiveState;" (click)="ConfirmFacilityStateChange(item)">
+                    <i class="fa fa-toggle-on"></i>
+                  </a>
+                  <a class="btn btn-danger btn-icon m-0 ml-2" title="Deactive" placement="left"
+                    *ngIf="!item.isActiveState" (click)="ConfirmFacilityStateChange(item)">
+                    <i class="fa fa-toggle-off"></i>
+                  </a>
+                </div>
+              </div>
+
+            </td>
+            <td>{{facilityTypeEnum[item.facilityType]}}</td>
+            <td>{{item.phoneNumber | mask: '(000)000-0000'}}</td>
+            <td>{{item.contactEmail}}</td>
+            <td>{{item.address}}</td>
+            <!-- <td>
+              <div class="action-button d-flex">
+                <a class="btn btn-dynamic-2c btn-icon m-0" title="Edit Facility" container="body"
+                  (click)="editClicked(item);emrId.reset();"><i class="fa fa-pencil"></i> </a>
+                <a *hasClaim="['IsAppAdmin']" class="btn btn-dynamic-2c btn-icon m-0 ml-2" (click)="OpenFacilityQuick(item)"
+                 title="Facility Configuration" container="body"><i
+                    class="fa fa-wrench text-white"></i>
+                </a> -->
+                <!-- <a class="btn btn-dynamic-2c btn-icon m-0 ml-2" routerLink="/config/facility/invoices-configration/{{item.id}}"
+                  title="Facility Configuration" placement="top" container="body"><i
+                    class="fa fa-wrench text-white"></i>
+                </a> -->
+                <!-- <a class="btn btn-dynamic-2c btn-icon m-0 ml-2" title="Active" placement="left"
+                  *ngIf="showInActiveFacilities === false;" (click)="setFacilityActive(item)">
+                  <i class="fa fa-toggle-on"></i>
+                </a>
+                <a class="btn btn-danger btn-icon m-0 ml-2" title="Deactive" placement="left"
+                  *ngIf="showInActiveFacilities === true;" (click)="setFacilityActive(item)">
+                  <i class="fa fa-toggle-off"></i>
+                </a> -->
+                <!-- <a class="btn btn-dynamic-2c btn-icon ml-2" *hasClaim="['CanPreviewInvoice']"
+                    title="Preview invoice details" placement="top" routerLink="/org/facilityInvoices/{{item.id}}" container="body"><i class="fa fa-eye text-white"></i>
+                </a> -->
+                <!-- <a class="btn btn-dynamic-2c btn-icon ml-2" *hasClaim="['CanModifyFacilityServices']"
+                    title="Facility Services" placement="top" (click)="openFacilityServicesModal(item.id);GetFacilityServiceConfig(item.id)" container="body"><i class="fa fa-cogs text-white"></i>
+                </a> -->
+                <!--  -->
+                <!-- <button class="btn btn-dynamic-2c btn-sm" [routerLink]="['/accounts/invoicePreview']"
+        title="Preview invoice details">Preview</button> -->
+                <!-- <a class="btn btn-danger btn-icon ml-1" (click)="deleteFaclity(item.id)"><i class="fa fa-trash"></i></a> -->
+              <!-- </div>
+            </td> -->
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+<div style="overflow-y: auto" mdbModal #addFacilityModal="mdbModal" [config]="{ignoreBackdropClick: true}"
+  class="modal fade" tabindex="-1" (close)="resetFacilityDto();f.reset();" role="dialog" aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg flat-modal" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="addFacilityModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel" *ngIf="facilityDto?.id === 0">Add Facility</h4>
+        <h4 class="modal-title w-100" id="myModalLabel" *ngIf="facilityDto?.id > 0">Edit Facility</h4>
+      </div>
+      <div class="modal-body">
+        <form name="form" #f="ngForm" novalidate>
+          <div class="row">
+            <!-- <div class="col-sm-12 mb-2">
+            <small class="text-dynamic-2c text-uppercase font-500">User Information</small>
+          </div> -->
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label for="emrId">Select EMR<small class="text-danger">*</small></label>
+                <ng-select class="ng-select-small" #emrId="ngModel" [(ngModel)]="facilityDto.emrId" name="emrId"
+                  [multiple]="false" [searchable]="true" placeholder="Select EMR" required
+                  [ngClass]="{ 'is-invalid': emrId.touched && emrId.invalid }">
+                  <ng-option *ngFor="let item of emrList" [value]="item.id">{{item.name}}</ng-option>
+                  <!-- <ng-option [value]="1">NextGen Office</ng-option>
+                  <ng-option [value]="2">E-Clinical Works</ng-option>
+                  <ng-option [value]="3">Practice Fusion</ng-option> -->
+                </ng-select>
+                <!-- <div *ngIf="emrId.invalid && (emrId.dirty || emrId.touched)" class="invalid invalid-text">
+                <div *ngIf="!!emrId.errors.required">
+                  <small class="text-danger">EmrId must be filled out.</small>
+                </div>
+              </div> -->
+                <div *ngIf="emrId.touched && emrId.invalid" class="invalid-feedback">
+                  <div *ngIf="emrId.errors.required">EMR is required</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-5">
+              <div class="form-group">
+                <label for="facilityName">Facility Name<small class="text-danger">*</small></label>
+                <input [(ngModel)]="facilityDto.facilityName" class="form-control form-control-sm" placeholder="Name"
+                  type="text" #facilityName="ngModel" required name="facilityName"
+                  [ngClass]="{ 'is-invalid': facilityName.touched && facilityName.invalid }">
+                <div *ngIf="facilityName.touched && facilityName.invalid" class="invalid-feedback">
+                  <div *ngIf="facilityName.errors.required">Facility name is required</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <div class="form-group">
+                <label for="shortName">Short Name<small class="text-danger">*</small></label>
+                <div class="position-relative">
+                <input [(ngModel)]="facilityDto.shortName" [maxlength]="10" class="form-control form-control-sm" placeholder="Name"
+                  type="text" #shortName="ngModel" required name="shortName"
+                  (blur)="CheckShortNameAvailable()"
+                  [ngClass]="{ 'is-invalid': (shortName.touched && shortName.invalid) || !shortNameValid }">
+                <!-- <input [(ngModel)]="facilityDto.shortName" [maxlength]="10" class="form-control form-control-sm" placeholder="Name"
+                  type="text" #shortName="ngModel" required name="shortName" appOnDebounce [debounceTime]="500"
+                  (onDebounce)="CheckShortNameAvailable()"
+                  [ngClass]="{ 'is-invalid': (shortName.touched && shortName.invalid) || !shortNameValid }"> -->
+                  <div class="input-spinner" *ngIf="checkingShortName">
+                    <div class="spinner-border text-dynamic-2c" role="status">
+                      <span class="sr-only">Loading...</span>
+                    </div>
+                  </div>
+                </div>
+                <div *ngIf="(shortName.touched && shortName.invalid) || !shortNameValid" class="invalid-feedback">
+                  <div *ngIf="shortName.errors?.required">Facility short name is required</div>
+                  <div *ngIf="!shortNameValid">This short name is not available</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label for="Website">Website</label>
+                <input [(ngModel)]="facilityDto.website" name="Website" type="text" class="form-control form-control-sm"
+                  placeholder="Website">
+              </div>
+            </div>
+
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label for="Address">Address <small class="text-danger">*</small></label>
+                <input [(ngModel)]="facilityDto.address" name="Address" type="text" class="form-control form-control-sm"
+                  placeholder="Address">
+              </div>
+            </div>
+
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label for="city">City</label>
+                <input [(ngModel)]="facilityDto.city" name="city" type="text" class="form-control form-control-sm"
+                  placeholder="City">
+              </div>
+            </div>
+
+            <div class="col-sm-4">
+              <!-- <div class="form-group">
+              <label for="state">State</label>
+              <input [(ngModel)]="facilityDto.state" type="text" class="form-control form-control-sm" id="state"
+                placeholder="State">
+            </div> -->
+              <div class="form-group">
+                <label for="statname">State <small class="text-danger">*</small></label>
+                <ng-select class="ng-select-small" [(ngModel)]="facilityDto.stateName" name="statname"
+                  [multiple]="false" [searchable]="true" placeholder="Select State" #statname="ngModel" required
+                  [ngClass]="{ 'is-invalid': statname.touched && statname.invalid }">
+
+                  <!-- <ng-template ng-header-tmp>
+                  <input style="width: 100%; line-height: 24px" type="text" [(ngModel)]="searchDisease" name="" (ngModelChange)="getFilterDisease(searchDisease)" />
+                </ng-template> -->
+                  <ng-option *ngFor="let item of States" [value]="item.code">{{item.code}} {{item.name}}
+                  </ng-option>
+                </ng-select>
+                <!-- <div *ngIf="statname.invalid && (statname.dirty || statname.touched)" class="invalid invalid-text">
+                <div *ngIf="statname.errors.required">
+                  <small class="text-danger">Please select your state.</small>
+                </div>
+              </div> -->
+                <!-- [ngClass]="{ 'is-invalid': statname.touched && statname.invalid }"> -->
+                <div *ngIf="statname.touched && statname.invalid" class="invalid-feedback">
+                  <div *ngIf="statname.errors.required">State is required</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label for="zipCode">Zip <small class="text-danger">*</small></label>
+                <input [(ngModel)]="facilityDto.zipCode" name="zipCode" type="text" class="form-control form-control-sm"
+                  placeholder="ZipCode">
+              </div>
+            </div>
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label for="facilityDescription">Facility Description</label>
+                <input [(ngModel)]="facilityDto.facilityDescription" name="facilityDescription" type="text"
+                  class="form-control form-control-sm" placeholder="Description">
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label for="fcTypeRef">Select Facility Type<small class="text-danger">*</small></label>
+                <ng-select class="ng-select-small" #fcTypeRef="ngModel" [(ngModel)]="facilityDto.facilityType"
+                  name="fcTypeRef" [multiple]="false" [searchable]="true" placeholder="Select Facility Type" required
+                  [ngClass]="{ 'is-invalid': fcTypeRef.touched && fcTypeRef.invalid }">
+                  <ng-option *ngFor="let item of facilityTypeEnumArr" [value]="item.value">{{item.name}}</ng-option>
+                  <!-- <ng-option [value]="1">NextGen Office</ng-option>
+                  <ng-option [value]="2">E-Clinical Works</ng-option>
+                  <ng-option [value]="3">Practice Fusion</ng-option> -->
+                </ng-select>
+                <!-- <div *ngIf="emrId.invalid && (emrId.dirty || emrId.touched)" class="invalid invalid-text">
+                <div *ngIf="!!emrId.errors.required">
+                  <small class="text-danger">EmrId must be filled out.</small>
+                </div>
+              </div> -->
+                <div *ngIf="emrId.touched && emrId.invalid" class="invalid-feedback">
+                  <div *ngIf="emrId.errors.required">EMR is required</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label for="cEmail">Contact Email<small class="text-danger">*</small></label>
+                <input (blur)="addInvoiceContactEmail()" [(ngModel)]="facilityDto.contactEmail" type="text"
+                  class="form-control form-control-sm" name="cEmail" placeholder="Email" #cEmail="ngModel"
+                  pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,3}$" required
+                  [ngClass]="{ 'is-invalid': cEmail.touched && cEmail.invalid }">
+                <!-- <div *ngIf="cEmail.touched && cEmail.invalid" class="invalid-feedback">
+                  <div *ngIf="cEmail.errors.required">Contact email is required</div>
+                </div> -->
+                <div *ngIf="cEmail.touched && cEmail.invalid" class="d-flex invalid-feedback">
+                  <div>Example: sample@mail.com</div>
+                </div>
+                <!-- <div *ngIf="cEmail.invalid && (cEmail.dirty || cEmail.touched)" class="invalid invalid-text">
+                <div *ngIf="!!cEmail.errors.required">
+                  <small class="text-danger">Contact email must be filled out.</small>
+                </div>
+
+              </div> -->
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label for="cEmail">Invoice Contact Email<small class="text-danger">*</small></label>
+                <input [(ngModel)]="facilityDto.invoiceContactEmail" type="text" class="form-control form-control-sm"
+                  name="icEmail" placeholder="Invoice Contact Email" #icEmail="ngModel"
+                  pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,3}$" required
+                  [ngClass]="{ 'is-invalid': icEmail.touched && icEmail.invalid }">
+                <!-- <div *ngIf="cEmail.touched && cEmail.invalid" class="invalid-feedback">
+                  <div *ngIf="cEmail.errors.required">Contact email is required</div>
+                </div> -->
+                <div *ngIf="icEmail.touched && icEmail.invalid" class="d-flex invalid-feedback">
+                  <div>Example: sample@mail.com</div>
+                </div>
+                <!-- <div *ngIf="cEmail.invalid && (cEmail.dirty || cEmail.touched)" class="invalid invalid-text">
+                <div *ngIf="!!cEmail.errors.required">
+                  <small class="text-danger">Contact email must be filled out.</small>
+                </div>
+
+              </div> -->
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label for="cEmail">Invoice Contact CC Email</label>
+                <input [(ngModel)]="facilityDto.invoiceContactCCEmail" type="text" class="form-control form-control-sm"
+                  name="icCCEmail" placeholder="Invoice Contact CC Email" #icCCEmail="ngModel"
+                  pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,3}$"
+                  [ngClass]="{ 'is-invalid': icCCEmail.touched && icCCEmail.invalid }">
+                <!-- <div *ngIf="cEmail.touched && cEmail.invalid" class="invalid-feedback">
+                  <div *ngIf="cEmail.errors.required">Contact email is required</div>
+                </div> -->
+                <div *ngIf="icCCEmail.touched && icCCEmail.invalid" class="d-flex invalid-feedback">
+                  <div>Example: sample@mail.com</div>
+                </div>
+                <!-- <div *ngIf="cEmail.invalid && (cEmail.dirty || cEmail.touched)" class="invalid invalid-text">
+                <div *ngIf="!!cEmail.errors.required">
+                  <small class="text-danger">Contact email must be filled out.</small>
+                </div>
+
+              </div> -->
+              </div>
+            </div>
+
+
+
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label for="phoneNumber">Phone No</label>
+                <input type="text" [(ngModel)]="facilityDto.phoneNumber" mask="(000)000-0000"
+                  class="form-control form-control-sm" placeholder="Phone No" name="phoneNumber" #phoneNumber="ngModel"
+                  [ngClass]="{ 'is-invalid': phoneNumber.touched && phoneNumber.invalid }">
+                <div *ngIf="phoneNumber.invalid" class="invalid-feedback">
+                  <!-- <div *ngIf="phoneNumber.errors.required">State is required</div> -->
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label for="faxNumber">Fax</label>
+                <input [(ngModel)]="facilityDto.faxNumber" maxlength="30" class="form-control form-control-sm" rows="3"
+                  name="faxNumber" placeholder="fax" type="text">
+              </div>
+            </div>
+            <div *ngIf="facilityDto.isOrgWhiteLabelled" class="col-12">
+              <div class="row d-flex align-items-end">
+                <div class="col-sm-9">
+                  <div class="row ">
+                    <div class="col-sm-4">
+                      <div class="form-group">
+                        <label for="sideNavBarColor-1">SideNavBar Color</label>
+                        <div class="d-flex">
+                          <input [(ngModel)]="facilityDto.sideNavBarColor" class="form-control form-control-sm"
+                          placeholder="Sidenav Color" id="sideNavBarColor-1" name="sideNavBarColor-1" type="text" required>
+                          <input [(ngModel)]="facilityDto.sideNavBarColor" name="sideNavBarColor-1" value="{{facilityDto.sideNavBarColor}}" type="color" style="width: 100px;cursor: pointer;" class="form-control form-control-sm ml-2 form-control-color" >
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-sm-4">
+                      <div class="form-group">
+                        <label for="prColorsdskjhasd">Primary Color</label>
+                        <div class="d-flex">
+                          <input [(ngModel)]="facilityDto.primaryColor" class="form-control form-control-sm"
+                          placeholder="Primary Color" id="prColorsdskjhasd" name="prColorsdskjhasd" type="text" required>
+                          <input [(ngModel)]="facilityDto.primaryColor" name="prColorsdskjhasd" value="{{facilityDto.primaryColor}}" type="color" style="width: 100px;cursor: pointer;" class="form-control form-control-sm ml-2 form-control-color" >
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-sm-4">
+                      <div class="follow-date">
+                        <label for="wqeqweqw">Secondary Color</label>
+                        <div class="d-flex">
+                          <input [(ngModel)]="facilityDto.secondaryColor" class="form-control form-control-sm"
+                          placeholder="secondary Color" id="wqeqweqw" name="wqeqweqw" type="text" required>
+                          <input  [(ngModel)]="facilityDto.secondaryColor" value="{{facilityDto.secondaryColor}}" name="wqeqweqw" type="color" style="width: 100px;cursor: pointer;" class="form-control form-control-sm ml-2 form-control-color">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-3">
+                  <div class="form-group text-right">
+                    <button (click)="openDefualtConfirmModal()" title="Reset Theme" class="btn btn-dynamic-secondary-2c btn-icon ml-0 mb-0 mr-0 mt-0">
+                      <i class="fa fa-refresh"></i>
+                    </button>
+                    <a [class.disabled]="!facilityDto.primaryColor || !facilityDto.secondaryColor || !facilityDto.sideNavBarColor " (click)="ViewTheme();" class="btn btn-dynamic-2c btn-icon ml-2 mt-0 mb-0">
+                      <i class="fa fa-eye"></i>
+                    </a>
+                    <a [class.disabled]="!facilityDto.primaryColor || !facilityDto.secondaryColor || !facilityDto.sideNavBarColor " (click)="SetFacilityTheme();" class="btn btn-dynamic-2c btn-sm  ml-0 mt-0 mb-0">
+                      Save
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="w-100 px-3" *ngIf="facilityDto?.id && facilityDto.isOrgWhiteLabelled">
+              <app-branding [facilityId]="facilityDto?.id" [logoPath]="facilityDto?.logosPath"></app-branding>
+            </div>
+            <ng-container *ngIf="facilityDto?.id === 0">
+
+              <div class="col-sm-12 mb-2 justify-content-between">
+                <div>
+                  <small class="text-dynamic-2c text-uppercase font-500">Site Admin</small>
+                </div>
+                <div>
+                  <mdb-checkbox name="alreadyExistFacilityAdmin" [(ngModel)]="alreadyExistFacilityAdmin" (change)="changeCheckboxValue()"
+                    [default]="true">Already Existing
+                  </mdb-checkbox>
+                </div>
+              </div>
+              <!-- <div class="col-sm-12">
+              <div class="form-group">
+                <label for="Title">Title</label>
+                <ng-select class="ng-select-small" [(ngModel)]="facilityDto.siteManager.title"
+                  name="" [multiple]="false" [searchable]="true"
+                  placeholder="Select Title">
+                  <ng-option [value]="'Billing Provider'">Billing Provider</ng-option>
+                  <ng-option [value]="'Care Coordinator'">Care Coordinator</ng-option>
+                  <ng-option [value]="'Biller'">Biller</ng-option>
+                </ng-select>
+              </div>
+            </div> -->
+            <div class="col-sm-12" *ngIf="alreadyExistFacilityAdmin">
+              <div class="form-group">
+                <label for="facilityUsers">Facility Users</label>
+                <ng-select class="ng-select-small" [(ngModel)]="selectedFacilityUser"
+                name="facilityUsers" [multiple]="false" (ngModelChange)="fillSiteAdminValue()" [searchable]="true" placeholder="Select Facility User" >
+                <ng-option *ngFor="let item of facilityUsersList" [value]="item">{{item.fullName}}</ng-option>
+              </ng-select>
+              </div>
+            </div>
+              <div class="col-sm-4">
+                <div class="form-group">
+                  <label for="firstName">First Name<small class="text-danger">*</small></label>
+                  <input type="text" [(ngModel)]="facilityDto.siteManager.firstName"
+                    [disabled]="alreadyExistFacilityAdmin" class="form-control form-control-sm" name="firstName"
+                    placeholder="First Name" #firstName="ngModel" required
+                    [ngClass]="{ 'is-invalid': firstName.touched && firstName.invalid }">
+
+                  <div *ngIf="firstName.touched && firstName.invalid" class="invalid-feedback">
+                    <div *ngIf="firstName.errors.required">First Name is required</div>
+                  </div>
+
+                  <!-- <div *ngIf="firstName.invalid && (firstName.dirty || firstName.touched)" class="invalid invalid-text">
+                  <div *ngIf="!!firstName.errors.required">
+                    <small class="text-danger">First name must be filled out.</small>
+                  </div>
+                </div> -->
+                </div>
+              </div>
+
+              <div class="col-sm-4">
+                <div class="form-group">
+                  <label for="middleName">Middle Name</label>
+                  <input type="text" [(ngModel)]="facilityDto.siteManager.middleName" name="middleName"
+                    [disabled]="alreadyExistFacilityAdmin" class="form-control form-control-sm"
+                    placeholder="Middle Name">
+                </div>
+              </div>
+
+              <div class="col-sm-4">
+                <div class="form-group">
+                  <label for="lastName">Last Name<small class="text-danger">*</small></label>
+                  <input type="text" [(ngModel)]="facilityDto.siteManager.lastName" class="form-control form-control-sm"
+                    [disabled]="alreadyExistFacilityAdmin" name="lastName" placeholder="Last Name" #lastName="ngModel"
+                    required [ngClass]="{ 'is-invalid': lastName.touched && lastName.invalid }">
+
+                  <div *ngIf="lastName.touched && lastName.invalid" class="invalid-feedback">
+                    <div *ngIf="lastName.errors.required">Last Name is required</div>
+                  </div>
+                  <!-- <div *ngIf="lastName.invalid && (lastName.dirty || lastName.touched)" class="invalid invalid-text">
+                  <div *ngIf="!!lastName.errors.required">
+                    <small class="text-danger">Last name must be filled out.</small>
+                  </div>
+                </div> -->
+                </div>
+              </div>
+
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <label for="email">Email<small class="text-danger">*</small><small *ngIf="emailinvalid"
+                      class="text-danger"> Email address already
+                      registered</small>
+                  </label>
+                  <input type="text" [(ngModel)]="facilityDto.siteManager.email" class="form-control form-control-sm"
+                    name="email" (blur)="checkAvailibility(facilityDto.siteManager.email)" placeholder="Email" [disabled]="alreadyExistFacilityAdmin"
+                    pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,3}$"
+                    #email="ngModel" required [ngClass]="{ 'is-invalid': email.touched && email.invalid }">
+
+                  <!-- <div *ngIf="email.touched && email.invalid" class="invalid-feedback">
+                    <div *ngIf="email.errors.required">Email is required</div>
+                  </div> -->
+                    <div *ngIf="email.touched && email.invalid" class="d-flex invalid-feedback">
+                      <div>Example: sample@mail.com</div>
+                    </div>
+                </div>
+              </div>
+
+              <div class="col-sm-6" *ngIf="!alreadyExistFacilityAdmin">
+                <div class="form-group">
+                  <label for="password">Password<small class="text-danger">*</small></label>
+                  <input [(ngModel)]="facilityDto.siteManager.password" type="password"
+                    class="form-control form-control-sm" placeholder="Password" minlength="6" name="password"
+                    autocomplete="new-password" #password="ngModel" required
+                    [ngClass]="{ 'is-invalid': password.touched && password.invalid }">
+
+                  <div *ngIf="password.touched && password.invalid" class="invalid-feedback">
+                    <div *ngIf="password.errors.required">Password is required</div>
+                  </div>
+                  <!-- <div *ngIf="password.invalid && (password.dirty || password.touched)" class="invalid invalid-text">
+                  <div *ngIf="!password || password.errors.required">
+                    <small class="text-danger">Password must be filled out.</small>
+                  </div>
+                </div> -->
+                  <div *ngIf="password.invalid && (password.dirty || password.touched)" class="invalid invalid-text">
+                    <div *ngIf="password && password.errors.minlength">
+                      <small class="text-danger">At least 6 character password.</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6" *ngIf="!alreadyExistFacilityAdmin">
+                <div class="form-group">
+                  <label for="confirmPassword">Confirm Password</label>
+                  <input [(ngModel)]="facilityDto.siteManager.confirmPassword" class="form-control form-control-sm"
+                    rows="3" #confirmPassword="ngModel" minlength="6" placeholder="Confirm Password"
+                    name="confirmPassword" type="password" required
+                    [ngClass]="{ 'is-invalid': confirmPassword.touched && confirmPassword.invalid }">
+                  <div *ngIf="facilityDto.siteManager.password !== facilityDto.siteManager.confirmPassword">
+                    <small class="text-danger">Confirm password must be match with password.</small>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button [disabled]="facilityAdding || !facilityDto.emrId || !facilityDto.facilityName || !facilityDto.shortName || !facilityDto.stateName || !facilityDto.contactEmail || !facilityDto.zipCode || !facilityDto.address
+         || !alreadyExistFacilityAdmin && (!facilityDto.siteManager.firstName ||emailinvalid||!facilityDto.siteManager.lastName || !facilityDto.siteManager.password || !facilityDto.siteManager.confirmPassword)
+       || alreadyExistFacilityAdmin &&  !selectedFacilityUser.id || (facilityDto.siteManager.password !==
+        facilityDto.siteManager.confirmPassword)" type="submit" class="btn btn-dynamic-2c btn-sm"
+          *ngIf="facilityDto?.id === 0" (click)="registerNewFacility()"><span *ngIf="facilityAdding" class="spinner-border spinner-border-sm mr-1" role="status"
+          aria-hidden="true"></span> Add</button>
+        <button [disabled]="facilityAdding || !facilityDto.emrId || !facilityDto.facilityName || !facilityDto.shortName || !facilityDto.contactEmail || !facilityDto.stateName || !facilityDto.zipCode || !facilityDto.address" type="submit"
+          class="btn btn-dynamic-2c btn-sm" *ngIf="facilityDto?.id > 0"
+          (click)="UpdateFacility();"><span *ngIf="facilityAdding" class="spinner-border spinner-border-sm mr-1" role="status"
+          aria-hidden="true"></span> Update</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,204 @@
+@import "theme";
+
+$primary: $dynamic-colour;
+$secondary: #1d3d71;
+
+.body {
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  position: fixed;
+  padding: 4rem;
+  @include media-breakpoint-down(md) {
+    padding: 0;
+  }
+}
+#vCall {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: 320px auto;
+  position: relative;
+  background-color: white;
+  overflow: hidden;
+  box-shadow: 2px 1px 20px 2px #d4d4d4;
+  @include media-breakpoint-down(md) {
+    padding: 0;
+    grid-template-columns: 0 100%;
+  }
+}
+.caller-video {
+  position: absolute;
+  top: 85px;
+  right: 20px;
+  width: 100px;
+  height: 100px;
+  z-index: 9;
+  video {
+    width: 100%;
+  }
+}
+.userlistbody {
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+  li {
+    padding: 0.4rem 1rem;
+    &:not(:first-child) {
+      border-bottom: 1px solid #eeeeee;
+    }
+  }
+}
+.chatarea {
+  position: relative;
+  background-color: #f5f5f5;
+  @include media-breakpoint-down(md) {
+    width: 100%;
+  }
+
+  .othervideo {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: calc(100% - 65px);
+    background: #eeeeee;
+    margin-top: 65px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    video {
+      height: 100%;
+      padding: 2rem 0 6rem 0;
+      @include media-breakpoint-down(md) {
+        width: 100%;
+        padding: 2rem;
+      }
+    }
+  }
+}
+
+.vchatheader {
+  background: $dynamic-colour;
+  padding: 1.5rem;
+  height: 65px;
+  &.secondary {
+    background: #37474f;
+    @include media-breakpoint-down(md) {
+      background: $dynamic-colour;
+    }
+  }
+  h3 {
+    color: white;
+    font-size: 1rem;
+    margin: 0;
+  }
+}
+
+.video-chat-footer {
+  position: absolute;
+  z-index: 999;
+  bottom: 1rem;
+  display: block;
+  padding: 1rem;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  button {
+    border: 0;
+    padding: 0;
+    margin: 0 0.4rem;
+    width: 60px;
+    height: 60px;
+    border-radius: 41px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    i {
+      font-size: 1.4rem;
+    }
+  }
+}
+
+.spinner-border,
+.count-down {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+}
+.spinner-border{
+  margin: 0 -25px;
+
+}
+.count-down {
+  text-align: center;
+  margin:  0 -150px;
+}
+
+// @include media-breakpoint-down(md) {
+//   .userlist {
+//     position: absolute;
+//     left: 0;
+//     width: 270px;
+//     z-index: 1;
+//     height: 100vh;
+//     background: white;
+//     margin-left: -270px;
+//   }
+
+//   .userlist .show {
+//     margin-left: -270px;
+//   }
+// }
+.container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  color: white;
+}
+
+
+.app-animated {
+  font-size: 1rem;
+}
+
+.noVideo{
+  background: #37474f0f;
+  border-radius: 50%;
+  padding: 1rem;
+  height: 150px;
+  width: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  i{
+    font-size: 6rem;
+    color: #c4c8ca;
+
+  }
+
+}
+
+.patient-note {
+  position: absolute;
+  bottom: 0;
+  width: 320px;
+  padding: 1rem;
+  border-top:1px solid #dfdfdf;
+}
+.ask-primission{
+  display: flex;
+  align-items: center;
+  background-color: ghostwhite;
+  justify-content: center;
+  height: 100%;
+  > div {
+    flex:  0 0 50%;
+    padding: 2rem;
+  }
+}
+.v-laoding{
+  height: 100%;
+  background-color: ghostwhite;
+}

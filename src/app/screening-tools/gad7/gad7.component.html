@@ -1,0 +1,203 @@
+<div class="panel rounded-0">
+    <div class="panel-body">
+        <div>
+            <div class="col-sm-12 px-0">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <p class="mb-0"><strong>Generalized Anxiety Disorder Scale</strong></p>
+
+                    <button class="btn btn-dynamic-2c btn-sm m-0" (click)="resetObj();addGadModal.show()">Add New</button>
+                </div>
+            </div>
+            <div class="col-sm-12 px-0">
+                <div *ngIf="loadingData" class="d-flex justify-content-center text-center ">
+                    <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-striped btn-table">
+                        <thead class="bg-dynamic-2c text-white">
+                            <tr>
+                                <th>#</th>
+                                <th>Date</th>
+                                <th>Administrator Name</th>
+                                <th>Score</th>
+                                <th>Note</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <tr>
+                                <td *ngIf="!loadingData && (!gad7ToolsList || !gad7ToolsList.length)" colspan="6"
+                                    style="background-color: #f2f2f2">
+                                    <strong style="font-size: 1rem;">No record found </strong>
+                                </td>
+                            </tr>
+                            <tr *ngFor="let item of gad7ToolsList;let index=index;">
+                                <td>{{index+1}}</td>
+                                <td>{{item.dateAdministered | date}}</td>
+                                <td>{{item.administratorName}}</td>
+                                <td>{{item.score}} {{item.result}}</td>
+                                <td style="max-width: 200px;">{{item.note}} </td>
+
+                                <td style="width: 70px;">
+                                    <div class="d-flex">
+                                        <button class="btn btn-icon btn-dynamic-2c my-0"
+                                            (click)="OpenEditModel(item, addGadModal)"><i
+                                                class="fa fa-eye"></i></button>
+                                        <!-- <button class="btn btn-icon btn-danger ml-0 my-0"><i
+                                                class="fa fa-trash"></i></button> -->
+                                    </div>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div mdbModal #addGadModal="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myBasicModalLabel"
+    aria-hidden="true" mdbTableScroll>
+    <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close pull-right" aria-label="Close" (click)="addGadModal.hide()">
+                    <span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title w-100">GAD 7 - Generalized Anxiety Disorder Scale </h4>
+            </div>
+            <div class="modal-body">
+
+
+
+            <p>  <strong>If you stated any problems, how difficult have these made it for you to do your work, take care of things at home, or get along with other people? </strong> </p>
+
+
+                <div class="custom-control custom-radio custom-control-inline">
+                    <input [(ngModel)]="gad7ToolDto['howDifficultAnyStatedProblemHasMadeWorkForYou']" (change)="calculateScore()"
+                                            [value]="0" type="radio" class="custom-control-input" id="defaultInline1"
+                                            name="{{'howDifficultAnyStatedProblemHasMadeWorkForYou'}}" mdbInput>
+                    <label class="custom-control-label" for="defaultInline1">Not difficult at all</label>
+                  </div>
+
+                  <div class="custom-control custom-radio custom-control-inline mb-3">
+                    <input [(ngModel)]="gad7ToolDto['howDifficultAnyStatedProblemHasMadeWorkForYou']" (change)="calculateScore()"
+                                            [value]="1" type="radio" class="custom-control-input" id="defaultInline2"
+                                            name="{{'howDifficultAnyStatedProblemHasMadeWorkForYou'}}" mdbInput>
+                    <label class="custom-control-label" for="defaultInline2">Somewhat difficult</label>
+                  </div>
+
+                  <div class="custom-control custom-radio custom-control-inline mb-3">
+                    <input [(ngModel)]="gad7ToolDto['howDifficultAnyStatedProblemHasMadeWorkForYou']" (change)="calculateScore()"
+                                            [value]="2" type="radio" class="custom-control-input" id="defaultInline3"
+                                            name="{{'howDifficultAnyStatedProblemHasMadeWorkForYou'}}" mdbInput>
+                    <label class="custom-control-label" for="defaultInline3">Very difficult</label>
+                  </div>
+
+                  <div class="custom-control custom-radio custom-control-inline mb-3">
+                    <input [(ngModel)]="gad7ToolDto['howDifficultAnyStatedProblemHasMadeWorkForYou']" (change)="calculateScore()"
+                                            [value]="3" type="radio" class="custom-control-input" id="defaultInline4"
+                                            name="{{'howDifficultAnyStatedProblemHasMadeWorkForYou'}}" mdbInput>
+                    <label class="custom-control-label" for="defaultInline4">Extremely difficult</label>
+                  </div>
+
+
+                <p>Please answer the questions considering the last two weeks and how often have you been bothered by
+                    the problems stated as following:</p>
+
+                <div class="d-flex justify-content-end">
+                    <div class="d-flex align-items-center mb-2">
+                        <label class="mr-2">Date <span class="text-danger"> *</span></label>
+                        <input [ngModel]="gad7ToolDto.dateAdministered | dateFormatPipe"
+                            (ngModelChange)="gad7ToolDto.dateAdministered=$event;" type="text" style="width: 120px;"
+                            class="form-control form-control-sm" #dateDPicker="dpDayPicker"
+                            [dpDayPicker]="datePickerConfig" [theme]="'dp-material ccm-date-picker'" [mode]="'day'" />
+
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered btn-table">
+                        <thead class="bg-dynamic-2c text-white">
+                            <tr>
+                                <th>#</th>
+                                <th>Description</th>
+                                <th class="text-center">Not at all sure</th>
+                                <th class="text-center">Several days</th>
+                                <th class="text-center">Over half the days</th>
+                                <th class="text-center">Nearly every day</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of questionsData; let index = index;">
+                                <td>{{index + 1}}</td>
+                                <td style="max-width: 300px;">{{item.qText}} </td>
+                                <td style="vertical-align: middle;">
+                                    <div class="custom-control custom-radio d-flex justify-content-center">
+                                        <input [(ngModel)]="gad7ToolDto[item.prop]" (change)="calculateScore()"
+                                            [value]="0" type="radio" class="custom-control-input" id="{{item.prop}}1"
+                                            name="{{item.prop}}" mdbInput>
+                                        <label class="custom-control-label" for="{{item.prop}}1"></label>
+                                    </div>
+                                </td>
+                                <td style="vertical-align: middle;">
+                                    <div class="custom-control custom-radio d-flex justify-content-center">
+                                        <input [(ngModel)]="gad7ToolDto[item.prop]" (change)="calculateScore()"
+                                            [value]="1" type="radio" class="custom-control-input" id="{{item.prop}}2"
+                                            name="{{item.prop}}" mdbInput>
+                                        <label class="custom-control-label" for="{{item.prop}}2"></label>
+                                    </div>
+                                </td>
+                                <td style="vertical-align: middle;">
+                                    <div class="custom-control custom-radio d-flex justify-content-center">
+                                        <input [(ngModel)]="gad7ToolDto[item.prop]" (change)="calculateScore()"
+                                            [value]="2" type="radio" class="custom-control-input" id="{{item.prop}}3"
+                                            name="{{item.prop}}" mdbInput>
+                                        <label class="custom-control-label" for="{{item.prop}}3"></label>
+                                    </div>
+                                </td>
+                                <td style="vertical-align: middle;">
+                                    <div class="custom-control custom-radio d-flex justify-content-center">
+                                        <input [(ngModel)]="gad7ToolDto[item.prop]" (change)="calculateScore()"
+                                            [value]="3" type="radio" class="custom-control-input" id="{{item.prop}}4"
+                                            name="{{item.prop}}" mdbInput>
+                                        <label class="custom-control-label" for="{{item.prop}}4"></label>
+                                    </div>
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td colspan="6" style="background-color: #f2f2f2">
+                                    <strong style="font-size: 1rem;">Total Score: {{gad7ToolDto.score}}
+                                        {{gad7ToolDto.result}} </strong>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="form-form form-group">
+                    <label for="form12">Notes </label>
+                    <textarea [(ngModel)]="gad7ToolDto.note" type="text" id="form12" rows="3" class="form-control"
+                        required></textarea>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button *ngIf="!gad7ToolDto.id" (click)="AddGad7ScreeningTools(addGadModal)" [disabled]="!gad7ToolDto.dateAdministered || savingGad7" type="button" class="btn btn-sm btn-dynamic-secondary-2c" mdbWavesEffect>
+                    <span *ngIf="savingGad7" class="spinner-border spinner-border-sm" role="status"
+                        aria-hidden="true"></span>
+                    Add</button>
+                <button *ngIf="gad7ToolDto.id" (click)="EditGad7ScreeningTools(addGadModal)" [disabled]="!gad7ToolDto.dateAdministered || savingGad7" type="button" class="btn btn-sm btn-dynamic-secondary-2c" mdbWavesEffect>
+                    <span *ngIf="savingGad7" class="spinner-border spinner-border-sm" role="status"
+                        aria-hidden="true"></span>
+                    Update</button>
+                <button type="button" (click)="addGadModal.hide()" class="btn btn-sm btn-dynamic-secondary-2c"
+                    aria-label="Close" mdbWavesEffect>Cancel</button>
+
+            </div>
+        </div>
+    </div>
+</div>

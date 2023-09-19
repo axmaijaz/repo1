@@ -1,0 +1,123 @@
+@import "theme";
+.task-patient-info {
+  p,
+  .cp-list {
+    margin: 0;
+    font-size: 14px;
+    display: flex;
+    align-items: self-start;
+    justify-content: space-between;
+    border-bottom: 1px solid #f0f0f0;
+    background: #53b0481f;
+    padding: 3px 5px;
+    margin-bottom: 4px;
+    border-radius: 2px;
+    strong {
+      display: inline-block;
+      width: 110px;
+    }
+  }
+}
+table{
+  thead th {
+
+  }
+  tbody > tr > td {
+    height: 38px;
+  }
+}
+@include media-breakpoint-up(xl) {
+  .dataTables_scrollHeadInner {
+    width: 100% !important;
+  }
+}
+
+$border: 1px solid #d9d9d9;
+
+.rpm-content-box {
+  background: white;
+  padding: 0.3rem;
+  border-radius: 5px;
+  border: $border;
+  margin-bottom: 10px;
+  overflow: hidden;
+  &:not(:first-child) {
+    margin-left: 10px;
+  }
+  .item-bold {
+    font-size: 1rem;
+  }
+}
+.my-class-rpmalert {
+  color: #e57373;
+  background: #ffebee;
+  border:1px solid #e57373;
+}
+.rpm-content-box-hover {
+  cursor: pointer;
+  &.active,
+  &:hover {
+    background: #f4f4f4;
+  }
+}
+.item-top-centent {
+  border-bottom: $border;
+  padding: 0.3rem 0.4rem;
+
+  .index-value {
+    width: 30px;
+    height: 30px;
+    background:$dynamic-colour;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    border-radius: 5px;
+    color: white;
+  }
+
+}
+.item-top-centent-hover {
+  cursor: pointer;
+  &.active,
+  &:hover {
+    background: #f4f4f4;
+  }
+}
+.item-bottom-content {
+  justify-content: space-around;
+  align-items: center;
+}
+.item-bottom-content {
+  .completed-min-not-started {
+    flex: 1;
+    &:not(:first-child) {
+      border-left: $border;
+    }
+    p {
+      small {
+        font-size: 13px;
+      }
+    }
+  }
+  .completed-min {
+    cursor: pointer;
+    flex: 1;
+    &:not(:first-child) {
+      border-left: $border;
+    }
+    &.active,
+    &:hover {
+      background: #f4f4f4;
+    }
+    // p {
+    //   small {
+    //     font-size: 13px;
+    //   }
+    // }
+  }
+}
+
+.disabledDiv {
+  pointer-events: none;
+  opacity: 1.0;   }
+

@@ -1,0 +1,81 @@
+  
+  .text-wrapper {
+    display: table-cell;
+    vertical-align: middle;
+  }
+  
+  .centered {
+    font-family: sans-serif;
+    font-size: 1.3em;
+    text-align:center;
+  }
+  
+  .dropzone {
+      height: 100px;
+      display: table;
+      width: 100%;
+      background-color: #eee;
+      border: dotted 1px #aaa;
+  }
+  
+  input[type="file"]{
+    display:none;
+  }
+  
+  .textLink{
+    background-color: #f45e61;
+    color:#fff;
+    padding:10px;
+    border-radius:5px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    cursor: pointer;
+  }
+    
+    .text-wrapper {
+      display: table-cell;
+      vertical-align: middle;
+    }
+    
+    .centered {
+      font-family: sans-serif;
+      font-size: 1.3em;
+      text-align:center;
+    }
+  
+  
+  .fileItem{
+    width: 100%;
+    overflow:hidden;
+    object-fit: contain;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top:3px;
+    padding: 5px;
+    height: 150px;
+    position:relative;
+    float:left;
+    border:1px solid #b3b3b3;
+    background: #d4d4d4;
+    border-radius:5px;
+    transition: .3s ease;
+    img {
+      object-fit: scale-down;
+      height: 150px;
+    }
+  }
+  .fileItemIconDiv{
+    text-align:center;
+  }
+  .fileItemText{
+    text-align:center;
+    margin-top:10px;
+    height: 40px;
+  }
+  mdb-progress .progress {
+    height: 15px !important;
+    margin-bottom: 10px !important;
+  }
+  mdb-progress .progress .progress-bar {
+    height: 15px !important;
+  }

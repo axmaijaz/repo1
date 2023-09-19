@@ -1,0 +1,12 @@
+@import 'theme';
+ p{
+     color: $dynamic-colour;
+ }
+ #banner{
+     height: calc(100vh - 53px);
+     background-image: url('/assets/img/banner.svg');
+     background-size: cover;
+     background-position: center;
+     width: 100%;
+
+ }

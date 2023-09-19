@@ -1,0 +1,1079 @@
+<div class=" d-flex flex-wrap align-items-center justify-content-between mb-3">
+  <div class="d-flex align-items-center justify-content-start flex-lg-grow-1 flex-md-grow-1">
+  <!-- <h4 class="mr-3 mb-0"><a class="text-dark" (click)="navigateBack()"><i class="fa fa-arrow-left"></i></a></h4> -->
+  <h4 *ngIf="!isIframe" class="mr-3 mb-0"><a class="text-dark" [routerLink]="['/admin/patient/' + PatientId + '/summary']"><i class="fa fa-arrow-left"></i></a></h4>
+  <h1 class="page-title mb-0">Monthly Review</h1>
+</div>
+<app-patient-gap-detail></app-patient-gap-detail>
+<!-- <div class="pcm-status-container">
+
+
+  <div class="insurance-gap pcm-status"  *ngIf="hasPayerGap || gettingGetPatientsMeasuresSummary">
+    <skltn-root *ngIf="gettingGetPatientsMeasuresSummary" duration="2000" [rectRadius]="0" flareWidth="30%" bgFill="#fff"
+      flareFill="#f2f3f8">
+      <div class="skltn-card d-flex align-item-center justify-content-between">
+        <div skltn-bone class="skltn-card__avatar mr-1 mb-1" style="height: 30px; width: 30px;" type="circle"></div>
+        <div skltn-bone class="skltn-card__avatar mr-1 mb-1" style="height: 30px; width: 30px;" type="circle"></div>
+        <div skltn-bone class="skltn-card__avatar mr-1 mb-1" style="height: 30px; width: 30px;" type="circle"></div>
+        <div skltn-bone class="skltn-card__avatar mr-1 mb-1" style="height: 30px; width: 30px;" type="circle"></div>
+        <div skltn-bone class="skltn-card__avatar mr-1 mb-1" style="height: 30px; width: 30px;" type="circle"></div>
+      </div>
+      <div class="skltn-card d-flex align-item-center justify-content-between">
+        <div skltn-bone class="skltn-card__avatar mr-1 mb-1" style="height: 30px; width: 30px;" type="circle"></div>
+        <div skltn-bone class="skltn-card__avatar mr-1 mb-1" style="height: 30px; width: 30px;" type="circle"></div>
+        <div skltn-bone class="skltn-card__avatar mr-1 mb-1" style="height: 30px; width: 30px;" type="circle"></div>
+        <div skltn-bone class="skltn-card__avatar mr-1 mb-1" style="height: 30px; width: 30px;" type="circle"></div>
+        <div skltn-bone class="skltn-card__avatar mr-1 mb-1" style="height: 30px; width: 30px;" type="circle"></div>
+      </div>
+    </skltn-root>
+    <ul *ngIf="!gettingGetPatientsMeasuresSummary && pcmMeasuresList.length > 0" id="{{pcmMeasuresListGap.length}}"  [style.maxWidth.px]="ListGApWidth * 34">
+      <li [class.active]="selectedMeasure.code===item.code" *ngFor="let item of pcmMeasuresListGap">
+        <ng-container *ngIf="item.isPayerGap">
+          <a class="status-{{item.color}}" (click)="selectedMeasure=item;getMeasureDataByCode(item.code, pcmMOdel)"
+          title="{{item.measureName}}"
+            data-placement="auto" container="body"><span>{{item.code}}</span></a>
+          </ng-container>
+        </li>
+      </ul>
+  </div>
+  <div class="facility-gap pcm-status" *ngIf="hasFacilityGap || gettingGetPatientsMeasuresSummary">
+    <skltn-root *ngIf="gettingGetPatientsMeasuresSummary" duration="2000" [rectRadius]="0" flareWidth="30%" bgFill="#fff"
+      flareFill="#f2f3f8">
+      <div class="skltn-card d-flex align-item-center justify-content-between">
+        <div skltn-bone class="skltn-card__avatar mr-1 mb-1" style="height: 30px; width: 30px;" type="circle"></div>
+        <div skltn-bone class="skltn-card__avatar mr-1 mb-1" style="height: 30px; width: 30px;" type="circle"></div>
+        <div skltn-bone class="skltn-card__avatar mr-1 mb-1" style="height: 30px; width: 30px;" type="circle"></div>
+        <div skltn-bone class="skltn-card__avatar mr-1 mb-1" style="height: 30px; width: 30px;" type="circle"></div>
+        <div skltn-bone class="skltn-card__avatar mr-1 mb-1" style="height: 30px; width: 30px;" type="circle"></div>
+      </div>
+      <div class="skltn-card d-flex align-item-center justify-content-between">
+        <div skltn-bone class="skltn-card__avatar mr-1 mb-1" style="height: 30px; width: 30px;" type="circle"></div>
+        <div skltn-bone class="skltn-card__avatar mr-1 mb-1" style="height: 30px; width: 30px;" type="circle"></div>
+        <div skltn-bone class="skltn-card__avatar mr-1 mb-1" style="height: 30px; width: 30px;" type="circle"></div>
+        <div skltn-bone class="skltn-card__avatar mr-1 mb-1" style="height: 30px; width: 30px;" type="circle"></div>
+        <div skltn-bone class="skltn-card__avatar mr-1 mb-1" style="height: 30px; width: 30px;" type="circle"></div>
+      </div>
+    </skltn-root>
+    <ul *ngIf="!gettingGetPatientsMeasuresSummary && pcmMeasuresList.length > 0" [style.maxWidth.px]="ListGApNotWidth * 34">
+      <li [class.active]="selectedMeasure.code===item.code" *ngFor="let item of pcmMeasuresListNotGap">
+        <ng-container *ngIf="!item.isPayerGap">
+          <a class="status-{{item.color}}" (click)="selectedMeasure=item;getMeasureDataByCode(item.code, pcmMOdel)"
+          title="{{item.measureName}}"
+            data-placement="auto" container="body"><span>{{item.code}}</span></a>
+        </ng-container>
+      </li>
+    </ul>
+  </div>
+</div> -->
+</div>
+
+
+
+<app-patient-details [hideChatBtn]="true"></app-patient-details>
+<div class="ccm-care-plan-header flex-wrap">
+  <div class="d-flex">
+    <strong class="font-500 px-3">CCM Encounter</strong>
+  </div>
+  <div class="d-flex mx-auto align-item-center">
+    <div class="form-group d-flex align-items-center mb-0">
+      <label class="mb-0 mr-2" for="name">CCM Status</label>
+      <ng-select style="width: 200px;" [(ngModel)]="PatientData.ccmStatus" (ngModelChange)="ccmStatusChangeReasonModal.show();" appendTo="body" [searchable]="false"
+        [closeOnSelect]="true" class="ng-select-small" placeholder="Ccm Status" [multiple]="false" [clearable]="false">
+        <!-- <ng-option [value]="-1">All</ng-option> -->
+        <ng-option [value]="item.value" *ngFor="let item of ccmStatusList">{{item.text}} </ng-option>
+      </ng-select>
+    </div>
+    <div class="form-group d-flex align-items-center ml-3 mb-0">
+      <label class="mb-0 mr-2" for="name">CCM Monthly Status</label>
+      <ng-select style="width: 200px;" [(ngModel)]="PatientData.ccmMonthlyStatus" (ngModelChange)="AssignCcmMonthlyStatus()" appendTo="body" [searchable]="false"
+        [closeOnSelect]="true" class="ng-select-small" placeholder="Ccm Monthly Status" [multiple]="false" [clearable]="false">
+        <!-- <ng-option [value]="-1">All</ng-option> -->
+        <ng-option [value]="item.value" *ngFor="let item of CcmMonthlyStatusList">{{item.name}} </ng-option>
+      </ng-select>
+    </div>
+  </div>
+  <div class=" px-3 timer-container">
+    <div class="input-group form-group mb-0">
+      <input type="text" #timerInput class="form-control form-control-sm text-danger" style="width: 100px;"
+        placeholder="00:00:00">
+      <a class="input-group-append play-counter" (click)="stopTimer();$event.stopPropagation();test.show();"
+        title="Stop" date-placement="Pause">
+        <span class="input-group-text text-white bg-dynamic-2c"><i class="fa fa-stop fa-lg"></i></span>
+      </a>
+      <a *ngIf="timerStart" class="input-group-append play-counter" (click)="pauseTimer();$event.stopPropagation()"
+        date-placement="right" title="Pause" date-placement="right">
+        <span class="input-group-text text-white bg-dynamic-2c"><i class="fa fa-pause fa-lg"></i></span>
+      </a>
+      <a *ngIf="!timerStart" class="input-group-append play-counter" (click)="startTimer();$event.stopPropagation()"
+        date-placement="right" title="Start" date-placement="right">
+        <span class="input-group-text text-white bg-dynamic-2c"><i class="fa fa-play fa-lg"></i></span>
+      </a>
+    </div>
+  </div>
+
+  <a appDebounceClick (debounceClick)="test.toggle();resetFields();" class="collapse-btn btn-dynamic-2c btn-md m-2">
+    <i *ngIf="test.isCollapsed" class="fa fa-angle-down"></i>
+    <i *ngIf="!test.isCollapsed" class="fa fa-angle-up"></i>
+  </a>
+
+</div>
+
+<div class="ccm-care-plan-body" mdbCollapse #test="bs-collapse">
+  <div class="ccm-body z-depth-0">
+    <div class="encounter-section">
+      <div class="encounter-header flex-wrap d-flex align-items-center justify-content-between p-3">
+        <div class="d-flex col-xl-4 col-lg-5 col-sm-6 p-0">
+          <div class="month col p-0 pr-2">
+            <ng-select [searchable]="false" [(ngModel)]="currentMonth" class="ng-select-small"
+              placeholder="Select Month" (click)="$event.stopPropagation();" (change)="searchLogsByMonth()">
+              <ng-option [value]="1">January</ng-option>
+              <ng-option [value]="2">February</ng-option>
+              <ng-option [value]="3">March</ng-option>
+              <ng-option [value]="4">April</ng-option>
+              <ng-option [value]="5">May</ng-option>
+              <ng-option [value]="6">June</ng-option>
+              <ng-option [value]="7">July</ng-option>
+              <ng-option [value]="8">August</ng-option>
+              <ng-option [value]="9">September</ng-option>
+              <ng-option [value]="10">October</ng-option>
+              <ng-option [value]="11">November</ng-option>
+              <ng-option [value]="12">December</ng-option>
+            </ng-select>
+          </div>
+          <div class="month col p-0 pl-2">
+            <ng-select [searchable]="false" [appendTo]="'body'" class="ng-select-small" placeholder="Select Month"
+              [(ngModel)]="yearNum" (ngModelChange)="searchLogsByMonth()" (click)="$event.stopPropagation();">
+              <ng-option *ngFor="let year of listOfYears" [value]="year">{{year}}</ng-option>
+            </ng-select>
+          </div>
+        </div>
+
+        <div class="ccm-date mr-lg-auto">
+          <!-- <div class="cons-date">
+          <div class="input-group form-group mb-0">
+        <label>Consent Date:</label>
+        <input type="text" [(ngModel)]="consentDate" class="form-control form-control-sm" #dateDPicker="dpDayPicker" [dpDayPicker]="datePickerConfig"  [theme]="'dp-material ccm-date-picker'" [mode]="'day'" />
+                <a (click)="updateConsentDate(consentDate);" class="input-group-append">
+                  <span class="input-group-text text-white bg-dynamic-2c"><i class="fa fa-save fa-lg"></i></span>
+                </a>
+      </div>
+      </div> -->
+          <!-- <div class="follow-date">
+            <div class="input-group form-group mb-0">
+              <label>Follow up Date:</label>
+              <input type="text" [(ngModel)]="followUpDate" class="form-control form-control-sm"
+                #dateDPicker="dpDayPicker" [dpDayPicker]="datePickerConfig" [theme]="'dp-material ccm-date-picker'"
+                [mode]="'day'" />
+              <a (click)="updateFollowUpDate(followUpDate);" class="input-group-append">
+                <span class="input-group-text text-white bg-dynamic-2c"><i
+                    class="fa fa-save fa-lg"></i></span>
+              </a>
+            </div>
+          </div> -->
+        </div>
+
+        <div class="ccm-time ml-md-auto mt-md-2 mt-sm-2">
+          <p class="mb-0 text-dark"><i class="fa fa-clock-o fa-lg"></i> CCM Time Completed: <strong
+              class="text-dynamic-2c">{{ ccmEncounterList?.ccmTimeCompleted }}</strong> </p>
+        </div>
+      </div>
+
+      <div class="encounter-body px-3">
+        <div class="row">
+          <div class="enc-time col-xl-6 col-lg-12 col-md-12 col-sm-12 py-3">
+            <form [formGroup]="encounterTimeForm" (ngSubmit)="GetCcmMSValidityInfo();">
+              <div class="d-flex justify-content-between align-items-center">
+
+                <strong class="text-dynamic-2c mb-3 d-block">Encounter Time</strong>
+                <a mdbDropdownToggle class="btn btn-dynamic-2c btn-icon" (click)="AddNew();resetFields()" placement="left"><i
+                    class="fa fa-plus"></i></a>
+              </div>
+              <div class="row">
+                <div class="col-sm-6">
+                  <div class="input-group form-group mb-0">
+                    <label class="w-100">Record Time</label>
+                    <input type="text" #timerInput1 class="form-control form-control-sm" placeholder="00:00:00">
+                    <!-- <a class="input-group-append" title="Reset" date-placement="right">
+                  <span class="input-group-text text-white bg-dynamic-2c"><i
+                      class="fa fa-refresh fa-lg"></i></span>
+                </a> -->
+                    <a class="input-group-append play-counter" (click)="stopTimer()" title="Stop"
+                      date-placement="Pause">
+                      <span class="input-group-text text-white bg-dynamic-2c"><i class="fa fa-stop fa-lg"></i></span>
+                    </a>
+                    <a *ngIf="timerStart" class="input-group-append play-counter" (click)="pauseTimer()"
+                      date-placement="right" title="Pause" date-placement="right">
+                      <span class="input-group-text text-white bg-dynamic-2c"><i class="fa fa-pause fa-lg"></i></span>
+                    </a>
+                    <a *ngIf="!timerStart" class="input-group-append play-counter" (click)="startTimer()"
+                      date-placement="right" title="Start" date-placement="right">
+                      <span class="input-group-text text-white bg-dynamic-2c"><i class="fa fa-play fa-lg"></i></span>
+                    </a>
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="input-group form-group">
+                    <label class="w-100">Date</label>
+                    <input type="text" class="form-control form-control-sm" #dateDPicker="dpDayPicker"
+                      formControlName="encounterDate" [dpDayPicker]="datePickerConfig"
+                      [theme]="'dp-material ccm-date-picker'" [mode]="'day'" />
+                    <a (click)="dateDPicker.api.open();" class="input-group-append">
+                      <span class="input-group-text text-white bg-dynamic-2c"><i class="fa fa-calendar fa-lg"></i></span>
+                    </a>
+                  </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                  <div class="form-group">
+                    <label class="w-100">Start Time</label>
+                    <input type="text" readonly class="form-control form-control-sm bg-white" #dateDpTime="dpDayPicker"
+                      [dpDayPicker]="timePickerConfig" formControlName="startTime" (onChange)="calculateTimeDuration()"
+                      [theme]="'dp-material ccm-date-picker'" [mode]="'time'" />
+                  </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                  <div class="form-group">
+                    <label class="w-100">End Time</label>
+                    <input type="text" readonly class="form-control form-control-sm" formControlName="endTime">
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label class="w-100">Duration: <small class="text-info">Enter in Minutes</small></label>
+                    <input #durationInput type="text" [disabled]="!encounterTimeForm.get('startTime').value"
+                      class="form-control form-control-sm" OnlyNumbers
+                      (input)="stopCounterOnDuration = false;stopTimer();durationChanged($event.target.value)">
+
+                  </div>
+                </div>
+
+                <!-- <div class="col-sm-6">
+                  <div class="form-group">
+                    <label>Care Provider</label>
+                    <ng-select [searchable]="true" formControlName="careProviderId" class="ng-select-small"
+                      placeholder="Select Provider" (click)="$event.stopPropagation();">
+                      <ng-option [value]="item.id" *ngFor="let item of providerList">{{item.firstName}}
+                        {{item.lastName}}</ng-option>
+                    </ng-select>
+                  </div>
+
+                </div> -->
+                <div class="col-sm-12">
+                  <div class="form-group">
+                    <label>Service Name</label>
+                    <ng-select [searchable]="true" formControlName="ccmServiceTypeId" class="ng-select-small"
+                      placeholder="Select Service Type" (click)="$event.stopPropagation();">
+                      <ng-option [value]="item.id" *ngFor="let item of serviceTypes">{{item.name}}</ng-option>
+                    </ng-select>
+                  </div>
+                </div>
+                <div class="col-sm-12">
+                  <div class="form-form form-group">
+                    <label for="form12">Notes <sup class="text-danger">*</sup> </label>
+                    <!-- <textarea type="text" id="form12" formControlName="note" rows="6" [ngClass]="{ 'is-invalid': (encounterTimeForm.get('note').touched ||
+                  encounterTimeForm.get('note').dirty) &&
+                  !encounterTimeForm.get('note').valid }" class="form-control" required></textarea> -->
+                  <app-two-c-text-area #myFIeldRefCCM [value]="encounterTimeForm.get('note').value" [height]="'140px'" [PatientId]="PatientId" (valueChanged)="encounterTimeForm.get('note').setValue($event)"[ngClass]="{ 'is-invalid': (encounterTimeForm.get('note').touched ||
+                  encounterTimeForm.get('note').dirty) &&
+                  !encounterTimeForm.get('note').valid }"></app-two-c-text-area>
+
+                    <div class="invalid invalid-text">
+                      <small *ngIf="encounterTimeForm.get('note').invalid && encounterTimeForm.get('note').touched"
+                        class="text-danger">Please write some note.</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-12" *ngIf="loading">
+                  <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate"></mdb-progress-bar>
+                </div>
+                <div class="col-sm-12">
+                  <div #alert *ngIf="showAlertFEncounter"
+                    class="alert alert-warning alert-dismissible animated fade show" role="alert">
+
+                    <strong >End Time must be greater than Start Time!</strong>                    <!-- <strong *ngIf="encounterTimeForm.get('id').value === 0 && (!PatientEncounterMonthlyStatusAcknowledge || (PatientEncounterMonthlyStatus === ccmMonthlyStatusEnum['Not Started']))">Acknowledge/update monthly status to save</strong> -->
+                  </div>
+                  <!-- <div #alert *ngIf="showValidationAlert" class="alert alert-info alert-dismissible animated fade show"
+                    role="alert">
+                    <button type="button" class="close" aria-label="Close" (click)="showValidationAlert= ''">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                    <strong>{{showValidationAlert}}</strong> <a class="alert-link text-dynamic-2c"
+                      (click)="showValidationAlert='';SubmitEncounterTimeForm()">Click to Submit</a>
+                  </div> -->
+                </div>
+
+                <div class="col-sm-12 d-flex justify-content-between align-items-center" *hasClaim=" ['CanModifyCCMEncounter']">
+                  <!-- <div>
+                    <div *ngIf="encounterTimeForm.get('id').value === 0" class="d-flex align-items-center  p-1">
+                      <p class="m-0">Monthly Status:</p>
+                      <div style="padding: 2px;" class=" ml-3 border rounded" [class.border-success]="PatientEncounterMonthlyStatusAcknowledge && (PatientEncounterMonthlyStatus !== ccmMonthlyStatusEnum['Not Started'])"
+                      [class.border-warning]="!PatientEncounterMonthlyStatusAcknowledge || (PatientEncounterMonthlyStatus === ccmMonthlyStatusEnum['Not Started'])">
+                        <div class="btn-group cursor-pointer"  mdbDropdown>
+                          <mdb-badge style="line-height: 14px;"  mdbDropdownToggle success="true" (click)="PatientEncounterMonthlyStatusAcknowledge=true;">{{PatientEncounterMonthlyStatusTExt}}</mdb-badge>
+
+                          <div class="dropdown-menu status-dropdown">
+                            <div>
+                              <a [class.active]="PatientEncounterMonthlyStatus === value" (click)="PatientEncounterMonthlyStatusAcknowledge=true;PatientEncounterMonthlyStatus=item.value;PatientEncounterMonthlyStatusTExt=item.name;" *ngFor="let item of CcmMonthlyStatusList" class="dropdown-item">{{item.name}}</a>
+                            </div>
+
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div> -->
+                  <button *ngIf="encounterTimeForm.get('id').value === 0"
+                    [disabled]="addingEncounter || !encounterTimeForm.valid || !durationValid || !encounterTimeForm.get('note').value.length" type="submit" mdbBtn
+                    class="btn btn-dynamic-2c btn-sm m-o">
+                    <span *ngIf="addingEncounter" class="spinner-border spinner-border-sm" role="status"
+                      aria-hidden="true"></span>
+                    Add Encounter</button>
+                  <button (click)="editEncounter();encounterTimeForm.get('note').reset()" *ngIf="encounterTimeForm.get('id').value > 0"
+                    [disabled]="addingEncounter || !durationValid || !encounterTimeForm.get('note').value.length" type="button" mdbBtn
+                    class="btn btn-dynamic-2c btn-sm m-o">
+                    <span *ngIf="addingEncounter" class="spinner-border spinner-border-sm" role="status"
+                      aria-hidden="true"></span>
+                    Edit Encounter</button>
+                </div>
+              </div>
+            </form>
+          </div>
+
+          <!-- Logs -->
+          <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 py-3">
+            <p class="mb-3"> <strong class="text-dynamic-2c ">Encounter Logs</strong></p>
+
+            <div class="logs-container" malihu-scrollbar [scrollbarOptions]="dropdownScroll"
+              style="position: relative;">
+              <div class="logs">
+                <div class="col-sm-12" *ngIf="gettingEncounterLogs">
+                  <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate"></mdb-progress-bar>
+                </div>
+                <div class="log-item" *ngFor="let ccm of ccmEncounterList?.ccmEncountersList">
+                  <p class="log-title" [attr.date-time]="ccm.encounterDate| dateFormatPipe">
+                    <span class="log-bullet"></span><span class="font-400 pl-3"><strong
+                        class="text-gray">{{ccm.ccmServiceType}}</strong></span>
+                    <a class="float-right">
+
+
+                      <i *ngIf="!ccm.claimGenerated" (click)="SeteditEncounterValues(ccm)"
+                        class="fa fa-pencil text-dynamic-secondary-2c mr-2"></i>
+                      <i *ngIf="!ccm.claimGenerated" (click)="openConfirmModal(ccm)"
+                        class="fa fa-trash text-danger mr-2"></i>
+                      <i [class.fa-angle-down]="logs.isCollapsed" [class.fa-angle-up]="!logs.isCollapsed"
+                        appDebounceClick (debounceClick)="logs.toggle()" [debounceTime]="200" class="fa"></i>
+                    </a></p>
+
+                  <div class="log-info">
+                    <div class="" mdbCollapse #logs="bs-collapse" style="height: auto;">
+                      <div class="border border-grey p-2 rounded mt-2">
+                        <strong class="text-dynamic-2c">Encounter Note:</strong>
+                        <p class="mb-0">{{ccm.note}}</p>
+                      </div>
+                    </div>
+                    <p class="mb-0"></p>
+                    <small class="font-400 mr-2"><span class="text-unique-color">Date:</span>
+                      {{ccm.encounterDate| dateFormatPipe}}</small>
+                    <small class="mr-2"><span class="text-unique-color">Created By :</span> <strong
+                        class="text-dynamic-2c"> {{ccm.careProviderName}}</strong></small>
+                    <small class="text-unique-color mr-2">Start Time: {{ccm.startTime}}</small>
+                    <small class="text-unique-color">Duration: {{ccm.duration}}</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Logs End -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="d-flex align-items-center mt-3 justify-content-center  w-100">
+    <button  appDebounceClick (debounceClick)="diagnose.toggle()" class="btn btn-dynamic-2c ml-0 btn-block mt-2 btn-sm m-2 ml-0 px-sm-4 px-3">Diagnoses <i [class.fa-angle-down]="diagnose.isCollapsed" [class.fa-angle-up]="!diagnose.isCollapsed"  class="fa ml-1"></i></button>
+    <button appDebounceClick (debounceClick)="medication.toggle()" class="btn btn-dynamic-2c btn-block mt-2 btn-sm m-2 px-sm-4 px-3">Medications   <i [class.fa-angle-down]="medication.isCollapsed" [class.fa-angle-up]="!medication.isCollapsed"  class="fa ml-1"></i></button>
+    <button appDebounceClick (debounceClick)="allergies.toggle()" class="btn btn-dynamic-2c btn-block mt-2 btn-sm m-2 px-sm-4 px-3">Allergies  <i [class.fa-angle-down]="allergies.isCollapsed" [class.fa-angle-up]="!allergies.isCollapsed"  class="fa ml-1"></i></button>
+</div>
+<div class="d-flex align-items-center justify-content-center  w-100">
+  <div class="d-inline-flex flex-grow-1">
+    <button  appDebounceClick (debounceClick)="carePlan.toggle()" [class.text-orange]="PatientData?.carePlanStatusColor == 1" [class.text-red]="PatientData?.carePlanStatusColor == 0" [class.text-white]="PatientData?.carePlanStatusColor == 2" class="btn btn-dynamic-2c btn-block mt-2 btn-sm m-2 mx-0 px-sm-4 px-3">Careplan   <i [class.fa-angle-down]="carePlan.isCollapsed" [class.fa-angle-up]="!carePlan.isCollapsed"  class="fa ml-1"></i></button>
+    <a  appDebounceClick (debounceClick)="encounterHistoryTable.toggle()" class="btn btn-dynamic-2c btn-block mt-2 btn-sm m-2 px-3 m-0 mr-2">Encounter History
+      <i [class.fa-angle-down]="encounterHistoryTable.isCollapsed" [class.fa-angle-up]="!encounterHistoryTable.isCollapsed"  class="fa ml-2"></i>
+    </a>
+  </div>
+
+  <!-- <div class="col">
+    <button (click)="openConsentConfirmModal()" [disabled]="gettingConsentDetails" class="btn btn-dynamic-2c btn-block mt-2 btn-sm m-2mx-0 px-sm-4 px-3" [disabled]="gettingMRPatientPdf">
+    <span *ngIf="gettingMRPatientPdf" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+    <i class="fa fa-clipboard fa-lg"></i> Consent</button>
+  </div> -->
+  <!-- <div class="col">
+    <button (click)="GetMonthlyReviewPatientPdf()" class="btn btn-dynamic-2c btn-block mt-2 btn-sm m-2mx-0 px-sm-4 px-3" [disabled]="gettingMRPatientPdf">
+    <span *ngIf="gettingMRPatientPdf" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+    <i class="fa fa-print fa-lg"></i> Patient Data</button>
+  </div>
+  <div class="col">
+    <button (click)="GetMonthlyReviewPdf()" class="btn btn-dynamic-2c btn-block mt-2 btn-sm m-2mx-0 px-sm-4 px-3" [disabled]="gettingMRPdf">
+    <span *ngIf="gettingMRPdf" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+    <i class="fa fa-print fa-lg"></i> Monthly Review</button>
+  </div> -->
+  <div class="dropdown" mdbDropdown>
+    <button mdbDropdownToggle class="btn btn-dynamic-secondary-2c btn-icon m-2 my-0" type="button"><i
+            class="fa fa-download"></i>
+    </button>
+    <div class="dropdown-menu dropdown-menu-right" >
+        <a class="dropdown-item" disabled routerLinkActive="router-link-active" (click)="DownloadCarePlanPdfByPatientId()">
+            <i class="fa fa-print fa-lg mr-1"></i>
+            Patient Plan <span *ngIf="gettingMRPatientPdf" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        </a>
+        <a class="dropdown-item" (click)="GetMonthlyReviewPdf()"  routerLinkActive="router-link-active" >
+          <i class="fa fa-print fa-lg mr-1"></i>
+          Encounter Doc.  <span *ngIf="gettingMRPdf" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        </a>
+    </div>
+</div>
+</div>
+<div mdbCollapse [isCollapsed]="true" #encounterHistoryTable="bs-collapse">
+  <div *ngIf="gettingEncounterLogs" class="d-flex justify-content-center text-center">
+    <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+  </div>
+ <div class="table-responsive mt-3">
+  <table class="table table-striped btn-table table-nowrap">
+    <thead class="bg-dynamic-2c text-white">
+      <tr>
+        <th>Date</th>
+        <th>Time</th>
+        <th>Duration</th>
+        <th>Care Provider</th>
+        <th>Service Type</th>
+        <th>Note</th>
+        <!-- <th style="width: 210px;">Action</th> -->
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of ccmEncounterList?.ccmEncountersList">
+        <td>{{item.encounterDate}}</td>
+        <td>Start: {{item.startTime}}, End: {{item.endTime}}</td>
+        <td>{{item.duration}}</td>
+        <td>{{item.careProviderName}}</td>
+        <td>{{item.ccmServiceType}}</td>
+        <td>{{item.note}}</td>
+        <!-- <td style="width: 250px;"> -->
+        <!-- <div class="d-flex justify-content-end" style="width: 170px;"> -->
+          <!-- <i *ngIf="!ccm.claimGenerated" (click)="SeteditEncounterValues(item)"
+          class="fa fa-pencil text-dynamic-secondary-2c mr-2"></i> -->
+        <!-- <i *ngIf="!item.claimGenerated" (click)="openConfirmModal(item)"
+          class="fa fa-trash text-danger mr-2"></i> -->
+          <!-- <i *ngIf="!item.claimGenerated" (click)="openConfirmModal(item)"
+            class="fa fa-trash text-danger mr-2"></i> -->
+          <!-- <button *hasClaim=" ['CanModifyCCMEncounter']" class="btn btn-icon btn-dynamic-secondary-2c my-0" (click)="SeteditEncounterValues(item);"><i class="fa fa-pencil"></i></button> -->
+        <!-- </div> -->
+      <!-- </td> -->
+      </tr>
+    </tbody>
+  </table>
+ </div>
+</div>
+<div mdbCollapse [isCollapsed]="true" #diagnose="bs-collapse">
+  <fieldset [disabled]=true>
+    <app-diagnose></app-diagnose>
+  </fieldset>
+
+</div>
+<div mdbCollapse [isCollapsed]="true" #medication="bs-collapse">
+  <fieldset [disabled]=true>
+    <app-medication></app-medication>
+  </fieldset>
+</div>
+<div mdbCollapse [isCollapsed]="true" #allergies="bs-collapse">
+  <fieldset [disabled]=true>
+    <app-allergies></app-allergies>
+  </fieldset>
+</div>
+<div mdbCollapse [isCollapsed]="true" #carePlan="bs-collapse">
+  <fieldset [disabled]=true>
+    <app-master-care-plan></app-master-care-plan>
+  </fieldset>
+</div>
+<div class="ccm-header mt-3">
+  <div class="ccm-nav" style="overflow:hidden;width: 100%;">
+    <div class="row">
+      <div class="col-sm-12 p-0">
+        <div class="ccm-header"  style="position: relative;">
+          <div class="ccm-nav my-custom-scroll px-3"  style="min-width: 100%;left: 0;">
+            <ul class="ccm-navbar w-100">
+              <li [class.active]="viewType==='assessment'" (click)="viewType='assessment';FStepTabs.setActiveTab(1)"><a >Assessment</a></li>
+              <li [class.active]="viewType==='Intervention'" (click)="viewType='Intervention';FStepTabs.setActiveTab(2)"><a >Intervention</a></li>
+              <!-- <li *hasClaim="['ccmService']" [class.active]="viewType==='careplan'" (click)="viewType='careplan';FStepTabs.setActiveTab(3)" class="ml-auto">
+                <a  [class.text-orange]="PatientData?.carePlanStatusColor == 1" [class.text-red]="PatientData?.carePlanStatusColor == 0" [class.text-grey]="PatientData?.carePlanStatusColor == 2"
+                 >Care Plan</a></li> -->
+                 <!-- -- [ngClass]="{
+                  'text-orange':PatientData.carePlanStatusColor == 1 }" [ngClass]="{
+                   'text-red':PatientData.carePlanStatusColor == 0 }" [customClass]="'card11'"  -->
+            </ul>
+          </div>
+        </div>
+        <mdb-tabset #FStepTabs [buttonClass]="'ccm-navbar ccm-custom-mh'" [contentClass]="'ccm-body p-3 border-top'">
+          <mdb-tab #assTab>
+            <div class="row" *ngIf="viewType==='assessment'">
+              <div class="col-12">
+                <app-mr-assessment (AssementAnswerEditedEmitter)="AppendTextToEnconuterLogger($event)"></app-mr-assessment>
+              </div>
+            </div>
+          </mdb-tab>
+          <mdb-tab (select)="GetTypes();">
+            <ng-container *ngIf="viewType==='Intervention'">
+
+              <ng-container *ngIf="isLoadingTypes;then loadingSklton" loadingSklton></ng-container>
+              <div class="row">
+                <div class="col-12">
+                  <div class="type-list">
+                    <ul class="list-inline d-flex">
+                      <li *ngFor="let item of mrTypeList" (click)="selectedmrType=item.id;GetMRProblemsByTypeId(item.id)">
+                        <a
+                          [class]="item.id === selectedmrType ? 'btn btn-sm ml-0 btn-dynamic-2c px-2' : 'btn btn-sm ml-0 btn-outline-primary px-2'">{{item.name}}</a>
+                      </li>
+                    </ul>
+                  </div>
+
+
+
+                  <div class="d-flex justify-content-center py-5"
+                    *ngIf="!isLoadingProblems && mrProblemsList.length === 0">
+                    <app-record-not-found></app-record-not-found>
+                  </div>
+                  <div class="row" *ngIf="!isLoadingProblems && mrProblemsList.length > 0">
+                    <div class="col-lg-3">
+                      <div class="panel border z-depth-0">
+                        <div class="panel-header grey lighten-4">
+                          <h3>Problems</h3>
+                        </div>
+                        <div class="panel-body p-2">
+
+                          <div class="horizontal-scroll">
+                          <button class="hs-btn pre" (click)="scrollLeft()"> <i class="fa fa-angle-left"></i> </button>
+
+                          <!-- <p class="mb-2"><small>Filter by </small></p> -->
+                          <!-- <div class="d-flex align-items-center justify-content-center" style="height: 300px;">
+                            <button class="btn btn-dynamic-2c btn-sm" (click)="addProblem.show()">Add New Problem</button>
+                          </div> -->
+                          <div class="horizontal-scroll-body">
+                          <ul class="problem-list" #listItems >
+                            <!-- <li><mdb-checkbox [default]="true">All</mdb-checkbox></li> -->
+                            <li>
+                              <!-- Default unchecked -->
+                              <mdb-checkbox  class="text-checkable" [default]="true" [(ngModel)]="problem['active']"
+                                (change)="filterDisplayGoals(problem, $event.checked)"
+                                *ngFor="let problem of mrProblemsList">{{problem.description | ellipsis: 30}}
+                              </mdb-checkbox>
+                            </li>
+                            <!-- <li [class.active]="activeProblemId === problem.id" (click)="filterDisplayGoals(problem.id)" *ngFor="let problem of mrProblemsList"><a>{{problem.description}} </a> </li> -->
+                          </ul>
+                        </div>
+                          <button class="hs-btn next" (click)="scrollRight()"><i class="fa fa-angle-right"></i></button>
+
+
+                        </div>
+                        </div>
+
+                      </div>
+
+                    </div>
+                    <div class="col-lg-9">
+                      <div class="d-flex justify-content-center align-items-center h-100"
+                        *ngIf="displayGoalsList.length === 0">
+                        <app-record-not-found></app-record-not-found>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-sm-12" *ngFor="let goal of displayGoalsList; index as gIndex; trackBy: gIndex">
+                          <div class="panel border z-depth-0">
+                            <div class="panel-header row">
+                              <div class="col-md-6">
+                                <h3 class="mb-2">{{goal.description}}</h3>
+                              </div>
+                              <div class="col-md-6">
+                                <div class="mb-2">
+                                  <ng-select [(ngModel)]="goal.status" (change)="editGoal(goal)" class="ng-select-small"
+                                    appendTo="body" [multiple]="false" placeholder="Status" style="min-width:150px">
+                                    <ng-option [value]="gEnum.value" *ngFor="let gEnum of mRGoalStatusList">{{gEnum.name}}
+                                    </ng-option>
+                                  </ng-select>
+                                </div>
+
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                  <input [ngModel]="goal.goalDate | dateFormatPipe"
+                                    (ngModelChange)="goal.goalDate=$event" (close)="editGoal(goal)" type="text"
+                                    placeholder="Target Date" class="form-control form-control-sm " #dateToDp="dpDayPicker"
+                                    [dpDayPicker]="datePickerConfig" [theme]="'dp-material ccm-date-picker'" [mode]="'day'">
+                                    <!-- <button class="btn btn-dynamic-2c btn-icon my-0 mr-0 flex-shrink-0" appDebounceClick
+                                      (debounceClick)="showIntervention.toggle()">
+                                      <i *ngIf="showIntervention.isCollapsed" class="fa fa-angle-double-down"></i>
+                                      <i *ngIf="!showIntervention.isCollapsed" class="fa fa-angle-double-up"></i>
+                                    </button> -->
+                                </div>
+
+                              </div>
+
+                            </div>
+                            <div class="panel-body p-0">
+                              <!-- <div class="px-3">
+                                <p class="mt-3">
+                                  {{goal.description}}
+                                </p>
+                                <p class="mt-3" *ngIf="!goal.description">
+                                  No description found
+                                </p>
+                              </div> -->
+
+
+                              <!-- <div mdbCollapse #showIntervention="bs-collapse" [isCollapsed]="false"> -->
+                              <div>
+                                <ng-container *ngFor="let interv of goal.mrPatientInterventions">
+                                  <div
+                                  [class.bg-dynamic-2c]="interv.status === mRInterventionStatusEnum.Completed"
+                                  [class.orange]="interv.status === mRInterventionStatusEnum.Active"
+                                  [class.grey]="interv.status === mRInterventionStatusEnum['Not Started'] || interv.status === mRInterventionStatusEnum['Not Applicable']"
+                                    class="px-3 py-2  lighten-4 d-flex justify-content-lg-between align-items-center">
+                                    <p class="mb-0"><strong>Intervention </strong> <small *ngIf="interv.shortDescription"> ({{interv.shortDescription}})</small></p>
+
+                                    <div class="ml-auto mr-2">
+                                      <!-- <ng-select [(ngModel)]="interv.status" (change)="editIntervention(interv, gIndex);InterventionStatusCHanged(interv, gIndex)" -->
+                                      <ng-select [(ngModel)]="interv.status" (change)="editIntervention(interv, gIndex);"
+                                        class="ng-select-small" appendTo="body" [multiple]="false" placeholder="Status"
+                                        style="min-width:150px">
+                                        <ng-option [value]="intervEnum.value"
+                                          *ngFor="let intervEnum of mRInterventionStatusList">{{intervEnum.name}}
+                                        </ng-option>
+
+                                      </ng-select>
+                                    </div>
+
+                                    <div>
+                                      <input type="text" [ngModel]="interv.interventionDate | dateFormatPipe"
+                                        (ngModelChange)="interv.interventionDate=$event"
+                                        (close)="editIntervention(interv, gIndex)" placeholder="Date"
+                                        class="form-control form-control-sm" #dateToDp="dpDayPicker"
+                                        [dpDayPicker]="datePickerConfig" [theme]="'dp-material ccm-date-picker'"
+                                        [mode]="'day'" style="width:120px">
+                                    </div>
+                                    <button class="btn btn-dynamic-2c btn-icon my-0 mr-0 flex-shrink-0" appDebounceClick
+                                      (debounceClick)="showIntervention.toggle()">
+                                      <i *ngIf="showIntervention.isCollapsed" class="fa fa-angle-double-down"></i>
+                                      <i *ngIf="!showIntervention.isCollapsed" class="fa fa-angle-double-up"></i>
+                                    </button>
+                                  </div>
+                                  <div class="p-1" mdbCollapse #showIntervention="bs-collapse" [isCollapsed]="true" (shownBsCollapse)="InterventionStatusCHanged(interv, gIndex)">
+                                    <p><span class="text-dynamic-2c">Description:</span> {{interv.description}}
+                                    </p>
+                                    <p><span class="text-dynamic-2c">Instruction:</span> {{interv.patientInstruction}}
+                                    </p>
+                                    <div class="form-form form-group mb-0" *ngIf="interv.status === mRInterventionStatusEnum.Active">
+                                      <label style="width: 70px;" class="flex-shrink-0" for="sajas84787">Notes</label>
+                                      <textarea [(ngModel)]="interv.note" (blur)="editIntervention(interv, gIndex);InterventionNoteCHanged(interv, gIndex)" type="text" id="sajas84787" style="height:50px" rows="6"
+                                        class="form-control"></textarea>
+                                    </div>
+                                  </div>
+                                </ng-container>
+                              </div>
+
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+
+
+                </div>
+              </div>
+              <ng-container *ngIf="isLoadingProblems;then loadingSklton" loadingSklton></ng-container>
+            </ng-container>
+
+
+          </mdb-tab>
+          <mdb-tab>
+            <div class="row" *ngIf="viewType==='careplan'">
+              <div class="col-12">
+                <app-master-care-plan></app-master-care-plan>
+              </div>
+            </div>
+          </mdb-tab>
+        </mdb-tabset>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<div id="moveAbleDiv"   style="box-shadow: rgb(0 0 0 / 24%) 0px 0px 21px 0px" ngDraggable [zIndex]="zIndex" [position]="position" [handle]="handler" [bounds]="myBounds" [inBounds]="edge" class="bg-dynamic-2c " [class.minimize-editor]="isMinimized">
+  <div class="caller" style="min-width: 600px;" #monthlyReviewNOtMovabale>
+    <div class="w-100 caller-info">
+      <!-- <p class="text-white mb-1">Calling To</p> -->
+      <div #handler  style="height: 50px;" class="d-flex cursor-pointer justify-content-between align-items-center px-3 mb-0 bg-dynamic-2c position-relative">
+        <h6 style="color: #fff;font-size: 16px;font-weight: 500;line-height: 28px;" class="mb-0"><strong>Smart Editor</strong></h6>
+        <div class="position-absolute" style="    height: 50px;
+        right: 15px;z-index: 999;" >
+          <span  style="color: #fff;cursor: pointer;font-weight: 900;" title="Copy & Paste Encounter Note" (click)="CopyAndPasteTOEncounter();" class="fa fa-clipboard fa-lg font-minimize pl-3 pt-3 pb-3 pr-1"></span>
+          <span style="color: #fff;cursor: pointer;font-weight: 900;"  title="Minimize Screen" (click)="isMinimized = true" class="fa fa-minus fa-lg font-minimize p-3"></span>
+          <span style="color: #fff;cursor: pointer;" (click)="isMinimized = false"  title="Default Screen" class="fa fa-square-o fa-lg font-maximize p-3"></span>
+          <span #handler style="color: #fff;cursor:grab;" class="fa fa-arrows-alt fa-lg pt-3 pb-3 pl-1"></span>
+        </div>
+      </div>
+      <div class="align-self-sm-center minimize-hide" >
+        <!-- <app-two-c-text-area #myFIeldRefMR [value]="encounterActivityLogText" [height]="'293px'" [PatientId]="PatientId" (valueChanged)="encounterActivityLogText=$event"></app-two-c-text-area> -->
+        <textarea type="text" id="activityLog123" [(ngModel)]="encounterActivityLogText" rows="13" class="form-control border-0 border-bottom rounded-0"></textarea>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div mdbModal #addMREncounterWarning="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <!-- <button type="button" class="close pull-right" aria-label="Close" (click)="lazyConfirmationModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel"><i class="fa fa-exclamation-triangle yellow-text"></i>{{modalObj.Title}}
+        </h4> -->
+        <h4 class="modal-title w-100 text-center" id="myModalLabel">Do you Want to submit?</h4>
+      </div>
+      <div class="modal-body">
+        <!-- {{modalObj.Text}} -->
+        <div *ngIf="encounterTimeForm.get('id').value === 0 && (!PatientEncounterMonthlyStatusAcknowledge || (PatientEncounterMonthlyStatus === ccmMonthlyStatusEnum['Not Started']))" class="d-flex justify-content-between alert alert-warning alert-dismissible animated fade show" role="alert">
+          <strong >Acknowledge/update monthly status to save</strong>
+        </div>
+        <div>
+          <div *ngIf="encounterTimeForm.get('id').value === 0" class=" d-flex justify-content-between mb-2 align-items-center">
+            <p class="m-0"><strong> Monthly Status: </strong></p>
+            <div style="padding: 2px;" class=" ml-3 border rounded" [class.border-success]="PatientEncounterMonthlyStatusAcknowledge && (PatientEncounterMonthlyStatus !== ccmMonthlyStatusEnum['Not Started'])"
+            [class.border-warning]="!PatientEncounterMonthlyStatusAcknowledge || (PatientEncounterMonthlyStatus === ccmMonthlyStatusEnum['Not Started'])">
+              <div class="btn-group cursor-pointer"  mdbDropdown>
+                <mdb-badge style="line-height: 14px;width: 120px;"  mdbDropdownToggle success="true" (click)="PatientEncounterMonthlyStatusAcknowledge=true;">{{PatientEncounterMonthlyStatusTExt}}</mdb-badge>
+
+                <div class="dropdown-menu status-dropdown">
+                  <div>
+                    <!-- <span [ngStyle]="{'backgroupcmMOdelDatand': item.color}"></span> -->
+                    <a [class.active]="PatientEncounterMonthlyStatus === value" (click)="PatientEncounterMonthlyStatusAcknowledge=true;PatientEncounterMonthlyStatus=item.value;PatientEncounterMonthlyStatusTExt=item.name;" *ngFor="let item of CcmMonthlyStatusList" class="dropdown-item">{{item.name}}</a>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <!-- <p class="text-center"><i class="fa fa-exclamation-triangle text-danger" style="font-size: 3rem;"></i> </p> -->
+        <div class="text-center" [innerHTML]="showValidationAlert"></div>
+      </div>
+      <div class="modal-footer">
+        <button [disabled]="!PatientEncounterMonthlyStatusAcknowledge || (PatientEncounterMonthlyStatus === ccmMonthlyStatusEnum['Not Started'])" type="button" (click)="SubmitEncounterTimeForm();addMREncounterWarning.hide();"
+          class="relative waves-light btn btn-dynamic-2c btn-sm" mdbWavesEffect>Yes</button>
+
+          <button type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close" (click)="addMREncounterWarning.hide();"
+          mdbWavesEffect>NO</button>
+
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div mdbModal #startTimerModal="mdbModal" class="modal fade top" tabindex="-1" role="dialog"
+  aria-labelledby="myModalLabel" aria-hidden="true" [config]="{backdrop: true, ignoreBackdropClick: true}">
+  <div class="modal-dialog modal-frame modal-top modal-notify modal-info" role="document">
+    <!--Content-->
+    <div class="modal-content rounded-0">
+      <!--Body-->
+      <div class="modal-body">
+        <div class="row d-flex justify-content-center align-items-center">
+          <p class="pt-3 pr-2">Do you want to start Encounter Timer?</p>
+          <a type="button"
+            (click)="startTimerModal.hide();this.disableCounterTime = false;startTimer();" class="waves-light btn btn-dynamic-2c btn-sm"
+            mdbWavesEffect>Yes</a>
+          <a type="button" outline="true" class="waves-light btn btn-dynamic-secondary-2c btn-sm" mdbWavesEffect
+            data-dismiss="modal" (click)="this.disableCounterTime = false;startTimerModal.hide()">No</a>
+        </div>
+      </div>
+    </div>
+    <!--/.Content-->
+  </div>
+</div>
+
+<ng-template #loadingSklton>
+  <div class="row">
+    <div class="col-sm-12 p-0">
+      <skltn-root duration="2000" [rectRadius]="0" flareWidth="50%" bgFill="#f2f3f8" flareFill="rgba(255,255,255, 0.5)">
+        <!-- Card with Avatar -->
+        <div class="p-3">
+          <div class="skltn-card">
+            <div class="skltn-card__body">
+              <div skltn-bone class="skltn-card__line"></div>
+              <div skltn-bone class="skltn-card__line"></div>
+              <div skltn-bone class="skltn-card__line"></div>
+              <div skltn-bone class="skltn-card__line"></div>
+            </div>
+          </div>
+        </div>
+      </skltn-root>
+    </div>
+  </div>
+
+</ng-template>
+
+
+<div mdbModal #addProblem="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myaddProblemLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header py-2">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="addProblem.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">Add Problem</h4>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="problemName">Problem Name<small class="text-danger">*</small></label>
+          <input type="text" class="form-control" id="problemName" placeholder="Type Problem Name">
+        </div>
+      </div>
+      <div class="modal-footer p-2">
+        <button type="button" size="sm" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+          (click)="addProblem.hide()" mdbWavesEffect>Close</button>
+        <button type="button" class="relative waves-light btn btn-sm btn-dynamic-2c" mdbWavesEffect>Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div mdbModal #tabCloseModal="mdbModal" class="modal fade top" tabindex="-1" role="dialog"
+  [config]="{backdrop: true, ignoreBackdropClick: true}" aria-labelledby="mytabCloseModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-frame modal-top modal-notify modal-info" role="document">
+
+    <div class="modal-content rounded-0">
+      <!--Body-->
+      <div class="modal-body">
+        <div class="row d-flex justify-content-center align-items-center">
+          <p class="pt-3 pr-2">You have unsaved <span class="text-warning">Encounter data</span> ,If you go back changes would be lost. Please click <span class="text-info">Proceed</span> to Go back.</p>
+          <button type="button" (click)="timerStart=false;encounterTimeForm.get('endTime').setValue(null);navigateBack()" class="relative waves-light btn btn-sm btn-dynamic-2c"
+          mdbWavesEffect>Proceed</button>
+          <button type="button" outline="true" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+            (click)="tabCloseModal.hide()" mdbWavesEffect>Cancel</button>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- <div mdbModal (close)="selectedMeasure={}" #pcmMOdel="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="mypcmMOdelLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header py-2">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="pcmMOdel.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+
+        <div class="d-flex align-items-center">
+          <ng-container *ngIf="selectedMeasure && selectedMeasure.measureName">
+            <h4 class="modal-title w-100" title="{{selectedMeasure.measureName}}">
+              {{selectedMeasure.measureName | ellipsis:30 }} </h4>
+          </ng-container>
+
+            <a id="popTemplate" #popupInfo="bs-mdbPopover" class="ml-3" container="body" [mdbPopover]="popTemplate" placement="bottom" (click)="popupQustion ? popupQustion.hide(): ''"
+            triggers="focus"><i class="fa fa-exclamation-circle fa-lg"></i></a>
+
+            <a id="popTemplateTwo"  #popupQustion="bs-mdbPopover" *ngIf="pcmMOdelData.guideline" class="ml-3" container="body" [mdbPopover]="popTemplateTwo" (click)="popupInfo.hide();" placement="bottom"
+            triggers="focus"><i class="fa  fa-question-circle fa-lg"></i></a>
+          <ng-template #popTemplate>
+            <div class="bg-dark text-white py-3 pl-3 pr-2">
+              <div class="who-covered" (click)="$event.stopPropagation()" [innerHTML]="whoIsCovered" malihu-scrollbar
+                [scrollbarOptions]="scrollbarOptionsTimeline" style="max-height: 300px;"></div>
+            </div>
+          </ng-template>
+          <ng-template #popTemplateTwo>
+            <div class="bg-dark text-white py-3 pl-2 pr-2">
+              <div class="who-covered" (click)="$event.stopPropagation()" [innerHTML]="pcmMOdelData.guideline"  malihu-scrollbar
+                [scrollbarOptions]="scrollbarOptionsTimeline" style="max-height: 300px;">
+              </div>
+            </div>
+          </ng-template>
+
+        </div>
+
+      </div>
+      <div class="modal-body">
+        <skltn-root *ngIf="pcmModelLoading" duration="2000" [rectRadius]="0" flareWidth="50%" bgFill="#f2f3f8"
+          flareFill="rgba(255,255,255, 0.5)">
+          <div class="skltn-card">
+            <div skltn-bone class="skltn-card__avatar" type="circle"></div>
+            <div class="skltn-card__body">
+              <div skltn-bone class="skltn-card__title"></div>
+              <div skltn-bone class="skltn-card__line"></div>
+              <div skltn-bone class="skltn-card__line"></div>
+            </div>
+          </div>
+        </skltn-root>
+        <ng-container *ngIf="!pcmModelLoading">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <div class="d-flex align-items-center">
+              <p class="m-0">Status:</p>
+              <div class="btn-group ml-3" *ngIf="selectedGapStatus" mdbDropdown>
+                <mdb-badge mdbDropdownToggle success="true">{{selectedGapStatus.name}}</mdb-badge>
+
+                <div class="dropdown-menu status-dropdown">
+                  <div>
+                    <a [class.active]="pcmMOdelData.currentStatus===item.value"
+                      (click)="pcmMOdelData.currentStatus=item.value;selectedGapStatus=item;"
+                      *ngFor="let item of pcmMOdelData.statusList" class="dropdown-item">{{item.name}}</a>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+            <div class="btn-group ml-3" >
+                <div>
+                  <div class="custom-control custom-checkbox custom-control-inline">
+                    <input type="checkbox" [(ngModel)]="pcmMOdelData.controlled" class="custom-control-input" id="Controlled232"
+                      name="Controlleds">
+                    <label class="custom-control-label" for="Controlled232">Controlled</label>
+                  </div>
+                </div>
+            </div>
+            <div class="btn-group ml-3" *ngIf="pcmMOdelData.hasEncounters" mdbDropdown>
+              <a mdbDropdownToggle class="btn btn-dynamic-2c btn-icon" placement="right"><i class="fa fa-plus"></i></a>
+              <div class="dropdown-menu dropdown-menu-right status-dropdown">
+                <div>
+                  <button *ngIf="selectedMeasure.code !== 'AW'" [disabled]="isCreatingScreening" (click)="$event.stopPropagation();AddScreening()" class="dropdown-item">{{selectedMeasure.code}} Screening <span *ngIf="isCreatingScreening" class="spinner-border spinner-border-sm" role="status"
+                    aria-hidden="true"></span></button>
+                  <button *ngIf="selectedMeasure.code !== 'AW'" [disabled]="isCreatingCounselling" (click)="$event.stopPropagation();AddCounselling()" class="dropdown-item">{{selectedMeasure.code}} Counselling <span *ngIf="isCreatingCounselling" class="spinner-border spinner-border-sm" role="status"
+                    aria-hidden="true"></span></button>
+                  <button *ngIf="selectedMeasure.code === 'AW'" [disabled]="isCreatingAWEncounter" (click)="$event.stopPropagation();AddAWEncounter()" class="dropdown-item">Add Encounter <span *ngIf="isCreatingAWEncounter" class="spinner-border spinner-border-sm" role="status"
+                    aria-hidden="true"></span></button>
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <div class="border p-3 mb-3">
+            <div class="input-group form-group">
+              <label style="width: 70px;" class="flex-shrink-0">Last Done</label>
+              <input type="text" class="form-control form-control-sm ml-3" [(ngModel)]="pcmMOdelData.lastDone"
+                #date="dpDayPicker" [dpDayPicker]="datePickerConfig" [theme]="'dp-material ccm-date-picker'"
+                [mode]="'day'" />
+              <a (click)="date.api.open();" class="input-group-append">
+                <span class="input-group-text text-white bg-dynamic-2c" id="category1"><i
+                    class="fa fa-calendar fa-lg"></i></span> </a>
+            </div>
+            <div class="d-flex">
+              <label style="width: 70px;" class="flex-shrink-0" for="result" s>Result</label>
+              <div class="form-group flex-1 ml-3">
+                <input [(ngModel)]="pcmMOdelData.result" type="text" class="form-control" id="result"
+                  placeholder="Risk Level">
+              </div>
+            </div>
+            <div class="form-form form-group d-flex mb-0">
+              <label style="width: 70px;" class="flex-shrink-0" for="note">Notes</label>
+              <textarea [(ngModel)]="pcmMOdelData.note" type="text" id="note" style="height:100px" rows="6"
+                class="form-control ml-3"></textarea>
+            </div>
+          </div>
+
+          <div class="border p-3">
+            <div class="input-group form-group">
+              <label style="width: 70px;" class="flex-shrink-0 ">Next Due</label>
+              <input [(ngModel)]="pcmMOdelData.nextDue" type="text" class="form-control form-control-sm ml-3"
+                #dateDPicker="dpDayPicker" [dpDayPicker]="datePickerConfig" [theme]="'dp-material ccm-date-picker'"
+                [mode]="'day'" />
+              <a (click)="dateDPicker.api.open();" class="input-group-append">
+                <span class="input-group-text text-white bg-dynamic-2c" id="category"><i
+                    class="fa fa-calendar fa-lg"></i></span> </a>
+            </div>
+            <div class="d-flex align-items-start">
+              <label for="file" class="flex-shrink-0" style="width: 70px;">Attachment</label>
+              <div class="file-field flex-wrap align-items-center w-100 ml-3">
+                <div class="btn btn-success btn-sm mx-0 mt-0">
+                  <span class="w-100"><i class="fa fa-paperclip fa-lg"></i> Attach File<span
+                      *ngIf="uploadImg" class="mr-1 spinner-border spinner-border-sm" role="status"
+                      aria-hidden="true"></span></span>
+                  <input type="file" mdbFileSelect accept=".pdf, .xlsx,.docx, .doc, .odt , .txt, .ppt, .pptx"
+                    (change)="onUploadOutput($event);" #select>
+                </div>
+              </div>
+            </div>
+            <div class="w-100" *ngIf="pcmMOdelData.pcmDocuments && pcmMOdelData.pcmDocuments.length > 0">
+              <div class="file-field flex-wrap align-items-center">
+                <div *ngFor="let doc of pcmMOdelData.pcmDocuments" class="file-item">
+                  <small class="mb-0">{{doc.title | slice:0:40}}</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+      <div class="modal-footer">
+        <button type="button" mdbBtn color="secndary" size="sm" class="waves-light" aria-label="Close"
+          (click)="pcmMOdel.hide()" mdbWavesEffect>Cancel</button>
+        <button [disabled]="editingPcmData" type="button" mdbBtn color="primar" (click)="AddEditMeasureData(pcmMOdel)"
+          size="sm" class="relative waves-light" mdbWavesEffect><span *ngIf="editingPcmData"
+            class="mr-1 spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Update</button>
+      </div>
+    </div>
+  </div>
+</div> -->
+<div mdbModal #viewPdfModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" [config]="{backdrop: true, ignoreBackdropClick: true}" aria-hidden="true"
+  (close)="objectURLStrAW=''">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-body" style="height:calc(100vh - 50px); padding: 0px;">
+        <button type="button" class="close pull-right document-close" aria-label="Close" (click)="viewPdfModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <app-pdf-view *ngIf="objectURLStrAW" [documentUrl]="objectURLStrAW"></app-pdf-view>
+      </div>
+    </div>
+  </div>
+</div>
+<div mdbModal #ccmStatusChangeReasonModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true" (close)="ccmStatusChangeDto.reason = ''" >
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="ccmStatusChangeReasonModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">CCM Status Change Reason
+        </h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="mb-0 form-group">
+              <textarea name="status" id=""  rows="4" class="form-control h-100 form-control-sm"
+                [(ngModel)]="ccmStatusChangeDto.reason" id="medName" placeholder="Reason"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+          (click)="ccmStatusChangeReasonModal.hide()" mdbWavesEffect>Close</button>
+        <button
+          [disabled]="!ccmStatusChangeDto.reason || changingCCMStatus"
+          (click)="AssignCcmStatus()" type="button" class="relative waves-light btn btn-sm btn-dynamic-2c" mdbWavesEffect>
+          <span *ngIf="changingCCMStatus " class="spinner-border spinner-border-sm" role="status"
+            aria-hidden="true"></span>
+          Send</button>
+      </div>
+    </div>
+  </div>
+</div>

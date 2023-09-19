@@ -1,0 +1,43 @@
+@import "theme";
+table.health-guide-table {
+  border: 1px solid #dee2e6;
+  background: white;
+
+  thead {
+    tr {
+      th {
+        font-size: 14px;
+        background: $dynamic-colour;
+        font-weight: 500;
+        white-space: pre;
+        color: #fff;
+        text-align: left;
+        &:not(:first-child) {
+          border-left: 1px solid #dee2e6;
+        }
+        &:last-child {
+          border-left: 1px solid #dee2e6;
+        }
+        padding: .5rem .4rem;
+      }
+
+    }
+  }
+  tbody{
+    tr{
+      td{
+        vertical-align: middle;
+        padding: .3rem .4rem;
+        font-size: 14px;
+          &:not(:first-child){
+            border-left: 1px solid #dee2e6;
+          }
+          &:first-child {
+            text-align: center;
+            font-weight: 600;
+          }
+        // white-space: pre;
+        }
+    }
+  }
+}

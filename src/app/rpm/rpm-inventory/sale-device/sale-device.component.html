@@ -1,0 +1,417 @@
+<div mdbModal #saleDeviceModal="mdbModal" class="modal fade" [class.hidden]="saleModalBackdrop==false" tabindex="-1" role="dialog"  [config]="{backdrop: saleModalBackdrop, ignoreBackdropClick: true, keyboard: false}"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header d-flex justify-content-between">
+        <button (click)="saleDeviceModal.hide();closeTransferModal()" type="button" class="close" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">
+          Sale Device
+        </h4>
+      </div>
+      <div class="modal-body py-4">
+        <div class="row">
+          <div class="col-md-12">
+
+            <div class="row">
+
+              <div class="col-md-6">
+                <div class="row">
+                  <div class="col-12">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                      <h5> <span *ngIf="selectedDetailsType == 'facility'"> Facility Details</span> <span *ngIf="selectedDetailsType == 'patient'">Patient Detail</span></h5>
+                      <div class="d-inline-flex align-items-center">
+                        <!-- (click)="resetSelectedDevicesList();selectedDetailsType = 'facility'" -->
+                        <div *ngIf="!isBulkIssuance" class="border rounded px-2 main-index-box py-1 mr-1 bg-white" [class.active]="selectedDetailsType == 'facility'">
+                          <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="title mb-0" style="font-size: 12px;">Facility</h5>
+                          </div>
+                        </div>
+                        <div *ngIf="isBulkIssuance" class="border rounded px-2 main-index-box py-1 mr-1 bg-white" [class.active]="selectedDetailsType == 'facility'">
+                          <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="title mb-0" style="font-size: 12px;">Facility</h5>
+                          </div>
+                        </div>
+                        <!-- (click)="resetSelectedDevicesList();selectedDetailsType = 'patient'" -->
+                        <div *ngIf="!isBulkIssuance" class="border rounded px-2 main-index-box py-1 bg-white" [class.active]="selectedDetailsType == 'patient'" >
+                          <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="title mb-0" style="font-size: 12px;">Patient</h5>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div  class="col">
+                    <div class="form-group ">
+                      <label for="searchBy" class="mb-0" style="min-width: 110px;">Facility Search</label>
+                      <ng-select [readonly]="true"  [(ngModel)]="selectedFacility" (ngModelChange)="facilityChanged()" class="ng-select-small flex-1" [multiple]="false"
+                      [searchable]="true" [loading]="gettingFacilitiesList" placeholder="Facility Search" [clearable]=false>
+                      <!-- <ng-option *hasClaim="['IsFacilityUser']" [value]="{id: 0, facilityName: '2C health'}">2C health </ng-option> -->
+                      <ng-option [value]="item" *ngFor="let item of facilityList"> {{item.facilityName}} </ng-option>
+                    </ng-select>
+                    </div>
+                    <div class="row">
+                      <div  class="col-12 ">
+                        <div class="pb-info">
+                          <strong>Name</strong>
+                          <p> {{selectedFacility.facilityName}} </p>
+                          <strong>Email</strong>
+                          <p> {{selectedFacility.contactEmail}} </p>
+                          <strong>Phone Number</strong>
+                          <p> {{selectedFacility.phoneNumber}} </p>
+                          <strong>Address</strong>
+                          <p> {{selectedFacility.address}} </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div *ngIf="!isBulkIssuance && selectedDetailsType == 'patient'" class="col">
+                    <div class="row">
+                      <div class="col-12">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                          <div class="w-100 px-0 position-relative">
+                            <label for="searchBy" class="mb-0" style="min-width: 110px;">Search Patient</label>
+                            <div class="d-flex flex-1 align-items-center justify-content-start">
+                              <input [readonly]="true"  [disabled]="selectedFacility.id == 0" type="text" autocomplete="off" [(ngModel)]="searchParam" appOnDebounce [debounceTime]="1500"
+                              (onDebounce)="getFilterPatientsList2()"
+                                #chatUSerSearchInput class="form-control form-control-sm box-shadow w-100" placeholder="Search by Name" />
+                              <span *ngIf="searchingChatUsers" class="spinner-border spinner-border-sm position-absolute"
+                                style="right: 1.5rem;"></span>
+                            </div>
+
+                            <div *ngIf="(searchedChatUserList && searchedChatUserList.length > 0)" (appIsOutside)="searchedChatUserList=[]" class="userList searchable-list"
+                              style="height: 240px;position: absolute;width: 100%;z-index: 9999;overflow-y: auto;top: 30px;">
+                              <ul *ngIf="!searchingChatUsers">
+                                <li *ngFor="let item of searchedChatUserList" (click)="SelectPatient(item)">
+                                  <p>{{item.fullName}} ({{item['patientEmrId']}})</p>
+                                </li>
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-12">
+                        <!-- <div class="pb-info">
+                          <p>Please Select Patient </p>
+                        </div> -->
+                        <div class="pb-info ">
+                          <strong>Patient Name</strong>
+                          <p>{{CurrentPatient.fullName}} </p>
+                          <strong>DOB</strong>
+                          <p> {{CurrentPatient.dateOfBirth | date}} </p>
+                          <strong>EMR Id</strong>
+                          <p> {{CurrentPatient.patientEmrId}} </p>
+                          <strong>Phone No.</strong>
+                          <p> {{CurrentPatient.primaryPhoneNumber}} </p>
+                          <strong>Phone No.</strong>
+                          <p> {{CurrentPatient.currentAddress}} {{CurrentPatient.city}} {{CurrentPatient.state}} {{CurrentPatient.zip}}  </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="row">
+                  <div class="col-12">
+                    <h5>Sale Detail</h5>
+                  </div>
+                  <div class="col-lg-6">
+                    <div class="input-group form-group mb-2">
+                      <label class="w-100 mb-0">Sale Date <sup class="text-danger">*</sup> </label>
+                      <input type="text" class="form-control form-control-sm" #dateDPicker="dpDayPicker"
+                        [dpDayPicker]="datePickerConfig" [ngModel]="saleDeviceToFacilityObj.saleDate | dateFormatPipe"
+                        (ngModelChange)="saleDeviceToFacilityObj.saleDate=$event" [theme]="'dp-material ccm-date-picker'"
+                        [mode]="'day'" />
+                      <a (click)="dateDPicker.api.open();" class="input-group-append">
+                        <span class="input-group-text text-white bg-dynamic-2c"><i class="fa fa-calendar fa-lg"></i></span>
+                      </a>
+                    </div>
+                  </div>
+                  <div class="col-lg-6">
+                    <div class="form-group mb-2">
+                      <label class="mb-0">Sale Type</label>
+                      <ng-select class="ng-select-small" [multiple]="false" [(ngModel)]="saleDeviceToFacilityObj.saleType" (ngModelChange)="SaleTypeCHanged()" [searchable]="true" placeholder="Sale Type" [clearable]=false>
+                        <ng-option [value]="1">Sale</ng-option>
+                        <ng-option [value]="2">Lease</ng-option>
+                      </ng-select>
+                    </div>
+                  </div>
+                  <div class="col-lg-6">
+                    <div class="form-group mb-2">
+                      <label class="mb-0" for="price">Sale Price<small> ($)</small></label>
+                      <div class="d-flex align-items-center justify-content-start">
+                        <input type="number" min=0 oninput="validity.valid||(value='');" [(ngModel)]="saleDeviceToFacilityObj.salePrice" (ngModelChange)="PricesChanged()"  autocomplete="off" class="form-control form-control-sm" min="0" id="price"
+                          placeholder="Sale Price" />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-6">
+                    <div class="form-group mb-2">
+                      <label class="mb-0" for="transmission">Discount</label>
+                      <div class="d-flex align-items-center justify-content-start">
+                        <input type="number" min=0 oninput="validity.valid||(value='');" [(ngModel)]="saleDeviceToFacilityObj.discount" (ngModelChange)="PricesChanged()"  autocomplete="off" class="form-control form-control-sm" id="transmission"
+                          placeholder="Discount" />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-6">
+                    <div class="form-group mb-2">
+                      <label class="mb-0" for="transmission">Total Price</label>
+                      <div class="d-flex align-items-center justify-content-start">
+                        <input type="number" readonly [(ngModel)]="saleDeviceToFacilityObj.totalPrice"  autocomplete="off" class="form-control form-control-sm" id="transmission"
+                          placeholder="Total Price" />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-6" *ngIf="saleDeviceToFacilityObj.saleType ===  SaleTypeEnumObj.Lease">
+                    <div class="form-group mb-2">
+                      <label class="mb-0" for="transmission">Installment Count</label>
+                      <div class="d-flex align-items-center justify-content-start">
+                        <input type="number" [(ngModel)]="saleDeviceToFacilityObj.installmentCount" (ngModelChange)="InstallmentChanged()"  autocomplete="off" class="form-control form-control-sm" id="transmission"
+                          placeholder="Installment Count" />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-6">
+                    <div class="form-group mb-2">
+                      <label class="mb-0" for="transmission">Free Transmission Months</label>
+                      <div class="d-flex align-items-center justify-content-start">
+                        <input type="number" min=0 oninput="validity.valid||(value='');" [(ngModel)]="saleDeviceToFacilityObj.freeTransmissionMonths"  autocomplete="off" class="form-control form-control-sm" id="transmission"
+                          placeholder="Free Transmission Months" />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <h5 class="mt-2">Shipping Info</h5>
+                  </div>
+                  <div class="col-lg-6">
+                    <div class="form-group mb-2">
+                      <label class="mb-0" for="period">Shipping Amount<sup class="text-danger">*</sup></label>
+                      <div class="d-flex align-items-center justify-content-start">
+                        <input type="number"  [(ngModel)]="saleDeviceToFacilityObj.shipping" (ngModelChange)="PricesChanged()"  autocomplete="off" class="form-control form-control-sm" id="period"
+                          placeholder="Shipping Amount" />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-6">
+                    <div class="form-group mb-2">
+                      <label class="mb-0">Tracking Number </label>
+                      <div class="d-flex align-items-center justify-content-start">
+                        <input type="text" [(ngModel)]="saleDeviceToFacilityObj.trackingId"  autocomplete="off" class="form-control form-control-sm" id="transmission"
+                          placeholder="Tracking Number" />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-6">
+                    <div class="form-group mb-2">
+                      <label class="mb-0">Shipping Service <sup class="text-danger">*</sup></label>
+                      <ng-select class="ng-select-small" [multiple]="false" [(ngModel)]="saleDeviceToFacilityObj.shippingService" [searchable]="false" placeholder="Shipping Service" [clearable]=false>
+                        <ng-option [value]="1">USPS</ng-option>
+                        <ng-option [value]="2">Fedex</ng-option>
+                        <!-- <ng-option [value]="3">UPS</ng-option> -->
+                      </ng-select>
+                    </div>
+                  </div>
+                  <div class="col-sm-12">
+                    <div class="form-group mb-2">
+                      <label class="mb-0" for="transmission">Note</label>
+                      <div class="d-flex align-items-center justify-content-start">
+                        <textarea type="text" [(ngModel)]="saleDeviceToFacilityObj.note" rows="2"  autocomplete="off" class="h-100 form-control form-control-sm" id="transmission"
+                          placeholder="Note" ></textarea>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row" *ngIf="alreadyExistWarning">
+              <div class="col-sm-12">
+                <div class="alert alert-danger" role="alert">
+                  <p class="mb-0" style="font-size: 14px;">
+                    {{alreadyExistWarning}}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="row" *ngIf="alreadyPendingBillingMsg">
+              <div class="col-sm-12">
+                <div class="alert alert-danger" role="alert">
+                  <p class="mb-0" style="font-size: 14px;">
+                    {{alreadyPendingBillingMsg}}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="row" *ngIf="scanMessage">
+              <div class="col-sm-12">
+                <div class="alert alert-danger" role="alert">
+                  <p class="mb-0" style="font-size: 14px;">
+                    {{scanMessage}}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="row" *ngIf="deviceRequest?.id">
+              <div class="col-sm-12">
+                <div class="alert alert-info" role="alert">
+                  <p class="mb-0" style="font-size: 14px;">
+                    Required devices quantity is {{deviceRequest?.quantity}}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12">
+                <div class="form-group">
+                  <label for="searchBy">Device Search <small *ngIf="selectedSaleDevice.length" style="color: green;">Selected Devices: {{selectedSaleDevice.length}}</small> </label>
+                  <ng-select [(ngModel)]="selectedSaleDevice" [multiple]="true" (ngModelChange)="bulkSelectDevice();PricesChanged()" class="ng-select-small"
+                  [searchable]="true" [loading]="gettingInHandDevices" placeholder="Device Search" [clearable]=false>
+                    <ng-option [value]="item" *ngFor="let item of rpmDevicesList">
+                      Serial: {{item.serialNo}} - Mac/IMEI: {{item.macAddress}}
+                    </ng-option>
+                  </ng-select>
+                </div>
+                <!-- <ng-container *ngIf="selectedSaleDevice.length" >
+                  <div  style="max-height: 157px;" class="card">
+                    <div class="card-body py-2" style="overflow-y:auto;height:100%;">
+                      <div class="row">
+                        <div class="col-md-6" *ngFor="let item of selectedSaleDevice">
+                          <p class="border-bottom pb-2 mb-2" >Serial No.  {{item.serialNo}}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </ng-container> -->
+              </div>
+
+              <ng-container >
+                <div class="col-12 mb-5">
+                  <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                      <thead class="bg-dynamic-2c text-white">
+                        <tr>
+                          <th>Modality Name</th>
+                          <th>Vendor</th>
+                          <th>Model</th>
+                          <th>Serial No.</th>
+                          <th>Mac</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let detail of selectedSaleDevice">
+                          <td>{{detail.modalityName}}</td>
+                          <td>{{detail.manufacturer}} </td>
+                          <td>{{detail.model}} </td>
+                          <td>{{detail.serialNo}}</td>
+                          <td>{{detail.macAddress}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="d-flex align-items-center mb-2">
+            <div class="custom-control custom-checkbox w-info-90">
+              <input type="checkbox" [disabled]="!CurrentPatient?.id" class="custom-control-input" [(ngModel)]="cpT99453"
+                id="cpT994531" name="cpT994531">
+              <label class="custom-control-label" for="cpT994531">CPT 99453</label>
+            </div>
+          </div>
+        <div>
+          <!-- saleDevice() -->
+            <button (click)="saleDeviceModal.hide();closeTransferModal()" type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+             mdbWavesEffect>Close</button>
+             <button type="button" [disabled]="(saleDeviceToFacilityObj.shipping ==  null ||saleDeviceToFacilityObj.shipping ==  0 ) || !saleDeviceToFacilityObj.shippingService || (selectedSaleDevice.length != deviceRequest.quantity) || (sellingDevice || IssuingDevice) || !selectedSaleDevice || patientHaveAlreadyModality ||  !selectedSaleDevice.length  || !selectedFacility.facilityName || (!saleDeviceToFacilityObj.salePrice && saleDeviceToFacilityObj.salePrice !== 0)"
+               (click)="calculateSale();saleModalBackdrop=false;ConfirmsaleDeviceModal.show()" class="waves-light btn btn-sm btn-dynamic-2c" aria-label="Close"
+             mdbWavesEffect>Sale</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div mdbModal #ConfirmsaleDeviceModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true" [config]="{backdrop: false, ignoreBackdropClick: true}">
+  <div class="modal-dialog modal-dialog-scrollable modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header d-flex justify-content-between">
+        <!-- <button (click)="ConfirmsaleDeviceModal.hide()" type="button" class="close" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button> -->
+        <h4 class="modal-title w-100" id="myModalLabel">
+          Confirm Sale Device
+        </h4>
+      </div>
+      <div class="modal-body py-4">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="row">
+              <div class="col-6 mb-5">
+                <h5><strong>Sale Detail</strong></h5>
+                <div class="pb-info-sale ">
+                  <p><strong>Units Sold</strong>{{selectedSaleDevice.length}}</p>
+                  <p><strong>Sale Type</strong>{{SaleTypeEnumObj[saleDeviceToFacilityObj.saleType]}}</p>
+                  <p><strong>Total Unit Price</strong>{{salePriceSum}}</p>
+                  <p><strong>Total Shipping</strong>{{shippingSum}}</p>
+                  <p><strong>Total Discount</strong>{{discountSum}}</p>
+                  <p><strong>Total Sale Price</strong>{{totalPriceSum}}</p>
+                </div>
+              </div>
+              <div class="col-6 mb-5">
+                <h5><strong>Shipping Detail</strong></h5>
+                <div class="pb-info-sale " *ngIf="selectedDetailsType == 'facility'">
+                  <p><strong>Recepient</strong>Facility</p>
+                  <p><strong>Ship to</strong>{{selectedFacility.facilityName}}</p>
+                  <p><strong>Address</strong>{{selectedFacility.address}}</p>
+                  <p><strong>City</strong>{{selectedFacility.city}}</p>
+                  <p><strong>Zip Code</strong>{{selectedFacility.zipCode}}</p>
+                </div>
+                <div class="pb-info-sale " *ngIf="selectedDetailsType == 'patient'">
+                  <p><strong>Recepient</strong>Patient</p>
+                  <p><strong>Ship to</strong>{{CurrentPatient.firstName}} {{CurrentPatient.lastName}}</p>
+                  <p><strong>Address</strong>{{CurrentPatient.currentAddress}}</p>
+                  <p><strong>City</strong>{{CurrentPatient.city}}</p>
+                  <p><strong>Zip Code</strong>{{CurrentPatient.zip}}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="table-responsive">
+              <table class="table table-bordered table-hover">
+                <thead class="bg-dynamic-2c text-white">
+                  <tr>
+                    <th>Modality Name</th>
+                    <th>Model</th>
+                    <th>Serial No.</th>
+                    <th>Mac</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of selectedSaleDevice">
+                    <td>{{item.modalityName}}</td>
+                    <td>{{item.model}}</td>
+                    <td>{{item.serialNo}}</td>
+                    <td>{{item.macAddress}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+            <button (click)="ConfirmsaleDeviceModal.hide();saleModalBackdrop=true;" type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c">Cancel</button>
+             <button type="button" [disabled]="sellingDevice" (click)="saleDevice()" class="waves-light btn btn-sm btn-dynamic-2c" aria-label="Close">
+               Confirm
+             </button>
+      </div>
+    </div>
+  </div>
+</div>

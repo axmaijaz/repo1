@@ -1,0 +1,39 @@
+@import "theme";
+
+table.mute-table {
+  border: 1px solid #dee2e6;
+  background: white;
+  thead {
+    tr {
+      th {
+        font-size: 14px;
+        background: $dynamic-colour;
+        font-weight: 500;
+        white-space: pre;
+        color: #fff;
+        text-align: left;
+        &:not(:first-child) {
+          border-left: 1px solid #dee2e6;
+        }
+        &:last-child {
+          border-left: 1px solid #dee2e6;
+        }
+        padding: .6rem .4rem;
+      }
+
+    }
+  }
+  tbody{
+    tr{
+      td{
+        vertical-align: middle;
+        padding: .5rem .4rem;
+        font-size: 16px;
+          &:not(:first-child){
+            border-left: 1px solid #dee2e6;
+          }
+        // white-space: pre;
+        }
+    }
+  }
+}

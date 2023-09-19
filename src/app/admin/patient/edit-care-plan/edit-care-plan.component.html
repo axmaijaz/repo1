@@ -1,0 +1,452 @@
+<mdb-progress-bar *ngIf="isLoading" class="progress primary-color-dark" mode="indeterminate"></mdb-progress-bar>
+<div class="text-center">
+  <button type="button" class="btn btn-dynamic-secondary-2c btn-sm align-content-center text-capitalize" (click)="AddquestionListModal.show()">Add From Questionnaire List</button>
+  <!-- <button type="button" class="btn btn-outline-secondary btn-sm align-content-center text-capitalize" (click)="rearrangeCategoryModal.show()">Rearrange Categories</button> -->
+</div>
+<div class="ccm-body z-depth-0 row">
+  <div class="ccm-template w-100">
+    <div class="template-body p-3">
+
+      <div class="ques-section" *ngFor="let category of carePlanViewModel; let catIndex = index">
+        <div class="d-flex align-items-start flex-nowrap justify-content-between" [class.question-header]="category.parentId !== 0">
+          <p class="m-0"> <strong>{{category.key}}</strong></p>
+
+          <a *ngIf="category.parentId !== 0" class="btn btn-dynamic-2c btn-icon" (click)="AddingNewQuestion()" title="Add Question"
+          data-placement="left"><i class="fa fa-plus"></i></a>
+          <span *ngIf="category.parentId === 0" pill="true" primary="true">Parent Category</span>
+
+        </div>
+        <ng-container *ngIf="category.parentId !== 0">
+
+          <div class="section-body" *ngFor="let item of category.value; let QusIndex = index">
+            <div class="row" *ngIf="item.questionType === 1">
+              <div class="col-sm-6">
+                <p>{{item.question}}
+                </p>
+              </div>
+              <div class="col-sm-6">
+                <div class="d-flex align-items-start flex-nowrap justify-content-start">
+                  <div class="form-group w-100">
+                    <input type="text" id="forrm7" class="form-control form-control-sm" readonly>
+                  </div>
+                  <div class="d-flex row-action">
+                    <a class="btn btn-outline-delete btn-icon mt-0"
+                      (click)="editQuestion(item , category, QusIndex ,catIndex);AddorEditQuestion.show()"><i
+                        class="fa fa-pencil"></i></a>
+                    <a *ngIf="PatientTemplate && PatientTemplate.id > 0" class="btn btn-outline-delete btn-icon mt-0"
+                      (click)="openConfirmModal(item)"><i class="fa fa-close"></i></a>
+                    <a *ngIf="PatientTemplate && PatientTemplate.id === 0" class="btn btn-outline-delete btn-icon mt-0"
+                      (click)="removeQuestion(item , category, QusIndex ,catIndex)"><i class="fa fa-close"></i></a>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+            <div class="row" *ngIf="item.questionType === 2">
+              <div class="col-sm-6">
+                <p>{{item.question}}</p>
+              </div>
+              <div class="col-sm-6">
+                  <div class="d-flex align-items-start flex-nowrap justify-content-start">
+                <div class="form-group w-100">
+                  <textarea type="text" id="form965877" class="form-control form-control-sm" readonly ></textarea>
+                </div>
+                <div class="d-flex row-action">
+                  <a class="btn btn-outline-delete btn-icon mt-0"
+                    (click)="editQuestion(item , category, QusIndex ,catIndex);AddorEditQuestion.show()"><i
+                      class="fa fa-pencil"></i></a>
+                  <a *ngIf="PatientTemplate && PatientTemplate.id > 0" class="btn btn-outline-delete btn-icon mt-0"
+                    (click)="DeleteQuestion(item)"><i class="fa fa-close"></i></a>
+                  <a *ngIf="PatientTemplate && PatientTemplate.id === 0" class="btn btn-outline-delete btn-icon mt-0"
+                    (click)="removeQuestion(item , category, QusIndex ,catIndex)"><i class="fa fa-close"></i></a>
+                </div>
+              </div>
+              </div>
+            </div>
+            <div class="row" *ngIf="item.questionType === 4">
+              <div class="col-sm-6">
+                <p>{{item.question}}</p>
+              </div>
+              <div class="col-sm-6">
+                <div class="d-flex align-items-start flex-nowrap justify-content-start">
+                  <div class="radio w-100" style="margin: 0 -5px">
+                    <div class="form-group">
+                      <!-- Material inline 1 -->
+                      <div class="form-check form-check-inline"
+                        *ngFor="let options of item.cpQuestionOptions; let optindex = index">
+                        <input  [disabled]="true" type="radio" class="form-check-input"
+                          id="materialInline1{{QusIndex}}{{catIndex}}{{optindex}}"
+                          name="inlineMaterialRadiosExample{{QusIndex}}" mdbInput>
+                        <label class="form-check-label"
+                          for="materialInline1{{QusIndex}}{{catIndex}}{{optindex}}">{{options.text}}</label>
+                      </div>
+
+                      <!-- Material inline 2 -->
+                      <!-- <div class="form-check form-check-inline ">
+                        <input type="radio" class="form-check-input" id="materialInline2{{QusIndex}}{{catIndex}}"
+                          name="inlineMaterialRadiosExample{{QusIndex}}" mdbInput>
+                        <label class="form-check-label" for="materialInline2{{QusIndex}}{{catIndex}}">2</label>
+                      </div> -->
+
+                      <!-- Material inline 3 -->
+                      <!-- <div class="form-check form-check-inline">
+                        <input type="radio" class="form-check-input" id="materialInline3{{QusIndex}}{{catIndex}}"
+                          name="inlineMaterialRadiosExample{{QusIndex}}" mdbInput>
+                        <label class="form-check-label" for="materialInline3{{QusIndex}}{{catIndex}}">3</label>
+                      </div> -->
+                    </div>
+                  </div>
+                  <div class="d-flex row-action">
+                    <a class="btn btn-outline-delete btn-icon mt-0"
+                      (click)="editQuestion(item , category, QusIndex ,catIndex);AddorEditQuestion.show()"><i
+                        class="fa fa-pencil"></i></a>
+                    <a *ngIf="PatientTemplate && PatientTemplate.id > 0" class="btn btn-outline-delete btn-icon mt-0"
+                      (click)="DeleteQuestion(item)"><i class="fa fa-close"></i></a>
+                    <a *ngIf="PatientTemplate && PatientTemplate.id === 0" class="btn btn-outline-delete btn-icon mt-0"
+                      (click)="removeQuestion(item , category, QusIndex ,catIndex)"><i class="fa fa-close"></i></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row" *ngIf="item.questionType === 3">
+              <div class="col-sm-6">
+                <p>{{item.question}}</p>
+              </div>
+              <div class="col-sm-6">
+                <div class="d-flex align-items-start flex-nowrap justify-content-start">
+                  <div class="checkb w-100">
+                    <mdb-checkbox  [disabled]="true" [inline]="true" [default]="true" *ngFor="let options of item.cpQuestionOptions">
+                      {{options.text}}</mdb-checkbox>
+                  </div>
+                  <div class="d-flex row-action">
+                    <a class="btn btn-outline-delete btn-icon mt-0"
+                      (click)="editQuestion(item , category, QusIndex ,catIndex);AddorEditQuestion.show()"><i
+                        class="fa fa-pencil"></i></a>
+                    <a *ngIf="PatientTemplate && PatientTemplate.id > 0" class="btn btn-outline-delete btn-icon mt-0"
+                      (click)="DeleteQuestion(item)"><i class="fa fa-close"></i></a>
+                    <a *ngIf="PatientTemplate && PatientTemplate.id === 0" class="btn btn-outline-delete btn-icon mt-0"
+                      (click)="removeQuestion(item , category, QusIndex ,catIndex)"><i class="fa fa-close"></i></a>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </ng-container>
+        <!-- <div class="row">
+          <div class="col-sm-12">
+            <label for="">Other Note</label>
+            <div class="form-group">
+              <textarea type="text" id="fossdsdrm7" class="form-control"></textarea>
+            </div>
+          </div>
+        </div> -->
+      </div>
+      <div class="add-section d-flex align-items-center justify-content-center">
+        <a class="btn btn-outline-primary" (click)="AddingNewQuestion()">Add New Section</a>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer w-100" *ngIf="PatientTemplate && PatientTemplate.id === 0">
+    <button [disabled]="isSavingTemplate" type="button" class="btn btn-dynamic-2c btn-sm" (click)="saveTemplate()">Save</button>
+  </div>
+</div>
+
+<div style="overflow-y:auto" mdbModal #editQuestionModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg flat-modal" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="editQuestionModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+
+        <h4 class="modal-title w-100" id="myModalLabel">Add Section</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <!-- <div class="col-sm-12">
+            <div class="form-group">
+              <label>Section Title</label>
+              <input type="text" class="form-control form-control-sm" placeholder="e.g General, Symptoms">
+            </div>
+          </div> -->
+          <div class="col-sm-12">
+            <div class="form-group">
+              <div class="d-flex align-items-center justify-content-between">
+                <label for="category">Category Name</label>
+                <a class="add-category text-info" hidden style="display: none" (click)="isAddingCategory=!isAddingCategory"><small>Add New</small></a>
+              </div>
+              <div class="select-category" *ngIf="!isAddingCategory">
+                <ng-select [(ngModel)]="newQuestion.questionCategoryId" [searchable]="false" appendTo="body"
+                  placeholder="Yes" (click)="$event.stopPropagation();">
+                  <ng-option *ngFor="let item of categoryList" [value]="item.id">{{item.name}} <span class="text-info">{{item.section}}</span></ng-option>
+                </ng-select>
+              </div>
+              <div class="create-new" *ngIf="isAddingCategory">
+                <div class="input-group">
+                  <input type="text" [(ngModel)]="newCategory" class="form-control" placeholder="Type Category Name"
+                    id="category">
+                  <!-- <a class="input-group-prepend" *ngIf="newCategory"
+                    (click)="addNewCategory();isAddingCategory=!isAddingCategory;">
+                    <span class="input-group-text text-white bg-dynamic-2c" id="category"><i class="fa fa-plus"></i></span>
+                  </a> -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer w-100">
+        <button type="button" class="btn btn-dark btn-sm" aria-label="Close" (click)="editQuestionModal.hide();"
+          mdbWavesEffect>Close</button>
+
+        <button type="button" class="btn btn-dynamic-2c btn-sm" (click)="editQuestionModal.hide();">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div mdbModal #AddorEditQuestion="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true" data-backdrop="false">
+  <div class="modal-dialog modal-lg flat-modal modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="AddorEditQuestion.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" *ngIf="isEditingQuestion" id="myModalLabel">Edit Question</h4>
+        <h4 class="modal-title w-100" *ngIf="!isEditingQuestion" id="myModalLabel">Add Question</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-6 ng-select-parent">
+            <div class="form-group">
+              <label for="">Question Type</label>
+              <ng-select class="ng-select-small" [(ngModel)]="newQuestion.questionType"  appendTo=".ng-select-parent" [searchable]="false"
+                placeholder="select Question Type" (click)="$event.stopPropagation();">
+                <ng-option [value]="1">Text Box</ng-option>
+                <ng-option [value]="2">Text Area</ng-option>
+                <ng-option [value]="3">Checkbox</ng-option>
+                <ng-option [value]="4">Radio Option</ng-option>
+              </ng-select>
+            </div>
+          </div>
+          <div class="col-sm-6 ng-select-parent">
+            <div class="form-group">
+              <div class="d-flex align-items-center justify-content-between">
+                <label for="category">Category</label>
+                <!-- <a class="add-category text-info" hidden style="display: none" (click)="isAddingCategory=!isAddingCategory"><small>Add New</small></a> -->
+              </div>
+              <div class="select-category" *ngIf="!isAddingCategory">
+                <ng-select class="ng-select-small" [(ngModel)]="newQuestion.questionCategoryId" [searchable]="false"  appendTo=".ng-select-parent"
+                  placeholder="Yes" (click)="$event.stopPropagation();">
+                  <ng-option *ngFor="let item of categoryList" [value]="item.id">{{item.name}} {{item.section}}</ng-option>
+                </ng-select>
+              </div>
+              <div class="create-new" *ngIf="isAddingCategory">
+                <div class="input-group">
+                  <input type="text" [(ngModel)]="newCategory" class="form-control" placeholder="Type Category Name"
+                    id="category">
+                  <!-- <a class="input-group-prepend" *ngIf="newCategory"
+                    (click)="addNewCategory();isAddingCategory=!isAddingCategory;">
+                    <span class="input-group-text text-white bg-dynamic-2c" id="category"><i class="fa fa-plus"></i></span>
+                  </a> -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+          <!-- <div class="col-sm-12">
+            <div class="form-group">
+              <label for="">Select Disease</label>
+              <ng-select [(ngModel)]="newQuestion.diseaseListIds" [multiple]="true" [searchable]="true" appendTo="body"
+                placeholder="Assign Diseases" (click)="$event.stopPropagation();">
+                <ng-option *ngFor="let item of diseaseList" [value]="item.id">{{item.description}} {{item.icdCode}}
+                </ng-option>
+              </ng-select>
+            </div>
+          </div> -->
+
+          <div class="form-group col-sm-12">
+            <div class="form-form">
+              <label for="formsds7">Question</label>
+              <textarea type="text" [(ngModel)]="newQuestion.question" id="formsds7" class="form-control"></textarea>
+            </div>
+          </div>
+
+          <div class="form-group col-sm-12"
+            *ngIf="newQuestion.questionType && (newQuestion.questionType === 3 || newQuestion.questionType === 4)">
+            <div class="form-form">
+              <div class="create-new">
+                <div class="input-group">
+                  <label class="w-100">Type your Option and (Click + to add)</label>
+                  <input type="text" [(ngModel)]="newOption" class="form-control" placeholder="Type option Text"
+                    id="category1">
+                  <a class="input-group-prepend" *ngIf="newOption" (click)="addNewOption();">
+                    <span class="input-group-text text-white bg-dynamic-2c" id="category1"><i
+                        class="fa fa-plus"></i></span>
+                  </a>
+                </div>
+              </div>
+              <div *ngFor="let opt of newQuestion.cpQuestionOptions; let optIndex = index;">
+                <div #alert class="form-control option-added" role="alert">
+                  <button type="button" class="close" aria-label="Close" (click)="RemoveOption(optIndex)">
+                    <i class="fa fa-close"></i>
+                  </button>
+                  <strong>{{opt.text}}</strong>.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <label class="col-sm-12" *ngIf="newQuestion.questionType">Field demo: <small> (Question view in CCM
+              Template)</small></label>
+          <div class="form-temp-view col-sm-12" *ngIf="newQuestion.questionType">
+            <!-- textbox-template -->
+            <div class="temp-field d-flex align-items-center justify-content-start row"
+              *ngIf="newQuestion.questionType && (newQuestion.questionType === 1 || newQuestion.questionType === 2)">
+              <div class="col">
+                <p class="m-0">Lorem ipsum dolor sit amet adipisicing elit ? </p>
+              </div>
+              <div class="col">
+                <div class="text-box w-100">
+                  <input type="text" id="form1" class="form-control">
+                </div>
+              </div>
+            </div>
+            <!-- radio-template -->
+
+            <div class="temp-field d-flex align-items-center justify-content-start row"
+              *ngIf="newQuestion.questionType && newQuestion.questionType === 4">
+
+              <div class="col">
+                <p>Lorem ipsum dolor sit amet adipisicing elit ? </p>
+              </div>
+              <div class="col">
+
+                <div class="radio">
+                  <!-- Material inline 1 -->
+                  <div class="form-check form-check-inline">
+                    <input type="radio" class="form-check-input" id="materialInline1" name="inlineMaterialRadiosExample"
+                      mdbInput>
+                    <label class="form-check-label" for="materialInline1">1</label>
+                  </div>
+
+                  <!-- Material inline 2 -->
+                  <div class="form-check form-check-inline ">
+                    <input type="radio" class="form-check-input" id="materialInline2" name="inlineMaterialRadiosExample"
+                      mdbInput>
+                    <label class="form-check-label" for="materialInline2">2</label>
+                  </div>
+
+                  <!-- Material inline 3 -->
+                  <div class="form-check form-check-inline">
+                    <input type="radio" class="form-check-input" id="materialInline3" name="inlineMaterialRadiosExample"
+                      mdbInput>
+                    <label class="form-check-label" for="materialInline3">3</label>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- checkbox-template -->
+
+            <div class="temp-field d-flex align-items-center justify-content-start row"
+              *ngIf="newQuestion.questionType && newQuestion.questionType === 3">
+              <div class="col">
+                <p>Lorem ipsum dolor sit amet adipisicing elit ? </p>
+              </div>
+              <div class="col">
+                <div class="checkb">
+                  <!-- Default inline 1-->
+                  <mdb-checkbox [inline]="true" [default]="true">1</mdb-checkbox>
+
+                  <!-- Default inline 2-->
+                  <mdb-checkbox [inline]="true" [default]="true">2</mdb-checkbox>
+
+                  <!-- Default inline 3-->
+                  <mdb-checkbox [inline]="true" [default]="true">3</mdb-checkbox>
+                </div>
+              </div>
+
+
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" *ngIf="!isEditingQuestion" class="btn btn-dark btn-sm" aria-label="Close"
+          (click)="AddorEditQuestion.hide();" mdbWavesEffect>Close</button>
+        <button type="button"  *ngIf="isEditingQuestion" class="btn btn-dark btn-sm" aria-label="Close"
+          (click)="AddorEditQuestion.hide();" mdbWavesEffect>Discard</button>
+        <button type="button"  [disabled]="!newQuestion.question || !newQuestion.questionType" *ngIf="!isEditingQuestion && PatientTemplate && PatientTemplate.id === 0" class="btn btn-dynamic-2c btn-sm"
+          (click)="AddorEditQuestion.hide();addQuestionTotemplate();">Add</button>
+          <button type="button"  [disabled]="!newQuestion.question || !newQuestion.questionType" *ngIf="!isEditingQuestion && PatientTemplate && PatientTemplate.id > 0" class="btn btn-dynamic-2c btn-sm"
+          (click)="AddorEditQuestion.hide();addEditNewQuestion();">Add</button>
+        <button type="button"  [disabled]="!newQuestion.question || !newQuestion.questionType" *ngIf="isEditingQuestion" class="btn btn-dynamic-2c btn-sm"
+          (click)="AddorEditQuestion.hide();addEditNewQuestion();">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div mdbModal #AddquestionListModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-fluid flat-modal modal-dialog-scrollable px-4" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="AddquestionListModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">Questions List</h4>
+      </div>
+      <div class="modal-body">
+        <app-questionnaire (AddQuestionEmitter)="AddquestionListModal.hide();AddQuestionTotemplateData($event)" [IsTemplateEditing]="true"></app-questionnaire>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div mdbModal #rearrangeCategoryModal="mdbModal" class="modal fade" tabindex="-1" role="dialog" [config]="{ignoreBackdropClick: true}"
+  aria-labelledby="myrearrangeCategoryModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="rearrangeCategoryModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">Assign Roles</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-6">
+            <mdb-checkbox [default]="true" [disabled]="true" [checked]="true">Facility User</mdb-checkbox>
+          </div>
+          <div class="col-sm-6">
+            <mdb-checkbox [default]="true">Site Manager</mdb-checkbox>
+          </div>
+          <div class="col-sm-6">
+            <mdb-checkbox [default]="true">Billing Provider</mdb-checkbox>
+          </div>
+          <div class="col-sm-6">
+            <mdb-checkbox [default]="true">Care Provider</mdb-checkbox>
+          </div>
+          <!-- <div class="col-sm-6">
+            <mdb-checkbox [default]="true">Default unchecked</mdb-checkbox>
+          </div> -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button"  class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+          (click)="rearrangeCategoryModal.hide()" mdbWavesEffect>Close</button>
+        <button type="button"  class="relative waves-light btn btn-sm btn-dynamic-secondary-2c" mdbWavesEffect>Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>

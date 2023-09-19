@@ -1,0 +1,24 @@
+:root{
+    --primary-color:#4eb048;
+    --secondary-color:#1d3d71;
+    --theme-font:'Roboto', sans-serif;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+body{
+  
+    background: #EDEDED;
+}
+body,*:not(i){
+    font-family: 'Roboto', sans-serif  !important;
+}
+.pure-button{
+    box-shadow: none;
+}
+.intelsoft{
+    display: none;
+}
+.home-menu {
+    background: var(--primary-color);   
+}

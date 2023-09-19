@@ -1,0 +1,444 @@
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <h1 class="page-title mb-0">Device Management</h1>
+  <div>
+    <button type="button" class="btn btn-dynamic-secondary-2c btn-sm mr-0" title="Device List"
+      (click)="deviceListModal.show();" placement="left">Device List</button>
+    <button type="button" class="btn btn-dynamic-2c btn-sm mr-0" title="Add New"
+      (click)="f.reset();resetFields();addDeviceModal.show()" placement="left">Add
+      New</button>
+  </div>
+</div>
+<div class="row mb-4">
+  <div class="col-lg-6 col-sm-12">
+    <div class="form-group">
+      <label for="searchBy">Search Device</label>
+      <input type="text" autocomplete="off" (keyup)="updateFilter($event)"
+        class="form-control form-control-sm box-shadow w-100" id="searchBy" placeholder="Search by Name" />
+    </div>
+  </div>
+  <div class="col-lg-6 col-sm-12">
+    <div class="form-group">
+      <label for="PatientS">Company</label>
+      <ng-select [searchable]="false" class="ng-select-small" placeholder="Company" [(ngModel)]="filterVendor"
+        (ngModelChange)="filterDevicesStock()">
+        <ng-option [value]="item" *ngFor="let item of vendorList">{{item.name}}</ng-option>
+      </ng-select>
+    </div>
+  </div>
+</div>
+<div class="table-data-list">
+  <div *ngIf="isLoading" class="d-flex justify-content-center text-center">
+    <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+  </div>
+  <ngx-datatable #table appRecalculateNgxTable class="material" [columnMode]="'force'" [limit]="10" [headerHeight]="50"
+    [footerHeight]="50" [rowHeight]="35" [scrollbarV]="false" [scrollbarH]="true" [rows]="adminInventoryList">
+    <ngx-datatable-column name="Device" prop="deviceName"></ngx-datatable-column>
+    <!-- <ngx-datatable-column name="Status" >
+      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+        <span class="badge badge-pill badge-primary" *ngIf="row.isActive">Active</span>
+        <span class="badge badge-pill badge-warning" *ngIf="!row.isActive">In Active</span>
+      </ng-template>
+    </ngx-datatable-column> -->
+    <ngx-datatable-column name="Company Name" prop="companyName"></ngx-datatable-column>
+    <ngx-datatable-column name="Modality" prop="modality"></ngx-datatable-column>
+    <ngx-datatable-column name="Stock Count">
+      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+        <span class="text-dynamic-2c">{{row.stockCount}}</span>
+      </ng-template>
+    </ngx-datatable-column>
+
+    <ngx-datatable-column name="Action" [maxWidth]="150" [frozenRight]=true>
+      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+        <div class="d-flex flex-nowrap">
+          <!-- <button class="btn btn-dynamic-secondary-2c btn-sm">Details</button> -->
+          <button class="btn btn-dynamic-2c btn-sm px-2 py-1 d-flex align-items-center"
+            (click)="selectedDeviceforIssue=row;filterDeviceSerials(row);issueDeviceModal.show();"><i
+              class="fa fa-share mr-2" style="font-size: 1.3rem;"></i>Issue Device</button>
+        </div>
+      </ng-template>
+    </ngx-datatable-column>
+
+  </ngx-datatable>
+</div>
+
+
+
+<div mdbModal #deviceListModal="mdbModal" [config]="{ignoreBackdropClick: true}" class="modal fade" tabindex="-1"
+  role="dialog" aria-labelledby="myroleManagementModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg  flat-modal" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="deviceListModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">Device List</h4>
+      </div>
+
+      <div class="modal-body">
+        <div class="row">
+
+          <div class="col-lg-6 col-sm-12">
+            <label>Company</label>
+            <div class="form-group">
+              <ng-select [(ngModel)]="filterDeviceLIstDto.CompanyId" [searchable]="true"
+                (ngModelChange)="filterDevicesListBYCompanyAndModality()" class="w-100 ng-select-small"
+                placeholder="Select Company" (click)="$event.stopPropagation();">
+                <ng-option [value]="item.id" *ngFor="let item of vendorList">{{item.name}}</ng-option>
+              </ng-select>
+            </div>
+          </div>
+          <div class="col-lg-6 col-sm-12">
+            <div class="form-group">
+              <label for="PatientS">Modality</label>
+              <ng-select  [(ngModel)]="filterDeviceLIstDto.ModalityId" [searchable]="true"
+                (ngModelChange)="filterDevicesListBYCompanyAndModality()" class="w-100 ng-select-small"
+                placeholder="Select Modality">
+                <ng-option [value]="item.id" *ngFor="let item of modalitiesList">{{item.name}}</ng-option>
+              </ng-select>
+            </div>
+          </div>
+
+          <div class="col-sm-12">
+            <div class="devices-list mt-3">
+              <table mdbTable class="table table-bordered table-small">
+                <thead>
+                  <tr>
+                    <th scope="col">Device </th>
+                    <th scope="col" style="width: 100px;">Status</th>
+                  </tr>
+                </thead>
+              </table>
+              <div malihu-scrollbar [scrollbarOptions]="notificationScroll" style="max-height: 300px;">
+                <table mdbTable class="table table-bordered table-small">
+                  <tbody>
+                    <tr *ngFor="let item of allDevicesList let i=index">
+                      <td scope="row">{{item.deviceName}}</td>
+                      <td style="width: 100px;" class="text-right">
+                        <!-- Default checked -->
+                        <div class="custom-control custom-switch" *ngIf="item.deviceInventory.length === 0"
+                          container="body" placement="left">
+                          <input type="checkbox" class="custom-control-input" id="customSwitch1{{i}}"
+                            [checked]="item.isActive" checked (change)="deviceStatusChanged($event, item)">
+                          <!-- <input type="checkbox" *ngIf="item.deviceInventory.length > 0"  disabled class="custom-control-input" id="customSwitch1{{i}}"
+                              [checked]="item.isActive" checked > -->
+                          <label class="custom-control-label" for="customSwitch1{{i}}"></label>
+                        </div>
+                        <div class="custom-control custom-switch"
+                          title="You cannot deactivate this device due to inventory in hand" container="body"
+                          placement="left" *ngIf="item.deviceInventory.length > 0">
+                          <!-- <input type="checkbox" *ngIf="item.deviceInventory.length === 0" class="custom-control-input" id="customSwitch1{{i}}"
+                            [checked]="item.isActive" checked (change)="deviceStatusChanged($event, item)"> -->
+                          <input type="checkbox" disabled class="custom-control-input" id="customSwitch1{{i}}"
+                            [checked]="item.isActive" checked>
+                          <label class="custom-control-label" for="customSwitch1{{i}}"></label>
+                        </div>
+
+                        <!-- <mdb-checkbox [checked]="item.isActive" (change)="deviceStatusChanged($event.checked, item)" -->
+                        <!-- [default]="true"></mdb-checkbox> -->
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div mdbModal #addDeviceModal="mdbModal" [config]="{ignoreBackdropClick: true}" class="modal fade" tabindex="-1"
+  role="dialog" aria-labelledby="myroleManagementModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg flat-modal modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="addDeviceModal.hide();">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">Device Stock In</h4>
+      </div>
+
+      <div class="modal-body">
+        <form name="form" #f="ngForm" novalidate>
+          <div class="row">
+            <div class="col-sm-12 mb-3">
+              <div class="d-flex align-items-center justify-content-between">
+                <label>Device Name<small class="text-danger">*</small></label>
+                <!-- <a class="text-info link justify-content-end"
+                  (click)="!addingNew=!addingNew;resetSelectedDevice();selectedDeviceChanged()" class>Add New</a> -->
+                <a *ngIf="addingNew" class="add-category text-info ml-auto" style="color: #33b5e5"
+                  (click)="addingNew=false;resetSelectedDevice()"><small>Add New</small></a>
+                <a *ngIf="!addingNew" class="add-category text-info ml-auto" style="color: #33b5e5"
+                  (click)="addingNew=true;resetSelectedDevice()"><small>Select
+                    Existing</small></a>
+              </div>
+
+              <input   appendTo="body" *ngIf="!addingNew" type="text" name="deviceName" [(ngModel)]="addDeviceDto.deviceName"
+                class="form-control form-control-sm box-shadow w-100" id="deviceName1" placeholder="Device Name" />
+              <!-- <div *ngIf="deviceName1 && deviceName1.invalid && (deviceName1.dirty || deviceName1.touched)"
+              class="invalid invalid-text">
+              <div *ngIf="deviceName1.errors['required']">
+                <small class="text-danger">Please enter device name.</small>
+              </div>
+            </div> -->
+              <div class="form-group" *ngIf="addingNew">
+                <ng-select appendTo="body" [searchable]="true" name="selectDevice" [(ngModel)]="selectedDevice"
+                  (ngModelChange)="selectedDeviceChanged()" class="ng-select-small" placeholder="Device Name"
+                  (click)="$event.stopPropagation();" required #selectDevice="ngModel" [ngClass]="{ 'is-invalid':(selectDevice && (selectDevice.touched ||
+                selectDevice.dirty) &&
+                !selectDevice.valid  )}">
+                  <ng-option [value]="item" *ngFor="let item of adminDeviceList">{{item.deviceName}}</ng-option>
+                </ng-select>
+                <div *ngIf="selectDevice && selectDevice.invalid && (selectDevice.dirty || selectDevice.touched)"
+                  class="invalid invalid-text">
+                  <div *ngIf="selectDevice.errors['required']">
+                    <small class="text-danger">Please select device name.</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <p class="mb-2" *ngIf="!addingNew && selectedDevice"><strong>Device Detail</strong></p>
+            <div class="p-3 border mb-3" *ngIf="!addingNew && selectedDevice">
+              <div class="row">
+                <div class="col-lg-4 col-sm-12">
+                  <label>Company<small class="text-danger">*</small></label>
+                  <div class="form-group">
+                    <ng-select  appendTo="body" [searchable]="true" name="company" [(ngModel)]="addDeviceDto.deviceVendorId"
+                      class="ng-select-small" placeholder="Select Service Type"
+                      (click)="$event.stopPropagation();" required #deviceVendorId="ngModel" [ngClass]="{ 'is-invalid':(deviceVendorId.touched ||
+                  deviceVendorId.dirty) &&
+                  !deviceVendorId.valid }">
+
+                      <ng-option [value]="item.id" *ngFor="let item of vendorList">{{item.name}}</ng-option>
+                    </ng-select>
+                    <div *ngIf="deviceVendorId.invalid && (deviceVendorId.dirty || deviceVendorId.touched)"
+                      class="invalid invalid-text">
+                      <div *ngIf="deviceVendorId.errors['required']">
+                        <small class="text-danger">Please select company.</small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-4 col-sm-12">
+                  <div class="form-group">
+                    <label for="PatientS">Modality<small class="text-danger">*</small></label>
+                    <ng-select appendTo="body" [searchable]="false" [(ngModel)]="addDeviceDto.modalityId" class="ng-select-small"
+                      placeholder="Modality" name="modality" required #modalityId="ngModel">
+                      <ng-option [value]="item.id" *ngFor="let item of modalitiesList">{{item.name}}</ng-option>
+                    </ng-select>
+                    <div *ngIf="modalityId.invalid && (modalityId.dirty || modalityId.touched)"
+                      class="invalid invalid-text">
+                      <div *ngIf="modalityId.errors['required']">
+                        <small class="text-danger">Please select modality.</small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-lg-4 col-sm-12">
+                  <div class="form-group">
+                    <label for="price">Price<small class="text-danger">*</small></label>
+                    <input type="number" autocomplete="off" name="price" [(ngModel)]="addDeviceDto.price"
+                      class="form-control form-control-sm box-shadow w-100" id="price" pattern="^\d+(\.\d{1,2})?$"
+                      placeholder="Price" required #price="ngModel" [ngClass]="{ 'is-invalid':(price.touched ||
+                  price.dirty) &&
+                  !price.valid }" />
+                    <div *ngIf="price.invalid && (price.dirty || price.touched)" class="invalid invalid-text">
+                      <div *ngIf="price.errors['required']">
+                        <small class="text-danger">Please select price.</small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-12 col-sm-12">
+                  <!-- <div class="form-group"> -->
+                  <!-- <label for="imagePath">Image Path</label>
+                <input type="file" autocomplete="off" [(ngModel)]="addDeviceDto.imagePath"
+                  class="form-control form-control-sm box-shadow w-100" id="imagePath" placeholder="imagePath" required
+                  #imagePath="ngModel" [ngClass]="{ 'is-invalid':(imagePath.touched ||
+                  imagePath.dirty) &&
+                  !imagePath.valid }"/>
+                <div *ngIf="imagePath.invalid && (imagePath.dirty || imagePath.touched)" class="invalid invalid-text">
+                  <div *ngIf="imagePath.errors['required']">
+                    <small class="text-danger">Please select imagePath.</small>
+                  </div>
+                </div> -->
+
+                <!-- <div class="file-field md-form">
+                  <div mdbBtn color="priary" size="sm" class="waves-light" mdbWavesEffect>
+                    <span>Choose file</span>
+                    <input type="file" mdbFileSelect (uploadOutput)="onUploadOutput($event)" [uploadInput]="uploadInput">
+                  </div>
+                  <div class="file-path-wrapper">
+                    <input class="file-path" type="text" placeholder="Upload your file" [value]="showFiles()">
+                  </div>
+                </div> -->
+
+                  <div class="form-group">
+                     <div class="file-field">
+                      <div class="waves-light btn btn-dynamic-2c btn-sm m-0" mdbWavesEffect>
+                        <span>Choose file</span>
+                        <input type="file" mdbFileSelect (change)="onUploadOutput($event)" name="Choosefile" id="imagePath"
+                          placeholder="imagePath" accept="image/*" required>
+                      </div>
+                      <div class="file-path-wrapper" style="height: 0;">
+                        <input class="form-control form-control-sm" type="text" name="filename" [(ngModel)]="showFileName"
+                          placeholder="Upload your file" accept="image/*" disabled>
+                      </div>
+                    </div>
+                    <!-- <small *ngIf="imageFileExtension" class="text-danger"> Please select these type of files(bmp, jpg,
+                      jpeg, gif, png)</small> -->
+                  </div>
+
+
+
+                  <!-- </div> -->
+                </div>
+
+                <div class="col-lg-12 col-sm-12">
+                  <div class="form-group">
+                    <label for="formmm7">Descriptions<small class="text-danger">*</small></label>
+                    <textarea type="text" id="formmm7" name="description" [(ngModel)]="addDeviceDto.description"
+                      class="form-control" mdbInput required #description="ngModel" [ngClass]="{ 'is-invalid':(description.touched ||
+                  description.dirty) &&
+                  !description.valid }"></textarea>
+                    <div *ngIf="description.invalid && (description.dirty || description.touched)"
+                      class="invalid invalid-text">
+                      <div *ngIf="description.errors['required']">
+                        <small class="text-danger">Please add description.</small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+
+              <div class="col-lg-12 col-sm-12">
+                <div class="form-group">
+                  <label for="form25">Serial No.<small class="text-danger">*</small> <small class="text-info">Add comma
+                      seperated values</small></label>
+                  <textarea type="text" id="form25" name="serialNO" [(ngModel)]="serialNumberstring"
+                    class="form-control" mdbInput required #serialno="ngModel" [ngClass]="{ 'is-invalid':(serialno.touched ||
+                serialno.dirty) &&
+                !serialno.valid }">
+              </textarea>
+                  <div *ngIf="serialno.invalid && (serialno.dirty || serialno.touched)" class="invalid invalid-text">
+                    <div *ngIf="serialno.errors['required']">
+                      <small class="text-danger">Please Add serial no.</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-dynamic-2c btn-sm" (click)="addDeviceModal.hide();SubmitDevice()"
+          [disabled]="( !serialNumberstring || !addDeviceDto.description || !addDeviceDto.imagePath ||
+          !addDeviceDto.price || !addDeviceDto.modalityId || !addDeviceDto.deviceVendorId || (!selectedDevice || !addDeviceDto.deviceName) )">Submit</button>
+        <button type="submit" class="btn btn-dark btn-sm" (click)="addDeviceModal.hide();">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div mdbModal #issueDeviceModal="mdbModal" [config]="{ignoreBackdropClick: true}" (close)="f2.reset();"
+  class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myroleManagementModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg  flat-modal" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="issueDeviceModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">Issue Device</h4>
+      </div>
+
+      <div class="modal-body">
+        <form name="form2" #f2="ngForm" novalidate>
+          <div class="row">
+            <div class="col-sm-12">
+              <label>Device Name<small class="text-danger">*</small></label>
+              <div class="form-group">
+                <ng-select [searchable]="true"  appendTo="body" disabled class="w-100 ng-select-small" name="myDevicename"
+                  [(ngModel)]="selectedDeviceforIssue" placeholder="Device Name"
+                  (ngModelChange)="filterDeviceSerials(selectedDeviceforIssue)" required #IssueDeviceName="ngModel"
+                  [ngClass]="{ 'is-invalid':(IssueDeviceName.touched ||
+                IssueDeviceName.dirty) &&
+                !IssueDeviceName.valid }">
+                  <ng-option [value]="item" *ngFor="let item of inventoryTemp">{{item.deviceName}}</ng-option>
+                </ng-select>
+                <div *ngIf="IssueDeviceName.invalid && (IssueDeviceName.dirty || IssueDeviceName.touched)"
+                  class="invalid invalid-text">
+                  <div *ngIf="IssueDeviceName.errors['required']">
+                    <small class="text-danger">Please Select Device name.</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-6 col-sm-12">
+              <label>Organization<small class="text-danger">*</small></label>
+              <div class="form-group">
+                <ng-select class="ng-select-small" [(ngModel)]="organizationId" name="myOrganization" [multiple]="false"
+                  [searchable]="true" (ngModelChange)="selectedFacilityID=null;getFacilitiesbyOrgId()"
+                  placeholder="Select Organization" required #IssueOrganizationid="ngModel" [ngClass]="{ 'is-invalid':(IssueOrganizationid.touched ||
+                IssueOrganizationid.dirty) &&
+                !IssueOrganizationid.valid }">
+                  <ng-option [value]="item.id" *ngFor="let item of organizationList">{{item.name}}</ng-option>
+                </ng-select>
+                <div *ngIf="IssueOrganizationid.invalid && (IssueOrganizationid.dirty || IssueOrganizationid.touched)"
+                  class="invalid invalid-text">
+                  <div *ngIf="IssueOrganizationid.errors['required']">
+                    <small class="text-danger">Please Select Oraganization.</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6 col-sm-12">
+              <div class="form-group">
+                <label for="Facilities">Facilities<small class="text-danger">*</small></label>
+                <ng-select class="ng-select-small" name="myFacilities" [(ngModel)]="selectedFacilityID"
+                  [disabled]="!organizationId" [multiple]="false" [searchable]="true" placeholder="Select Facility"
+                  required #IssueFacility="ngModel" [ngClass]="{ 'is-invalid':(IssueFacility.touched ||
+                IssueFacility.dirty) &&
+                !IssueFacility.valid }">
+                  <ng-option [value]="item.id" *ngFor="let item of facilityList">{{item.facilityName}}</ng-option>
+                </ng-select>
+                <div *ngIf="IssueFacility.invalid && (IssueFacility.dirty || IssueFacility.touched)"
+                  class="invalid invalid-text">
+                  <div *ngIf="IssueFacility.errors['required']">
+                    <small class="text-danger">Please Select Facility Name.</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-12 col-sm-12">
+              <label>Serial No.<small class="text-danger">*</small></label>
+              <div class="bg-white p-3 border">
+                <mdb-checkbox [inline]="true" (change)="checkedDevices($event.checked, list.deviceInventoryId)"
+                  [default]="true" *ngFor="let list of serialNos">{{list.serialNumber}}</mdb-checkbox>
+
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-dynamic-2c btn-sm"
+          [disabled]="issuingDevice || !selectedFacilityID || !organizationId || !selectedDeviceforIssue || selectedSerialNos.length === 0"
+          (click)="issueDevices();"><span *ngIf="issuingDevice" class="spinner-border spinner-border-sm" role="status"
+            aria-hidden="true"></span> Issue</button>
+        <button type="submit" class="btn btn-dark btn-sm" (click)="issueDeviceModal.hide();">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

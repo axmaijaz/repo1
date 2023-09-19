@@ -1,0 +1,56 @@
+<div class="d-flex flex-row align-items-center justify-content-between mb-3">
+  <div class="d-flex justify-content-start align-items-center">
+    <h4 class="mr-3 mb-0"><a class="text-dark" (click)="goBack()">
+        <i class="fa fa-arrow-left"></i></a></h4>
+    <h1 class="page-title mb-0">Depression Counselling</h1>
+  </div>
+</div>
+<app-patient-details></app-patient-details>
+
+<div class="panel rounded-0 mt-2" style="overflow: visible;">
+  <div class="panel-header">
+    <h3>Counseling for Depression  <i class="fa fa-exclamation-circle fa-lg" ></i></h3>
+  </div>
+  <div class="panel-body">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="form-form form-group">
+          <label for="form12">Notes <sup class="text-danger">*</sup> </label>
+          <textarea type="text" [(ngModel)]="editDPCounsellingObj.note" id="form12" rows="6" class="form-control" required></textarea>
+        </div>
+      </div>
+      <div class="col-lg-4 col-sm-4">
+        <div class="form-group">
+          <label for="taskType">Billing Provider </label>
+          <ng-select [(ngModel)]="editDPCounsellingObj.billingProviderId" class="ng-select-small w-100" [multiple]="false" [searchable]="true" placeholder="Status">
+            <ng-option [value]="item.id" *ngFor="let item of BIllingProviderList">{{item.lastName}},{{item.firstName}}</ng-option>
+          </ng-select>
+        </div>
+      </div>
+      <div class="col-lg-4 col-sm-4">
+        <div class="form-group">
+          <label>Signature Date</label>
+          <div class="input-group">
+            <input type="text" [ngModel]="editDPCounsellingObj.signatureDate | dateFormatPipe" (ngModelChange)="editDPCounsellingObj.signatureDate=$event" class="form-control form-control-sm" #date="dpDayPicker" [dpDayPicker]="datePickerConfig"
+              [theme]="'dp-material ccm-date-picker'" [mode]="'day'" />
+            <a (click)="date.api.open();" class="input-group-append">
+              <span class="input-group-text text-white bg-dynamic-2c" id="category1"><i
+                  class="fa fa-calendar fa-lg"></i></span> </a>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-sm-4">
+        <div class="form-group">
+          <label for="result">Signature</label>
+          <div class="d-flex">
+            <input type="text" [(ngModel)]="editDPCounsellingObj.signature" class="form-control form-control-sm" id="result" placeholder="Signature">
+            <button type="button" [disabled]="SavingDPCounselling || !editDPCounsellingObj.note" (click)="SaveDPCounselling()" class="btn btn-sm btn-dynamic-2c my-0">
+              <span *ngIf="SavingDPCounselling" class="spinner-border spinner-border-sm" role="Select Billing Provider" aria-hidden="true"></span>
+              Save</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

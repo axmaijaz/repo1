@@ -1,0 +1,18 @@
+@import 'theme';
+.logs-container{
+  height: 350px;
+  margin-right: 1.5rem;
+  &::before {
+    left: calc(5rem + 32px);
+  }
+}
+.dropdown-item:hover, .dropdown-item:focus {
+  background-color:$dynamic-colour;
+  color:#fff !important;
+}
+.text-orange {
+  color: orange;
+}
+.text-red {
+  color: red;
+}

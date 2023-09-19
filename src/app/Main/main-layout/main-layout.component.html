@@ -1,0 +1,1161 @@
+
+<header >
+  <mdb-side-nav  #sidenav class="fixed" [class.margin-top-30px]="announcementText" [class.side-nav-collapse]="sideCollapse" [fixed]="true">
+    <div class="collapse-side-nav" title="Collapse Navbar" placement="right" container="body"
+      [class.active]="sideCollapse" (click)="sideCollapse = !sideCollapse; refrestNgx();">
+      <i class="fa"
+        [class.fa-angle-left]="sideCollapse == false" [class.fa-angle-right]="sideCollapse == true"></i>
+    </div>
+    <div class="facility-info facilty-demo" *ngIf="facilityName">
+      <div class="dropdown sidenave-dropdown w-100" dropdown>
+        <button type="button" class="btn-custom-sidenav px-3 py-2 btn-block d-flex align-items-center justify-content-between">
+          <div class="d-inline-flex align-items-center">
+            <span style="font-size: 1.8em!important;" class="fa fa-hospital-o fa-lg mr-2"></span>
+            <small class="text-uppercase ellipse d-inline-block text-left"
+           title="{{facilityName}}" >{{facilityName}}</small>
+          </div>
+
+           <span class="fa fa-angle-right"></span>
+        </button>
+        <div class="sidenave-dropdown-menu" role="menu">
+          <div class="w-100 bg-sidenav-custom " style="max-height: 235px;padding-top: 0px;">
+            <div class="input-field-search">
+              <input type="text" (keyup)="updateFilter($event)" placeholder="Search Facility" class="form-control-facility">
+              <span class="fa fa-search fa-lg"></span>
+            </div>
+            <div style="max-height: 200px;overflow-y: auto;">
+                <ul class="facility-list-demo">
+                  <li [class.active]="switchFacilityId===item.id" (click)="switchFacilityId=item.id;switchFacility()" *ngFor="let item of facilityList">{{item.facilityName}}</li>
+                </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- <div class="w-100"  >
+        <ul class="collapsible collapsible-accordion" *ngIf="facilityName">
+          <mdb-accordion [multiple]="false" aria-multiselectable="false">
+            <mdb-accordion-item>
+              <mdb-accordion-item-head>
+                <div class="d-flex align-items-center">
+                   <small class="text-uppercase ellipse d-inline-block"
+                  title="{{facilityName}}" >{{facilityName}}</small>
+                </div>
+
+              </mdb-accordion-item-head>
+              <mdb-accordion-item-body>
+                <div class="w-100" style="max-height: 200px;padding-top: 0px;background: #fff;">
+                  <div style="max-height: 200px;overflow-y: auto;">
+                      <ul class="facility-list-demo">
+                        <li [class.active]="switchFacilityId===item.id" (click)="switchFacilityId=item.id;switchFacility()" *ngFor="let item of facilityList">{{item.facilityName}}</li>
+                      </ul>
+                  </div>
+                </div>
+              </mdb-accordion-item-body>
+            </mdb-accordion-item>
+          </mdb-accordion>
+        </ul>
+      </div> -->
+    </div>
+    <div class="mt-0">
+      <!-- when announcement bar remove then "side-nav-links-30px" class remove -->
+      <div class="side-nav-links side-nav-links-30px custom-sidenav"  [class.admin]="!facilityName" style="overflow-y: auto;" >
+        <app-admin-sidenav *ngIf="!showPatientLayout" ></app-admin-sidenav>
+        <app-patient-side-nav *ngIf="showPatientLayout"></app-patient-side-nav>
+      </div>
+    </div>
+    <div class="web-version">
+      <h6>Version: {{securityService.appVersion}}</h6>
+    </div>
+    <!-- <div class="sidenav-bg mask-strong"></div> -->
+  </mdb-side-nav>
+  <div (click)="openUrl()" [class.cursor]="announcementText?.url"  *ngIf="announcementText" class="notification-bar-mh notification-log notification-log-show">
+    <p>
+      <img src="../../../assets/img/loudspeaker.png" class=" mr-1 tada animated" height="20">
+      <!-- <i class="fa fa-bullhorn faa-tada animated"></i>  -->
+      {{announcementText?.announcement}}</p>
+    <span (click)="closeAppAnnouncementBar()">&times;</span>
+  </div>
+  <mdb-navbar [class.margin-top-30px]="announcementText" SideClass="navbar fixed-top navbar-toggler navbar-expand-lg double-nav" [containerInside]="false">
+    <navlinks class="navbar-container">
+      <div class="float-left">
+        <a (click)="sidenav.toggle()" class="button-collapse"><i class="la la-menu"></i></a>
+      </div>
+    </navlinks>
+    <mdb-navbar-brand class="brand-logo" [class.brand-logo-smal]="sideCollapse" (click)="navigateHome();"
+      routerLinkActive="router-link-active">
+      <!-- <img src="/assets/img/logo3.svg" alt="" srcset=""> -->
+      <img src="{{brandingService.logoPath}}logo-1024-265.png" style="max-width: 300px" alt="{{brandingService.appTitle}}">
+    </mdb-navbar-brand>
+    <navlinks class="right-menu ml-auto">
+      <ul class="nav navbar-nav nav-flex-icons ml-auto ie-double-nav">
+        <ng-container *ngIf="recordingService.isRecording">
+          <li class="nav-item dropdown btn-group icon-dropdown" >
+            <a type="button" (click)="StopRecording()" class="nav-link dropdown-toggle flex-wrap pulse-btn">
+              <!-- <img src="/assets/img/2fa_1.svg" width="30" class="fa-img" alt="2FA"> -->
+              <span class="recording-border">
+                {{recordingService.recordingIntervalValue}}</span>
+              <small class="w-100 text-center">Stop </small>
+            </a>
+          </li>
+        </ng-container>
+        <ng-template #popTemplate class="mt-3">
+          <div class="bg-red text-white p-3">
+            <div class="text-2fa">
+              <h6 class="text-white">Your account is now more secure</h6>
+              <p>
+                Two Factor Authentication is not enabled yet. It will add an additional layer of security to your account by requiring more than just a password to log in. <a (click)="get2FAPdf()">Learn More</a>
+              </p>
+                  <p>Please note that last date to enable Two Factor authentication is Sep 14, 2020 after that all account will be blocked access to 2C Health solution.
+                  </p>
+              <div class="text-center">
+                <button (click)="profile()" type="button" class="btn btn-white py-2 px-3 btn-block">Enable Two Factor Auth</button>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+        <li #voiceNotifDropDown='bs-dropdown' class="nav-item dropdown btn-group icon-dropdown" dropdown>
+          <a style="display: none;" dropdownToggle type="button" class="nav-link dropdown-toggle flex-wrap" *hasClaim="['IsFacilityUser']">
+            <i class="fa fa-microphone fa-lg "></i>
+            <small class="w-100 text-center">Voice</small>
+          </a>
+          <div class="dropdown-menu dropdown-menu-right notify-dropdown microphone-menu-dropdown" role="menu">
+            <div class="d-flex justify-content-end align-items-center  show-list micro-header" >
+                  <i class="fa fa-file-text-o cursor-pointer" (click)="recordingFile.show()"></i>
+            </div>
+            <div class="text-center h-100 d-flex align-items-center justify-content-center">
+              <div>
+                <i class="fa fa-microphone-slash cursor-pointer" *ngIf="!micState"  (click)="SpeechModeChange()" style="font-size: 6rem;"></i>
+                <i class="fa fa-microphone cursor-pointer" *ngIf="micState" (click)="SpeechModeChange()"  style="font-size: 6rem;"></i>
+              </div>
+              <!-- <div class="custom-control custom-switch" style="padding-left: 2.7rem;">
+                <input type="checkbox" class="custom-control-input" id="customSwitches">
+                <label class="custom-control-label" for="customSwitches"></label>
+              </div> -->
+            </div>
+          </div>
+        </li>
+        <ng-container *hasClaim="['ccmService']">
+          <li class="nav-item dropdown btn-group icon-dropdown" *hasClaim="['IsFacilityUser']" (click)="resetfields();getPatientTasksList();">
+            <a type="button" class="nav-link dropdown-toggle flex-wrap">
+              <i class="fa fa-tasks fa-lg text-dynamic-2c"></i>
+              <small class="w-100 text-center">Task</small>
+            </a>
+          </li>
+        </ng-container>
+
+        <!-- <li class="nav-item dropdown btn-group icon-dropdown" (click)="loadConfirmation();" >
+          <a type="button" class="nav-link dropdown-toggle flex-wrap">
+            <i class="fa fa-bell fa-lg"></i>
+            <small class="w-100 text-center" >task</small>
+          </a>
+        </li> -->
+        <!-- *hasClaim="['IsCommunicationUser']" -->
+        <li class="nav-item dropdown btn-group icon-dropdown"  dropdown>
+          <!-- <a type="button" class="nav-link">
+
+          </a> -->
+          <a *ngIf="isFacilityChatEnabled" type="button" class="nav-link dropdown-toggle flex-wrap" (click)="openChatModal();loadCallingComponent()"
+            >
+            <i class="fa fa-comment fa-lg text-dynamic-2c" [class.message-alert]="messageNotifyList.length"></i>
+            <!-- <i class="fa fa-comment fa-lg notify-active text-dynamic-2c" *ngIf="messageNotifyList.length">{{messageNotifyList.length}}</i> -->
+            <small class="w-100 text-center">Chat</small>
+          </a>
+          <ng-container *ngIf="isFacilityChatEnabled"></ng-container>
+          <!-- <span  class="notify-active" *ngIf=" facilityId && messageNotifyList.length">{{messageNotifyList.length}}</span> -->
+          <a  *ngIf="!isFacilityChatEnabled && facilityId"  type="button" class="nav-link dropdown-toggle flex-wrap disable-cursor" title="Chat Disabled" >
+            <i class="fa fa-comment fa-lg disable-icon"></i>
+            <small class="w-100 text-center">Chat</small>
+          </a>
+        </li>
+        <li #todoNotifDropDown='bs-dropdown' class="nav-item dropdown btn-group icon-dropdown" dropdown>
+          <a dropdownToggle type="button" class="nav-link dropdown-toggle flex-wrap" *hasClaim="['IsFacilityUser']">
+            <i class="fa fa-clipboard fa-lg text-dynamic-2c"></i>
+            <small class="w-100 text-center">ToDo</small>
+          </a>
+          <ng-container *hasClaim="['IsFacilityUser']">
+            <span class="notify-active"
+              *ngIf="toDoNotifyList.length && activeNotificationFilter.todo ==='New'">{{toDoNotifyList.length}}</span>
+          </ng-container>
+          <div class="dropdown-menu dropdown-menu-right notify-dropdown" role="menu">
+            <div class="d-flex justify-content-between align-items-center show-list">
+              <div class="ntype">To Do List</div>
+              <div class="show-notifications">
+                <a (click)="activeNotificationFilter.todo='New';searchAppNotifications('ToDo','New');$event.stopPropagation();"
+                  [class.active]="activeNotificationFilter.todo === 'New'">
+                  <mdb-badge>New</mdb-badge>
+                </a>
+
+                <a (click)="activeNotificationFilter.todo='Last20';searchAppNotifications('ToDo','Last20');$event.stopPropagation();"
+                  [class.active]="activeNotificationFilter.todo === 'Last20'">
+                  <mdb-badge>Last 20</mdb-badge>
+                </a>
+
+                <a (click)="activeNotificationFilter.todo='All';searchAppNotifications('ToDo','All');$event.stopPropagation();"
+                  [class.active]="activeNotificationFilter.todo === 'All'">
+                  <mdb-badge>All</mdb-badge>
+                </a>
+              </div>
+            </div>
+            <mdb-progress-bar class="progress primary-color-dark" *ngIf="searchingNotification" mode="indeterminate">
+            </mdb-progress-bar>
+            <p class="mb-0 text-small p-2" *ngIf="toDoNotifyList.length === 0">No Record Found!</p>
+            <div *ngIf="todoNotifDropDown.isOpen" class="notification-list" style="height: 300px;" malihu-scrollbar
+              [scrollbarOptions]="scrollbarOptionsTimeline">
+              <div class="notification-items" *ngFor="let notify of toDoNotifyList">
+                <div class="n-desc" (click)="toDoList.show();markNOtificationRead(notify)">
+                  <strong>{{getvalue(notify.entity, 'ToDoTitle') }}</strong>
+                  <p>{{getvalue(notify.entity, 'ToDoDescription')}}</p>
+                </div>
+                <div class="n-counter" (click)="OpenNotification(notify)" title="Mark as completed" placement="top"
+                  container="body"><i class="fa fa-check"></i></div>
+              </div>
+            </div>
+          </div>
+        </li>
+        <!-- <li *hasClaim="['rpmService']" #rpmNotifDropDown='bs-dropdown' class="nav-item dropdown btn-group icon-dropdown" dropdown>
+          <a dropdownToggle type="button" class="nav-link dropdown-toggle flex-wrap" *hasClaim="['IsFacilityUser']">
+            <i class="fa fa-bell fa-lg"></i>
+            <small class="w-100 text-center">RPM</small>
+          </a>
+          <ng-container *hasClaim="['IsFacilityUser']">
+            <span class="notify-active"
+              *ngIf="rpmNotifyList.length && activeNotificationFilter.rpm ==='New'">{{rpmNotifyList.length}}</span>
+          </ng-container>
+          <div class="dropdown-menu dropdown-menu-right notify-dropdown" role="menu" (click)="$event.stopPropagation()">
+            <div class="d-flex justify-content-between align-items-center show-list">
+              <div class="ntype">RPM</div>
+              <div class="show-notifications">
+                <a (click)="activeNotificationFilter.rpm='New';searchAppNotifications('RPM','New');$event.stopPropagation();"
+                  [class.active]="activeNotificationFilter.rpm === 'New'">
+                  <mdb-badge>New</mdb-badge>
+                </a>
+
+                <a (click)="activeNotificationFilter.rpm='Last20';searchAppNotifications('RPM','Last20');$event.stopPropagation();"
+                  [class.active]="activeNotificationFilter.rpm === 'Last20'">
+                  <mdb-badge>Last 20</mdb-badge>
+                </a>
+
+                <a (click)="activeNotificationFilter.rpm='All';searchAppNotifications('RPM','All');$event.stopPropagation();"
+                  [class.active]="activeNotificationFilter.rpm === 'All'">
+                  <mdb-badge>All</mdb-badge>
+                </a>
+
+
+              </div>
+
+            </div>
+
+            <mdb-progress-bar class="progress primary-color-dark" *ngIf="searchingNotification" mode="indeterminate">
+            </mdb-progress-bar>
+            <p class="mb-0 text-small p-2" *ngIf="rpmNotifyList.length === 0">No Record Found!</p>
+            <div *ngIf="rpmNotifDropDown.isOpen" class="notification-list" style="height: 300px;" malihu-scrollbar
+              [scrollbarOptions]="scrollbarOptionsTimeline">
+              <div class="notification-items" *ngFor="let notify of rpmNotifyList">
+                <div class="n-desc" [ngClass]="{boldDiv: rpmFilter === 'New'}">
+                  <strong *ngIf="notify['title']">{{notify['title']}}</strong>
+                  <p>{{notify.message}}</p>
+                  <small>{{notify.timeStamp}}</small>
+                </div>
+                <a class="clear-link" (click)="OpenNotification(notify);">
+                  <mdb-badge pill="true" danger="true">view</mdb-badge>
+                </a>
+              </div>
+            </div>
+          </div>
+
+        </li> -->
+        <!-- <li *hasClaim="['ccmService']" #ccmNotifDropDown='bs-dropdown' class="nav-item dropdown btn-group icon-dropdown" dropdown>
+          <a dropdownToggle type="button" class="nav-link dropdown-toggle flex-wrap" *hasClaim="['IsFacilityUser']">
+            <i class="fa fa-bell fa-lg"></i>
+            <small class="w-100 text-center">CCM</small>
+          </a>
+          <ng-container *hasClaim="['IsFacilityUser']">
+            <span class="notify-active"
+              *ngIf="appNotifyList.length && activeNotificationFilter.ccm ==='New'">{{appNotifyList.length}}</span>
+          </ng-container>
+          <div class="dropdown-menu dropdown-menu-right notify-dropdown" role="menu" (click)="$event.stopPropagation()">
+
+            <div class="d-flex justify-content-between align-items-center show-list">
+              <div class="ntype">CCM</div>
+              <div class="show-notifications">
+                <a (click)="activeNotificationFilter.ccm='New';searchAppNotifications('CCM','New');$event.stopPropagation();"
+                  [class.active]="activeNotificationFilter.ccm === 'New'">
+                  <mdb-badge>New</mdb-badge>
+                </a>
+
+                <a (click)="activeNotificationFilter.ccm='Last20';searchAppNotifications('CCM','Last20');$event.stopPropagation();"
+                  [class.active]="activeNotificationFilter.ccm === 'Last20'">
+                  <mdb-badge>Last 20</mdb-badge>
+                </a>
+
+                <a (click)="activeNotificationFilter.ccm='All';searchAppNotifications('CCM','All');$event.stopPropagation();"
+                  [class.active]="activeNotificationFilter.ccm === 'All'">
+                  <mdb-badge>All</mdb-badge>
+                </a>
+
+
+              </div>
+
+            </div>
+
+            <mdb-progress-bar class="progress primary-color-dark" *ngIf="searchingNotification" mode="indeterminate">
+            </mdb-progress-bar>
+            <p class="mb-0 text-small p-2" *ngIf="appNotifyList.length === 0">No Record Found!</p>
+            <div *ngIf="ccmNotifDropDown.isOpen" class="notification-list" style="height: 300px;" malihu-scrollbar
+              [scrollbarOptions]="scrollbarOptionsTimeline">
+              <div class="notification-items" *ngFor="let notify of appNotifyList">
+                <div class="n-desc" [ngClass]="{boldDiv: ccmFilter === 'New'}">
+                  <strong>{{getvalue(notify.entity, 'PatientName')}}</strong>
+                  <p>{{notify.message}}</p>
+                  <small>{{notify.timeStamp}}</small>
+                </div>
+                <a class="clear-link" (click)="OpenNotification(notify)">
+                  <mdb-badge pill="true" danger="true">View</mdb-badge>
+                </a>
+              </div>
+            </div>
+            <a routerLink="/ccm/approvals" class="d-block text-center p-0 py-2">View all</a>
+          </div>
+        </li> -->
+        <li class="nav-item avatar dropdown userInfo" dropdown>
+          <a dropdownToggle type="button" class="nav-link dropdown-toggle ">
+            <span class="mr-3" *ngIf="!securityObject.fullName">Undefined</span>
+            <div class="signal-state" *ngIf="connectionState "><span class="{{colorForConnectionState}}"
+              title="{{hubSateEnum[connectionState]}}"></span>
+            </div>
+            <!-- <span class="mr-3" *ngIf="securityObject.fullName">{{securityObject.fullName}}</span> -->
+            <div class="user-avatar"><span>{{nameCaption}}</span></div>
+          </a>
+          <div *dropdownMenu class="dropdown-menu dropdown-menu-right dropdown" role="menu">
+            <p class="px-3 mb-2 mt-2 text-dynamic-2c"><strong
+                *ngIf="securityObject.fullName">{{securityObject.fullName}}</strong></p>
+            <a class="dropdown-item " (click)="profile()">My Account</a>
+            <a *hasClaim="['IsFacilityUser']" class="dropdown-item " (click)="openDocumentLibrary()">Document Library</a>
+            <a class="dropdown-item " title="Ctrl + L" (click)="ApplyLockScreen()">Lock Screen</a>
+            <a class="dropdown-item " (click)="changePasswordModal.show();resetChangePasswordForm()">Change Password</a>
+            <a class="dropdown-item " (click)="logout()">Log out</a>
+          </div>
+        </li>
+
+      </ul>
+    </navlinks>
+  </mdb-navbar>
+
+</header>
+<main [class.mr-400]="appUi.chatShown && !chatExpand" class="page-body" [class.margin-top-30px]="announcementText"  [class.fixed-lg]="sideCollapse">
+  <!-- <app-patient-task></app-patient-task> -->
+  <app-complaints-modal></app-complaints-modal>
+  <div class="container-fluid">
+    <router-outlet ></router-outlet>
+  </div>
+  <!-- <div class="fixed-action-btn" style="bottom: 92px; right: 24px;">
+    <div class="progress-circle over100 p{{numbered}}">
+      <span>67%</span>
+      <div class="left-half-clipper">
+         <div class="first50-bar"></div>
+         <div class="value-bar"></div>
+      </div>
+   </div>
+  </div> -->
+  <ng-container *ngIf="claimProgressList?.length" >
+    <div *ngFor="let inList of claimProgressList" class="fixed-action-btn" style="width:50px;bottom: 92px; right: 16px;">
+      <div  class="progress-circle over50 p100 cursor-pointer" id="popTemplate" placement="left top" triggers="hover"
+      [mdbPopover]="claimEncounter"  title="Encounter Claims" >
+        <!-- <span *ngIf="item.downloadReady"><i class="fa fa-check-circle fa-lg" style="font-size:22px ;"></i></span> -->
+        <span style="padding:0px 0 ;" >
+          <i style="display: block;line-height: 32px;font-size: 16px;" class="fa fa-download fa-lg"></i>
+          <i style="display:block ;line-height: 5px;font-size: 10px;">{{inList.value?.length}}</i>
+        </span>
+        <div class="left-half-clipper">
+           <div class="first50-bar"></div>
+           <div class="value-bar"></div>
+        </div>
+      </div>
+      <ng-template #claimEncounter >
+        <div  style="max-height:200px;overflow-y:auto; padding: .70rem;max-width: 500px;min-width: 500px;" >
+          <div>
+            <div class="d-flex justify-content-between align-items-center">
+              <p class="mb-1"><strong>Encounter Claims</strong></p>
+            </div>
+            <table class="table table-bordered custom-table-claim">
+              <thead class="bg-dynamic-2c text-white">
+                <tr>
+                  <th title="Claim Id" width="" style="min-width:60px;width:60px;font-weight: 500;letter-spacing: 0.5px;">Claim Id</th>
+                  <th title="Invoice Id" style="min-width:60px;width:60px;font-weight: 500;letter-spacing: 0.5px;">Invoice Id</th>
+                  <th title="Patient Name" style="min-width:80px;width:80px;font-weight: 500;letter-spacing: 0.5px;">Name</th>
+                  <th title="Action Type" style="font-weight: 500;letter-spacing: 0.5px;">Type</th>
+                  <th title="Status Code" style="font-weight: 500;letter-spacing: 0.5px;">Status</th>
+                  <th title="ResponseMessage" style="font-weight: 500;letter-spacing: 0.5px;">Content</th>
+                  <th title="ResponseMessage" style="font-weight: 500;letter-spacing: 0.5px;">Message</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of inList.value">
+                  <td>{{item.claimId}}</td>
+                  <td>{{item.invoiceId}}</td>
+                  <td title="{{item.patientName}}">
+                    <span style="width:70px;overflow: hidden;text-overflow:ellipsis;display:block;white-space:nowrap;">{{item.patientName}}</span>
+                  </td>
+                  <td>{{item.actionType}}</td>
+                  <td>{{item.statusCode}}</td>
+                  <td>{{item.content}}</td>
+                  <td>{{item.responseMessage}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </ng-template>
+    </div>
+  </ng-container>
+  <div *ngIf="activeDownloadsList?.length" class="fixed-action-btn" style="width:50px;bottom: 92px; right: 15px;">
+    <div class="progress-circle {{item.class}} p{{item.percentage}}" *ngFor="let item of activeDownloadsList">
+      <div class="pro-crox-x" (click)="CancelDownloadPatients(item)">×</div>
+      <span *ngIf="item.downloadReady">
+        <i class="fa fa-check-circle fa-lg" style="font-size:22px ;"></i>
+      </span>
+      <span style="padding:0px 0 ;" *ngIf="!item.downloadReady">
+        <i style="display: block;line-height: 32px;font-size: 16px;" class="fa fa-download fa-lg"></i>
+        <i style="display:block ;line-height: 5px;font-weight: 400;font-size:10px;">{{item.completedSteps}}/<i style="font-size:10px;">{{item.totalSteps}}</i></i>
+      </span>
+      <div class="left-half-clipper">
+         <div class="first50-bar"></div>
+         <div class="value-bar"></div>
+      </div>
+    </div>
+  </div>
+  <div class="fixed-action-btn" style="width:50px;bottom: 25px; right: 15px;">
+
+    <a mdbBtn floating="true" size="md"  class="m-0 btn-dynamic-2c" mdbWavesEffect (click)="fixed.toggle()">
+      <i class="fa fa-plus fa-lg"></i>
+    </a>
+
+    <div class="fixed_collapse" mdbCollapse="isCollapsed" #fixed="bs-collapse">
+      <a *ngIf="showAddnoteButton" mdbBtn floating="true" color="dark" size="md" class="m-0 mb-2" mdbWavesEffect
+        (click)="patientNoteModal.toggle();getNewObj();getNotesList()" title="Add Note" data-placement="left"
+        container="body"><i class="fa fa-file-text fa-lg"></i></a>
+      <!-- <a mdbBtn floating="true" color="yellow" class="darken-1 waves-light" mdbWavesEffect><i
+          class="fa fa-baby fa-lg"></i></a> -->
+      <!-- <a *ngIf="showAddnoteButton" mdbBtn floating="true" color="dark" class="waves-light m-0 " mdbWavesEffect
+        (click)="clinicalSummary.toggle()" title="'Clinical Summary'"><i class="fa fa-commenting fa-lg"></i></a> -->
+      <a *hasClaim="['IsFacilityUser']" mdbBtn floating="true" size="md"  color="dark" class="waves-light m-0 mb-2" mdbWavesEffect
+        (click)="openComplaintsModal()" title="Complaint" data-placement="left" container="body">
+        <i class="fa fa-bug"></i></a>
+      <a mdbBtn floating="true" size="md" *hasClaim="['CanViewFeedback']" color="dark" class="waves-light m-0 mb-2" mdbWavesEffect
+        (click)="feedbackModal.toggle();resetFeedBackForm()" title="Feedback / Complain" data-placement="left" container="body">
+        <i class="fa fa-comments"></i></a>
+      <a mdbBtn floating="true" size="md" color="dark" class="waves-light m-0" mdbWavesEffect
+        (click)="toDoList.toggle()" title="To Do List" data-placement="left" container="body"><i
+          class="fa fa-calendar-check-o"></i></a>
+    </div>
+
+  </div>
+
+  <!-- <app-patient-alert></app-patient-alert> -->
+  <!-- <app-messaging #messagingCOmp></app-messaging> -->
+  <app-intellisense-widget></app-intellisense-widget>
+  <app-ccm-quick-encounter *ngIf="facilityId" #addCCmEncounterRef (encounterSaved)="CCMEncounterAdded()"></app-ccm-quick-encounter>
+  <app-rpm-quick-encounter *ngIf="facilityId" #addRPmEncounterRef (encounterSaved)="RPMEncounterAdded()"></app-rpm-quick-encounter>
+</main>
+<!-- chat-right-side  -->
+<div *ngIf="facilityId" [style.display]="appUi.chatShown ? 'block': 'none'" [class.top-30px]="announcementText"
+[class.popup-chat-view]="chatExpand" [class.chat-right-side]="!chatExpand">
+  <!-- <app-messaging #messagingCOmp></app-messaging> -->
+  <div *ngIf="chatExpand" class="expended-view-menu">
+    <span class="fa fa-compress"  (click)="chatExpand = false;compactMode=true"></span>
+    <span class="fa fa-times" (click)="openChatModal();compactMode=true"></span>
+  </div>
+  <div *ngIf="!chatExpand" (click)="EnableExpandChat()" class="expanded-view">
+    <span class="fa fa-angle-left"></span>
+  </div>
+  <div *ngIf="!chatExpand" (click)="openChatModal();compactMode=true" class="close-chat-view">
+    <span class="fa fa-times"></span>
+  </div>
+  <app-communications-list style="max-width: 100%;flex-grow: 1;" *ngIf="!selectedGroup || chatExpand" [insideMain]="!chatExpand" [compactMode]="compactMode" [insideSideNav]="true" (selectedGroupChanged)="selectedGroupChanged($event)"></app-communications-list>
+  <app-communication-detail style="width: 100%;  " #detailCompRef *ngIf="selectedGroup" [selectedGroup]="selectedGroup" [insideMain]="!chatExpand"  [insideSideNav]="true" (closeCommDetails)="selectedGroup=null"></app-communication-detail>
+</div>
+<app-custom-list-modal #customListModal></app-custom-list-modal>
+
+<div mdbModal #feedbackModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  [config]="{ignoreBackdropClick: true}" aria-labelledby="myfeedbackModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" >
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="feedbackModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100 text-center" id="myModalLabel12322">Feedback / Complain</h4>
+      </div>
+      <div class="modal-body" *ngIf="feedbackModal.isShown">
+        <!-- <div class="alert alert-info p-2 pb-3">
+          <a class="close font-weight-normal initialism" data-dismiss="alert" href="#"><samp>&times;</samp></a>
+          CVC code is required.
+        </div> -->
+        <div class="row">
+
+        <div class="col-sm-12">
+          <div class="form-group">
+          <label>Facilitiy (Optional)</label>
+            <ng-select class="ng-select-small" [(ngModel)]="feedbackDto.facility" appendTo="body"
+            [multiple]="false" [searchable]="true" placeholder="Select Facility">
+            <ng-option *ngFor="let item of facilityList" [value]="item.facilityName">{{item.facilityName}}
+            </ng-option>
+          </ng-select>
+          </div>
+          <div class="form-group">
+            <div class="d-flex justify-content-between">
+              <label for="fbemail">Email (Optional)</label>
+              <mdb-checkbox [default]="true" [(ngModel)]="anonymous"
+              (change)="removeEmail()" title="No follow-up required">Anonymous
+            </mdb-checkbox>
+            </div>
+            <input type="text" class="form-control" [(ngModel)]="feedbackDto.email" id="fbemail">
+          </div>
+          <div class="form-group">
+            <label>Department<small class="text-danger">*</small></label>
+            <ng-select [searchable]="true" [(ngModel)]="feedbackDto.department"
+              class="w-100 ng-select-small"
+              placeholder="Select Department" (click)="$event.stopPropagation();">
+              <ng-option [value]="'General'">General</ng-option>
+              <ng-option [value]="'Care Delivery'">Care Delivery</ng-option>
+              <ng-option [value]="'Work place'">Work place</ng-option>
+              <ng-option [value]="'Technical'">Technical</ng-option>
+              <ng-option [value]="'Rpm Compliance'">Rpm Compliance</ng-option>
+            </ng-select>
+          </div>
+          <div class="form-form form-group">
+            <label for="formmm712">Message<small class="text-danger">*</small></label>
+            <textarea type="text" id="formmm712" rows="6" [(ngModel)]="feedbackDto.message" placeholder="Enter your Message here..."
+              class="form-control" style="height:50px;"></textarea>
+          </div>
+          <div class="d-flex align-items-center">
+            <label for="file" class="flex-shrink-0" style="width: 70px;">Attachment</label>
+            <div class="file-field flex-wrap align-items-center w-100 ml-3">
+              <div class="btn btn-success btn-sm mx-0 mt-0">
+                <span class="w-100"><i class="fa fa-paperclip fa-lg"></i> Attach File
+                </span>
+                <input type="file" mdbFileSelect multiple
+                  (change)="onUploadOutput($event);" #select>
+              </div>
+              <div class="w-100" *ngIf="file && file.length > 0">
+                <div class="d-flex justify-content-between align-items-center" *ngFor="let doc of file">
+                  <p class="mb-0">{{doc.name}}<a><i class="ml-2 fa fa-trash fa-lg text-danger" (click)="popFile(doc)" ></i></a></p>
+                </div>
+            </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+
+        </div>
+      <div class="modal-footer">
+        <button type="button" [disabled]="!feedbackDto.department || !feedbackDto.message || isLoading"  class="waves-light btn btn-sm btn-dynamic-2c" aria-label="Close"
+          (click)="feedbacks()" mdbWavesEffect><span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status"
+          aria-hidden="true"></span>Save</button>
+        <!-- <button
+          type="button" mdbBtn color="sucess" class="relative btn-success waves-light btn-sm" mdbWavesEffect
+          (click)="feedbackModal.hide()">Attach</button> -->
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div mdbModal #changePasswordModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  [config]="{ignoreBackdropClick: true}" aria-labelledby="mychangePasswordModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" >
+      <div class="modal-header">
+        <!-- <button type="button" class="close pull-right" aria-label="Close" (click)="changePasswordModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button> -->
+        <h4 class="modal-title w-100 text-center" id="myModalLabel">Change Password</h4>
+      </div>
+      <div class="modal-body" *ngIf="changePasswordModal.isShown">
+        <!-- <div class="alert alert-info p-2 pb-3">
+          <a class="close font-weight-normal initialism" data-dismiss="alert" href="#"><samp>&times;</samp></a>
+          CVC code is required.
+        </div> -->
+        <form class="form" role="form" autocomplete="off" [formGroup]="changePasswordForm">
+          <div class="form-group position-relative">
+            <label for="inputPasswordOld">Current Password</label>
+            <div class="d-flex align-items-center w-00">
+              <input [type]="showOldPassword ? 'text' : 'password'" class="form-control form-control-sm" formControlName="oldPassword" id="inputPasswordOld" required="">
+              <a *ngIf="changePasswordForm.get('oldPassword').value" (click)="password('showOldPassword');" class="btn btn-icon btn-dynamic-2c m-0 ml-2">
+                <span class="fa fa-eye fa-lg"></span>
+              </a>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="inputPasswordNew">New Password</label>
+            <div class="d-flex align-items-center w-00">
+              <input [type]="showNewPassword ? 'text' : 'password'" class="form-control form-control-sm" formControlName="newPassword" id="inputPasswordNew" required="">
+              <a *ngIf="changePasswordForm.get('newPassword').value" (click)="password('showNewPassword');" class="btn btn-icon btn-dynamic-2c  m-0 ml-2">
+                <span  class="fa fa-eye fa-lg"></span>
+              </a>
+            </div>
+
+            <span class="form-text small text-muted">
+              The password must be 8-20 characters, and must <em>not</em> contain spaces.
+            </span>
+          </div>
+          <div class="form-group">
+            <label for="inputPasswordNewVerify">Verify Password</label>
+            <div class="d-flex align-items-center w-00">
+              <input [type]="showConfirmPassword ? 'text' : 'password'" class="form-control form-control-sm" formControlName="verifyPassword" id="inputPasswordNewVerify"
+              required="">
+              <a *ngIf="changePasswordForm.get('verifyPassword').value" (click)="password('showConfirmPassword');" class="btn btn-icon btn-dynamic-2c  m-0 ml-2">
+                <span  class="fa fa-eye fa-lg"></span>
+              </a>
+            </div>
+
+            <span class="form-text small text-muted">
+              To confirm, type the new password again.
+            </span>
+            <small *ngIf="changePasswordForm.get('newPassword').value && changePasswordForm.get('verifyPassword').value &&
+            changePasswordForm.get('newPassword').value !== changePasswordForm.get('verifyPassword').value &&
+            changePasswordForm.get('verifyPassword').touched" class="text-danger">
+              Password Not Match*
+            </small>
+          </div>
+          <!-- <div class="form-group">
+                  <button type="submit" class="btn btn-success btn-lg float-right">Save</button>
+              </div> -->
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+          (click)="changePasswordModal.hide()" mdbWavesEffect>Close</button>
+        <button
+          [disabled]="!changePasswordForm.get('newPassword').value || !changePasswordForm.get('verifyPassword').value ||
+        changePasswordForm.get('newPassword').value !== changePasswordForm.get('verifyPassword').value || !changePasswordForm.get('oldPassword').value"
+          type="button" class="relative btn btn-sm btn-dynamic-2c" mdbWavesEffect
+          (click)="changePasswordModal.hide();changePassword()">Update</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div mdbModal #patientNoteModal="mdbModal" class="modal modal-quick-note fade right" tabindex="-1" role="dialog"
+ aria-labelledby="mypatientNoteModalLabel" aria-hidden="true" [config]="{backdrop: false}" (closed)="onClosedPatientNoteModal()" (close)="onClosePatientNoteModal()" >
+  <div class="modal-dialog modal-full-height modal-right my-0 p-0" role="document">
+    <div class="modal-content" >
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="noteValueConfirmModal()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">Quick Notes</h4>
+      </div>
+      <div class="modal-body" *ngIf="patientNoteModal.isShown">
+        <!-- Timeline -->
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="form-group">
+              <label>Remarks</label>
+              <input [(ngModel)]="reviewNote" type="text" class="form-control" appOnDebounce [debounceTime]="1500"
+              (onDebounce)="EditPatientReviewNote()">
+            </div>
+          </div>
+          <div class="col-sm-12">
+            <div class="form-form form-group">
+              <div class="d-flex mb-2 justify-content-between align-items-center">
+                <label class="m-0" for="eitableContectDiv">Text</label>
+                <div class="btn-group">
+                  <label *hasClaim="'ccmService'" [class.active]="patientNote.tag==='CCM'" (click)="patientNote.tag='CCM'" class="btn btn-custom-primary" mdbWavesEffect>
+                      CCM
+                  </label>
+                  <label *hasClaim="'rpmService'" [class.active]="patientNote.tag==='RPM'" (click)="patientNote.tag='RPM'" class="btn btn-custom-primary" mdbWavesEffect>
+                      RPM
+                  </label>
+                  <label *hasClaim="'bhiService'" [class.active]="patientNote.tag==='BHI'" (click)="patientNote.tag='BHI'" class="btn btn-custom-primary" mdbWavesEffect>
+                      BHI
+                  </label>
+                  <label *hasClaim="'bhiService'" [class.active]="patientNote.tag==='OTHERS'" (click)="patientNote.tag='OTHERS'" class="btn btn-custom-primary" mdbWavesEffect>
+                      Others
+                  </label>
+                </div>
+              </div>
+              <app-two-c-text-area #myFIeldRef [value]="patientNote.note" [PatientId]="PatientId" (valueChanged)="NoteFieldChanged($event)"></app-two-c-text-area>
+              <!-- <div type="textarea" id="eitableContectDiv" style="height:50px;overflow-y: auto;resize:vertical;" rows="4" placeholder="Enter note text..." class="form-control" contenteditable="true"
+               (input)="triggerPopOverCheck($event)">
+              </div> -->
+              <!-- <textarea type="text" [(ngModel)]="patientNote.note" id="formmm778233"  (keyup)="triggerPopOverCheck($event)" rows="4" placeholder="Enter note text..."
+                class="form-control" style="height:50px;"></textarea> -->
+
+            </div>
+            <div class="btn-group-sm">
+              <button [disabled]="!patientNote.note || !patientNote.tag" *ngIf="!patientNote.id" mdbBtn type="button" (click)="addNote()" class="btn btn-sm btn-dynamic-2c"
+                mdbWavesEffect>Add</button>
+              <button [disabled]="!patientNote.note || !patientNote.tag" *ngIf="patientNote.id" mdbBtn type="button" (click)="addNote()" class="btn btn-sm btn-dynamic-2c"
+                mdbWavesEffect>Update</button>
+              <button *ngIf="patientNote.id" mdbBtn type="button" (click)="resetNoteObj()" size="sm" color="info"
+                mdbWavesEffect>Reset</button>
+              <button mdbBtn type="button" size="sm" flat="true" (click)="patientNote.note='';patientNote.tag='';clearPatientNoteStorageData()" mdbWavesEffect>clear</button>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="row">
+            <div class="d-flex mb-2 w-100 justify-content-end pr-3 align-items-center">
+              <!-- <label class="m-0" for="formmm7">Text</label> -->
+              <div class="btn-group">
+                <label id="notesFilter1" [class.active]="notesFilter.ALL" (click)="NotesFilterChanged('ALL')" class="btn btn-custom-primary" mdbWavesEffect>
+                    ALL
+                </label>
+                <label *hasClaim="'ccmService'" id="notesFilter2" [class.active]="notesFilter.CCM" (click)="NotesFilterChanged('CCM')" class="btn btn-custom-primary" style="margin-left: -2px;" mdbWavesEffect>
+                    CCM
+                </label>
+                <label *hasClaim="'rpmService'" id="notesFilter3" [class.active]="notesFilter.RPM" (click)="NotesFilterChanged('RPM')" class="btn btn-custom-primary" style="margin-left: -1px;" mdbWavesEffect>
+                    RPM
+                </label>
+                <label *hasClaim="'bhiService'" id="notesFilter4" [class.active]="notesFilter.BHI" (click)="NotesFilterChanged('BHI')" class="btn btn-custom-primary" style="margin-left: -1px;" mdbWavesEffect>
+                    BHI
+                </label>
+                <label *hasClaim="'bhiService'" id="notesFilter4" [class.active]="notesFilter.OTHERS" (click)="NotesFilterChanged('OTHERS')" class="btn btn-custom-primary" style="margin-left: -1px;" mdbWavesEffect>
+                    OTHERS
+                </label>
+              </div>
+          </div>
+          <div class="col-md-12">
+            <p class="text-center"
+              *ngIf="(!patientNoteObj || !patientNoteObj.notes || patientNoteObj.notes.length === 0) && !isLoading">
+              <strong>No Record Found!</strong>
+            </p>
+            <div *ngIf="isLoading" class="d-flex w-100 justify-content-center text-center">
+              <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+            </div>
+            <div *ngIf="patientNoteObj && patientNoteObj.notes && patientNoteObj.notes.length > 0" class="timeline-main"
+              malihu-scrollbar [scrollbarOptions]="scrollbarOptionsTimeline">
+              <!-- Timeline Wrapper -->
+              <div class="timeline-item" *ngFor="let item of patientNoteObj.notes">
+                <div class="mb-2">
+
+                  <p class="mb-0 d-flex justify-content-between align-items-center">
+                    <span>
+                    <i class="fa fa-pencil text-dynamic-secondary-2c mr-2" style="cursor: pointer;" (click)="fillEditFields(item)"></i>
+                    <!-- <i class="fa fa-trash text-danger mr-2" style="cursor: pointer;" (click)="openDeleteNoteConfirmModal(item)"></i> -->
+                    <strong>{{item.updatedUser}} </strong><span class="text-info" *ngIf="item.tag">
+                    </span>
+                    </span>
+                    <span class="badge badge-primary">{{item.tag}}</span>
+                  </p>
+                  </div>
+                  <p class="mb-0"><small class="text-dynamic-2c">{{item['dateCreatedDisplay']}}</small></p>
+                <p [innerHTML]="item['noteFormat']">.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Timeline -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<div mdbModal #clinicalSummary="mdbModal" class="modal fade right quickNote" tabindex="-1" role="dialog"
+  [config]="{ignoreBackdropClick: true,backdrop: false}" aria-labelledby="myclinicalSummaryLabel" aria-hidden="true">
+  <div class="modal-dialog modal-full-height modal-right" role="document">
+    <div class="modal-content" >
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="clinicalSummary.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">Clinical Summary</h4>
+      </div>
+      <div class="modal-body" *ngIf="clinicalSummary.isShown">
+        <!-- Timeline -->
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="form-form form-group">
+              <label for="form70909090">Clinical Summary</label>
+              <textarea type="text" [(ngModel)]="SummaryText" id="form70909090" rows="15"
+                placeholder=" Clinical Summary..." class="form-control"></textarea>
+            </div>
+            <div class="btn-group-sm">
+              <button [disabled]="!SummaryText" mdbBtn type="button" (click)="addSummary()" class="btn btn-sm btn-dynamic-2c"
+                mdbWavesEffect>Save</button>
+              <!-- <button [disabled]="!noteText" hidden mdbBtn type="button" size="sm" color="succss"
+                mdbWavesEffect>Update</button> -->
+              <!-- <button mdbBtn type="button" size="sm" flat="true" (click)="summaryText=''" mdbWavesEffect>clear</button> -->
+            </div>
+          </div>
+        </div>
+        <!-- Timeline -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<div mdbModal #toDoList="mdbModal" class="modal fade right quickNote" tabindex="-1" role="dialog"
+  [config]="{ignoreBackdropClick: true, backdrop: false}" aria-labelledby="patientNoteModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-full-height modal-right" role="document">
+    <div class="modal-content" >
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="toDoList.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">To Do List</h4>
+      </div>
+      <div class="modal-body" *ngIf="toDoList.isShown">
+        <!-- Timeline -->
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="form-form form-group">
+              <label for="toDoTitle" class="w-100">Title</label>
+              <input type="text" [(ngModel)]="todoDto.title" class="form-control form-control-sm" id="toDoTitle"
+                placeholder="Task Title">
+            </div>
+          </div>
+          <div class="col-sm-12">
+            <div class="form-form form-group">
+              <label for="form7101">Description</label>
+              <textarea type="text" [(ngModel)]="todoDto.description" id="form7101" rows="4"
+                placeholder="Enter note text..." class="form-control" style="height:50px;"></textarea>
+            </div>
+          </div>
+          <div class="col-sm-12">
+            <button [disabled]="!todoDto.title || !todoDto.description" mdbBtn type="button" (click)="addTodo()"
+              class="btn btn-dynamic-2c btn-sm">Add</button>
+            <button type="button" class="btn btn-dynamic-secondary-2c btn-sm" flat="true" (click)="noteText=''" mdbWavesEffect>clear</button>
+          </div>
+          <div class="col-md-12">
+            <p class="text-center" *ngIf="!todoListDto">
+              <strong>No Record Found!</strong>
+            </p>
+            <div *ngIf="isLoading" class="d-flex justify-content-center text-center">
+              <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+            </div>
+            <p><small class="font-700 text-dynamic-2c">To Do List</small></p>
+            <div class="toDoList timeline-main primary" malihu-scrollbar
+              [scrollbarOptionsTimeline]="scrollbarOptionsTimeline">
+              <div class="timeline-item" *ngFor="let item of todoListDto">
+                <div class="mb-2">
+                  <p class="mb-0"><strong>{{item.title}}</strong> <small
+                      *ngIf="item.patientName">{{item.patientName}}</small></p>
+                  <small class="text-dynamic-2c">{{item.dateCreated}}</small>
+                </div>
+                <p>{{item.description}}.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Timeline -->
+    </div>
+  </div>
+</div>
+
+
+<div mdbModal #patientTaskViewModal="mdbModal" class="modal fade rounded-0" style="margin-top: 60px;"
+  [config]="{ backdrop: false, ignoreBackdropClick: false }" tabindex="-1" role="dialog"
+  aria-labelledby="mytaskModallLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-full-height modal-fluid" role="document">
+    <div class="modal-content  rounded-0" >
+      <div class="modal-body" *ngIf="patientTaskViewModal.isShown">
+        <div class="d-flex justify-content-between">
+          <div class="mb-3">
+            <mdb-checkbox [default]="true" [(ngModel)]="showAll" (change)="getPatientTasksList()">Show All</mdb-checkbox>
+          </div>
+          <button type="button" class="close pull-right" aria-label="Close" (click)="patientTaskViewModal.hide()">
+            <span aria-hidden="true"><i class="fa fa-angle-up" style="font-size: 1.3rem;"></i></span>
+          </button>
+        </div>
+        <div *ngIf="taskIsLoading" class="d-flex justify-content-center text-center loadingrow">
+          <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+        </div>
+        <div class="table-responsive" style="overflow-x: visible;">
+          <table class="table btn-table nowrap task-table">
+            <thead class="bg-dynamic-2c text-white">
+              <tr>
+                <th>Profile Info</th>
+                <th>Care Type</th>
+                <th>Task Info</th>
+                <th>CP </th>
+                <th>Assign To</th>
+                <th>Note</th>
+                <th>Action</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr *ngFor=" let row of patientTasksList">
+                <td>
+                  <div class="d-flex flex-wrap">
+                    <p class="mb-0"><strong>{{row.patient.fullname}}</strong></p>
+                    <div class="w-100">
+                      <p class="mb-0"><small> {{row.patient.dateOfBirth | dateFormatPipe}}</small></p>
+                      <p class="mb-0"><small> {{row.patient.primaryPhoneNumber}}</small></p>
+                    </div>
+                  </div>
+                </td>
+                <td style="width: 100px">
+                  <div *ngIf="row.patientTaskPriority">
+                    {{ row.patientTaskType}}
+                    <!-- <mdb-badge color="badge bg-grey w-100">{{row.patientTaskType}}</mdb-badge> -->
+                  </div>
+                </td>
+                <td>
+                  <div style="width: 100px;" class="text-center">
+                   {{row.createdOn | dateFormatPipe}}
+                    <!-- <mdb-badge color="green lighten-2 w-100">{{row.createdOn | dateFormatPipe}}</mdb-badge> -->
+                    <mdb-badge *ngIf="row.patientTaskPriority" color="badge bg-grey w-100">{{row.patientTaskPriority}}
+                    </mdb-badge>
+                  </div>
+                </td>
+                <td style="min-width: 70px">
+                  <div class="user-name-list">
+                    <div title="{{item.careProviderName}}" class="name-caption"
+                      *ngFor="let item of row.patient.careProviders">
+                      <span>{{item['careProviderNameAbbrivation']}}</span></div>
+                  </div>
+                </td>
+                <td>
+
+                  <div class="user-name-list">
+                    <div title="{{row.assignedToName}}" class="name-caption">
+                      <span>{{row.assignedToNameAbbrivation}}</span></div>
+                  </div>
+                </td>
+                <td style="min-width:120px;">
+                  <textarea name="" style="height: 60px; border: none;" (blur)="addEditPatientTask(row)" [(ngModel)]="row.notes" class="form-control"
+                    id="" cols="30" rows="10"></textarea>
+                </td>
+                <td style="min-width:120px;">
+                  <textarea name="" style="height: 60px; border: none;" [(ngModel)]="row.action" (blur)="addEditPatientTask(row)" class="form-control"
+                    id="" cols="30" rows="10"></textarea>
+                </td>
+
+                <td style="width: 100px;">
+                  <div class="btn-group w-100" mdbDropdown style="cursor: pointer;">
+                    <!-- <button mdbDropdownToggle mdbBtn color="danger" size="sm" class="dropdown-toggle waves-light" type="button"
+                      mdbWavesEffect>
+                      Small button
+                    </button> -->
+                    <mdb-badge danger="true" mdbDropdownToggle dynamicPosition="true"
+                      *ngIf="row.patientTaskStatus === 'Completed'" color="badge status status-success w-100">
+                      Completed
+                    </mdb-badge>
+                    <mdb-badge danger="true" mdbDropdownToggle dynamicPosition="true"
+                      *ngIf="row.patientTaskStatus === 'Created'" color="badge status status-danger w-100">Created
+                    </mdb-badge>
+                    <mdb-badge danger="true" mdbDropdownToggle dynamicPosition="true"
+                      *ngIf="row.patientTaskStatus === 'Error Entry'" color="badge status status-warning w-100">Error
+                      Entry
+                    </mdb-badge>
+                    <mdb-badge danger="true" mdbDropdownToggle dynamicPosition="true"
+                      *ngIf="row.patientTaskStatus === 'InProgress'" color="badge status status-info w-100">In
+                      Progress
+                    </mdb-badge>
+
+                    <div class="dropdown-menu">
+                      <a class="dropdown-item" (click)="row.patientTaskStatus = 'InProgress';addEditPatientTask(row)">In Progress</a>
+                      <a class="dropdown-item" (click)="row.patientTaskStatus = 'Completed';addEditPatientTask(row)">Completed</a>
+                      <a class="dropdown-item" (click)="row.patientTaskStatus = 'Error Entry';addEditPatientTask(row)">Error Entry</a>
+                      <!-- <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" (click)="row.patientTaskStatus = 'Created'" >Created</a> -->
+                    </div>
+                  </div>
+                </td>
+                <td style="width: 120px;">
+                  <div class="d-flex align-items-center">
+                    <button type="button" style="background-color: transparent;"
+                      class="btn btn-icon btn-dynamic-secondary-2c z-depth-0 flex-shrink-0  mr-0 my-1 ml-2"
+                      (click)="changeStatus(row, ccmStatusModal);" placement="right">
+                      <i class="fa fa-bolt"></i>
+                    </button>
+                    <!-- <button class="btn btn-sm btn-dynamic-2c" (click)="addEditPatientTask(row)">Save</button> -->
+                  </div>
+
+                </td>
+              </tr>
+              <tr *ngIf="!patientTasksList"> No Record Found </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+      <!-- <div class="modal-footer rounded-0">
+        <button type="button" mdbBtn color="seondary" class="waves-light" aria-label="Close" (click)="taskModal.hide()"
+          mdbWavesEffect>Close</button>
+        <button type="button" mdbBtn color="priary" class="relative waves-light" mdbWavesEffect>Save changes</button>
+      </div> -->
+    </div>
+  </div>
+</div>
+<div mdbModal #ccmStatusModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true" mdbTableScroll>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" >
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="ccmStatusModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">Service Name</h4>
+      </div>
+      <div class="modal-body" *ngIf="ccmStatusModal.isShown">
+        <div>
+          <ul class="status-list">
+            <li *ngFor="let item of serviceTypes"> <a class="link"
+                (click)="resetCcmEncounterlist();ccmEncounterListDto.ccmServiceTypeId = item.id;ccmStatusModal.hide();AssignValueCcmService();addEncounterModalFn();calculateEndtime();">{{item.name}}
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+
+        <button type="button" (click)="ccmStatusModal.hide()" class="waves-light btn btn-sm btn-dynamic-secondary-2c"
+          aria-label="Close" mdbWavesEffect>Cancel</button>
+        <!-- <button type="button" mdbBtn color="pimary" (click)="addRequiredData()" class="relative waves-light"
+          mdbWavesEffect>Add Data</button> -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<div mdbModal #addEncounterModal="mdbModal" [config]="{ignoreBackdropClick: true}" class="modal fade" tabindex="-1"
+  role="dialog" aria-labelledby="myroleManagementModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-md flat-modal modal-dialog-scrollable " role="document">
+    <div class="modal-content" >
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="addEncounterModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">Add Encounter</h4>
+      </div>
+
+      <div class="modal-body" *ngIf="addEncounterModal.isShown">
+        <div class="row">
+          <!-- <div class="col-sm-12 mb-2">
+            <small class="text-dynamic-2c text-uppercase font-500">User Information</small>
+          </div> -->
+          <div class="col-sm-12" *ngIf="securityService && securityService.securityObject.fullName">
+            <p><strong>Provider Name</strong> {{securityService.securityObject.fullName}}</p>
+          </div>
+
+          <div class="col-sm-12">
+            <label>Service Name</label>
+            <div class="form-group">
+              <ng-select [searchable]="true" [(ngModel)]="ccmEncounterListDto.ccmServiceTypeId"
+                (ngModelChange)="AssignValueCcmService()" class="w-100 ng-select-small"
+                placeholder="Select Service Type" (click)="$event.stopPropagation();">
+                <ng-option [value]="8">Discussion with provider/patient/family</ng-option>
+                <ng-option [value]="12">ePrescribe</ng-option>
+                <ng-option [value]="18">Lab test results discussed with patients</ng-option>
+                <ng-option [value]="19">Lab/Radiology Orders</ng-option>
+                <ng-option [value]="35">Preauthorization</ng-option>
+                <ng-option [value]="40">Referrals</ng-option>
+                <ng-option [value]="27">Other</ng-option>
+              </ng-select>
+            </div>
+          </div>
+
+          <div class="col-sm-6">
+            <div class="form-group d-flex flex-wrap">
+              <label class="w-100">Start Time</label>
+              <input type="text" class="form-control form-control-sm" #dateDpTime="dpDayPicker"
+                [dpDayPicker]="timePickerConfig1" [(ngModel)]="ccmEncounterListDto.startTime"
+                (ngModelChange)="calculateDuration()" [theme]="'dp-material ccm-date-picker'" [mode]="'time'" />
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="form-group d-flex flex-wrap">
+              <label class="w-100">End Time</label>
+              <input type="text" class="form-control form-control-sm" #dateDpTime="dpDayPicker"
+                [dpDayPicker]="timePickerConfig1" [(ngModel)]="ccmEncounterListDto.endTime"
+                [theme]="'dp-material ccm-date-picker'" [mode]="'time'" />
+            </div>
+          </div>
+
+          <div class="col-sm-12">
+            <div class="form-group">
+              <label for="isChronic">Duration<small> in minutes</small></label>
+              <input type="text" [(ngModel)]="ccmEncounterListDto.duration" class="form-control form-control-sm"
+                id="isChronic" (ngModelChange)="calculateTime()" placeholder="Duration">
+            </div>
+          </div>
+          <div class="col-sm-12">
+            <div class="form-group">
+              <label for="formmm7">Note</label>
+              <textarea type="text" id="formmm7" [(ngModel)]="ccmEncounterListDto.note" class="form-control"></textarea>
+            </div>
+          </div>
+        </div>
+        <div #alert *ngIf="showAlertFEncounter" class="alert alert-warning alert-dismissible animated fade show"
+          role="alert">
+          <!-- <button type="button" class="close" aria-label="Close" >
+            <span aria-hidden="true">&times;</span>
+          </button> -->
+          <strong>End Time must be greater than Start Time!</strong>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-dynamic-2c btn-sm" [disabled]="isLoading" (click)="addEncounter()"><span
+            *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          Add</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div mdbModal #unApprovedCarePLanModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" *ngIf="unApprovedCarePLanModal.isShown">
+      <div class="modal-header">
+        <!-- <button type="button" class="close pull-right" aria-label="Close" (click)="unApprovedCarePLanModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel"><i class="fa fa-exclamation-triangle yellow-text"></i>Unapproved
+          Profile
+        </h4> -->
+        <h4 class="modal-title w-100 text-center" id="myModalLabel">Unapproved Profile
+        </h4>
+      </div>
+      <div class="modal-body">
+        <!-- Care Plan is not approved by Billing Provider. -->
+        <p class="text-center"><i class="fa fa-exclamation-triangle text-danger" style="font-size: 3rem;"></i> </p>
+        <p class="text-center"> Care Plan is not approved by Billing Provider.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="waves-light btn btn-sm btn-dynamic-2c"
+          aria-label="Close" (click)="approveCarePlanLink()" mdbWavesEffect>Approve</button>
+        <button type="button" class="waves-light btn btn-sm btn-dynamic-2c" aria-label="Close"
+          (click)="ProceedToCCm()" mdbWavesEffect>Proceed</button>
+        <button type="button"  class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+          (click)="unApprovedCarePLanModal.hide()" mdbWavesEffect>Cancel</button>
+        <!-- <button type="button" mdbBtn color="primry" (click)="addRequiredData()" class="relative waves-light"
+          mdbWavesEffect>Add Data</button> -->
+      </div>
+    </div>
+  </div>
+</div>
+<div mdbModal #recordingFile="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="recordingFile" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title w-100 text-left" id="myModalLabel">Speech Content
+        </h4>
+      </div>
+      <div class="modal-body">
+        <app-speech-text></app-speech-text>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="waves-light btn btn-sm btn-dynamic-2c" aria-label="Close"
+          mdbWavesEffect>Save</button>
+        <button type="button" (click)="recordingFile.hide()" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+           mdbWavesEffect>Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- 2C#ealth -->
+<!-- E5_#emWh -->

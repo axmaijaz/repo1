@@ -1,0 +1,149 @@
+<links>
+  <!-- <li *hasClaim="['IsCareProvider','IsAppAdmin']" routerLinkActive="active" title="Dashboard" placement="right"
+    container="body"><a href="" routerLink="/dashboard"><i class="fa fa-pie-chart fa-lg"></i>
+      <span>Dashboard</span></a></li> -->
+  <!-- <li routerLinkActive="active">
+    <a [routerLink]="['/admin/Facilities']"><i class="fa fa-tasks fa-lg"></i> Pending Items</a>
+  </li> -->
+  <!-- <li routerLinkActive="active">
+    <a [routerLink]="['/admin/Facilities']"><i class="fa fa-medkit fa-lg"></i> Advance Care Plan</a>
+  </li> -->
+  <!-- <li routerLinkActive="active">
+    <a [routerLink]="['/admin/Facilities']"><i class="fa fa-yc fa-lg"></i> Annual Wellness</a>
+  </li> -->
+  <li routerLinkActive="active" routerLink="/admin/patient/{{PatientId}}/summary" *ngIf="PatientId" title="Summary">
+    <a><i class="fa fa-list fa-lg"></i> <span>Summary</span></a>
+  </li>
+  <ng-container *hasClaim="['ccmService']">
+    <li routerLinkActive="active" *ngIf="PatientId" title="CCM Monthly Review"
+      [routerLink]="'/patientMr/' + PatientId + '/monthlyReview'">
+      <a><i class="fa fa-archive fa-lg"></i><span>CCM Monthly Review</span></a>
+    </li>
+  </ng-container>
+  <ng-container *hasClaim="['rpmService']">
+
+    <li routerLinkActive="active" *ngIf="PatientId" title="RPM" [routerLink]="'/rpm/PatientRpm/'+PatientId">
+      <a><i class="fa fa-heartbeat fa-lg"></i> <span>RPM</span></a>
+    </li>
+  </ng-container>
+
+  <!-- <li routerLinkActive="active" title="TCM">
+    <a routerLink="/tcm/encountersList/{{PatientId}}"><i class="fa fa-heartbeat fa-lg"></i> <span>TCM</span></a>
+  </li> -->
+  <ng-container *hasClaim="['pcmService']">
+
+    <li routerLinkActive="active" routerLink="/pcm/measures/{{PatientId}}" title="PCM">
+      <a><i class="fa fa-heartbeat fa-lg"></i> <span>PCM</span></a>
+    </li>
+  </ng-container>
+  <!-- <ng-container *hasClaim="['pcmService']">
+
+    <li routerLinkActive="active" title="PCM Encounters">
+      <a routerLink="/pcm/encounters/{{PatientId}}"><i class="fa fa-list fa-lg"></i> <span>PCM Encounters</span></a>
+    </li>
+  </ng-container> -->
+  <ng-container *hasClaim="['prcmService']">
+
+    <li routerLinkActive="active" title="Pricipal Care Encounters">
+      <a routerLink="/principalcare/PrcmEncounters/{{PatientId}}"
+        [queryParams]="{ prcmCareFacilitatorId: prcmPatientData.end_PrCMCareFacilitatorId, prcmSpecialistId: prcmPatientData.end_PrCMSpecialistBillerId}"
+        (click)="PrCMProceedNavigation()"><i class="fa fa-list fa-lg"></i> <span>Principal Care Encounters</span></a>
+    </li>
+  </ng-container>
+  <ng-container *hasClaim="['bhiService']">
+
+    <!-- prcmCareFacilitatorId=${row.end_PrCMCareFacilitatorId}&prcmSpecialistId=${row.end_PrCMSpecialistBillerId} -->
+    <li routerLinkActive="active"
+      *ngIf="patientData.bhiStatus > 1 && (patientData.bhiStatus === 4 || patientData.bhiStatus === 6) && !patientData.isBHIRevoked"
+      title="BHI Encounters">
+      <a routerLink="/bhi/bhiEncounters/{{PatientId}}"
+        [queryParams]="{ psychiatristId: patientData.psychiatristId, bhiCareManagerId: patientData.bhiCareManagerId,bhiStatus:patientData.bhiStatus}"><i
+          class="fa fa-list fa-lg"></i> <span>BHI Encounters</span></a>
+    </li>
+  </ng-container>
+  <!-- <li routerLinkActive="active" title="Annual Wellness">
+    <a routerLink="/annualWellness/awEncounters/{{PatientId}}"><i class="fa fa-calendar fa-lg"></i> <span>Annual Wellness</span></a>
+  </li> -->
+
+  <!-- <li routerLinkActive="active">
+    <a [routerLink]="['/admin/Facilities']"><i class="fa fa-calendar-times fa-lg"></i> Monthly Review</a>
+  </li> -->
+  <!-- <li routerLinkActive="active">
+    <a [routerLink]="['/admin/Facilities']"><i class="fa fa-clock-o fa-lg"></i> Time Incomplete</a>
+  </li> -->
+  <ng-container *hasClaim="['ccmService', 'rpmService']">
+    <li routerLinkActive="active" *ngIf="PatientId" title="Logs History">
+      <a routerLink="/admin/logsHistory/{{PatientId}}"><i class="fa fa-history fa-lg"></i><span>Logs History</span></a>
+    </li>
+  </ng-container>
+  <li routerLinkActive="active" *ngIf="PatientId" title="Edit Patient">
+    <a routerLink="/admin/addPatient/{{PatientId}}"><i class="fa fa-edit fa-lg"></i><span>Edit Patient</span></a>
+  </li>
+  <!-- <li routerLinkActive="active" *ngIf="PatientId" title="Edit Patient" placement="right"
+  container="body">
+    <a routerLink="/device/modalityList/{{PatientId}}"><i class="fa fa-edit fa-lg"></i><span>Patient Device</span></a>
+  </li> -->
+  <li routerLinkActive="active" *ngIf="PatientId" title="Consent">
+    <a routerLink="/admin/consentdoc/{{PatientId}}"><i class="fa fa-clipboard fa-lg"></i> <span>Consent</span></a>
+  </li>
+  <!-- <li routerLinkActive="active" *ngIf="PatientId" title="External Data">
+    <a routerLink="/rpm/systemConfiguration/{{PatientId}}"><i class="fa fa-table fa-lg"></i> <span>External
+        Data</span></a>
+  </li> -->
+  <!-- <li routerLinkActive="active" *ngIf="PatientId" title="Blue Button">
+    <a routerLink="/admin/bluebutton" [queryParams]="{ patientID: PatientId }"><i class="fa fa-hospital-o fa-lg"></i>
+      <span>Blue Button</span></a>
+  </li> -->
+  <!-- <li routerLinkActive="active" *ngIf="PatientId" title="Explanation of Benefits">
+    <a routerLink="/medicare/medicareEob2" [queryParams]="{ patientID: PatientId }"><i class="fa fa-book fa-lg"></i>
+      <span>EOB 2</span></a>
+  </li> -->
+  <!-- <li routerLinkActive="active" *ngIf="PatientId" title="Explanation of Benefits">
+    <a routerLink="/medicare/medicareEob" [queryParams]="{ patientID: PatientId }"><i
+        class="fa fa-hospital-o fa-lg"></i>
+      <span>EOB</span></a>
+  </li> -->
+  <!-- <li routerLinkActive="active" *ngIf="PatientId" title="Partical Health">
+    <a routerLink="/medicare/particalHealth/{{PatientId}}"><i class="fa fa-hospital-o fa-lg"></i>
+      <span>Partical Health</span></a>
+  </li> -->
+  <!-- <li routerLinkActive="active" *ngIf="PatientId" title="CCDA">
+    <a routerLink="/medicare/bb-ccda/{{PatientId}}"><i class="fa fa-hospital-o fa-lg"></i>
+      <span>Blue-Button </span></a>
+  </li> -->
+  <!-- <li routerLinkActive="active" *ngIf="PatientId" title="Blue Button">
+    <a routerLink="/medicare/eob" [queryParams]="{ patientID: PatientId }"><i class="fa fa-hospital-o fa-lg"></i>
+      <span>Medi-Care</span></a>
+  </li> -->
+  <li routerLinkActive="active" *ngIf="PatientId" title="Patient Settings">
+    <a routerLink="/AppInsights/setting/sms-voice-consent/{{PatientId}}" [queryParams]="{ patientID: PatientId }"><i class="fa fa-hospital-o fa-lg"></i>
+      <span>Settings</span></a>
+  </li>
+
+</links>
+
+
+<div mdbModal #unApprovedCarePLanModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title w-100 text-center" id="myModalLabel"><i
+            class="fa fa-exclamation-triangle yellow-text"></i>Unapproved
+          Profile
+        </h4>
+      </div>
+      <div class="modal-body">
+        <p class="text-center"><i class="fa fa-exclamation-triangle text-danger" style="font-size: 3rem;"></i> </p>
+        <p class="text-center"> Care Plan is not approved by Billing Provider.</p>
+      </div>
+      <div class="d-flex justify-content-center mt-3">
+        <button type="button" class="btn-sm btn  btn-dynamic-2c" aria-label="Close"
+          (click)="unApprovedCarePLanModal.hide();navigateToMonthlyReview()">Proceed</button>
+        <button type="button" class="btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+          (click)="unApprovedCarePLanModal.hide()">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>

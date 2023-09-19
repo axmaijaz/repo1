@@ -1,0 +1,499 @@
+<div class="d-flex flex-row align-items-center justify-content-between mb-3">
+  <div>
+    <h1 class="page-title mb-0">Questionnaire</h1>
+  </div>
+
+  <div>
+    <button type="button" class="btn btn-dynamic-2c btn-sm" (click)="reOrderQuestions.show()">Re Order Question</button>
+    <button type="button" class="btn btn-dynamic-2c btn-sm" (click)="f.reset();addingNew();addQuestion.show()">Add New</button>
+    <button *ngIf="IsTemplateEditing && selected.length > 0" type="button" class="btn btn-dynamic-2c btn-sm"
+      (click)="AddquestionToTemplate()">Add To Template</button>
+  </div>
+</div>
+
+
+
+<div class="row mb-4">
+  <div class="col-lg-8 col-sm-12">
+    <div class="form-group">
+      <label for="searchBy">Search Question</label>
+      <div class="d-flex align-items-center justify-content-start">
+        <input type="text" #searchPatient class="form-control form-control-sm box-shadow w-100" autocomplete="off"
+          id="searchBy" placeholder="Search by e.g Your Question for 130.0 (code 130.0)"
+          (keyup)="updateFilter($event)" />
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4 col-sm-12">
+    <div class="form-group ">
+      <label for="" class="pr-3">Select Disease</label>
+      <ng-select class="ng-select-small" [(ngModel)]="selectedDisease"
+        [multiple]="false" [searchable]="true" placeholder="Filter By Disease"
+        (ngModelChange)="getQuestions(selectedDisease, false)">
+        <ng-option *ngFor="let item of diseaseList" [value]="item.id">{{item.icdCode}} {{item.detail}}
+        </ng-option>
+      </ng-select>
+    </div>
+
+  </div>
+</div>
+
+
+
+
+<div class="table-data-list">
+  <div *ngIf="isLoading" class="d-flex justify-content-center text-center">
+    <!-- <div class="d-flex justify-content-center text-center"> -->
+    <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+  </div>
+  <ngx-datatable #table appRecalculateNgxTable class="material " [columnMode]="'force'" [headerHeight]="50"
+    [footerHeight]="50" [rowHeight]="35" [scrollbarV]="false" [scrollbarH]="true" [rows]="rows" [limit]="15"
+    [selectionType]="'checkbox'" [selected]="selected" (select)="onSelect($event)" [selectAllRowsOnPage]="false"
+    [displayCheck]="displayCheck">
+    <ngx-datatable-column *ngIf="IsTemplateEditing" [width]="30" [sortable]="false" [canAutoResize]="false"
+      [draggable]="false" [resizeable]="false" [headerCheckboxable]="true" [checkboxable]="true">
+    </ngx-datatable-column>
+    <ngx-datatable-column name="#" [maxWidth]=50>
+      <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+        <span class="p-2">{{rowIndex + 1}}</span>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Question" prop="question">
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Section" prop="sectionName">
+      <!-- <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+        {{questionTypeEnum[row.questionType]}}
+      </ng-template> -->
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Category" prop="category">
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Action" [canAutoResize]=false [frozenRight]=true [width]="120"
+      *ngIf="!IsTemplateEditing">
+      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+        <div class="action-button">
+          <!-- <a class="btn btn-dynamic-2c btn-sm px-3" (click)="addQuestion.show();editQuestion(row)">Assign</a> -->
+          <a class="btn btn-dynamic-2c btn-icon"
+            (click)="diseaseListIds.reset(); questionCategoryId.reset();question.reset();addQuestion.show();editQuestion(row)"><i
+              class="fa fa-pencil fa-lg"></i> </a>
+          <a class="btn btn-danger btn-icon" (click)="openConfirmModal(row.id)"><i class="fa fa-trash"></i></a>
+        </div>
+      </ng-template>
+    </ngx-datatable-column>
+
+
+  </ngx-datatable>
+</div>
+
+
+
+
+
+
+<div mdbModal #addQuestion="mdbModal" class="modal fade" tabindex="-1"
+  role="dialog" aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg flat-modal modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close"
+          (click)="addQuestion.hide();diseaseListIds.reset();questionCategoryId.reset();question.reset();">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" *ngIf="isEditingQuestion" id="myModalLabel">Edit Question</h4>
+        <h4 class="modal-title w-100" *ngIf="!isEditingQuestion" id="myModalLabel">Add Question</h4>
+      </div>
+      <div class="modal-body">
+        <form name="form" #f="ngForm" novalidate>
+        <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group" add>
+                <label for="diseaseListIds">Select Disease<small class="text-danger">*</small> :<small class="text-info"
+                    hidden>(Please
+                    enter more than 3 character to
+                    filter
+                    disease )</small></label>
+
+                <ng-select required [(ngModel)]="newQuestion.diseaseListIds"
+                  [multiple]="true" [searchable]="false" placeholder="Assign Diseases" #diseaseListIds="ngModel"
+                  name="diseaseListIds" [ngClass]="{ 'is-invalid': diseaseListIds.touched && diseaseListIds.invalid }">
+
+                  <!-- <ng-template ng-header-tmp>
+                  </ng-template> -->
+                  <ng-option [value]="0">All</ng-option>
+                  <!-- <div *ngIf="heroForm.errors?.identityRevealed && (heroForm.touched || heroForm.dirty)">
+                </div> -->
+                  <!-- <ng-template ng-header-tmp>
+                      <input style="width: 100%; line-height: 24px" type="text" [(ngModel)]="searchDisease"
+                       (ngModelChange)="getFilterDisease(searchDisease)" />
+                    </ng-template> -->
+                  <ng-option *ngFor="let item of diseaseList" [value]="item.id">{{item.icdCode}} {{item.detail}}
+                  </ng-option>
+                </ng-select>
+                <div *ngIf="diseaseListIds.touched && diseaseListIds.invalid" class="invalid-feedback">
+                  <div *ngIf="diseaseListIds.errors.required">Please select disease</div>
+                </div>
+                <!-- <div *ngIf="diseaseListIds.invalid && (diseaseListIds.dirty || diseaseListIds.touched)"
+                  class="invalid invalid-text">
+                  <div *ngIf="diseaseListIds.errors['required']">
+                    <small class="text-danger">Please select minimum one disease.</small>
+                  </div>
+                </div> -->
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label for="questionType">Question Type<small class="text-danger">*</small></label>
+                <ng-select class="ng-select-small" #questionType="ngModel" [(ngModel)]="newQuestion.questionType"
+                  [searchable]="false" placeholder="select Question Type" (click)="$event.stopPropagation();" required
+                  name="questionType" [ngClass]="{ 'is-invalid': questionType.touched && questionType.invalid }">
+
+                  <ng-option [value]="1">Text Box</ng-option>
+                  <ng-option [value]="2">Text Area</ng-option>
+                  <ng-option [value]="3">Checkbox</ng-option>
+                  <ng-option [value]="4">Radio Option</ng-option>
+                </ng-select>
+                <!-- <div *ngIf="questionType.invalid && (questionType.dirty || questionType.touched)"
+                  class="invalid invalid-text">
+                  <div *ngIf="questionType.errors['required']">
+                    <small class="text-danger">Please select question type.</small>
+                  </div>
+                </div> -->
+                <div *ngIf="questionType.touched && questionType.invalid" class="invalid-feedback">
+                  <div *ngIf="questionType.errors.required">Question Type is required</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <div class="d-flex align-items-center justify-content-between">
+                  <label for="questionCategoryId">Category<small class="text-danger">*</small></label>
+                  <!-- <a class="add-category text-info" (click)="isAddingCategory=!isAddingCategory"><small>Add
+                    New</small></a> -->
+                  <a class="add-category text-info " (click)="addCategoryModel.show()"><small>Add
+                      New</small></a>
+                </div>
+
+                <div class="select-category">
+                  <ng-select class="ng-select-small" #questionCategoryId="ngModel"
+                    [(ngModel)]="newQuestion.questionCategoryId" [searchable]="false" placeholder="Category"
+                    (click)="$event.stopPropagation();" required name="questionCategoryId"
+                    [ngClass]="{ 'is-invalid': questionCategoryId.touched && questionCategoryId.invalid }">
+
+
+                    <ng-option *ngFor="let item of categoryList" [value]="item.id">{{item.name}}. {{item.section}}
+                      <!-- <span class="text-info"></span> -->
+                    </ng-option>
+                  </ng-select>
+                  <!-- <div *ngIf="questionCategoryId.invalid && (questionCategoryId.dirty || questionCategoryId.touched)"
+                    class="invalid invalid-text">
+                    <div *ngIf="questionCategoryId.errors['required']">
+                      <small class="text-danger">Please select category.</small>
+                    </div>
+                  </div> -->
+                  <div *ngIf="questionCategoryId.touched && questionCategoryId.invalid" class="invalid-feedback">
+                    <div *ngIf="questionCategoryId.errors.required">Category is required</div>
+                  </div>
+                </div>
+                <!-- <div class="create-new" *ngIf="isAddingCategory">
+                <div class="input-group">
+                  <input type="text" [(ngModel)]="newCategory" class="form-control" placeholder="Type Category Name"
+                    id="category">
+                  <a class="input-group-prepend" *ngIf="newCategory && ParentCatId"
+                  (click)="addNewCategory();isAddingCategory=!isAddingCategory;">
+                    <span class="input-group-text text-white bg-dynamic-2c" id="category"><i class="fa fa-plus"></i></span>
+                </a>
+                </div>
+              </div> -->
+              </div>
+            </div>
+            <!-- <div class="col-sm-4">
+              <div class="form-group">
+                  <label for="">Section</label>
+                  <ng-select [disabled]="!newCategory" class="ng-select-small" [(ngModel)]="ParentCatId" [searchable]="false"
+                    placeholder="select Question Type" (click)="$event.stopPropagation();">
+                    <ng-option *ngFor="let item of ParentCategoryList" [value]="item.id">{{item.name}}</ng-option>
+                  </ng-select>
+                </div>
+            </div> -->
+
+            <!-- <div class="col-sm-12">
+            <div class="form-group">
+              <label for="">Select Disease</label>
+              <ng-select [(ngModel)]="newQuestion.diseaseListIds" [multiple]="true" [searchable]="true" appendTo="body"
+                placeholder="Assign Diseases" (click)="$event.stopPropagation();">
+                <ng-option *ngFor="let item of diseaseList" [value]="item.id">{{item.description}} {{item.icdCode}}
+                </ng-option>
+              </ng-select>
+            </div>
+          </div> -->
+
+            <div class="form-group col-sm-12">
+              <div class="form-form">
+                <label for="question">Question<small class="text-danger">*</small></label>
+                <textarea type="text" class="form-control" #question="ngModel" [(ngModel)]="newQuestion.question"
+                 required name="question"
+                  [ngClass]="{ 'is-invalid': question.touched && question.invalid }"> </textarea>
+
+                <div *ngIf="question.touched && question.invalid" class="invalid-feedback">
+                  <div *ngIf="question.errors.required">Question is required</div>
+                </div>
+              </div>
+              <!-- <div *ngIf="question.invalid && (question.dirty || question.touched)" class="invalid invalid-text">
+                <div *ngIf="question.errors['required'] && question.touched">
+                  <small class="text-danger">Please add question.</small>
+                </div>
+              </div> -->
+            </div>
+
+          <div class="form-group col-sm-12"
+            *ngIf="newQuestion.questionType && (newQuestion.questionType === 3 || newQuestion.questionType === 4)">
+            <div class="form-form">
+              <div class="create-new">
+                <div class="input-group">
+                  <label class="w-100">Type your Option and (Click + to add)</label>
+                  <input type="text" [(ngModel)]="newOption" name="newOption" class="form-control" placeholder="Type option Text"
+                    id="category1">
+                  <a class="input-group-prepend" *ngIf="newOption" (click)="addNewOption();">
+                    <span class="input-group-text text-white bg-dynamic-2c" id="category12"><i
+                        class="fa fa-plus"></i></span>
+                  </a>
+                </div>
+              </div>
+              <div *ngFor="let opt of cpQuestionOptions; let optIndex = index;">
+                <div #alert class="form-control option-added" role="alert">
+                  <button type="button" class="close" aria-label="Close" (click)="RemoveOption(optIndex)">
+                    <i class="fa fa-close"></i>
+                  </button>
+                  <strong>{{opt.text}}</strong>.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- <div class="form-group col-sm-12"
+            *ngIf="newQuestion.questionType && (newQuestion.questionType === 3 || newQuestion.questionType === 4)">
+            <div class="form-form">
+              <label for="">Question Option: <small>(Type your options with comma, separator )</small></label>
+              <textarea type="text" id="forkjjkm7" [(ngModel)]="newQuestion.questionOptions"
+                class="form-control"></textarea>
+            </div>
+          </div> -->
+
+          <label class="col-sm-12" *ngIf="newQuestion.questionType">Field demo: <small> (Question view in CCM
+              Template)</small></label>
+          <div class="form-temp-view col-sm-12" *ngIf="newQuestion.questionType">
+            <!-- textbox-template -->
+            <div class="temp-field d-flex align-items-center justify-content-start row"
+              *ngIf="newQuestion.questionType && (newQuestion.questionType === 1 || newQuestion.questionType === 2)">
+              <div class="col">
+                <p class="m-0">Lorem ipsum dolor sit amet adipisicing elit ? </p>
+              </div>
+              <div class="col">
+                <div class="text-box w-100">
+                  <input type="text" id="form1" class="form-control">
+                </div>
+              </div>
+            </div>
+            <!-- radio-template -->
+
+            <div class="temp-field d-flex align-items-center justify-content-start row"
+              *ngIf="newQuestion.questionType && newQuestion.questionType === 4">
+
+              <div class="col">
+                <p>Lorem ipsum dolor sit amet adipisicing elit ? </p>
+              </div>
+              <div class="col">
+
+                <div class="radio">
+                  <!-- Material inline 1 -->
+                  <div class="form-check form-check-inline">
+                    <input type="radio" class="form-check-input" id="materialInline1" name="inlineMaterialRadiosExample"
+                      mdbInput>
+                    <label class="form-check-label" for="materialInline1">1</label>
+                  </div>
+
+                  <!-- Material inline 2 -->
+                  <div class="form-check form-check-inline ">
+                    <input type="radio" class="form-check-input" id="materialInline2" name="inlineMaterialRadiosExample"
+                      mdbInput>
+                    <label class="form-check-label" for="materialInline2">2</label>
+                  </div>
+
+                  <!-- Material inline 3 -->
+                  <div class="form-check form-check-inline">
+                    <input type="radio" class="form-check-input" id="materialInline3" name="inlineMaterialRadiosExample"
+                      mdbInput>
+                    <label class="form-check-label" for="materialInline3">3</label>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- checkbox-template -->
+
+            <div class="temp-field d-flex align-items-center justify-content-start row"
+              *ngIf="newQuestion.questionType && newQuestion.questionType === 3">
+              <div class="col">
+                <p>Lorem ipsum dolor sit amet adipisicing elit ? </p>
+              </div>
+              <div class="col">
+                <div class="checkb">
+                  <!-- Default inline 1-->
+                  <mdb-checkbox [inline]="true" [default]="true">1</mdb-checkbox>
+
+                  <!-- Default inline 2-->
+                  <mdb-checkbox [inline]="true" [default]="true">2</mdb-checkbox>
+
+                  <!-- Default inline 3-->
+                  <mdb-checkbox [inline]="true" [default]="true">3</mdb-checkbox>
+                </div>
+              </div>
+
+
+            </div>
+          </div>
+
+
+        </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" *ngIf="!isEditingQuestion" class="btn btn-dark btn-sm" aria-label="Close"
+          (click)="addQuestion.hide();diseaseListIds.reset(); questionCategoryId.reset();question.reset()"
+          mdbWavesEffect>Close</button>
+        <button type="button" *ngIf="isEditingQuestion" class="btn btn-dark btn-sm" aria-label="Close"
+          (click)="addQuestion.hide();diseaseListIds.reset(); questionCategoryId.reset();question.reset()"
+          mdbWavesEffect>Discard</button>
+        <button type="button" *ngIf="!isEditingQuestion" class="btn btn-dynamic-2c btn-sm"
+          (click)="addQuestion.hide();addNewQuestion();"
+          [disabled]="!diseaseListIds.valid || !questionCategoryId.valid || !question.valid">Add</button>
+        <button type="button" *ngIf="isEditingQuestion" class="btn btn-dynamic-2c btn-sm"
+          (click)="addQuestion.hide();addNewQuestion()"
+          [disabled]="!diseaseListIds.valid || !questionCategoryId.valid || !question.valid">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div mdbModal #addCategoryModel="mdbModal" class="modal fade sltc-wrap" role="dialog"
+  [config]="{ignoreBackdropClick: true}" aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg flat-modal " role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+
+        <button type="button" class="close pull-right" aria-label="Close" (click)="addCategoryModel.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel"> Add New Category</h4>
+
+      </div>
+
+      <div class="modal-body">
+        <div class="row ">
+          <div class="col-sm-12">
+            <div class="form-group">
+              <label for="catname">Category Name<small class="text-danger">*</small></label>
+              <input type="text" #categorName="ngModel" [(ngModel)]="newCategory" required [ngClass]="{ 'is-invalid':(categorName.touched ||
+               categorName.dirty) &&
+              !categorName.valid }" class="form-control form-control-sm" placeholder="Type Category Name" id="catname">
+              <div *ngIf="categorName.invalid && (categorName.dirty || categorName.touched)"
+                class="invalid invalid-text">
+                <div *ngIf="categorName.errors['required']">
+                  <small class="text-danger">Please write category name.</small>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-12 ">
+            <div class="form-group">
+              <label for="namee">Select Section</label>
+              <ng-select appendTo=".sltc-wrap" [disabled]="!newCategory" class="ng-select-small"
+                [(ngModel)]="ParentCatId" [searchable]="false" placeholder="select Question Type"
+                (click)="$event.stopPropagation();">
+                <ng-option *ngFor="let item of ParentCategoryList" [value]="item.id">{{item.name}}.{{item.section}}
+
+                  <!-- <span class="text-info"></span> -->
+
+                </ng-option>
+              </ng-select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-dark btn-sm" aria-label="Close" (click)="addCategoryModel.hide();"
+          mdbWavesEffect>Close</button>
+        <button type="submit" [disabled]="!newCategory || !ParentCatId" class="btn btn-dynamic-2c btn-sm"
+          (click)="addCategoryModel.hide();addNewCategory();">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="overflow-y:auto" mdbModal #reOrderQuestions="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  id="reOrderQuestions" aria-labelledby="myBasicModalLabel" aria-hidden="true"
+  [config]="{backdrop: true, ignoreBackdropClick: true}">
+  <div class="modal-dialog modal-lg flat-modal p-4 modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="reOrderQuestions.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+
+        <h4 class="text-dynamic-2c modal-title font-500 mr-3">Re-order Questions</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-lg-4 col-sm-12">
+            <div class="form-group ">
+              <label for="" class="pr-3">Select Disease</label>
+              <ng-select class="ng-select-small" [(ngModel)]="findQuestionWithDisease"
+                [multiple]="false" [searchable]="true" appendTo="body" placeholder="Select any Disease"
+                (ngModelChange)="getQuestions(findQuestionWithDisease , true)">
+                <ng-option *ngFor="let item of diseaseList" [value]="item.id">{{item.icdCode}} {{item.detail}}
+                </ng-option>
+              </ng-select>
+            </div>
+
+          </div>
+          <div class="container">
+            <div *ngIf="isLoading" class="d-flex justify-content-center text-center">
+              <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+            </div>
+            <div *ngIf="!isLoading && questionsListByDisease && questionsListByDisease.length > 0">
+              <ul class="list-group dndList" dndDropzone [dndHorizontal]="false" dndEffectAllowed="copyMove" (dndDrop)="onDrop($event, questionsListByDisease)">
+                <li dndPlaceholderRef class="dndPlaceholder">
+                </li>
+                <li class="list-group-item d-flex justify-content-start align-items-center"
+                  *ngFor="let item of questionsListByDisease | sortBy:'questionOrder'; let index = index;" [dndDraggable]="item"
+                  [dndEffectAllowed]="'move'" [dndDisableIf]="false" (dndStart)="onDragStart($event)"
+                  (dndCopied)="onDragged(item, questionsListByDisease, 'copy')" (dndLinked)="onDragged(item, questionsListByDisease, 'link')"
+                  (dndMoved)="onDragged(item, questionsListByDisease, 'move')" (dndCanceled)="onDragged(item, questionsListByDisease, 'none')"
+                  (dndEnd)="onDragEnd($event)">
+                  <mdb-badge *ngIf="!item.questionOrder" primary="true">{{index + 1}}</mdb-badge>
+                  <mdb-badge *ngIf="item.questionOrder" primary="true">{{item.questionOrder}}</mdb-badge>
+                  <p class="text-left mb-0 ml-3"> {{item.question}} </p>
+
+                  <a class="dragable-btn ml-auto" dndHandle>
+                    <i class="fa fa-ellipsis-v fa-lg"></i>
+                    <i class="fa fa-ellipsis-v fa-lg"></i>
+                    <i class="fa fa-ellipsis-v fa-lg"></i>
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+      <div class="modal-footer w-100">
+        <button type="button" class="btn btn-dark btn-sm" aria-label="Close" (click)="reOrderQuestions.hide()"
+          mdbWavesEffect>Discard</button>
+
+        <button type="button" class="btn btn-dynamic-2c btn-sm" (click)="SaveQuestionOrder()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>

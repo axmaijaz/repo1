@@ -1,0 +1,50 @@
+<div class="modal-content">
+  <div class="modal-header">
+    <!-- <button type="button" class="close pull-right" aria-label="Close" >
+      <span aria-hidden="true">×</span>
+    </button> -->
+    <h4 class="modal-title w-100" id="myModalLabel">SMS Voice Consent</h4>
+  </div>
+  <div class="modal-body">
+    <div class="custom-control custom-switch ">
+      <input type="checkbox" [(ngModel)]="PatientNotifSetting.telephonyCommunication" class="custom-control-input"   id="chatService">
+      <label class="custom-control-label" style="font-weight: 500;" for="chatService">SMS/Voice SMS Consent</label>
+    </div>
+    <div class="row ml-0 mt-2 mr-2">
+      <div class="alert alert-success d-inline-block p-2 mb-0" *ngIf="smsvoiceConsent">
+        <span>Patient has provided prior express consent to receive automated text and voice messages at the phone number(s) listed in the patient profile</span>
+      </div>
+    </div>
+    <div class="row m-3">
+      <div  class="row">
+        <div class="col-sm-6">
+          <div class="form-group">
+            <label for="namea">Primary Number </label>
+            <div class="d-flex">
+              <input readonly [(ngModel)]="selectedPatient.homePhone" type="text" class="form-control form-control-sm">
+              <!-- <button (click)="changePatientPhone(1)" class="btn btn-dynamic-2c btn-sm m-0 ml-2">Update</button> -->
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="form-group">
+            <label for="namea">Secondary Number </label>
+            <div class="d-flex">
+              <input readonly [(ngModel)]="selectedPatient.personNumber" type="text" class="form-control form-control-sm">
+              <!-- <button (click)="changePatientPhone(2)" class="btn btn-dynamic-2c btn-sm m-0 ml-2">Update</button> -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- <mdb-checkbox [default]="true" >Anonymous
+    </mdb-checkbox> -->
+  </div>
+  <div class="modal-footer d-flex justify-content-between align-items-center">
+    <div>
+      <button type="button" [disabled]="isLoadingConfig || !selectedPatient.homePhone" type="button" (click)="EditPatientTelephonyConfig()" class="relative waves-light btn-sm btn-dynamic-2c btn">
+        <span *ngIf="isLoadingConfig" class="spinner-border spinner-border-sm" role="status"
+        aria-hidden="true"></span>Save</button>
+    </div>
+  </div>
+</div>

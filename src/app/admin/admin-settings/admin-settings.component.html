@@ -1,0 +1,93 @@
+<div class="d-flex flex-row align-items-center justify-content-between mb-3">
+  <div>
+    <h1 class="page-title mb-0">Settings</h1>
+  </div>
+</div>
+<div *ngIf="isLoading" class="d-flex justify-content-center text-center">
+  <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+</div>
+
+<!-- <div class="row">
+  <div class="col-sm-12">
+    <div [dndDraggable]="draggable.data" [dndEffectAllowed]="draggable.effectAllowed" [dndDisableIf]="draggable.disable"
+      (dndStart)="onDragStart($event)" (dndCopied)="onDraggableCopied($event)" (dndLinked)="onDraggableLinked($event)"
+      (dndMoved)="onDraggableMoved($event)" (dndCanceled)="onDragCanceled($event)" (dndEnd)="onDragEnd($event)">
+
+      <div *ngIf="draggable.handle" dndHandle>HANDLE
+      </div>
+
+      draggable ({{draggable.effectAllowed}}) <span [hidden]="!draggable.disable">DISABLED</span>
+
+      <div dndDragImageRef>DRAG_IMAGE</div>
+
+    </div>
+
+    <section dndDropzone (dndDragover)="onDragover($event)" (dndDrop)="onDrop($event)">
+
+      dropzone
+
+      <div style="border: 1px orangered solid; border-radius: 5px; padding: 15px;" dndPlaceholderRef>
+        placeholder
+      </div>
+
+    </section>
+  </div>
+</div> -->
+
+<div class="row">
+
+    <div class="container">
+
+      <div>
+
+        <pre>dndEffectAllowed="copyMove"</pre>
+
+        <ul [fxLayout]="layout.list"
+                  dndDropzone
+                  [dndHorizontal]="layout.dndHorizontal"
+                  dndEffectAllowed="copyMove"
+                  (dndDrop)="onDrop($event, draggableListLeft)"
+                  class="dndList">
+
+          <li dndPlaceholderRef
+                         class="dndPlaceholder">
+          </li>
+
+          <li *ngFor="let item of draggableListLeft; let index = index;"
+                         [dndDraggable]="item"
+                         [dndEffectAllowed]="item.effectAllowed"
+                         [dndDisableIf]="item.disable"
+                         (dndStart)="onDragStart($event)"
+                         (dndCopied)="onDragged(item, draggableListLeft, 'copy')"
+                         (dndLinked)="onDragged(item, draggableListLeft, 'link')"
+                         (dndMoved)="onDragged(item, draggableListLeft, 'move')"
+                         (dndCanceled)="onDragged(item, draggableListLeft, 'none')"
+                         (dndEnd)="onDragEnd($event)">
+            <!-- <mat-icon *ngIf="item.handle"
+                      mat-list-icon
+                      dndHandle>drag_handle
+            </mat-icon> -->
+            <i *ngIf="item.handle" class="fa fa-list fa-lg" style="cursor: pointer" dndHandle></i>
+            <h1>{{item.content}}</h1>
+            <p>effectAllowed: {{item.effectAllowed}}  {{index}}</p>
+
+          </li>
+
+        </ul>
+
+      </div>
+
+    </div>
+
+  </div>
+<!-- <ul class="list-group">
+  <li class="list-group-item d-flex justify-content-between align-items-center"
+    *ngFor="let item of categoryList; let index = index">
+    <a type="button" mdbBtn floating="true" size="sm" class="btn btn-dynamic-2c btn-sm  waves-light" mdbWavesEffect>
+      <i class="fa fa-list fa-lg" style="cursor: pointer"></i>
+    </a>
+    {{item.name}}
+    <mdb-badge *ngIf="item.order" pill="true" primary="true">{{item.order}}</mdb-badge>
+    <mdb-badge *ngIf="!item.order" pill="true" primary="true">{{index + 1}}</mdb-badge>
+  </li>
+</ul> -->

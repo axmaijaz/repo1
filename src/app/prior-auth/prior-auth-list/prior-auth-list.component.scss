@@ -1,0 +1,114 @@
+$font-size: 10px;
+table.prior-auth-table {
+  border: 1px solid #dee2e6;
+  thead {
+    tr {
+      th {
+        font-size: $font-size;
+        background: white;
+        font-weight: 500;
+        white-space: pre;
+        &:not(:first-child) {
+          border-left: 1px solid #dee2e6;
+        }
+        &:last-child {
+          border-left: 1px solid #dee2e6;
+        }
+        padding: .3rem .2rem;
+      }
+      &:nth-child(1) {
+        th {
+          font-weight: 600;
+          text-align: center;
+          &:nth-child(2) {
+            background: #e9f6e8;
+          }
+          &:nth-child(3) {
+            background: #fff0eb;
+          }
+          &:nth-child(4) {
+            background: #FFFDE7 ;
+          }
+        }
+      }
+    }
+  }
+  tbody{
+    tr{
+      td{
+        padding: .3rem .2rem;
+        font-size: $font-size;
+        &:not(:first-child){
+          border-left: 1px solid #dee2e6;
+        }
+        // white-space: pre;
+        }
+    }
+  }
+}
+
+table.prior-auth-table tbody {
+  background: white;
+  font-size: 14px;
+// yellow
+  tr td:nth-child(n + 23) {
+    background: #FFFDE7  !important;
+  }
+// red
+  tr td:nth-child(n + 17) {
+    background: #fff0eb;
+  }
+  // green
+  tr td:nth-child(-n + 16) {
+    background: #e9f6e8 !important;
+  }
+  tr td:nth-child(-n + 7) {
+    background: white !important;
+  }
+  tr td:last-child {
+    background: white !important;
+  }
+  
+}
+#hoverAble{
+  tr{
+    &:hover{
+      td{
+        background: #f2f3f8 !important;
+      }
+    }
+   
+  }
+}
+
+// table.prior-auth-table tbody tr td:first-child {
+//   border-right: 2px solid #dee2e6;
+// }
+
+// table.prior-auth-table tbody tr td:nth-child(12) {
+//   border-right: 2px solid #dee2e6;
+// }
+
+// table.prior-auth-table tbody tr td:nth-child(18) {
+//   border-right: 2px solid #dee2e6;
+// }
+
+// table.prior-auth-table tbody tr td:nth-child(23) {
+//   border-right: 1px solid #dee2e6;
+// }
+.button-bg-trans {
+  background:transparent;
+}
+.user-name-list-colorspan .name-caption:not(:first-child) {
+  background: grey !important;
+  margin-left: 0px;
+}
+.text-ellipsis {
+  white-space: nowrap; 
+  width: 35px; 
+  overflow: hidden;
+  text-overflow: ellipsis; 
+}
+.cursor-pointer {
+  cursor: pointer;
+}

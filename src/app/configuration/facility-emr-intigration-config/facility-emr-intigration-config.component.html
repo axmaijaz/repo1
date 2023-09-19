@@ -1,0 +1,62 @@
+<div class="col-sm-12 mb-3">
+  <label>Settings</label>
+  <div *ngIf="loading || getPracticeDetail">
+    <div class="d-flex justify-content-center text-center">
+      <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+    </div>
+  </div>
+  <div class="py-3 border" *ngIf="facilityEMR?.isIntegrated">
+    <ul class="status-list custom-column-list">
+      <li [class.active]="editFacilityIntegrationConfigObj?.integrationEnabled" (click)="editFacilityIntegrationConfigObj.integrationEnabled=!editFacilityIntegrationConfigObj.integrationEnabled;IntigrationEnabledChanged()" class=" col-sm-6 m-0 mb-1" >
+        <a class="link" >Integration Enabled</a>
+      </li>
+      <li *ngIf="editFacilityIntegrationConfigObj?.integrationEnabled" [class.active]="editFacilityIntegrationConfigObj?.scrapingEnabled" (click)="editFacilityIntegrationConfigObj.scrapingEnabled=!editFacilityIntegrationConfigObj.scrapingEnabled;" class=" col-sm-6 m-0 mb-1" >
+        <a class="link" >Scraping Enabled</a>
+      </li>
+      <li *ngIf="editFacilityIntegrationConfigObj?.integrationEnabled && facilityEMR.claimSubmission" [class.active]="editFacilityIntegrationConfigObj.claimSubmission" (click)="editFacilityIntegrationConfigObj.claimSubmission=!editFacilityIntegrationConfigObj.claimSubmission" class=" col-sm-6 m-0 mb-1" >
+        <a class="link" >Claim Submission</a>
+      </li>
+      <li *ngIf="editFacilityIntegrationConfigObj?.integrationEnabled && facilityEMR.clinicalDocumentSubmission" [class.active]="editFacilityIntegrationConfigObj.clinicalDocumentSubmission" (click)="editFacilityIntegrationConfigObj.clinicalDocumentSubmission=!editFacilityIntegrationConfigObj.clinicalDocumentSubmission" class=" col-sm-6 m-0 mb-1" >
+        <a class="link" >Clinical Document Submission</a>
+      </li>
+      <li *ngIf="editFacilityIntegrationConfigObj?.integrationEnabled && facilityEMR.canSetCcmEnrollmentStatus" [class.active]="editFacilityIntegrationConfigObj.canSetCcmEnrollmentStatus" (click)="editFacilityIntegrationConfigObj.canSetCcmEnrollmentStatus=!editFacilityIntegrationConfigObj.canSetCcmEnrollmentStatus" class=" col-sm-6 m-0 mb-1" >
+        <a class="link" >CanSet Ccm Enrollment Status</a>
+      </li>
+      <li *ngIf="editFacilityIntegrationConfigObj?.integrationEnabled && facilityEMR.vitalsSubmission" [class.active]="editFacilityIntegrationConfigObj.vitalsSubmission" (click)="editFacilityIntegrationConfigObj.vitalsSubmission=!editFacilityIntegrationConfigObj.vitalsSubmission" class=" col-sm-6 m-0 mb-1" >
+        <a class="link" >Vitals Submission</a>
+      </li>
+    </ul>
+
+    <div class="row p-3" *ngIf="editFacilityIntegrationConfigObj?.integrationEnabled">
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="form-check-inline">
+          <label class="m-0 w-100">Practice EmrId </label>
+          <input type="text" class="form-control form-control-sm" appOnDebounce [debounceTime]="1000"
+            [(ngModel)]="editFacilityIntegrationConfigObj.practiceEmrId">
+        </div>
+        <button type="button" class="btn btn-dynamic-2c btn-sm" (click)="GetPracticeInfo()">Verify</button>
+
+      </div>
+    </div>
+    <div class="row mx-3" *ngIf="editFacilityIntegrationConfigObj?.integrationEnabled">
+      <ng-container *ngIf="practiceInfo?.totalcount">
+        <div *ngFor="let item of practiceInfo?.practiceinfo" class="col-12 alert alert-warning alert-dismissible animated fade show"role="alert">
+          <strong>Name: ({{item?.name}}) </strong> Id: ({{item.practiceid}}), Go Live Date: {{item.golivedate}} , CCM Enabled: {{item.ccmenabled}}
+        </div>
+      </ng-container>
+    </div>
+    <div class="row col-12">
+      <div class="modal-footer w-100" >
+        <button [disabled]="(editFacilityIntegrationConfigObj?.integrationEnabled && !validPractice) || savingConf" type="button" class="btn btn-dynamic-2c btn-sm" (click)="EditFacilityIntegrationConfig()">Save</button>
+      </div>
+    </div>
+
+  </div>
+  <div #alert *ngIf="!facilityEMR?.isIntegrated && !loading" class="alert alert-warning alert-dismissible animated fade show"
+          role="alert">
+          <!-- <button type="button" class="close" aria-label="Close" >
+            <span aria-hidden="true">&times;</span>
+          </button> -->
+          Facility's EMR <strong>({{facilityEMR?.name}}) </strong>is not eligible for Integration !
+        </div>
+</div>

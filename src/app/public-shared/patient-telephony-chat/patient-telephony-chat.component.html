@@ -1,0 +1,69 @@
+<div class="row justify-content-center">
+  <div class="col-12" >
+    <div class="chat-messages ">
+      <div class="row m-4" *ngIf="!loadingTelephonyData && !selectedPatient.telephonyCommunication">
+        <div class="alert alert-danger d-inline-block p-2 mb-0" >
+          <span>Consent for communication via SMS/ Voice has not been taken, click <strong (click)="OpenPatientSetting()"><a class="link" style="font-size: 16px;">here</a></strong> to open setting</span>
+        </div>
+      </div>
+      <div class="text-center" *ngIf="loadingTelephonyData">
+        <div class="spinner-border" role="status">
+          <span class="visually-hidden"></span>
+        </div>
+      </div>
+      <ng-container *ngIf="selectedPatient?.telephonyCommunication">
+        <div id="messageListDiv" class="px-3" style="min-height: 100%; height: calc(100vh - 252px);;overflow-y: auto;">
+          <div  class="message-body" *ngFor="let msg of pemCaseDetails; let i = index">
+            <div class="your-message d-flex align-items-end py-1" *ngIf="msg.direction != 'Outbound'">
+              <!-- <div class="user-avatar mr-1"> -->
+                <!-- <img src="../../assets/male-placeholder-image.jpeg" alt="" /> -->
+                <!-- <i class="fa fa-user fa-2x text-dynamic-2c"></i>
+              </div> -->
+              <div class="your-chat-message">
+                <p style="display: block; font-size: 12px; font-weight: 600; margin-right: 5px;" class="m-0 ">{{msg.type}}</p>
+                <p class="m-0" style="display: block; font-size: 12px; line-height: 14px;">{{msg.subject}}</p>
+                <p style="text-align: right; font-weight: 500;font-size: 10px;" class="m-0 text-dynamic-secondary-2c">{{msg.creationTime}}</p>
+              </div>
+            </div>
+            <div class="other-message d-flex flex-row-reverse align-items-end py-1" *ngIf="msg.direction == 'Outbound'">
+              <!-- <div class="user-avatar ml-1">
+                <i class="fa fa-user fa-2x text-dynamic-2c"></i>
+              </div> -->
+              <div class="other-chat-message">
+                <p style="display: block; font-size: 12px; font-weight: 600; margin-right: 5px;" class="m-0 ">{{msg.type}}</p>
+                <p class="m-0" style="display: block; font-size: 12px; line-height: 14px;">{{msg.subject}}</p>
+                <p style="text-align: right; font-weight: 500;font-size: 10px;" class="m-0 ">{{msg.creationTime}}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+      <!-- <div class="text-center" *ngIf="gettingGroupChatHistory">
+        <div class="spinner-border" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <div class="item">
+          <ngx-skeleton-loader count="5" [animation]="'progress'" appearance="line"></ngx-skeleton-loader>
+        </div>
+      </div> -->
+      <div class="chat-type-box py-2 px-3" *ngIf="selectedPatient?.telephonyCommunication && !loadingTelephonyData">
+        <div class="chat-type position-relative">
+          <input [(ngModel)]="messageText" (keyup.enter)="SendRCMessage()" type="text" placeholder="Add your message" class="form-control"/>
+          <button [disabled]="sendingMessage"  (click)="SendRCMessage()"  class="send-btn" >
+            Send
+            <i class="fa fa-paper-plane paper-icon "></i>
+          </button>
+        </div>
+      </div>
+      <!-- <div class="chat-type-box py-2 px-3">
+        <div class="chat-type position-relative">
+          <input [(ngModel)]="messageText" (keyup.enter)="SendRCMessage()" type="text" placeholder="Add your message" class="form-control"/>
+          <button  (click)="SendRCMessage()"  class="send-btn" >
+            Send
+            <i class="fa fa-paper-plane paper-icon "></i>
+          </button>
+        </div>
+      </div> -->
+    </div>
+  </div>
+</div>

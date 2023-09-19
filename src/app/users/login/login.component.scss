@@ -1,0 +1,68 @@
+@import "theme";
+
+.login {
+  height: 100vh;
+  width: 100%;
+}
+.login-body {
+  display: -webkit-box;
+  display: flex;
+  align-content: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+  height: 100vh;
+  flex-wrap: wrap;
+  padding: 0 1rem;
+  width: 480px;
+  margin: 0 auto;
+  @include media-breakpoint-down(sm) {
+    width: 100%;
+    padding: 0 2rem;
+  }
+  form {
+    width: 100%;
+  }
+  .ccm-logo {
+    margin-bottom: 3rem;
+    @include media-breakpoint-down(sm) {
+      margin-bottom: 2rem;
+      img {
+        width: 190px;
+      }
+    }
+  }
+}
+.rowBackgroundColorDiv {
+  text-decoration: line-through !important;
+  text-decoration-color: red !important;
+  color: gray !important;
+}
+.login-box {
+  background: white;
+  padding: 2rem;
+  box-shadow: 6px 7px 20px #aab6c54d;
+  border-radius: 5px;
+  border: 1px solid #efefef;
+}
+h3.site-name {
+  margin-bottom: 2rem;
+  font-weight: 900;
+  font-size: 1.5rem;
+  @include media-breakpoint-down(sm) {
+    font-size: 1rem;
+    font-weight: 900;
+    margin-bottom: 1rem;
+  }
+}
+.custom-append {
+  position: absolute;
+    height: 35px;
+    width: 35px;
+    right: 7px;
+    top: 29px;
+}
+.custom-append .input-group-text {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}

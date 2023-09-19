@@ -1,0 +1,62 @@
+@import 'theme';
+
+.facility-toggle-bar {
+  background-color: $dynamic-colour;
+  padding:0.6rem 0.5rem;
+  border-radius: 10px;
+  color: #fff;
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+.facility-toggle-bar.disable {
+  background-color: #e3e1e2;
+  color: #7d7d7d;
+}
+.custom-switch .custom-control-label::after {
+  background-color: #e3e1e2;
+}
+.custom-switch .custom-control-label::after {
+  top: calc(0.25rem + 2px) !important;
+  left: calc(-2.25rem + 2px) !important;
+  width: calc(1rem - 4px);
+  height: calc(1rem - 4px);
+}
+.custom-control-input[disabled] ~ .custom-control-label::before,
+.custom-control-input:disabled ~ .custom-control-label::before {
+  background-color: #a3a3a3;
+}
+.custom-control-input:checked ~ .custom-control-label::before {
+  border-color: $dynamic-colour !important;
+  background-color: #fff;
+  border: 1px solid $dynamic-colour !important;
+}
+.custom-control-label::before {
+  background-color: #a3a3a3;
+}
+.custom-switch .custom-control-label::after {
+  background-color: #e3e1e2;
+}
+.custom-switch .custom-control-input:checked ~ .custom-control-label::after {
+  background-color: $dynamic-colour;
+
+}
+.facility-card {
+  border-radius: 8px!important;
+  margin-bottom: 1rem;
+  .card-header.border-8 {
+    border-radius: 8px!important;
+  }
+  .card-header {
+    border-radius: 8px 8px 0 0 !important;
+    padding: 0.6rem 0.5rem;
+    background-color: $dynamic-colour;
+    color: #fff;
+  }
+  .card-header.disable {
+    background-color: #e3e1e2;
+    color: #7d7d7d;
+  }
+  .card-body {
+    padding: 0.6rem 0.5rem;
+  }
+}

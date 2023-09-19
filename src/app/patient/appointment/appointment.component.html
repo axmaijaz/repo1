@@ -1,0 +1,74 @@
+<h1 class="page-title">Appointments</h1>
+
+
+<div class="panel">
+  <div class="panel-header">
+    <div class="d-flex justify-content-between align-items-center">
+      <div class="btn-group mr-3">
+        <div class="btn btn-dynamic-2c btn-sm px-2" mwlCalendarPreviousView [view]="view" [(viewDate)]="viewDate"
+          (viewDateChange)="closeOpenMonthViewDay()">
+          <i class="fa fa-angle-left"></i>
+        </div>
+        <div class="btn btn-dynamic-2c btn-sm px-2" mwlCalendarNextView [view]="view" [(viewDate)]="viewDate"
+          (viewDateChange)="closeOpenMonthViewDay()"><i
+            class="fa fa-angle-right"></i>
+        </div>
+      </div>
+
+      <p class="mb-0 mr-auto"><strong>{{ viewDate | calendarDate:(view + 'ViewTitle'):'en' }}</strong></p>
+
+      <div class="btn-group">
+        <div class="btn btn-dynamic-2c btn-sm" (click)="setView(CalendarView.Month)"
+          [class.active]="view === CalendarView.Month">
+          Month
+        </div>
+        <div class="btn btn-dynamic-2c btn-sm" (click)="setView(CalendarView.Week)"
+          [class.active]="view === CalendarView.Week">
+          Week
+        </div>
+        <div class="btn btn-dynamic-2c btn-sm" (click)="setView(CalendarView.Day)"
+          [class.active]="view === CalendarView.Day">
+          Day
+        </div>
+        <div class="btn btn-dynamic-2c btn-sm" mwlCalendarToday [(viewDate)]="viewDate">
+          Today
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <ng-template #customCellTemplate let-day="day" let-locale="locale">
+    <div class="cal-cell-top">
+      <span class="cal-day-badge" *ngIf="day.badgeTotal > 0"
+        >{{ day.badgeTotal }}</span
+      >
+      <span class="cal-day-number"
+        >{{ day.date | calendarDate:'monthViewDayNumber':locale }}</span
+      >
+    </div>
+    <ng-container *ngIf="day.events.length > 0 && events">
+      <ng-container *ngFor="let evnt of day.events">
+        <small style="margin: 5px; font-weight: bold;">{{ evnt.title}}</small>
+      </ng-container>
+    </ng-container>
+    <!-- <small style="margin: 5px">{{ evnt.events | json }}</small> -->
+  </ng-template>
+  <div class="panel-body">
+    <div [ngSwitch]="view">
+      <mwl-calendar-month-view *ngSwitchCase="CalendarView.Month" [viewDate]="viewDate" [events]="events"
+        [refresh]="refresh" [activeDayIsOpen]="activeDayIsOpen" (dayClicked)="dayClicked($event.day)"
+        (eventClicked)="handleEvent('Clicked', $event.event)" (eventTimesChanged)="eventTimesChanged($event)"  [cellTemplate]="customCellTemplate"
+>
+      </mwl-calendar-month-view>
+      <mwl-calendar-week-view *ngSwitchCase="CalendarView.Week" [viewDate]="viewDate" [events]="events"
+        [refresh]="refresh" (eventClicked)="handleEvent('Clicked', $event.event)"
+        (eventTimesChanged)="eventTimesChanged($event)">
+      </mwl-calendar-week-view>
+      <mwl-calendar-day-view *ngSwitchCase="CalendarView.Day" [viewDate]="viewDate" [events]="events"
+        [refresh]="refresh" (eventClicked)="handleEvent('Clicked', $event.event)"
+        (eventTimesChanged)="eventTimesChanged($event)">
+      </mwl-calendar-day-view>
+    </div>
+  </div>
+</div>

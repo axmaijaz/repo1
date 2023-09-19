@@ -1,0 +1,391 @@
+<div class="d-flex align-items-center justify-content-between">
+  <h1 class="page-title">Roles Permissions</h1>
+  <div>
+    <!-- <button (click)="assignCategoryModal.show()" class="btn btn-dynamic-2c btn-sm">
+    Create New Role
+  </button> -->
+    <button (click)="addnewCategoryModal.show()" class="btn btn-dynamic-2c btn-sm">
+      Add Category
+    </button>
+    <!-- <button (click)="resetClaimDto();addNewRoleModal.show()" class="btn btn-dynamic-2c btn-sm">
+    Assign Categories
+  </button> -->
+    <button (click)="resetClaimDto();addNewClaimModal.show()" class="btn btn-dynamic-2c btn-sm">
+      Add new Claim
+    </button>
+  </div>
+</div>
+
+<!-- <div class="row">
+  <div *ngIf="isLoading" class="d-flex justify-content-center text-center">
+    <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+  </div>
+  <div class="col-sm-12 ngSelectContainer">
+    <div class="row">
+      <div class="col-lg-6 col-sm-6">
+        <div class="form-group mb-4">
+          <label for="">Select Role Type</label>
+          <ng-select [searchable]="false" [(ngModel)]="selectedRoleId" [loading]="isRoleListLoading" (ngModelChange)="
+              userRoleId = 0;resetClaimsList();getClaimsLookUp();getRolesbyRoleType();
+            " [multiple]="false" appendTo=".ngSelectContainer" class="ng-select-small" placeholder="Select Type">
+            <ng-option [value]="0">Select Type</ng-option>
+            <ng-option [value]="item.value" *ngFor="let item of rolesList">{{ item.name }}
+            </ng-option>
+          </ng-select>
+        </div>
+      </div>
+      <div class="col-lg-6 col-sm-6">
+        <label for="">Select User Role</label>
+        <div class="d-flex align-items-center justify-content-between">
+          <div class="w-100">
+            <ng-select [searchable]="false" [(ngModel)]="userRoleId" [loading]="isRoleTypeLoading"
+              (ngModelChange)="getCalimsOnSelectRole()" [multiple]="false" appendTo=".ngSelectContainer"
+              class="ng-select-small" placeholder="Select Role">
+              <ng-option [value]="0">Select Role</ng-option>
+              <ng-option [value]="item.id" *ngFor="let item of byUserRoleList">{{ item.name }}
+              </ng-option>
+            </ng-select>
+          </div>
+
+          <button [disabled]="!userRoleId" class="btn btn-dynamic-2c btn-sm my-0"
+            (click)="editRolePermissions()">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> -->
+<div class="d-flex align-items-center justify-content-between py-2">
+  <button [disabled]="!userRoleId" class="btn btn-dynamic-2c btn-sm my-0 m-o"
+  (click)="editRolePermissions()">Save</button>
+  <div class="custom-control custom-switch">
+    <input type="checkbox" [(ngModel)]="isSelectionModeOn" (change)="checkUserRolesListCount($event)" class="custom-control-input" id="customSwitches">
+    <label class="custom-control-label" for="customSwitches">Selection Mode</label>
+  </div>
+</div>
+
+<div class="d-flex justify-content-center text-center">
+  <mdb-progress-bar *ngIf="isLoading" class="progress primary-color-dark mb-0" mode="indeterminate">
+  </mdb-progress-bar>
+</div>
+<div class="position-relative">
+  <div class="side-bar-ex">
+    <h5>Role Types</h5>
+    <p class="text-white">One of the role type must be selected</p>
+    <ul>
+      <li *ngFor="let item of rolesList" (click)="selectedRoleId=item.value;resetClaimsList();getClaimsLookUp();getRolesbyRoleType();" name="role" ngDefaultControl
+      [class.active]="selectedRoleId==item.value" class="d-inline-block"><a class="px-2">{{item.name}}</a></li>
+    </ul>
+    <!-- <button type="button" class="close pull-right" aria-label="Close" (click)=" selectedRoleId=0;resetClaimsList();getClaimsLookUp();getRolesbyRoleType();">
+      <span aria-hidden="true">Reset</span>
+    </button> -->
+    <h5>User Roles</h5>
+    <p  class="text-white" *ngIf="!byUserRoleList || !byUserRoleList.length">No role selected</p>
+    <div [ngClass]="{disabledDiv: isSelectionModeOn}" class="user-roles-height" >
+      <div class="overflow-auto-y">
+        <ul>
+          <li aria-disabled="true" *ngFor="let item of byUserRoleList" (click)="userRoleId=item.id;getCalimsOnSelectRole()" [class.active]="userRoleId==item.id || item.isActive">
+            <a>
+              {{item.name}}
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="main-layout-in">
+    <div class="main-outlet">
+      <div class="row justify-content-center">
+        <div class="col-12 ">
+          <div class="row">
+            <!-- <div class="col-12  bg-white d-flex justify-content-end align-items-center">
+              <div class="p-3 mb-3">
+                <div class="custom-control custom-switch">
+                  <input type="checkbox" class="custom-control-input" id="customSwitches">
+                  <label class="custom-control-label" for="customSwitches">Toggle this switch element</label>
+                </div>
+              </div>
+            </div> -->
+            <div class="col-xl-4 col-lg-6 p-2 col-sm-12" *ngFor="let item of claimsList | groupBY: 'claimCategory' ">
+              <div class="panel claim-table">
+                <div class="panel-header d-flex align-items-center justify-content-end flex-row-reverse">
+                  <strong>{{item.key}} </strong>
+                  <mdb-checkbox *ngIf="!isSelectionModeOn" [disabled]="!userRoleId" (change)="MarkPtientPermissions($event.checked , item.value)"
+                    [default]="true">
+                  </mdb-checkbox>
+                </div>
+                <div class="panel-body" style="height: calc(100vh - 44vh);" malihu-scrollbar
+                  [scrollbarOptions]="scrollbarOptions">
+                  <div class="claim-list">
+                    <div class="d-flex align-items-starts justify-content-between"  *ngFor="let item12 of item.value">
+                      <p class="mb-1 hover-selection" *ngIf="isSelectionModeOn"  [class.active-selection]="userRoleId==item12.id && item12.isActive" style="cursor: pointer;" (click)="getRolesByClaimType(item12)">{{item12.displayName }}</p>
+                      <mdb-checkbox *ngIf="!isSelectionModeOn"  [disabled]="!userRoleId" [default]="true" [(ngModel)]="item12.isChecked">{{
+                        item12.displayName }}</mdb-checkbox>
+                      <a *ngIf="!isSelectionModeOn" (click)="addEditClaimDto = item12;addNewClaimModal.show()">
+                        <i class="fa fa-pencil fa-lg"></i></a>
+                      <!-- <i class="fa fa-pencil fa-lg"></i> -->
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div style="overflow-y: auto;" mdbModal #addNewRoleModal="mdbModal" class="modal fade" role="dialog"
+  [config]="{ ignoreBackdropClick: true }" aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg flat-modal" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="addNewRoleModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100">Assign Category</h4>
+      </div>
+
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="form-group">
+              <label for="">Category Type</label>
+              <ng-select [searchable]="false" [(ngModel)]="assignCategoryDto.categoryId" [multiple]="false"
+                appendTo="body" class="ng-select-small" placeholder="Select Type">
+                <ng-option [value]="item.id" *ngFor="let item of categoryListDto">{{ item.name }}
+                </ng-option>
+              </ng-select>
+            </div>
+          </div>
+
+          <div class="col-sm-12">
+            <div class="form-group">
+              <label for="">Claims Type</label>
+              <ng-select [searchable]="true" [(ngModel)]="assignCategoryDto.appClaimIds" [multiple]="true"
+                appendTo="body" class="ng-select-small" placeholder="Select Type" [closeOnSelect]="false">
+                <ng-option [value]="item.id" *ngFor="let item of claimsList">{{ item.displayName }}
+                </ng-option>
+              </ng-select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-dark btn-sm" aria-label="Close" (click)="addNewRoleModal.hide()"
+          mdbWavesEffect>
+          Close
+        </button>
+        <button type="submit" class="btn btn-dynamic-2c btn-sm" (click)="addNewRoleModal.hide();addClaimsToCategory()">
+          Save
+        </button>
+        <!-- <button
+          type="submit"
+          class="btn btn-dynamic-2c btn-sm"
+          (click)="addNewRoleModal.hide();addClaimsToCategory()"
+        >
+          Update
+        </button> -->
+      </div>
+    </div>
+  </div>
+</div>
+<div style="overflow-y: auto;" mdbModal #addnewCategoryModal="mdbModal" class="modal fade" role="dialog"
+  (open)="CategoryName=''" [config]="{ ignoreBackdropClick: true }" aria-labelledby="myBasicModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg flat-modal" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="addnewCategoryModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100">Add Category</h4>
+      </div>
+
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="form-group">
+              <label for="">Category Name</label>
+              <input type="text" [(ngModel)]="CategoryName" class="form-control" placeholder="Type Category Name"
+                id="catname" #catgeoryModel="ngModel" required [ngClass]="{
+                  'is-invalid':
+                    (catgeoryModel.touched || catgeoryModel.dirty) && !catgeoryModel.valid
+                }" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-dark btn-sm" aria-label="Close" (click)="addnewCategoryModal.hide()"
+          mdbWavesEffect>
+          Close
+        </button>
+        <button type="submit" class="btn btn-dynamic-2c btn-sm" (click)="addnewCategoryModal.hide();addNewCategory()">
+          Save
+        </button>
+        <!-- <button
+          type="submit"
+          class="btn btn-dynamic-2c btn-sm"
+          (click)="addnewCategoryModal.hide();addClaimsToCategory()"
+        >
+          Update
+        </button> -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- <div
+  style="overflow-y: auto;"
+  mdbModal
+  #assignCategoryModal="mdbModal"
+  class="modal fade"
+  role="dialog"
+  [config]="{ ignoreBackdropClick: true }"
+  aria-labelledby="myBasicModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg flat-modal" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button
+          type="button"
+          class="close pull-right"
+          aria-label="Close"
+          (click)="assignCategoryModal.hide()"
+        >
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100">Add New Role</h4>
+      </div>
+
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="form-group">
+              <label for="catname"
+                >Role Name<small class="text-danger">*</small></label
+              >
+              <input
+                type="text"
+                [(ngModel)]="newRoleName"
+                class="form-control"
+                placeholder="Type Role Name"
+                id="catname"
+                #roleName="ngModel"
+                required
+                [ngClass]="{
+                  'is-invalid':
+                    (roleName.touched || roleName.dirty) && !roleName.valid
+                }"
+              />
+              <div
+                *ngIf="roleName.invalid && (roleName.dirty || roleName.touched)"
+                class="invalid invalid-text"
+              >
+                <div *ngIf="!!roleName.errors.required">
+                  <small class="text-danger"
+                    >Role name must be filled out.</small
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-dark btn-sm"
+          aria-label="Close"
+          (click)="assignCategoryModal.hide()"
+          mdbWavesEffect
+        >
+          Close
+        </button>
+        <button
+          type="submit"
+          [disabled]="!newRoleName"
+          class="btn btn-dynamic-2c btn-sm"
+          (click)="assignCategoryModal.hide(); addNewRole()"
+        >
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+</div> -->
+
+<div style="overflow-y: auto;" mdbModal #addNewClaimModal="mdbModal" class="modal fade" role="dialog"
+  [config]="{ ignoreBackdropClick: true }" aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg flat-modal" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="addNewClaimModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" *ngIf="addEditClaimDto.id === 0">Add Claims</h4>
+        <h4 class="modal-title w-100" *ngIf="addEditClaimDto.id > 0">Edit Claims</h4>
+      </div>
+
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="form-group">
+              <label for="">Claim Scope</label>
+              <ng-select [searchable]="false" [(ngModel)]="addEditClaimDto.claimScope" [multiple]="false"
+                appendTo="body" class="ng-select-small" placeholder="Select Claim Scope">
+                <ng-option [value]="item.value" *ngFor="let item of ClaimScopeEnumList">{{ item.name }}
+                </ng-option>
+              </ng-select>
+            </div>
+          </div>
+          <div class="col-sm-12">
+            <div class="form-group">
+              <label for="">Category Type</label>
+              <ng-select [searchable]="false" [(ngModel)]="addEditClaimDto.claimCategoryId" [multiple]="false"
+                appendTo="body" class="ng-select-small" placeholder="Select Type">
+                <ng-option [value]="item.id" *ngFor="let item of categoryListDto">{{ item.name }}
+                </ng-option>
+              </ng-select>
+            </div>
+          </div>
+
+          <div class="col-sm-12">
+            <div class="form-group">
+              <!-- <label for="">Claims Type</label> -->
+              <label for="calname">Claim Type<small class="text-danger">*</small></label>
+              <input type="text" [(ngModel)]="addEditClaimDto.claimType" class="form-control"
+                placeholder="claim type without space" id="calname" #roleName="ngModel" required />
+            </div>
+          </div>
+          <div class="col-sm-12">
+            <div class="form-group">
+              <!-- <label for="">Claims Type</label> -->
+              <label for="calname">Claim Display Name<small class="text-danger">*</small></label>
+              <input type="text" [(ngModel)]="addEditClaimDto.displayName" class="form-control"
+                placeholder="Type Claim Name" id="calname" #roleName="ngModel" required />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-dark btn-sm" aria-label="Close" (click)="addNewClaimModal.hide()"
+          mdbWavesEffect>
+          Close
+        </button>
+        <button type="submit" class="btn btn-dynamic-2c btn-sm" *ngIf="addEditClaimDto.id === 0"
+          (click)="addNewClaimModal.hide();addClaim()">
+          Save
+        </button>
+        <button type="submit" class="btn btn-dynamic-2c btn-sm" *ngIf="addEditClaimDto.id > 0"
+          (click)="addNewClaimModal.hide();editClaim()">
+          Update
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

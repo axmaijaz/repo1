@@ -1,0 +1,115 @@
+@import "theme";
+
+.disabledDiv {
+  pointer-events: none;
+  opacity: 1;
+}
+.consent-panel-main{
+  height: calc(100% - 1rem);
+  .conset-panel {
+    display: flex;
+    justify-content: flex-start;
+    height: 100%;
+    @include media-breakpoint-down(xs) {
+      flex-wrap: wrap;
+    }
+    .title {
+      flex: 0 0 100px;
+      @include media-breakpoint-down(xs) {
+        flex: 1 1 100%;
+        height: auto;
+      }
+      background: $dynamic-colour;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-weight: 600;
+      padding: .5rem ;
+    }
+    .body {
+      flex: auto;
+      padding: 0.5rem .5rem 0 .5rem;
+    }
+
+    .action {
+      // flex: 0 0 125px;
+      display: flex;
+      flex-wrap: wrap;
+      @include media-breakpoint-down(xs) {
+        // flex: 1 1 100%;
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: space-between;
+      }
+      // div:first-child {
+      //   display: inline-flex;
+      //   justify-content: center;
+      //   align-items: center;
+      //   a {
+      //     color: $dark;
+      //     font-size: 1.3rem;
+      //     margin: 0 0.5rem;
+      //   }
+      // }
+
+      .revoke {
+        background: $danger;
+        background: #c73230;
+        width: 100px;
+        color: #fff;
+        text-align: center;
+        padding: 2px;
+        height: 30px;
+        line-height: 13px;
+        border-radius: 4px;
+        margin-top: 8px;
+        margin-right: 5px;
+        p {
+          margin: 0;
+          font-size: 12px;
+          font-weight: 500;
+        }
+      }
+    }
+  }
+
+}
+.bg-custom {
+  background-color: #9c9c9c;
+  border-radius: 6px;
+  padding: 15px;
+  max-height: 100px;
+  color:#fff;
+
+  .who-covered {
+    max-height: 70px;
+    overflow-y: auto;
+    line-height: 17px;
+  }
+}
+.pb-info {
+  margin-bottom:5px;
+  p {
+    margin-bottom: 0;
+    display: flex;
+    justify-content: flex-start;
+    background: #f7f7f7;
+    border-radius: 6px;
+    &:not(:last-child) {
+      margin-bottom: 5px;
+    }
+    padding: 5px 5px;
+    strong {
+    border-radius: 6px 0 0 6px;
+      background-color: lighten($primary, 45%);
+      display: inline-block;
+      width:105px;
+      padding: 5px 8px;
+      margin: -5px;
+      margin-right: 0.5rem;
+      flex: 0 0 105px;
+    }
+  }
+}
+

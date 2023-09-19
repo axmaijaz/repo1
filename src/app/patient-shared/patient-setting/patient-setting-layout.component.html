@@ -1,0 +1,37 @@
+<div class="position-relative">
+  <div class="side-bar-ex">
+    <ul >
+      <li routerLinkActive="active">
+        <a routerLink="rpmNotifications/{{PatientId}}" [queryParams]="{ patientID: PatientId }">
+          RPM Notifications
+        </a>
+      </li>
+      <li routerLinkActive="active">
+        <a routerLink="sms-voice-consent/{{PatientId}}" [queryParams]="{ patientID: PatientId }">
+          SMS/Voice Consent
+        </a>
+      </li>
+
+      <!-- <li  routerLinkActive="active">
+        <a  routerLink="mrModal/{{PatientId}}" [queryParams]="{isIframe: true}">
+          Monthly Review
+        </a>
+      </li> -->
+      <!-- <li  routerLinkActive="active">
+        <a  routerLink="rpmModal/PatientRpm/{{PatientId}}" [queryParams]="{isIframe: true}">
+          RPM
+        </a>
+      </li> -->
+    </ul>
+  </div>
+
+  <div class="main-layout-in">
+    <div class="main-outlet">
+      <div class="row justify-content-center">
+        <div class="col-12 " >
+          <router-outlet></router-outlet>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

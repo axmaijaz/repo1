@@ -1,0 +1,41 @@
+[0817/192214.040:ERROR:process_reader_win.cc(155)] SuspendThread: Access is denied. (0x5)
+[0817/192214.043:ERROR:process_reader_win.cc(155)] SuspendThread: Access is denied. (0x5)
+[0817/192214.044:ERROR:process_reader_win.cc(127)] NtOpenThread: {Access Denied} A process has requested access to an object, but has not been granted those access rights. (0xc0000022)
+[0817/192214.045:ERROR:exception_snapshot_win.cc(99)] thread ID 6624 not found in process
+[0915/143257.786:ERROR:registration_protocol_win.cc(103)] CreateFile: The system cannot find the file specified. (0x2)
+[0915/143257.797:ERROR:registration_protocol_win.cc(103)] CreateFile: The system cannot find the file specified. (0x2)
+[0915/145424.671:ERROR:registration_protocol_win.cc(103)] CreateFile: The system cannot find the file specified. (0x2)
+[0915/153506.773:ERROR:registration_protocol_win.cc(103)] CreateFile: The system cannot find the file specified. (0x2)
+[1002/122454.603:ERROR:process_reader_win.cc(127)] NtOpenThread: {Access Denied} A process has requested access to an object, but has not been granted those access rights. (0xc0000022)
+[1002/122454.609:ERROR:exception_snapshot_win.cc(100)] thread ID 5480 not found in process
+[1002/122454.615:ERROR:process_memory_win.cc(73)] ReadMemory at 0xe6c4046000 of 852 bytes failed: Only part of a ReadProcessMemory or WriteProcessMemory request was completed. (0x12B)
+[1002/122454.616:ERROR:process_snapshot_win.cc(411)] ReadMemory PEB
+[1002/122454.622:ERROR:process_memory_win.cc(73)] ReadMemory at 0x22d3d01c410 of 6656 bytes failed: Only part of a ReadProcessMemory or WriteProcessMemory request was completed. (0x12B)
+[1002/122454.622:ERROR:process_snapshot_win.cc(344)] failed to read unloaded module data
+[1002/122454.626:ERROR:process_memory_win.cc(73)] ReadMemory at 0x22d3d0148c0 of 72 bytes failed: Only part of a ReadProcessMemory or WriteProcessMemory request was completed. (0x12B)
+[1002/122454.627:WARNING:pe_image_annotations_reader.cc(135)] could not read annotations list object in C:\Program Files (x86)\Microsoft\Edge\Application\85.0.564.63\msedge_elf.dll
+[1002/122454.628:ERROR:process_memory_win.cc(73)] ReadMemory at 0x22d3d02d8c0 of 72 bytes failed: Only part of a ReadProcessMemory or WriteProcessMemory request was completed. (0x12B)
+[1002/122454.628:WARNING:pe_image_annotations_reader.cc(135)] could not read annotations list object in C:\Program Files (x86)\Microsoft\Edge\Application\85.0.564.63\msedge.dll
+[1002/122454.636:ERROR:process_memory_win.cc(73)] ReadMemory at 0x7ff717fc0000 of 64 bytes failed: Only part of a ReadProcessMemory or WriteProcessMemory request was completed. (0x12B)
+[1002/122454.636:WARNING:pe_image_reader.cc(340)] could not read dos header from C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe
+[1002/122454.636:ERROR:process_memory_win.cc(73)] ReadMemory at 0x22d3d0148c0 of 72 bytes failed: Only part of a ReadProcessMemory or WriteProcessMemory request was completed. (0x12B)
+[1002/122454.636:WARNING:pe_image_annotations_reader.cc(135)] could not read annotations list object in C:\Program Files (x86)\Microsoft\Edge\Application\85.0.564.63\msedge_elf.dll
+[1002/122454.636:ERROR:process_memory_win.cc(73)] ReadMemory at 0x7ff8c6e00000 of 64 bytes failed: Only part of a ReadProcessMemory or WriteProcessMemory request was completed. (0x12B)
+[1002/122454.636:WARNING:pe_image_reader.cc(340)] could not read dos header from C:\Program Files (x86)\Microsoft\Edge\Application\85.0.564.63\msedge.dll
+[1002/122454.643:ERROR:process_memory_win.cc(73)] ReadMemory at 0x7ff717fc0000 of 64 bytes failed: Only part of a ReadProcessMemory or WriteProcessMemory request was completed. (0x12B)
+[1002/122454.645:WARNING:pe_image_reader.cc(340)] could not read dos header from C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe
+[1002/122454.646:ERROR:process_memory_win.cc(73)] ReadMemory at 0x7ff92ee10000 of 64 bytes failed: Only part of a ReadProcessMemory or WriteProcessMemory request was completed. (0x12B)
+[1002/122454.646:WARNING:pe_image_reader.cc(340)] could not read dos header from C:\WINDOWS\SYSTEM32\ntdll.dll
+[1005/185546.928:ERROR:process_reader_win.cc(127)] NtOpenThread: {Access Denied} A process has requested access to an object, but has not been granted those access rights. (0xc0000022)
+[1005/185546.928:ERROR:process_reader_win.cc(127)] NtOpenThread: {Access Denied} A process has requested access to an object, but has not been granted those access rights. (0xc0000022)
+[1005/185546.943:ERROR:exception_snapshot_win.cc(100)] thread ID 1604 not found in process
+[1005/185546.943:ERROR:exception_snapshot_win.cc(100)] thread ID 9620 not found in process
+[1005/185546.943:ERROR:process_reader_win.cc(127)] NtOpenThread: {Access Denied} A process has requested access to an object, but has not been granted those access rights. (0xc0000022)
+[1005/185546.943:ERROR:exception_snapshot_win.cc(100)] thread ID 6084 not found in process
+[1005/185547.162:ERROR:process_reader_win.cc(127)] NtOpenThread: {Access Denied} A process has requested access to an object, but has not been granted those access rights. (0xc0000022)
+[1005/185547.162:ERROR:exception_snapshot_win.cc(100)] thread ID 6224 not found in process
+[1230/103813.321:ERROR:directory_reader_win.cc(43)] FindFirstFile: The system cannot find the path specified. (0x3)
+[1231/174412.989:ERROR:directory_reader_win.cc(43)] FindFirstFile: The system cannot find the path specified. (0x3)
+[0104/164322.155:ERROR:directory_reader_win.cc(43)] FindFirstFile: The system cannot find the path specified. (0x3)
+[0106/152456.038:ERROR:directory_reader_win.cc(43)] FindFirstFile: The system cannot find the path specified. (0x3)
+[0106/155910.043:ERROR:directory_reader_win.cc(43)] FindFirstFile: The system cannot find the path specified. (0x3)

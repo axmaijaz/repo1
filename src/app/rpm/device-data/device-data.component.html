@@ -1,0 +1,157 @@
+<div class="d-flex align-items-center flex-wrap justify-content-between mb-3">
+  <h1 class="page-title mb-0 flex-sm-grow-1 mb-0">Device Data</h1>
+</div>
+<div class="py-3 mt-3">
+    <div class="d-flex align-items-end ">
+      <div class="w-100 mr-2">
+        <div class="form-group mb-0">
+          <label class="w-100">Reading From</label>
+          <input type="text" class="form-control form-control-sm" #dateDPicker="dpDayPicker"
+            [dpDayPicker]="datePickerConfig2" placeholder="MM-DD-YYYY" [(ngModel)]="startDate"
+            [theme]="'dp-material ccm-date-picker'" [mode]="'day'" />
+        </div>
+      </div>
+      <div class="w-100 mr-2">
+        <div class="form-group mb-0">
+          <label class="w-100">Reading To</label>
+          <input type="text" class="form-control form-control-sm" #dateDPicker="dpDayPicker"
+            [dpDayPicker]="datePickerConfig2" placeholder="MM-DD-YYYY" [(ngModel)]="endDate"
+            [theme]="'dp-material ccm-date-picker'" [mode]="'day'" />
+        </div>
+      </div>
+      <div >
+        <div class="btn-group">
+          <button type="button" class="btn btn-success btn-sm my-0 d-flex"
+            (click)="getAllTabsData()"><i class="fa fa-filter fa-lg"></i> Search
+          </button>
+          <!-- <button type="button" class="btn btn-dynamic-secondary-2c btn-sm my-0 flex-shrink-0"
+            (click)="resetFilter();filterPatients()"><i class="fa fa-refresh fa-lg"></i> Reset</button> -->
+          <!-- <button type="button"  class="btn btn-dynamic-secondary-2c btn-sm my-0 flex-shrink-0 float-right"
+            (click)="getPatientListExcelFile()"> Download</button> -->
+
+        </div>
+      </div>
+    </div>
+</div>
+  <div class="ccm-body">
+    <div class="row ccm-nav">
+      <div class="col-sm-12 p-0">
+        <mdb-tabset [buttonClass]="'ccm-navbar px-0'" [contentClass]="'px-0 border-top'">
+          <mdb-tab heading="Evg" (select)="isLoadingEvg= true;isLoadingCalibration = false;isLoadingEvents = false">
+            <div class="ccm-body disableDiagnoseView" id="EgvsView" *ngIf="isLoadingEvg">
+
+              <div *ngIf="isLoadingDevice" class="d-flex justify-content-center text-center">
+                <!-- <div class="d-flex justify-content-center text-center"> -->
+                <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+              </div>
+              <ngx-datatable class="material z-depth-0" [columnMode]="'force'" [headerHeight]="50" [footerHeight]="50"
+                [rowHeight]="35" [scrollbarV]="false" [scrollbarH]="true" [rows]="dexcomEgvsList" [limit]="100" (activate)="onActivate($event)">
+                <ngx-datatable-column name="#" [maxWidth]=50>
+                  <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+                    {{rowIndex + 1}}
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="System Time" prop="systemTime">
+                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                    {{row.systemTime | dateFormatPipe}}
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Display Time" prop="displayTime">
+                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                    {{row.displayTime | dateFormatPipe}}
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Value" prop="value">
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Realtime Value" prop="realtimeValue">
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Smoothed Value" prop="smoothedValue">
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Status" prop="status">
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Trend" prop="trend">
+                </ngx-datatable-column>
+              </ngx-datatable>
+
+            </div>
+
+          </mdb-tab>
+          <mdb-tab heading="Calibrations" (select)="isLoadingCalibration= true;isLoadingEvg = false;isLoadingEvents = false">
+            <div class="ccm-body disableDiagnoseView" id="calibrationView" *ngIf="isLoadingCalibration">
+
+              <div *ngIf="isLoadingDevice" class="d-flex justify-content-center text-center">
+                <!-- <div class="d-flex justify-content-center text-center"> -->
+                <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+              </div>
+              <ngx-datatable class="material z-depth-0" [columnMode]="'force'" [headerHeight]="50" [footerHeight]="50"
+                [rowHeight]="35" [scrollbarV]="false" [scrollbarH]="true" [rows]="dexcomCalibrationDataResultDto" [limit]="100" (activate)="onActivate($event)">
+                <ngx-datatable-column name="#" [maxWidth]=50>
+                  <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+                    {{rowIndex + 1}}
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="System Time" prop="systemTime">
+                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                    {{row.systemTime | dateFormatPipe}}
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Display Time" prop="displayTime">
+                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                    {{row.displayTime | dateFormatPipe}}
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Unit" prop="unit">
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Value" prop="value">
+                </ngx-datatable-column>
+              </ngx-datatable>
+
+            </div>
+
+          </mdb-tab>
+          <mdb-tab heading="Events" (select)="isLoadingEvents= true;isLoadingEvg = false;isLoadingCalibration = false">
+            <!-- <p>tab 3</p> -->
+            <div class="ccm-body disableDiagnoseView" id="EventsView" *ngIf="isLoadingEvents">
+
+              <div *ngIf="isLoadingDevice" class="d-flex justify-content-center text-center">
+                <!-- <div class="d-flex justify-content-center text-center"> -->
+                <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+              </div>
+              <ngx-datatable class="material z-depth-0" [columnMode]="'force'" [headerHeight]="50" [footerHeight]="50"
+                [rowHeight]="35" [scrollbarV]="false" [scrollbarH]="true" [rows]="dexcomEventsDataResultDto" [limit]="100" (activate)="onActivate($event)">
+                <ngx-datatable-column name="#" [maxWidth]=50>
+                  <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+                    {{rowIndex + 1}}
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="System Time" prop="systemTime">
+                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                    {{row.systemTime | dateFormatPipe}}
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Display Time" prop="displayTime">
+                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                    {{row.displayTime | dateFormatPipe}}
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Event Type" prop="eventType">
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Event SubType" prop="eventSubType">
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Event Status" prop="eventStatus">
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Unit" prop="unit">
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Value" prop="value">
+                </ngx-datatable-column>
+              </ngx-datatable>
+
+            </div>
+          </mdb-tab>
+
+        </mdb-tabset>
+      </div>
+    </div>
+
+  </div>
+<!-- </div> -->

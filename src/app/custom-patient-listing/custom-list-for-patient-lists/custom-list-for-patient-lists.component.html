@@ -1,0 +1,48 @@
+<div *hasClaim="['CanViewCustomList']" style="top:7px;" class="col-xl-6 col-lg-6 col-12 custom-list-dropdown px-0">
+    <div class="d-flex align-items-center mb-2" *ngIf="CustomListDto && CustomListDto.length > 0">
+      <div class="d-inline-flex align-items-center w-100">
+        <label class="mb-0" for="name">Apply Custom List</label>
+        <ng-select [(ngModel)]="filterPatientDto.customListId" [searchable]="false" [closeOnSelect]="true"
+          (ngModelChange)="filterPatients($event)"  class="flex-grow-1 ml-3 ng-select-small" placeholder="Custom Lists"
+          [ngClass]="{'my-class': filterPatientDto.customListId > 0}">
+          <ng-option [value]="0">Select Custom List</ng-option>
+          <ng-option [value]="item.id" *ngFor="let item of CustomListDto">{{item.name}} </ng-option>
+        </ng-select>
+      </div>
+      <div class="d-inline-flex">
+        <div class="" *hasClaim="['CanViewCustomList']">
+          <ng-container  *ngIf="(CustomListDto && CustomListDto.length) && (selected && selected.length)" >
+            <div title="Add to custom list"   [isDisabled]="addingPatientToCustomList">
+              <button  mdbBtn class="btn btn-icon btn-dynamic-2c mt-0 mb-0  mr-0" #popList="bs-mdbPopover" [mdbPopover]="customList" placement="left">
+               <i class="fa fa-plus"></i>
+              </button>
+              <!-- <div class="dropdown-menu dropdown-menu-right "  [multiple]="true"> -->
+                <ng-template #customList>
+                  <div class="text-left py-2">
+                    <h6 class="m-0"><strong>Select Custom List</strong></h6>
+                  </div>
+                  <div class="dropdown-custom-list-css">
+                    <div class="list-scroll">
+                      <a (click)="selectCustomListID(item)" class="dropdown-item" [class.active]="item.selected == true" *ngFor="let item of CustomListDto">
+                          <svg class="mr-2" xmlns="http://www.w3.org/2000/svg" width="51" height="46" viewBox="0 0 51 46" fill="none">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M43.8483 4.54546H7.48469C6.88192 4.54546 6.30384 4.7849 5.87762 5.21112C5.45141 5.63734 5.21196 6.21542 5.21196 6.81818V38.6364C5.21196 39.2391 5.45141 39.8172 5.87762 40.2434C6.30384 40.6697 6.88192 40.9091 7.48469 40.9091H43.8483C44.4511 40.9091 45.0292 40.6697 45.4554 40.2434C45.8816 39.8172 46.121 39.2391 46.121 38.6364V6.81818C46.121 6.21542 45.8816 5.63734 45.4554 5.21112C45.0292 4.7849 44.4511 4.54546 43.8483 4.54546ZM7.48469 0C5.67639 0 3.94216 0.718343 2.6635 1.997C1.38485 3.27566 0.666504 5.00989 0.666504 6.81818V38.6364C0.666504 40.4447 1.38485 42.1789 2.6635 43.4576C3.94216 44.7362 5.67639 45.4546 7.48469 45.4546H43.8483C45.6566 45.4546 47.3908 44.7362 48.6695 43.4576C49.9482 42.1789 50.6665 40.4447 50.6665 38.6364V6.81818C50.6665 5.00989 49.9482 3.27566 48.6695 1.997C47.3908 0.718343 45.6566 0 43.8483 0H7.48469ZM12.0301 11.3636H16.5756V15.9091H12.0301V11.3636ZM23.3938 11.3636C22.791 11.3636 22.2129 11.6031 21.7867 12.0293C21.3605 12.4555 21.121 13.0336 21.121 13.6364C21.121 14.2391 21.3605 14.8172 21.7867 15.2434C22.2129 15.6696 22.791 15.9091 23.3938 15.9091H37.0301C37.6329 15.9091 38.211 15.6696 38.6372 15.2434C39.0634 14.8172 39.3029 14.2391 39.3029 13.6364C39.3029 13.0336 39.0634 12.4555 38.6372 12.0293C38.211 11.6031 37.6329 11.3636 37.0301 11.3636H23.3938ZM16.5756 20.4546H12.0301V25H16.5756V20.4546ZM21.121 22.7273C21.121 22.1245 21.3605 21.5464 21.7867 21.1202C22.2129 20.694 22.791 20.4546 23.3938 20.4546H37.0301C37.6329 20.4546 38.211 20.694 38.6372 21.1202C39.0634 21.5464 39.3029 22.1245 39.3029 22.7273C39.3029 23.33 39.0634 23.9081 38.6372 24.3343C38.211 24.7606 37.6329 25 37.0301 25H23.3938C22.791 25 22.2129 24.7606 21.7867 24.3343C21.3605 23.9081 21.121 23.33 21.121 22.7273ZM16.5756 29.5455H12.0301V34.0909H16.5756V29.5455ZM21.121 31.8182C21.121 31.2154 21.3605 30.6374 21.7867 30.2111C22.2129 29.7849 22.791 29.5455 23.3938 29.5455H37.0301C37.6329 29.5455 38.211 29.7849 38.6372 30.2111C39.0634 30.6374 39.3029 31.2154 39.3029 31.8182C39.3029 32.421 39.0634 32.999 38.6372 33.4253C38.211 33.8515 37.6329 34.0909 37.0301 34.0909H23.3938C22.791 34.0909 22.2129 33.8515 21.7867 33.4253C21.3605 32.999 21.121 32.421 21.121 31.8182Z" fill="#7E7E7E"/>
+                            </svg>{{item.name}}
+                      </a>
+                    </div>
+                  </div>
+                  <div class="text-right pt-2">
+                    <button [disabled]="!selectedCustomListIDs.length || addingPatientToCustomList" class="btn btn-dynamic-2c btn-sm py-2 px-3 m-0 " (click)="$event.stopPropagation();AddPatientsToList();popList.hide()">Apply</button>
+                    <button class="btn btn-dynamic-secondary-2c btn-sm py-2  px-3 m-0 ml-2" (click)="popList.hide()">Cancel</button>
+                  </div>
+                </ng-template>
+            </div>
+          </ng-container>
+
+        </div>
+        <button title="Delete from custom list" [disabled]="isDeletingPatientFromCustomList" *ngIf="(CustomListDto && CustomListDto.length) && (selected && selected.length) && filterPatientDto.customListId > 0" class="btn btn-icon my-0 btn-danger "
+          (click)="removePatientsFromList()" >
+          <span class="fa fa-trash"></span>
+        </button>
+      </div>
+    </div>
+  </div>

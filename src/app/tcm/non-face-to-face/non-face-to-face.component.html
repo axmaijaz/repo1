@@ -1,0 +1,108 @@
+<div class="panel rounded-0 rounded-bottom" style="box-shadow: 1px 6px 20px 0 rgba(0, 0, 0, 0.08);">
+  <div class="panel-header d-flex justify-content-between align-items-center">
+    <h3>Non Face to Face</h3>
+    <p class="mb-0">Status: <mdb-badge color="bg-dynamic-secondary-2c">{{tcmStatusEnum[tcmStore.tcmData.tcmStatus]}}</mdb-badge>
+    </p>
+  </div>
+  <div class="panel-body" *ngIf="!gettingTcmData;else loadingSklton" >
+    <div class="row" >
+      <div class="col-sm-12" [ngClass]="{disabledDiv: tcmStore.tcmData.tcmStatus > 2}">
+        <div class="form-group">
+          <label for="discharge-primary">Discharge Primary Diagnosis: (ICD-10 list) Option to add in patients’s chronic conditions:
+          </label>
+          <ng-select class="ng-select-small"[appendTo]="'body'" #selectCronicdieseas1="ngModel" [(ngModel)]="nonFaceToFace.primaryDiagnosesCodes" id="discharge-primary"
+            [typeahead]="searchWatch" [multiple]="true" (change)="AddPatientNftfData()"
+            [loading]="LoadingData" placeholder="Select Primary Chronic Disease"
+            id="isChronic234" required >
+            <!-- [ngClass]="{ 'is-invalid':(selectCronicdieseas1.touched || selectCronicdieseas1.dirty) && !selectCronicdieseas1.valid }"> -->
+            <ng-option [value]="item" *ngFor="let item of chronicDiseasesByUrl">{{item.code}} {{item.detail}}
+            </ng-option>
+          </ng-select>
+          <!-- <textarea class="md-textarea form-control " [(ngModel)]="nonFaceToFace.primaryDiagnosesCodes" rows="3" id="discharge-primary" type="text"></textarea> -->
+        </div>
+        </div>
+
+      <div class="col-sm-12">
+        <div class="form-group" [ngClass]="{disabledDiv: tcmStore.tcmData.tcmStatus > 2}">
+          <label for="discharge-other">Discharge Other Diagnosis: (ICD-10 list) Option to add in patients’s chronic conditions:
+          </label>
+          <ng-select class="ng-select-small" [appendTo]="'body'" #selectCronicdieseas2="ngModel" [(ngModel)]="nonFaceToFace.otherDiagnosesCodes" id="discharge-other"
+            [typeahead]="searchWatch" [multiple]="true" (change)="AddPatientNftfData()"
+            [loading]="LoadingData" placeholder="Select Other Chronic Disease"
+            id="isChronic234" required >
+            <!-- [ngClass]="{ 'is-invalid':(selectCronicdieseas2.touched || selectCronicdieseas2.dirty) && !selectCronicdieseas2.valid }"> -->
+            <ng-option [value]="item" *ngFor="let item of chronicDiseasesByUrl">{{item.code}} {{item.detail}}
+            </ng-option>
+          </ng-select>
+          <!-- <textarea class="md-textarea form-control " [(ngModel)]="nonFaceToFace.otherDiagnosesCodes" rows="3" id="discharge-other" type="text"></textarea> -->
+        </div>
+      </div>
+    </div>
+    <div [ngClass]="{disabledDiv: tcmStore.tcmData.tcmStatus > 2}">
+      <app-medication></app-medication>
+    </div>
+      <div class="col-sm-12">
+        <div class="form-group">
+          <label for="discharge-findings">Document your findings/observations on the discharge summary:
+          </label>
+          <textarea class="md-textarea form-control " [(ngModel)]="nonFaceToFace.findingsOnDischargeSummary"
+          [disabled]='tcmStore.tcmData.tcmStatus > 2' (blur)="AddPatientNftfData()" rows="3" id="discharge-finding" type="text"></textarea>
+        </div>
+      </div>
+      <div class="col-sm-12">
+        <div class="form-group">
+          <label for="diagnose-tests">Diagnostic tests reviewed / dispositions:
+          </label>
+          <textarea class="md-textarea form-control " [(ngModel)]="nonFaceToFace.diagnosticTestsDispositions"
+          [disabled]='tcmStore.tcmData.tcmStatus > 2'  (blur)="AddPatientNftfData()" rows="3" id="diagnose-tests" type="text"></textarea>
+        </div>
+      </div>
+      <div class="col-sm-12">
+        <div class="form-group">
+          <label for="referral">Discussion with other healthcare providers / Referral / Follow up: </label>
+          <textarea class="md-textarea form-control " [(ngModel)]="nonFaceToFace.referralFollowUpDiscussion"
+          [disabled]='tcmStore.tcmData.tcmStatus > 2' (blur)="AddPatientNftfData()" rows="3" id="referral" type="text"></textarea>
+        </div>
+      </div>
+      <div class="col-sm-12">
+        <div class="form-group">
+          <label for="caregiver">Guidance about treatment to patient or caregiver (Education / Community resources / Healthcare Agencies):
+          </label>
+          <textarea class="md-textarea form-control " [(ngModel)]="nonFaceToFace.treatmentGuidance"
+          [disabled]='tcmStore.tcmData.tcmStatus > 2' (blur)="AddPatientNftfData()" rows="3" id="caregiver" type="text"></textarea>
+        </div>
+      </div>
+      <div class="col-sm-12">
+        <div class="form-group">
+          <label for="other-discussion">Other discussions:
+          </label>
+          <textarea class="md-textarea form-control " [(ngModel)]="nonFaceToFace.otherDiscussions"
+          [disabled]='tcmStore.tcmData.tcmStatus > 2' (blur)="AddPatientNftfData()" rows="3" id="other-discussion" type="text"></textarea>
+        </div>
+      </div>
+    </div>
+    <!-- <div class="d-flex justify-content-end mt-3">
+      <button type="button" mdbBtn color="priary" size="sm" [disabled]="isSavingNFTF || tcmStore.tcmData.tcmStatus > 2
+        || !nonFaceToFace.otherDiscussions || !nonFaceToFace.treatmentGuidance
+        || !nonFaceToFace.referralFollowUpDiscussion || !nonFaceToFace.diagnosticTestsDispositions
+        || !nonFaceToFace.findingsOnDischargeSummary
+        || !nonFaceToFace.otherDiagnosesCodes || !nonFaceToFace.primaryDiagnosesCodes" (click)="AddPatientNftfData()">
+        <span *ngIf="isSavingNFTF" class="spinner-border spinner-border-sm " role="status" aria-hidden="true"></span>
+        Save</button>
+    </div> -->
+  </div>
+  <ng-template #loadingSklton>
+    <skltn-root duration="2000"  [rectRadius]="0" flareWidth="50%" bgFill="#f2f3f8" flareFill="rgba(255,255,255, 0.5)">
+      <!-- Card with Avatar -->
+      <div class="p-3">
+        <div class="skltn-card">
+          <div class="skltn-card__body">
+            <div skltn-bone class="skltn-card__line"></div>
+            <div skltn-bone class="skltn-card__line"></div>
+            <div skltn-bone class="skltn-card__line"></div>
+            <div skltn-bone class="skltn-card__line"></div>
+          </div>
+        </div>
+      </div>
+    </skltn-root>
+  </ng-template>

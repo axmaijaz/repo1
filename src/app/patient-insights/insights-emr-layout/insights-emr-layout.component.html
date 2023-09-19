@@ -1,0 +1,176 @@
+<div class="side-bar-ex">
+  <div class="p-2 text-center bg-white m-3 rounded">
+    <img src="{{brandingService.logoPath}}logo-1024-265.png"  style="max-width: 100%;height: 39px;" alt="{{brandingService.appTitle}}">
+  </div>
+  <div style="height:calc(100vh - 88px);">
+    <div style="height: 100%;overflow-y: auto;">
+      <ul>
+        <li routerLinkActive="active">
+          <a routerLink="summary/{{PatientId}}">
+            Summary
+          </a>
+        </li>
+        <li routerLinkActive="active">
+          <a  routerLink="consents/consentdoc/{{PatientId}}" [queryParams]="{hideActionButtons:true}">
+            Consents
+          </a>
+        </li>
+        <li routerLinkActive="active">
+          <a  routerLink="diagnoses/{{PatientId}}" [queryParams]="{hideActionButtons:true}">
+            Diagnoses
+          </a>
+        </li>
+        <li routerLinkActive="active">
+          <a  routerLink="sync/{{PatientId}}" [queryParams]="{hideActionButtons:true}">
+            Sync
+          </a>
+        </li>
+        <!-- <li routerLinkActive="active">
+          <a  routerLink="medications/{{PatientId}}">
+            Medications
+          </a>
+        </li>
+        <li routerLinkActive="active">
+          <a  routerLink="allergies/{{PatientId}}">
+            Allergies
+          </a>
+        </li> -->
+        <hr *hasClaim="['ccmService']" class="m-0">
+        <li *hasClaim="['ccmService']" routerLinkActive="active">
+          <a  routerLink="ccmLogs/logsHistory/{{PatientId}}" [queryParams]="{isIframe:true,viewType:'CCM'}">
+            CCM Logs
+          </a>
+        </li>
+        <li *hasClaim="['ccmService']" routerLinkActive="active">
+          <a  routerLink="careplan/{{PatientId}}">
+            CCM Care Plan
+          </a>
+        </li>
+        <li *hasClaim="['ccmService']" routerLinkActive="active">
+          <a  routerLink="mrModal/{{PatientId}}" [queryParams]="{isIframe: true}">
+            Monthly Review
+          </a>
+        </li>
+        <hr class="m-0">
+        <li routerLinkActive="active">
+          <a  routerLink="rpmLogs/logsHistory/{{PatientId}}" [queryParams]="{isIframe:true,viewType:'RPM'}">
+            RPM Logs
+          </a>
+        </li>
+        <li *hasClaim="['rpmService']" routerLinkActive="active">
+          <a  routerLink="rpmModal/PatientRpm/{{PatientId}}" [queryParams]="{isIframe: true}">
+            RPM
+          </a>
+        </li>
+        <li *hasClaim="['rpmService']" routerLinkActive="active" (click)="hideModalitiesDetail()" >
+          <a  routerLink="modalities/{{PatientId}}">
+          <!-- <a  routerLink="rpm/{{PatientId}}"> -->
+            Modalities
+          </a>
+        </li>
+        <li *hasClaim="['rpmService']" routerLinkActive="active"  (click)="hideModalitiesDetail()" >
+          <a  routerLink="rpmAlerts/{{PatientId}}" >
+          <!-- <a  routerLink="rpm/{{PatientId}}"> -->
+            RPM Alerts
+            <!-- <span class="alert-count-number">0</span> -->
+          </a>
+        </li>
+        <!-- <div class="Btm" >
+          <div>
+            <div class="text-white alert bg-dynamic-2c rounded-0 px-2 py-1 mb-0 d-flex align-items-center justify-content-between">
+              <div>
+                <p style="font-size:11px;" class="mb-0">11:50 PM</p>
+                <p *ngIf="emrConnectInfo?.lastSyncDate" style="font-size:11px;" class="mb-0">{{emrConnectInfo?.lastSyncDate | date: 'mediumDate'}}</p>
+              </div>
+              <div class="action-button">
+                <a (click)="SyncPatient()" class="btn btn-icon bg-sidenav" title="export">
+                  <span *ngIf="syncingPatient" class="spinner-border spinner-border-sm" role="status"
+                  aria-hidden="true"></span><span
+                    class="fa fa-refresh "></span></a>
+              </div>
+            </div>
+
+          </div>
+        </div> -->
+
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="main-layout-in">
+  <div class="athene-header">
+    <div class="row align-items-center">
+      <div class="col-5">
+        <div class="d-flex align-items-center">
+          <div class="name-userid">
+            <h4 style="white-space: nowrap;text-overflow: ellipsis;max-width: 150px;display: inline-block;overflow: hidden;" title="{{PatientData.firstName | titlecase}}">{{PatientData.lastName | titlecase}},{{PatientData.firstName | titlecase}}</h4>
+            <p style="font-size: 12px;" class="d-flex" title="{{PatientData.userName}}"><strong class="mr-1">User Id:</strong><span style="white-space: nowrap;text-overflow: ellipsis;max-width: 150px;display: inline-block;overflow: hidden;"> {{PatientData.userName}}</span></p>
+          </div>
+          <div class="pl-2" style="min-width: 45px;">
+            <p class="mb-1" style="font-size: 13px;"><strong>{{PatientData.sex | titlecase}}</strong></p>
+            <p class="mb-0" style="font-size: 13px;white-space: nowrap;"><strong>{{PatientAge}} years</strong></p>
+          </div>
+        </div>
+
+      </div>
+      <div class="col-7 pl-0">
+        <div class="row">
+          <div class="col-6 pr-2">
+            <div class="patient-detail">
+              <div class="name">Emr Id</div>
+              {{PatientData.patientEmrId}}
+            </div>
+            <div class="patient-detail">
+              <div class="name">Date of Birth</div>
+              {{PatientData.dateOfBirth | dateFormatPipe}}
+            </div>
+          </div>
+          <div class="col-6 pl-0 pr-2">
+            <div class="patient-detail">
+              <div class="name">Primary Phone</div>
+              {{PatientData.homePhone}}
+            </div>
+            <div class="patient-detail">
+              <div class="name">Secondary Phone</div>
+              {{PatientData.personNumber}}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="athene-right-side">
+    <div>
+      <button title="2C App Home" (click)="navigateHome()" class="btn btn-icon mx-0 mt-0 mb-2 btn-dynamic-2c">
+        <span class="fa fa-home"></span>
+      </button>
+      <button *ngIf="facility?.integrationEnabled" [disabled]="syncingPatient" title="Sync patient with EMR" (click)="SyncPatient()" class="btn btn-icon mx-0 mt-0 mb-2 btn-dynamic-2c">
+        <span *ngIf="syncingPatient" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        <span *ngIf="!syncingPatient" class="fa fa-refresh"></span>
+      </button>
+      <button title="2C App ( Quick Note )" (click)="OpenAppurl('QuickNote')" class="btn btn-icon mx-0 mt-0 mb-2 btn-dynamic-2c">
+        <span class="fa fa-pencil"></span>
+      </button>
+      <button title="2C App ( Complaint Modal )" (click)="OpenAppurl('ComplaintModal')" class="btn btn-icon mx-0 mt-0 mb-2 btn-dynamic-2c">
+        <span class="fa fa-bug"></span>
+      </button>
+      <button title="2C App ( Chat Window )" (click)="OpenAppurl('ChatWindow')" class="btn btn-icon mx-0 mt-0 mb-2 btn-dynamic-2c">
+        <span class="fa fa-comment"></span>
+      </button>
+    </div>
+  </div>
+  <div class="main-outlet">
+    <div class="row justify-content-center">
+      <div class="col-12 " *ngIf="!hasSomethingTOShow">
+        <div class="alert alert-warning">No data to show</div>
+      </div>
+      <div class="col-12 " [style.display]="hasSomethingTOShow ? 'block': 'none'">
+
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-intellisense-widget></app-intellisense-widget>

@@ -1,0 +1,1542 @@
+<div class="ccm-body p-3">
+  <!-- <ng-container>
+    <button class="btn btn-dynamic-2c btn-sm mr-0 pull-right" *ngIf="IsPatientLoginId" (click)="getCarePlanHistory();">
+      <span *ngIf="isLoadingCPHistory" class="mr-1 spinner-border spinner-border-sm" role="status"
+        aria-hidden="true"></span>View History</button>
+  </ng-container> -->
+
+
+  <div *ngIf="isLoading">
+    <skltn-root duration="2000" [rectRadius]="0" flareWidth="50%" bgFill="#f2f3f8" flareFill="rgba(255,255,255, 0.5)">
+      <!-- Card with Avatar -->
+      <div class="p-3">
+        <div class="skltn-card">
+          <div class="skltn-card__body">
+            <div skltn-bone class="skltn-card__line"></div>
+            <div skltn-bone class="skltn-card__line"></div>
+            <div skltn-bone class="skltn-card__line"></div>
+            <div skltn-bone class="skltn-card__line"></div>
+          </div>
+        </div>
+      </div>
+    </skltn-root>
+  </div>
+  <div *ngIf="!addEditMAsterCareplanObj.isCCMConsentTaken && !isLoading"
+    class="alert alert-warning alert-dismissible fade show mt-2" role="alert">
+    CCM Consent not taken. Would you like to take consent?
+    <button class="btn btn-dynamic-2c btn-sm px-sm-4 px-3" [routerLink]="['/admin/consentdoc/' + PatientId]">
+      Yes</button>
+    <button class="btn btn-dynamic-2c btn-sm px-sm-4 px-3" [routerLink]="['/admin/patient/' + PatientId + '/summary']">
+      No</button>
+  </div>
+  <div class="master-care-plan" *ngIf="!isLoading" [ngClass]="{disabledDiv: IsPatientLoginId}">
+    <div class="row align-items-center mb-2">
+      <div class="col-12">
+        <div class="row">
+          <div class="col-md-6"
+            *ngIf="addEditMAsterCareplanObj.carePlanUpdatedDate ||addEditMAsterCareplanObj.carePlanUpdatedBy || addEditMAsterCareplanObj.isCCMConsentTaken">
+            <div class="pb-info w-100">
+              <p class="flex-wrap" *ngIf="addEditMAsterCareplanObj.carePlanUpdatedDate">
+                <strong> Last Updated: </strong> {{addEditMAsterCareplanObj.carePlanUpdatedDate | dateFormatPipe}}
+              </p>
+              <p class="flex-wrap" *ngIf="addEditMAsterCareplanObj.carePlanUpdatedBy">
+                <strong> Updated By: </strong> {{addEditMAsterCareplanObj.carePlanUpdatedBy}}
+              </p>
+              <p class="flex-wrap" *ngIf="addEditMAsterCareplanObj.isCCMConsentTaken">
+                <strong>CCM Started Date:</strong> {{addEditMAsterCareplanObj.ccmStartedDate | dateFormatPipe}}
+              </p>
+            </div>
+          </div>
+          <div class="col-md-6"
+            *ngIf="(addEditMAsterCareplanObj.careCoordinatorName && addEditMAsterCareplanObj.careCoordinatorName.length) || addEditMAsterCareplanObj.billingProviderName">
+            <div class="pb-info w-100">
+              <p class="flex-wrap"
+                *ngIf="addEditMAsterCareplanObj.careCoordinatorName && addEditMAsterCareplanObj.careCoordinatorName.length">
+                <strong>Care Coordinator Name: </strong> {{addEditMAsterCareplanObj.careCoordinatorName}}
+              </p>
+              <p class="flex-wrap" *ngIf="addEditMAsterCareplanObj.billingProviderName">
+                <strong> Billing Provider Name: </strong> {{addEditMAsterCareplanObj.billingProviderName}}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- <div class="col-sm-12 d-flex flex-wrap align-items-center">
+        <div class="last-cp-data ml-2 py-2" *ngIf="addEditMAsterCareplanObj.carePlanUpdatedDate"><span>Last Updated:</span><span
+            class="ml-2">
+            <mdb-badge pill="true" color="bg-dynamic-2c">{{addEditMAsterCareplanObj.carePlanUpdatedDate | dateFormatPipe}}
+            </mdb-badge>
+          </span>
+        </div>
+        <div class="last-cp-data ml-2 py-2" *ngIf="addEditMAsterCareplanObj.carePlanUpdatedBy"><span>Updated By: </span><span
+            class="ml-2">
+            <mdb-badge pill="true" color="bg-dynamic-2c">{{addEditMAsterCareplanObj.carePlanUpdatedBy}}</mdb-badge>
+          </span>
+        </div>
+        <div class="last-cp-data ml-2 py-2" *ngIf="addEditMAsterCareplanObj.isCCMConsentTaken"><span>CCM Started Date: </span><span
+            class="ml-2">
+            <mdb-badge pill="true" color="bg-dynamic-2c">{{addEditMAsterCareplanObj.ccmStartedDate | dateFormatPipe}}
+            </mdb-badge>
+          </span>
+        </div>
+        <div class="last-cp-data ml-2 py-2" *ngIf="addEditMAsterCareplanObj.billingProviderName"><span>Billing Provider Name: </span><span
+          class="ml-2">
+          <mdb-badge pill="true" color="bg-dynamic-2c">{{addEditMAsterCareplanObj.billingProviderName}}
+          </mdb-badge>
+          </span>
+        </div>
+        <div class="last-cp-data ml-2 py-2" *ngIf="addEditMAsterCareplanObj.careCoordinatorName || addEditMAsterCareplanObj.careCoordinatorName.length"><span>Care Coordinator Name: </span><span
+              class="ml-2">
+            <mdb-badge pill="true" color="bg-dynamic-2c">{{addEditMAsterCareplanObj.careCoordinatorName}}
+            </mdb-badge>
+          </span>
+        </div>
+      </div> -->
+      <div class="col-sm-6 text-sm-right text-center">
+        <!-- <ng-container *ngIf="ApprovalState !== 'Pending'">
+          <button class="ml-auto btn btn-dynamic-2c btn-sm px-sm-4 px-3"
+            (click)="AddEditCarePlanMaster(true);">Save & Send For Approval</button>
+        </ng-container> -->
+        <ng-container *ngIf="ApprovalState">
+          <button class="btn btn-dynamic-2c btn-sm mr-0 px-sm-4 px-3" *ngIf="!IsPatientLoginId"
+            (click)="AddEditCarePlanMaster()">Update</button>
+        </ng-container>
+      </div>
+      <!-- <a [href]="mailto" target="_top">Send Mail</a> -->
+    </div>
+    <h3 class="section-title my-3 mt-4">Patient Management Section</h3>
+
+    <div class="card mb-3">
+      <div class="card-header border-bottom-0">
+        <div class="row align-items-center">
+          <div class="col-sm-12">
+            <div class="d-flex align-items-center justify-content-between">
+              <h4 class="section-title text-dynamic-2c my-0 mb-0" style="font-size: 20px;font-weight: 500;">Health Issues
+              </h4>
+              <!-- resetFields(); -->
+              <a appDebounceClick (debounceClick)="test.toggle();"
+                class="collapse-btn rounded btn-dynamic-2c btn-md m-0">
+                <i class="fa fa-angle-down ng-star-inserted"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-body p-0" mdbCollapse #test="bs-collapse">
+        <div class="">
+          <div class="px-3">
+            <app-diagnose [careplanView]="true" (diagnosesAddEditEmitter)="DiagnoseDataUpdated($event)"></app-diagnose>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+    <div class="card mb-3">
+      <div class="card-header border-bottom-0">
+        <div class="row align-items-center">
+          <div class="col-sm-12">
+            <div class="d-flex align-items-center justify-content-between">
+              <h4 class="section-title text-dynamic-2c my-0 mb-0" style="font-size: 20px;font-weight: 500;">Medication
+                Management</h4>
+                <!-- resetFields(); -->
+              <a appDebounceClick (debounceClick)="test1.toggle();"
+                class="collapse-btn rounded btn-dynamic-2c btn-md m-0">
+                <i class="fa fa-angle-down ng-star-inserted"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-body p-0" mdbCollapse #test1="bs-collapse">
+        <div class="">
+          <div class="px-3">
+            <app-medication [careplanView]="true" (medicationAddEditEmitter)="medicationDataUpdated()"></app-medication>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card mb-3">
+      <div class="card-header border-bottom-0">
+        <div class="row align-items-center">
+          <div class="col-sm-12">
+            <div class="d-flex align-items-center justify-content-between">
+              <h4 class="section-title text-dynamic-2c my-0 mb-0"
+              style="font-size: 20px;font-weight: 500;">Allergies</h4>
+              <a appDebounceClick (debounceClick)="test2.toggle();"
+                class="collapse-btn rounded btn-dynamic-2c btn-md m-0"><!-- resetFields(); -->
+                <i class="fa fa-angle-down ng-star-inserted"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-body p-0" mdbCollapse #test2="bs-collapse">
+        <div class="">
+          <div class="px-3">
+            <app-allergies [careplanView]="true" (allergiesAddEditEmitter)="allergiesDataUpdated()"></app-allergies>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card mb-3">
+      <div class="card-header border-bottom-0">
+        <div class="row align-items-center">
+          <div class="col-sm-12">
+            <div class="d-flex align-items-center justify-content-between">
+              <h4 class="section-title text-dynamic-2c my-0 mb-0" style="font-size: 20px;font-weight: 500;">Do you know
+                which other specialists you are visiting?</h4>
+                <!-- resetFields(); -->
+              <a appDebounceClick (debounceClick)="test3.toggle();"
+                class="collapse-btn rounded btn-dynamic-2c btn-md m-0">
+                <i class="fa fa-angle-down ng-star-inserted"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-body p-0" mdbCollapse #test3="bs-collapse">
+        <div class="">
+          <div class="px-3">
+            <app-providers [careplanView]="true" (providersAddEditEmitter)="providersDataUpdated()"
+              [hideBillingProviderView]="true"></app-providers>
+          </div>
+        </div>
+
+        <section>
+          <div class="row">
+            <div class="col-sm-12">
+              <p><strong>Do you follow or have your physician suggested a diet plan e.g. keto, low salt, 1800cal
+                  etc.?</strong></p>
+              <textarea [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken"
+                (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+                [(ngModel)]="addEditMAsterCareplanObj.physicianSuggestedDietPlan" type="text" id="suggestedDiet"
+                rows="4" placeholder="Write suggested diet plan" class="form-control" style="height:50px;"></textarea>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+    <div class="row align-items-center mb-3">
+      <div class="col-sm-6">
+        <h3 class="section-title my-0 mb-2">Patient Resources <small class=" ml-1 text-danger">*</small></h3>
+      </div>
+    </div>
+    <section [class.border-danger]="!addEditMAsterCareplanObj.utilizingCommunity" >
+      <div class="row">
+        <div class="col-sm-12">
+          <p><strong>Is the patient utilizing any Community/Social Services (HHC/Skilled Nursing etc.):</strong></p>
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" (change)="appendCheckBoxInTextField()"
+              [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken || isOtherUtilizing || this.isNo" [(ngModel)]="isHomeHealthCare"
+              id="homeHealthCare" name="homeHealthCare">
+            <label class="custom-control-label" for="homeHealthCare">Home Health Care</label>
+          </div>
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" (change)="appendCheckBoxInTextField()"
+              [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken || isOtherUtilizing || this.isNo" [(ngModel)]="isSkilledNursing"
+              id="skilledNursing" name="skilledNursing">
+            <label class="custom-control-label" for="skilledNursing">Skilled Nursing</label>
+          </div>
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" (change)="appendCheckBoxInTextField()"
+              [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken || isOtherUtilizing || this.isNo" [(ngModel)]="isPhysiotherapy" id="physiotherapy"
+              name="physiotherapy">
+            <label class="custom-control-label" for="physiotherapy">Physiotherapy</label>
+          </div>
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" (change)="appendCheckBoxInTextField()"
+              [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken || isOtherUtilizing || this.isNo" [(ngModel)]="isHomeHospice" id="homeHospice"
+              name="homeHospice">
+            <label class="custom-control-label" for="homeHospice">Home Hospice</label>
+          </div>
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" (change)="appendCheckBoxInTextField()"
+              [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken || isOtherUtilizing || this.isNo" [(ngModel)]="isRehab" id="rehab"
+              name="rehab">
+            <label class="custom-control-label" for="rehab">Rehab</label>
+          </div>
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" (change)="appendCheckBoxInTextField()"
+              [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken || isOtherUtilizing" [(ngModel)]="isNo" id="non"
+              name="non">
+            <label class="custom-control-label" for="non">No</label>
+          </div>
+          <div class="custom-control custom-checkbox mb-3">
+            <input type="checkbox" class="custom-control-input" [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken || this.isNo"
+              [(ngModel)]="isOtherUtilizing" id="otherUtilizing" name="otherUtilizing">
+            <label class="custom-control-label" for="otherUtilizing">Other</label>
+          </div>
+          <div class="form-group" *ngIf="isOtherUtilizing">
+            <input (blur)="appendCheckBoxInTextField()" class="form-control form-control-sm"
+              [(ngModel)]="isOtherUtilizingData" type="text">
+          </div>
+          <div class="form-group">
+            <textarea type="text" id="form787" rows="4" [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken"
+              (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+              [(ngModel)]="addEditMAsterCareplanObj.utilizingCommunity" placeholder="Write other comments here..."
+              class="form-control" style="height:50px;"></textarea>
+          </div>
+        </div>
+      </div>
+    </section>
+    <div class="row align-items-center mb-3">
+      <div class="col-sm-6">
+        <h3 class="section-title my-0 mb-2">Patient Assessment<small class=" ml-1 text-danger">*</small></h3>
+      </div>
+    </div>
+    <section [class.border-danger]="!addEditMAsterCareplanObj.challengesWithVision && !addEditMAsterCareplanObj.challengesWithHearing && !addEditMAsterCareplanObj.challengesWithTransportation && !addEditMAsterCareplanObj.functionalNone">
+      <div class="row">
+        <div class="col-sm-12">
+          <p><strong>Functional: </strong></p>
+          <p>Do you have any issues with:</p>
+          <mdb-checkbox [inline]="true" (change)="this.addEditMAsterCareplanObj.functionalNone=false;clearFunctionalValues()" (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+            [(ngModel)]="addEditMAsterCareplanObj.challengesWithVision" [default]="true"
+            [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken">
+            Vision</mdb-checkbox>
+          <mdb-checkbox [inline]="true" (change)="addEditMAsterCareplanObj.functionalNone=false;clearFunctionalValues()" (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+            [(ngModel)]="addEditMAsterCareplanObj.challengesWithHearing" [default]="true"
+            [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken">
+            Hearing </mdb-checkbox>
+          <mdb-checkbox [inline]="true" (change)="addEditMAsterCareplanObj.functionalNone=fale;clearFunctionalValues()" (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+            [(ngModel)]="addEditMAsterCareplanObj.challengesWithTransportation" [default]="true"
+            [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken">Mobility
+          </mdb-checkbox>
+          <mdb-checkbox [inline]="true" (change)="clearFunctionalValues()" (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false"
+            [(ngModel)]="addEditMAsterCareplanObj.functionalNone" [default]="true"
+            [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken">None
+          </mdb-checkbox>
+          <div class="form-group">
+            <label for="form787">Other Comments</label>
+            <textarea type="text" id="physicalNote" rows="4" [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken"
+              (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+              [(ngModel)]="addEditMAsterCareplanObj.physicalNote" placeholder="Write other comments here..."
+              class="form-control" style="height:50px;"></textarea>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section [class.border-danger]="!addEditMAsterCareplanObj.dailyLivingAll && !addEditMAsterCareplanObj.dailyLivingBath && !addEditMAsterCareplanObj.dailyLivingWalk && !addEditMAsterCareplanObj.dailyLivingDress && !addEditMAsterCareplanObj.dailyLivingEat && !addEditMAsterCareplanObj.dailyLivingTransfer && !addEditMAsterCareplanObj.dailyLivingRestroom && !addEditMAsterCareplanObj.dailyLivingNone" >
+      <div class="row">
+        <div class="col-sm-12">
+          <p><strong>Activities of Daily Living:</strong></p>
+          <div class="form-group border-bottom pb-3">
+            <p class="mb-2"><strong>Which of the following can you do on your own?</strong>
+            </p>
+            <div class="custom-control custom-checkbox custom-control-inline">
+              <input (change)="checkAllDailyLivingValue()" type="checkbox" class="custom-control-input"
+                [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken"
+                [(ngModel)]="addEditMAsterCareplanObj.dailyLivingAll" id="DailyLiving8">
+              <label class="custom-control-label" for="DailyLiving8">All</label>
+            </div>
+            <div class="custom-control custom-checkbox custom-control-inline">
+              <input type="checkbox" class="custom-control-input"
+                [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken" (change)="addEditMAsterCareplanObj.dailyLivingNone=false;addEditMAsterCareplanObj.dailyLivingAll = false;checkLivingValuesFilled()"
+                [(ngModel)]="addEditMAsterCareplanObj.dailyLivingBath" id="DailyLiving1" name="DailyLiving1">
+              <label class="custom-control-label" for="DailyLiving1">Bath</label>
+            </div>
+            <div class="custom-control custom-checkbox custom-control-inline">
+              <input type="checkbox" class="custom-control-input"
+                [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken" (change)="addEditMAsterCareplanObj.dailyLivingNone=false;addEditMAsterCareplanObj.dailyLivingAll = false;checkLivingValuesFilled()"
+                [(ngModel)]="addEditMAsterCareplanObj.dailyLivingWalk" id="DailyLiving2" name="DailyLiving2">
+              <label class="custom-control-label" for="DailyLiving2">Walk</label>
+            </div>
+            <div class="custom-control custom-checkbox custom-control-inline">
+              <input type="checkbox" class="custom-control-input"
+                [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken" (change)="addEditMAsterCareplanObj.dailyLivingNone=false;addEditMAsterCareplanObj.dailyLivingAll = false;checkLivingValuesFilled()"
+                [(ngModel)]="addEditMAsterCareplanObj.dailyLivingDress" id="DailyLiving3" name="DailyLiving3">
+              <label class="custom-control-label" for="DailyLiving3">Dress</label>
+            </div>
+            <div class="custom-control custom-checkbox custom-control-inline">
+              <input type="checkbox" class="custom-control-input"
+                [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken" (change)="addEditMAsterCareplanObj.dailyLivingNone=false;addEditMAsterCareplanObj.dailyLivingAll = false;checkLivingValuesFilled()"
+                [(ngModel)]="addEditMAsterCareplanObj.dailyLivingEat" id="DailyLiving4" name="DailyLiving4">
+              <label class="custom-control-label" for="DailyLiving4">Eat</label>
+            </div>
+            <div class="custom-control custom-checkbox custom-control-inline">
+              <input type="checkbox" class="custom-control-input"
+                [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken" (change)="addEditMAsterCareplanObj.dailyLivingNone=false;addEditMAsterCareplanObj.dailyLivingAll = false;checkLivingValuesFilled()"
+                [(ngModel)]="addEditMAsterCareplanObj.dailyLivingTransfer" id="DailyLiving5" name="DailyLiving5">
+              <label class="custom-control-label" for="DailyLiving5">Transfer in/out of chair, etc.</label>
+            </div>
+            <div class="custom-control custom-checkbox custom-control-inline">
+              <input type="checkbox" class="custom-control-input"
+                [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken" (change)="addEditMAsterCareplanObj.dailyLivingNone=false;addEditMAsterCareplanObj.dailyLivingAll = false;checkLivingValuesFilled()"
+                [(ngModel)]="addEditMAsterCareplanObj.dailyLivingRestroom" id="DailyLiving6" name="DailyLiving6">
+              <label class="custom-control-label" for="DailyLiving6">Use the restroom</label>
+            </div>
+            <div class="custom-control custom-checkbox custom-control-inline">
+              <input type="checkbox" class="custom-control-input"
+                [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken" (change)="clearLivingValues()"
+                [(ngModel)]="addEditMAsterCareplanObj.dailyLivingNone" id="DailyLiving7">
+              <label class="custom-control-label" for="DailyLiving7">None</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="form787">Other Comments</label>
+        <textarea type="text" id="dailyLiving" rows="4" [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken"
+          (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+          [(ngModel)]="addEditMAsterCareplanObj.dailyLivingActivitiesNote" placeholder="Write other comments here..."
+          class="form-control" style="height:50px;"></textarea>
+      </div>
+    </section>
+    <section [class.border-danger]="!addEditMAsterCareplanObj.instrumentalDailyAll && !addEditMAsterCareplanObj.instrumentalDailyGrocery && !addEditMAsterCareplanObj.instrumentalDailyTelephone && !addEditMAsterCareplanObj.instrumentalDailyHouseWork && !addEditMAsterCareplanObj.instrumentalDailyFinances && !addEditMAsterCareplanObj.instrumentalDailyTransportation && !addEditMAsterCareplanObj.instrumentalDailyMeals && !addEditMAsterCareplanObj.instrumentalDailyMedication && !addEditMAsterCareplanObj.instrumentalDailyNone" >
+      <div class="row">
+        <div class="col-sm-12">
+          <p><strong>Instrumental Daily Activities:</strong></p>
+          <div class="form-group border-bottom pb-3">
+            <p class="mb-2"><strong>Which of the following can you do on your own?</strong>
+            </p>
+            <div class="custom-control custom-checkbox custom-control-inline">
+              <input type="checkbox" class="custom-control-input"
+                [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken" (change)="checkAllInstrumentalDailyValue()"
+                [(ngModel)]="addEditMAsterCareplanObj.instrumentalDailyAll" id="instrumentalActivities10"
+                name="instrumentalActivities10">
+              <label class="custom-control-label" for="instrumentalActivities10">All</label>
+            </div>
+            <div class="custom-control custom-checkbox custom-control-inline">
+              <input type="checkbox" class="custom-control-input"
+                [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken" (change)="addEditMAsterCareplanObj.instrumentalDailyNone=false;addEditMAsterCareplanObj.instrumentalDailyAll = false;checkInstrumentalDailyFilled()"
+                [(ngModel)]="addEditMAsterCareplanObj.instrumentalDailyGrocery" id="InstrumentalActivities2"
+                name="InstrumentalActivities">
+              <label class="custom-control-label" for="InstrumentalActivities2">Shop for groceries </label>
+            </div>
+            <div class="custom-control custom-checkbox custom-control-inline">
+              <input type="checkbox" class="custom-control-input"
+                [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken" (change)="addEditMAsterCareplanObj.instrumentalDailyNone=false;addEditMAsterCareplanObj.instrumentalDailyAll = false;checkInstrumentalDailyFilled()"
+                [(ngModel)]="addEditMAsterCareplanObj.instrumentalDailyTelephone" id="InstrumentalActivities3"
+                name="InstrumentalActivities">
+              <label class="custom-control-label" for="InstrumentalActivities3">Use the telephone </label>
+            </div>
+            <div class="custom-control custom-checkbox custom-control-inline">
+              <input type="checkbox" class="custom-control-input"
+                [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken" (change)="addEditMAsterCareplanObj.instrumentalDailyNone=false;addEditMAsterCareplanObj.instrumentalDailyAll = false;checkInstrumentalDailyFilled()"
+                [(ngModel)]="addEditMAsterCareplanObj.instrumentalDailyHouseWork" id="InstrumentalActivities4"
+                name="InstrumentalActivities4">
+              <label class="custom-control-label" for="InstrumentalActivities4">Housework </label>
+            </div>
+            <div class="custom-control custom-checkbox custom-control-inline">
+              <input type="checkbox" class="custom-control-input"
+                [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken" (change)="addEditMAsterCareplanObj.instrumentalDailyNone=false;addEditMAsterCareplanObj.instrumentalDailyAll = false;checkInstrumentalDailyFilled()"
+                [(ngModel)]="addEditMAsterCareplanObj.instrumentalDailyFinances" id="InstrumentalActivities5"
+                name="InstrumentalActivities">
+              <label class="custom-control-label" for="InstrumentalActivities5">Handle finances </label>
+            </div>
+            <div class="custom-control custom-checkbox custom-control-inline">
+              <input type="checkbox" class="custom-control-input"
+                [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken" (change)="addEditMAsterCareplanObj.instrumentalDailyNone=false;addEditMAsterCareplanObj.instrumentalDailyAll = false;checkInstrumentalDailyFilled()"
+                [(ngModel)]="addEditMAsterCareplanObj.instrumentalDailyTransportation" id="InstrumentalActivities6"
+                name="InstrumentalActivities">
+              <label class="custom-control-label" for="InstrumentalActivities6">Drive/use public transportation
+              </label>
+            </div>
+            <div class="custom-control custom-checkbox custom-control-inline">
+              <input type="checkbox" class="custom-control-input"
+                [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken" (change)="addEditMAsterCareplanObj.instrumentalDailyNone=false;addEditMAsterCareplanObj.instrumentalDailyAll = false;checkInstrumentalDailyFilled()"
+                [(ngModel)]="addEditMAsterCareplanObj.instrumentalDailyMeals" id="InstrumentalActivities7"
+                name="InstrumentalActivities">
+              <label class="custom-control-label" for="InstrumentalActivities7">Make meals</label>
+            </div>
+            <div class="custom-control custom-checkbox custom-control-inline">
+              <input type="checkbox" class="custom-control-input"
+                [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken" (change)="addEditMAsterCareplanObj.instrumentalDailyNone=false;addEditMAsterCareplanObj.instrumentalDailyAll = false;checkInstrumentalDailyFilled()"
+                [(ngModel)]="addEditMAsterCareplanObj.instrumentalDailyMedication" id="InstrumentalActivities8"
+                name="InstrumentalActivities">
+              <label class="custom-control-label" for="InstrumentalActivities8">Take medications </label>
+            </div>
+            <div class="custom-control custom-checkbox custom-control-inline">
+              <input type="checkbox" class="custom-control-input"
+                [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken" (change)="clearInstrumentalDailyValues()"
+                [(ngModel)]="addEditMAsterCareplanObj.instrumentalDailyNone" id="InstrumentalActivities9"
+                name="InstrumentalActivities">
+              <label class="custom-control-label" for="InstrumentalActivities9">None</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="form787">Other Comments</label>
+        <textarea type="text" id="instrumentalDaily" rows="4"
+          (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+          [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken"
+          [(ngModel)]="addEditMAsterCareplanObj.instrumentalDailyActivitiesNote"
+          placeholder="Write other comments here..." class="form-control" style="height:50px;"></textarea>
+      </div>
+    </section>
+    <div class="row align-items-center mb-3">
+      <div class="col-sm-12">
+        <div class="d-flex align-items-center justify-content-between">
+          <h3 class="section-title my-0 mb-2">Psychosocial</h3>
+        </div>
+      </div>
+    </div>
+    <section>
+      <div class="row">
+        <div class="col-sm-12">
+
+          <p><strong>PHQ-2 <span style="cursor: pointer;" class="ccm-active" triggers="hover"
+                [mdbPopover]="phqPopTemplates" placement="right"><i
+                  class="fa fa-info-circle fa-lg"></i></span>:</strong></p>
+          <ng-template #phqPopTemplates>
+            <div class="p-3 bg-dark text-white">
+              <ul>
+                <li>A PHQ-2 score ranges from 0-6. The authors identified a score of 3 as the optimal cut point when
+                  using the PHQ-2 to screen for depression.</li>
+                <li>If the score is 3 or greater, major depressive disorder is likely.</li>
+                <li>Patients who screen positive should be further evaluated with the PHQ-9, other diagnostic
+                  instruments, or direct interview to determine whether they meet criteria for a depressive disorder.
+                </li>
+              </ul>
+            </div>
+          </ng-template>
+          <p><strong>1. Little interest or pleasure in doing things</strong></p>
+          <div class="form-group">
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input" [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken"
+                id="healthCareAdvancedDirectives" [value]="0"
+                (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+                [(ngModel)]="addEditMAsterCareplanObj.littleInterest" name="healthCareAdvancedDirectives" mdbInput>
+              <label class="form-check-label" for="healthCareAdvancedDirectives">0</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input" [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken"
+                id="healthCareAdvancedDirectives1" [value]="1"
+                (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+                [(ngModel)]="addEditMAsterCareplanObj.littleInterest" name="healthCareAdvancedDirectives1" mdbInput>
+              <label class="form-check-label" for="healthCareAdvancedDirectives1">+1</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input" [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken"
+                id="healthCareAdvancedDirectives2" [value]="2"
+                (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+                [(ngModel)]="addEditMAsterCareplanObj.littleInterest" name="healthCareAdvancedDirectives2" mdbInput>
+              <label class="form-check-label" for="healthCareAdvancedDirectives2">+2</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input" [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken"
+                id="healthCareAdvancedDirectives3" [value]="3"
+                (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+                [(ngModel)]="addEditMAsterCareplanObj.littleInterest" name="healthCareAdvancedDirectives3" mdbInput>
+              <label class="form-check-label" for="healthCareAdvancedDirectives3">+3</label>
+            </div>
+          </div>
+          <p><strong>2. Feeling down, depressed or hopeless</strong></p>
+          <div class="form-group">
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input" [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken"
+                id="healthCareAdvancedDirectives4" [value]="0" [(ngModel)]="addEditMAsterCareplanObj.feelingDown"
+                (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+                name="healthCareAdvancedDirectives4" mdbInput>
+              <label class="form-check-label" for="healthCareAdvancedDirectives4">0</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input" [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken"
+                id="healthCareAdvancedDirectives5" [value]="1"
+                (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+                [(ngModel)]="addEditMAsterCareplanObj.feelingDown" name="healthCareAdvancedDirective5" mdbInput>
+              <label class="form-check-label" for="healthCareAdvancedDirectives5">+1</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input" [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken"
+                id="healthCareAdvancedDirectives6" [value]="2"
+                (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+                [(ngModel)]="addEditMAsterCareplanObj.feelingDown" name="healthCareAdvancedDirectives6" mdbInput>
+              <label class="form-check-label" for="healthCareAdvancedDirectives6">+2</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input" [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken"
+                id="healthCareAdvancedDirectives7" [value]="3"
+                (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+                [(ngModel)]="addEditMAsterCareplanObj.feelingDown" name="healthCareAdvancedDirectives7" mdbInput>
+              <label class="form-check-label" for="healthCareAdvancedDirectives7">+3</label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="form787">Note:</label>
+            <textarea type="text" id="facingMemoryProblem" rows="4"
+              (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+              [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken"
+              [(ngModel)]="addEditMAsterCareplanObj.psychosocialNote" placeholder="Write other comments here..."
+              class="form-control" style="height:50px;"></textarea>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="row align-items-center mb-3">
+      <div class="col-sm-6">
+        <h3 class="section-title my-0 mb-2">Social/Demographic</h3>
+      </div>
+    </div>
+    <section>
+      <div class="row">
+        <div class="col-sm-12">
+          <p><strong>Do you require help with transportation to healthcare facility?</strong></p>
+          <div class="form-group">
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input" [value]="true"
+                [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken"
+                (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;" (change)="isHealthcareFacilityIsYes = false;addEditMAsterCareplanObj.helpWithTransportation=''"
+                [(ngModel)]="addEditMAsterCareplanObj.healthcareFacility" id="healthCareFacilityYes"
+                name="healthCareFacilityYes" mdbInput>
+              <label class="form-check-label" for="healthCareFacilityYes">Yes</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input" [value]="false"
+                [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken"
+                (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;" (change)="isHealthcareFacilityIsYes = true"
+                [(ngModel)]="addEditMAsterCareplanObj.healthcareFacility" id="healthCareFacilityNo"
+                name="healthCareFacilityNo" mdbInput>
+              <label class="form-check-label" for="healthCareFacilityNo">No</label>
+            </div>
+          </div>
+          <div class="form-group">
+            <textarea type="text" id="form787" rows="4" [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken || isHealthcareFacilityIsYes"
+              (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+              [(ngModel)]="addEditMAsterCareplanObj.helpWithTransportation" placeholder="Write other comments here..."
+              class="form-control" style="height:50px;"></textarea>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section [class.border-danger]="!addEditMAsterCareplanObj.iLive" >
+      <div class="row">
+        <div class="col-sm-12">
+          <p><strong>Patient live <small class=" ml-1 text-danger">*</small></strong></p>
+          <div class="form-group">
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input" [value]="'Alone'"
+                [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken"
+                (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+                [(ngModel)]="addEditMAsterCareplanObj.iLive" (click)="otherValue=''" id="Ilive" name="Ilive" mdbInput>
+              <label class="form-check-label" for="Ilive">Alone</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input" [value]="'Partner/Spouse'"
+                [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken"
+                (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+                [(ngModel)]="addEditMAsterCareplanObj.iLive" (click)="otherValue=''" id="Ilive1" name="Ilive1" mdbInput>
+              <label class="form-check-label" for="Ilive1">Partner/Spouse</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input" [value]="'Extended family'"
+                [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken"
+                (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+                [(ngModel)]="addEditMAsterCareplanObj.iLive" (click)="otherValue=''" id="Ilive2" name="Ilive2" mdbInput>
+              <label class="form-check-label" for="Ilive2">Extended family</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input" [value]="'Other'"
+                (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;" [(ngModel)]="otherValue"
+                [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken" (click)="addEditMAsterCareplanObj.iLive = ''"
+                id="Ilive3" name="Ilive3" mdbInput>
+              <label class="form-check-label" for="Ilive3">Other</label>
+            </div>
+            <div class="form-check form-check-inline" *ngIf=" otherValue === 'Other'">
+              <!-- <label for="">Other Comments</label> -->
+              <input type="text" id="Ilive3" [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken"
+                (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+                [(ngModel)]="addEditMAsterCareplanObj.iLive"
+                (blur)="AssignILivetextboxValue(addEditMAsterCareplanObj.iLive)" class="form-control">
+            </div>
+          </div>
+
+          <!-- </div> -->
+        </div>
+      </div>
+    </section>
+    <section [class.border-danger]="!addEditMAsterCareplanObj.secondLanguage && !addEditMAsterCareplanObj.esl" >
+      <div class="row">
+        <div class="col-sm-12">
+          <p><strong>Is English language your first language? (If not, please mention your preferred language): <small class=" ml-1 text-danger">*</small></strong></p>
+          <div class="form-group">
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input" [value]="true"
+                [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken"
+                (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;" (change)="isSecondLanguageIsYes = false;addEditMAsterCareplanObj.esl=''"
+                [(ngModel)]="addEditMAsterCareplanObj.secondLanguage" id="secondLanguageYes"
+                name="secondLanguageYes" mdbInput>
+              <label class="form-check-label" for="secondLanguageYes">Yes</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input" [value]="false"
+                [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken"
+                (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;" (change)="isSecondLanguageIsYes = true"
+                [(ngModel)]="addEditMAsterCareplanObj.secondLanguage" id="secondLanguageNo"
+                name="secondLanguageNo" mdbInput>
+              <label class="form-check-label" for="secondLanguageNo">No</label>
+            </div>
+          </div>
+          <div class="form-group">
+            <textarea type="text" id="languageESL" rows="4" [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken || !isSecondLanguageIsYes"
+              (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+              [(ngModel)]="addEditMAsterCareplanObj.esl" placeholder="Write other comments here..." class="form-control"
+              style="height:50px;"></textarea>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section [class.border-danger]="addEditMAsterCareplanObj.internetAccess === null" >
+      <div class="row">
+        <div class="col-sm-12">
+          <p><strong>Patient Have Internet Access <small class=" ml-1 text-danger">*</small></strong></p>
+          <div class="form-group">
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input" [value]="true"
+                [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken"
+                (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+                [(ngModel)]="addEditMAsterCareplanObj.internetAccess" (click)="otherValue=''" id="internetAccess"
+                name="internetAccess" mdbInput>
+              <label class="form-check-label" for="internetAccess">Yes</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input" [value]="false"
+                [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken"
+                (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+                [(ngModel)]="addEditMAsterCareplanObj.internetAccess" (click)="otherValue=''" id="internetAccess1"
+                name="internetAccess1" mdbInput>
+              <label class="form-check-label" for="internetAccess1">No</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section [class.border-danger]="addEditMAsterCareplanObj.cellPhone === null" >
+      <div class="row">
+        <div class="col-sm-12">
+          <p><strong>Patient Have Cell Phone <small class=" ml-1 text-danger">*</small></strong></p>
+          <div class="form-group">
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input" [value]="true"
+                [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken"
+                (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+                [(ngModel)]="addEditMAsterCareplanObj.cellPhone" (click)="otherValue=''" id="cellPhone" name="cellPhone"
+                mdbInput>
+              <label class="form-check-label" for="cellPhone">Yes</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input" [value]="false"
+                [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken"
+                (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+                [(ngModel)]="addEditMAsterCareplanObj.cellPhone" (click)="otherValue=''" id="cellPhone1"
+                name="cellPhone1" mdbInput>
+              <label class="form-check-label" for="cellPhone1">No</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- <section>
+      <div class="row">
+        <div class="col-sm-12">
+          <p><strong>Patients Cell Phone number is:</strong></p>
+          <div class="form-group">
+            <input type="text" mask="(000)000-0000" id="cellPhoneNumber"
+              [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken"
+              (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+              [(ngModel)]="addEditMAsterCareplanObj.cellPhoneNumber" placeholder="Write cell phone number here..."
+              class="form-control" />
+          </div>
+        </div>
+      </div>
+    </section> -->
+    <section>
+      <div class="row">
+        <div class="col-sm-12">
+          <p><strong>Patients can respond to Text Messages</strong></p>
+          <div class="form-group">
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input" [value]="true"
+                [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken"
+                (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+                [(ngModel)]="addEditMAsterCareplanObj.textMessages" id="responseMessage" name="responseMessage"
+                mdbInput>
+              <label class="form-check-label" for="responseMessage">Yes</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input" [value]="false"
+                [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken"
+                (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+                [(ngModel)]="addEditMAsterCareplanObj.textMessages" id="responseMessage1" name="responseMessage1"
+                mdbInput>
+              <label class="form-check-label" for="responseMessage1">No</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section>
+      <div class="row">
+        <div class="col-sm-12">
+          <p><strong>Emergency Contact</strong></p>
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label for="emergencyContactName">Name</label>
+                <input type="text" class="form-control form-control-sm"
+                  [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken"
+                  [(ngModel)]="addEditMAsterCareplanObj.emergencyContactName" id="emergencyContactName"
+                  placeholder="First Name">
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label for="emergencyContactRelationship">Relationship</label>
+                <ng-select class="ng-select-small" [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken"
+                  [(ngModel)]="addEditMAsterCareplanObj.emergencyContactRelationship" [multiple]="false"
+                  [searchable]="true" placeholder="Select RelationShip">
+                  <ng-option [value]="'Spouse'">Spouse</ng-option>
+                  <ng-option [value]="'Mother'">Mother</ng-option>
+                  <ng-option [value]="'Father'">Father</ng-option>
+                  <ng-option [value]="'Siblings'">Siblings</ng-option>
+                  <ng-option [value]="'Son'">Son</ng-option>
+                  <ng-option [value]="'Daughter'">Daughter</ng-option>
+                  <ng-option [value]="'Step-Son'">Step-Son</ng-option>
+                  <ng-option [value]="'Step-Daughter'">Step-Daughter</ng-option>
+                  <ng-option [value]="'Grand Father'">Grand Father</ng-option>
+                  <ng-option [value]="'Grand Mother'">Grand Mother</ng-option>
+                  <ng-option [value]="'Grand Son'">Grand Son</ng-option>
+                  <ng-option [value]="'Grand Daughter'">Grand Daughter</ng-option>
+                  <ng-option [value]="'Cousin'">Cousin</ng-option>
+                  <ng-option [value]="'Niece'">Niece</ng-option>
+                  <ng-option [value]="'Nephew'">Nephew</ng-option>
+                  <ng-option [value]="'Neighbor/Friend'">Neighbor/Friend</ng-option>
+                  <ng-option [value]="'Other'">Other</ng-option>
+                </ng-select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label for="emergencyContactPrimaryPhoneNo">Primary Phone</label>
+                <input type="text" mask="(000)000-0000" [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken"
+                  class="form-control form-control-sm"
+                  [(ngModel)]="addEditMAsterCareplanObj.emergencyContactPrimaryPhoneNo"
+                  id="emergencyContactPrimaryPhoneNo" placeholder="Primary PhoneNo">
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label for="emergencyContactSecondaryPhoneNo">Secondary Phone</label>
+                <input type="text" mask="(000)000-0000" [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken"
+                  class="form-control form-control-sm"
+                  [(ngModel)]="addEditMAsterCareplanObj.emergencyContactSecondaryPhoneNo"
+                  id="emergencyContactSecondaryPhoneNo" placeholder="Secondary PhoneNo">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section>
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="d-flex justify-content-between align-items-center">
+            <p><strong>Do you have a designated caregiver?</strong></p>
+            <div class="custom-control custom-checkbox custom-control-inline">
+              <input type="checkbox" class="custom-control-input" [(ngModel)]="IsSameEmergencyContact"
+                (change)="copyEmergencyContactDetails()" [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken"
+                id="careGiverSame" name="InstrumentalActivities">
+              <label class="custom-control-label" for="careGiverSame">Same as Emergency Contact</label>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label for="emergencyContactName">Name</label>
+                <input type="text" class="form-control form-control-sm"
+                  [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken"
+                  [(ngModel)]="addEditMAsterCareplanObj.careGiverContactName" id="emergencyContactName"
+                  placeholder="First Name">
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label for="emergencyContactRelationship">Relationship</label>
+                <ng-select class="ng-select-small" [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken"
+                  [(ngModel)]="addEditMAsterCareplanObj.careGiverContactRelationship" [multiple]="false"
+                  [searchable]="true" placeholder="Select RelationShip">
+                  <ng-option [value]="'Spouse'">Spouse</ng-option>
+                  <ng-option [value]="'Mother'">Mother</ng-option>
+                  <ng-option [value]="'Father'">Father</ng-option>
+                  <ng-option [value]="'Siblings'">Siblings</ng-option>
+                  <ng-option [value]="'Son'">Son</ng-option>
+                  <ng-option [value]="'Daughter'">Daughter</ng-option>
+                  <ng-option [value]="'Step-Son'">Step-Son</ng-option>
+                  <ng-option [value]="'Step-Daughter'">Step-Daughter</ng-option>
+                  <ng-option [value]="'Grand Father'">Grand Father</ng-option>
+                  <ng-option [value]="'Grand Mother'">Grand Mother</ng-option>
+                  <ng-option [value]="'Grand Son'">Grand Son</ng-option>
+                  <ng-option [value]="'Grand Daughter'">Grand Daughter</ng-option>
+                  <ng-option [value]="'Cousin'">Cousin</ng-option>
+                  <ng-option [value]="'Niece'">Niece</ng-option>
+                  <ng-option [value]="'Nephew'">Nephew</ng-option>
+                  <ng-option [value]="'Neighbor/Friend'">Neighbor/Friend</ng-option>
+                  <ng-option [value]="'Other'">Other</ng-option>
+                </ng-select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label for="emergencyContactPrimaryPhoneNo">Primary Phone</label>
+                <input type="text" mask="(000)000-0000" [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken"
+                  class="form-control form-control-sm"
+                  [(ngModel)]="addEditMAsterCareplanObj.careGiverContactPrimaryPhoneNo"
+                  id="emergencyContactPrimaryPhoneNo" placeholder="Primary PhoneNo">
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label for="emergencyContactSecondaryPhoneNo">Secondary Phone</label>
+                <input type="text" mask="(000)000-0000" [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken"
+                  class="form-control form-control-sm"
+                  [(ngModel)]="addEditMAsterCareplanObj.careGiverContactSecondaryPhoneNo"
+                  id="emergencyContactSecondaryPhoneNo" placeholder="Secondary PhoneNo">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <div class="row align-items-center mb-3">
+      <div class="col-sm-6">
+        <h3 class="section-title my-0 mb-2">Advance Directives Section</h3>
+      </div>
+    </div>
+    <section>
+      <div class="row">
+        <div class="col-sm-12">
+          <p><strong>Are your Advanced Directives Plans in place?</strong></p>
+          <div class="form-group">
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input" [value]="true"
+                [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken"
+                (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+                [(ngModel)]="addEditMAsterCareplanObj.advancedDirectivesPlans" id="advanceDirectivePlan"
+                name="advanceDirectivePlan" mdbInput>
+              <label class="form-check-label" for="advanceDirectivePlan">Yes</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input" [value]="false"
+                [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken"
+                (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+                [(ngModel)]="addEditMAsterCareplanObj.advancedDirectivesPlans" id="advanceDirectivePlan1"
+                name="advanceDirectivePlan1" mdbInput>
+              <label class="form-check-label" for="advanceDirectivePlan1">No</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <section *ngIf="addEditMAsterCareplanObj.advancedDirectivesPlans == false">
+      <div class="row">
+        <div class="col-sm-12">
+          <p><strong>Would you like to discuss this further with your physician?</strong></p>
+          <div class="form-group">
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input" [value]="true"
+                [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken"
+                (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+                [(ngModel)]="addEditMAsterCareplanObj.discussWithPhysician" id="discussionPhysician"
+                name="discussionPhysician" mdbInput>
+              <label class="form-check-label" for="discussionPhysician">Yes</label>
+            </div>
+
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input" [value]="false"
+                [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken"
+                (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+                [(ngModel)]="addEditMAsterCareplanObj.discussWithPhysician" id="discussionPhysician1"
+                name="discussionPhysician1" mdbInput>
+              <label class="form-check-label" for="discussionPhysician1">No</label>
+            </div>
+
+          </div>
+          <div class="form-group">
+            <label for="form787">Other Comments</label>
+            <textarea type="text" id="form787" rows="4" [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken"
+              (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+              [(ngModel)]="addEditMAsterCareplanObj.advanceDirectivesNote" placeholder="Write other comments here..."
+              class="form-control" style="height:50px;"></textarea>
+          </div>
+
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- <div class="row align-items-center mb-3">
+      <div class="col-sm-6">
+        <h3 class="section-title my-0 mb-2">Demographics</h3>
+      </div>
+
+    </div>
+
+    <ng-template #DateApproved>
+      <span class="ml-2" *ngIf="addEditMAsterCareplanObj.currentApprovalcarePlanUpdatedDate">
+        <mdb-badge pill="true" color="bg-dynamic-secondary-2c">{{addEditMAsterCareplanObj.currentApprovalcarePlanUpdatedDate}}</mdb-badge>
+      </span>
+    </ng-template>
+
+
+
+    <section>
+      <div class="row">
+        <div class="col-sm-12">
+          <p><strong>I have challenges with:</strong></p>
+          <div class="form-group">
+            <mdb-checkbox [inline]="true" (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+              [(ngModel)]="addEditMAsterCareplanObj.challengesWithTransportation" [default]="true">Transportation
+            </mdb-checkbox>
+            <mdb-checkbox [inline]="true" (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+              [(ngModel)]="addEditMAsterCareplanObj.challengesWithVision" [default]="true">
+              Vision</mdb-checkbox>
+            <mdb-checkbox [inline]="true" (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+              [(ngModel)]="addEditMAsterCareplanObj.challengesWithHearing" [default]="true">
+              Hearing </mdb-checkbox>
+            <mdb-checkbox [inline]="true" (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+              [(ngModel)]="addEditMAsterCareplanObj.challengesWithMobility" [default]="true"> Mobility</mdb-checkbox>
+            <mdb-checkbox [inline]="true" (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+              [(ngModel)]="addEditMAsterCareplanObj.challengesWithEnglish" [default]="true">
+              English as a second language (ESL) </mdb-checkbox>
+          </div>
+          <div class="form-group">
+            <label for="form787">Other Comments</label>
+            <textarea type="text" id="form787" rows="4"
+              (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+              [(ngModel)]="addEditMAsterCareplanObj.challengesComments" placeholder="Write other comments here..."
+              class="form-control" style="height:50px;"></textarea>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="row">
+        <div class="col-sm-12">
+          <p><strong>My Religion/Spirituality impacts my health care:</strong></p>
+          <div class="form-group">
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input" [value]="true"
+                (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+                [(ngModel)]="addEditMAsterCareplanObj.religionImpactsOnHealthCare" id="ReligionImpactsOnHealthCare"
+                name="ReligionImpactsOnHealthCare" mdbInput>
+              <label class="form-check-label" for="ReligionImpactsOnHealthCare">YES</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input" [value]="false"
+                (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+                [(ngModel)]="addEditMAsterCareplanObj.religionImpactsOnHealthCare" id="ReligionImpactsOnHealthCare1"
+                name="ReligionImpactsOnHealthCare" mdbInput>
+              <label class="form-check-label" for="ReligionImpactsOnHealthCare1">NO</label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="for96m7">Other Comments</label>
+            <textarea type="text" id="for96m7" rows="4"
+              (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+              [(ngModel)]="addEditMAsterCareplanObj.religionImpactOnHealthCareComments"
+              placeholder="Write other comments here..." class="form-control" style="height:50px;"></textarea>
+          </div>
+        </div>
+      </div>
+    </section>
+    <h3 class="section-title">Advanced Directives</h3>
+
+    <section>
+      <div class="row">
+        <div class="col-sm-12">
+          <p><strong>Healthcare Advance Directives</strong></p>
+          <div class="form-group">
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input" id="healthCareAdvancedDirectives" [value]="true"
+                (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+                [(ngModel)]="addEditMAsterCareplanObj.healthCareAdvancedDirectives" name="healthCareAdvancedDirectives"
+                mdbInput>
+              <label class="form-check-label" for="healthCareAdvancedDirectives">YES</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input" id="healthCareAdvancedDirectives1" [value]="false"
+                (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+                [(ngModel)]="addEditMAsterCareplanObj.healthCareAdvancedDirectives" name="healthCareAdvancedDirectives"
+                mdbInput>
+              <label class="form-check-label" for="healthCareAdvancedDirectives1">NO</label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="fo52rm7">Other Comments</label>
+            <textarea type="text" id="fo52rm7" rows="4"
+              (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+              [(ngModel)]="addEditMAsterCareplanObj.healthCareAdvancedDirectivesComments"
+              placeholder="Write other comments here..." class="form-control" style="height:50px;"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-12">
+          <p><strong>Physician Orders for Life Sustaining Treatment (POLST)</strong></p>
+          <div class="form-group">
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input" [value]="true"
+                (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+                [(ngModel)]="addEditMAsterCareplanObj.polst" id="polst" name="polst" mdbInput>
+              <label class="form-check-label" for="polst">YES</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input" [value]="false"
+                (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+                [(ngModel)]="addEditMAsterCareplanObj.polst" id="polst1" name="polst" mdbInput>
+              <label class="form-check-label" for="polst1">NO</label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="for23m7">Other Comments</label>
+            <textarea type="text" id="for23m7" rows="4"
+              (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+              [(ngModel)]="addEditMAsterCareplanObj.polstComments" placeholder="Write other comments here..."
+              class="form-control" style="height:50px;"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-12">
+          <p><strong>Power of Attorney (Financial / Healthcare)</strong></p>
+          <div class="form-group">
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input"
+                (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+                [(ngModel)]="addEditMAsterCareplanObj.powerOfAttorney" [value]="true" id="powerOfAttorney"
+                name="powerOfAttorney" mdbInput>
+              <label class="form-check-label" for="powerOfAttorney">YES</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input"
+                (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+                [(ngModel)]="addEditMAsterCareplanObj.powerOfAttorney" [value]="false" id="powerOfAttorney1"
+                name="powerOfAttorney" mdbInput>
+              <label class="form-check-label" for="powerOfAttorney1">NO</label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="for95m7">Other Comments</label>
+            <textarea type="text" id="for95m7" rows="4"
+              (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+              [(ngModel)]="addEditMAsterCareplanObj.powerOfAttorneyComments" placeholder="Write other comments here..."
+              class="form-control" style="height:50px;"></textarea>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <section>
+      <div class="row">
+        <div class="col-sm-12">
+          <p><strong>I live</strong></p>
+          <div class="form-group">
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input" [value]="'Alone'"
+                (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+                [(ngModel)]="addEditMAsterCareplanObj.iLive" (click)="otherValue=''" id="Ilive" name="Ilive" mdbInput>
+              <label class="form-check-label" for="Ilive">Alone</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input" [value]="'Partner/Spouse'"
+                (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+                [(ngModel)]="addEditMAsterCareplanObj.iLive" (click)="otherValue=''" id="Ilive1" name="Ilive" mdbInput>
+              <label class="form-check-label" for="Ilive1">Partner/Spouse</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input" [value]="'Extended family'"
+                (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+                [(ngModel)]="addEditMAsterCareplanObj.iLive" (click)="otherValue=''" id="Ilive2" name="Ilive" mdbInput>
+              <label class="form-check-label" for="Ilive2">Extended family</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input" [value]="'Other'"
+                (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;" [(ngModel)]="otherValue"
+                (click)="addEditMAsterCareplanObj.iLive = ''" id="Ilive3" name="Ilive" mdbInput>
+              <label class="form-check-label" for="Ilive3">Other</label>
+            </div>
+            <div class="form-check form-check-inline" *ngIf=" otherValue === 'Other'">
+              <input type="text" id="Ilive3"
+                (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+                [(ngModel)]="addEditMAsterCareplanObj.iLive"
+                (blur)="AssignILivetextboxValue(addEditMAsterCareplanObj.iLive)" class="form-control">
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+    <section>
+      <div class="row">
+        <div class="col-sm-12">
+          <p><strong>I learn best by</strong></p>
+          <div class="form-group">
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input"
+                (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+                [(ngModel)]="addEditMAsterCareplanObj.iLearnBestBy" [value]="'Reading'" id="iLearnBestBy"
+                name="iLearnBestBy" mdbInput>
+              <label class="form-check-label" for="iLearnBestBy">Reading</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input"
+                (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+                [(ngModel)]="addEditMAsterCareplanObj.iLearnBestBy" [value]="'Being talked to'" id="iLearnBestBy1"
+                name="iLearnBestBy" mdbInput>
+              <label class="form-check-label" for="iLearnBestBy1">Being talked to</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input"
+                (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+                [(ngModel)]="addEditMAsterCareplanObj.iLearnBestBy" [value]="'Being shown how'" id="iLearnBestBy13"
+                name="iLearnBestBy" mdbInput>
+              <label class="form-check-label" for="iLearnBestBy13">Being shown how</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input"
+                (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+                [(ngModel)]="addEditMAsterCareplanObj.iLearnBestBy" [value]="'Listening to tapes'" id="iLearnBestBy14"
+                name="iLearnBestBy" mdbInput>
+              <label class="form-check-label" for="iLearnBestBy14">Listening to tapes</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input"
+                (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+                [(ngModel)]="addEditMAsterCareplanObj.iLearnBestBy" [value]="'Seeing pictures or video'"
+                id="iLearnBestBy15" name="iLearnBestBy" mdbInput>
+              <label class="form-check-label" for="iLearnBestBy15">Seeing pictures or video</label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="form78771">Other Comments</label>
+            <textarea type="text" id="form78771" rows="4"
+              (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+              [(ngModel)]="addEditMAsterCareplanObj.iLearnBestByComment " placeholder="Write other comments here..."
+              class="form-control" style="height:50px;"></textarea>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section>
+      <div class="row">
+        <div class="col-sm-12">
+          <p><strong>I have access to the Internet</strong></p>
+          <div class="form-group">
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input" [value]="true"
+                (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+                [(ngModel)]="addEditMAsterCareplanObj.internetAccess" id="internet-access" name="internet-access"
+                mdbInput>
+              <label class="form-check-label" for="internet-access">YES</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input" [value]="false"
+                (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+                [(ngModel)]="addEditMAsterCareplanObj.internetAccess" id="internet-access2" name="internet-access"
+                mdbInput>
+              <label class="form-check-label" for="internet-access2">NO</label>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+    <section>
+      <div class="row">
+        <div class="col-sm-12">
+          <p><strong>I have issues with Diet</strong></p>
+          <div class="form-group">
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input" [value]="true"
+                (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+                [(ngModel)]="addEditMAsterCareplanObj.dietIssues" id="diet-issue" name="diet-issue" mdbInput>
+              <label class="form-check-label" for="diet-issue">YES</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input" [value]="false"
+                (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+                [(ngModel)]="addEditMAsterCareplanObj.dietIssues" id="diet-issue2" name="diet-issue" mdbInput>
+              <label class="form-check-label" for="diet-issue2">NO</label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="form7654">Other Comments</label>
+            <textarea type="text" id="form7654" rows="4"
+              (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+              [(ngModel)]="addEditMAsterCareplanObj.dietIssuesComments" placeholder="Write other comments here..."
+              class="form-control" style="height:50px;"></textarea>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="row">
+        <div class="col-sm-12">
+          <p><strong>I am concerned about:</strong></p>
+          <div class="form-group">
+            <mdb-checkbox [inline]="true" (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+              [(ngModel)]="addEditMAsterCareplanObj.concernedAboutManagingChronicCondition" [default]="true"> My ability
+              to manage my chronic condition </mdb-checkbox>
+            <mdb-checkbox [inline]="true" (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+              [(ngModel)]="addEditMAsterCareplanObj.concernedAboutFinantialIssues" [default]="true">Financial issues
+            </mdb-checkbox>
+            <mdb-checkbox [inline]="true" (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+              [(ngModel)]="addEditMAsterCareplanObj.concernedAboutAccessToHealthCare" [default]="true">Having access to
+              healthcare</mdb-checkbox>
+            <mdb-checkbox [inline]="true" (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+              [(ngModel)]="addEditMAsterCareplanObj.concernedAboutEnergyLevelFatigue" [default]="true">My decreased
+              energy level / Fatigue</mdb-checkbox>
+            <mdb-checkbox [inline]="true" (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+              [(ngModel)]="addEditMAsterCareplanObj.concernedAboutEmotionalIssues" [default]="true">Emotional issues
+            </mdb-checkbox>
+            <mdb-checkbox [inline]="true" (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+              [(ngModel)]="addEditMAsterCareplanObj.concernedAboutFamilyIssues" [default]="true">Family issues
+            </mdb-checkbox>
+            <mdb-checkbox [inline]="true" (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+              [(ngModel)]="addEditMAsterCareplanObj.concernedAboutSpiritualSupport" [default]="true">Spiritual support
+            </mdb-checkbox>
+            <mdb-checkbox [inline]="true" (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+              [(ngModel)]="addEditMAsterCareplanObj.concernedAboutMemoryProblems" [default]="true">Thinking or memory
+              problems</mdb-checkbox>
+            <mdb-checkbox [inline]="true" (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+              [(ngModel)]="addEditMAsterCareplanObj.concernedAboutEndOfLife" [default]="true">End of life issues
+            </mdb-checkbox>
+
+          </div>
+          <div class="form-group">
+            <label for="foorm7">Other Comments</label>
+            <textarea type="text" id="foorm7" rows="4"
+              (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+              [(ngModel)]="addEditMAsterCareplanObj.concernedAboutOther" placeholder="Write other comments here..."
+              class="form-control" style="height:50px;"></textarea>
+          </div>
+        </div>
+      </div>
+
+    </section>
+    <h3 class="section-title">Goals</h3>
+    <section>
+      <div class="row">
+        <div class="col-sm-12">
+          <p class="mb-0"><strong>How satisfied I am with the current medical care</strong></p>
+          <div class="form-group">
+            <div class="rating">
+
+              <input type="radio" [name]="inputName" value="10"
+                [checked]="addEditMAsterCareplanObj.satisfactionWithMedicalCare===10" />
+              <label title="10" (click)='onClick(10)'></label>
+
+              <input type="radio" [name]="inputName" value="8"
+                [checked]="addEditMAsterCareplanObj.satisfactionWithMedicalCare===8" />
+              <label title="8" (click)='onClick(8)'></label>
+
+              <input type="radio" [name]="inputName" value="6"
+                [checked]="addEditMAsterCareplanObj.satisfactionWithMedicalCare===6" />
+              <label title="6" (click)='onClick(6)'></label>
+
+              <input type="radio" [name]="inputName" value="4"
+                [checked]="addEditMAsterCareplanObj.satisfactionWithMedicalCare===4" />
+              <label title="4" (click)='onClick(4)'></label>
+
+              <input type="radio" [name]="inputName" value="2"
+                [checked]="addEditMAsterCareplanObj.satisfactionWithMedicalCare===2" />
+              <label title="2" (click)='onClick(2)'></label>
+            </div>
+
+          </div>
+          <br>
+          <div class="form-group">
+            <label for="formm7">Other Comments</label>
+            <textarea type="text" id="formm7" rows="4"
+              (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+              [(ngModel)]="addEditMAsterCareplanObj.satisfactionComment" placeholder="Write other comments here..."
+              class="form-control" style="height:50px;"></textarea>
+          </div>
+
+          <p><strong>I want to improve on </strong></p>
+          <div class="form-group">
+            <textarea type="text" id="fformgh7" rows="4"
+              (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+              [(ngModel)]="addEditMAsterCareplanObj.wantToImproveOnComment" placeholder="Write other comments here..."
+              class="form-control" style="height:50px;"></textarea>
+          </div>
+        </div>
+      </div>
+
+    </section> -->
+
+    <h3 class="section-title">Goals<small class=" ml-1 text-danger">*</small></h3>
+    <section [class.border-danger]="!addEditMAsterCareplanObj.satisfactionWithMedicalCare  || !addEditMAsterCareplanObj.wantToImproveOnComment" >
+      <div class="row">
+        <div class="col-sm-12">
+          <p class="mb-0"><strong>How satisfied patient with the current medical care</strong></p>
+          <div class="form-group">
+            <div class="rating">
+
+              <input [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken" type="radio" [name]="inputName" value="10"
+                [checked]="addEditMAsterCareplanObj.satisfactionWithMedicalCare===10" />
+              <label title="10" (click)='onClick(10)'></label>
+
+              <input [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken" type="radio" [name]="inputName" value="8"
+                [checked]="addEditMAsterCareplanObj.satisfactionWithMedicalCare===8" />
+              <label title="8" (click)='onClick(8)'></label>
+
+              <input [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken" type="radio" [name]="inputName" value="6"
+                [checked]="addEditMAsterCareplanObj.satisfactionWithMedicalCare===6" />
+              <label title="6" (click)='onClick(6)'></label>
+
+              <input [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken" type="radio" [name]="inputName" value="4"
+                [checked]="addEditMAsterCareplanObj.satisfactionWithMedicalCare===4" />
+              <label title="4" (click)='onClick(4)'></label>
+
+              <input [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken" type="radio" [name]="inputName" value="2"
+                [checked]="addEditMAsterCareplanObj.satisfactionWithMedicalCare===2" />
+              <label title="2" (click)='onClick(2)'></label>
+            </div>
+
+          </div>
+          <br>
+          <div class="form-group">
+            <label for="formm7">Other Comments</label>
+            <textarea type="text" id="formm7" rows="4" [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken"
+              (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+              [(ngModel)]="addEditMAsterCareplanObj.satisfactionComment" placeholder="Write other comments here..."
+              class="form-control" style="height:50px;"></textarea>
+          </div>
+
+          <p><strong>Patient wants to improve on </strong></p>
+          <div class="form-group">
+            <textarea type="text" id="fformgh7" rows="4"
+              (ngModelChange)="addEditMAsterCareplanObj.isApprovedByBillingProvider=false;"
+              [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken"
+              [(ngModel)]="addEditMAsterCareplanObj.wantToImproveOnComment" placeholder="Write other comments here..."
+              class="form-control" style="height:50px;"></textarea>
+          </div>
+        </div>
+      </div>
+
+    </section>
+    <h3 *ngIf="diagnosisList && diagnosisList.length" class="section-title">Chronic Condition</h3>
+    <section *ngIf="diagnosisList && diagnosisList.length">
+      <div class="row" *ngFor="let diagnosis of diagnosisList">
+        <div class="col-sm-3">
+          <p class="mb-2">
+            <strong>{{diagnosis.algorithm}}</strong>
+          </p>
+        </div>
+        <div class="col-sm-9">
+          <div class="form-group">
+            <textarea type="text" style="height: 70px;" [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken"
+              (blur)="EditPatientChronicConditionNote(diagnosis)" [(ngModel)]="diagnosis.note"
+              class="form-control form-control-sm"></textarea>
+          </div>
+        </div>
+      </div>
+    </section>
+    <ng-container>
+      <button
+        [disabled]="
+        !addEditMAsterCareplanObj.isCCMConsentTaken ||
+        (!addEditMAsterCareplanObj.challengesWithVision && !addEditMAsterCareplanObj.challengesWithHearing && !addEditMAsterCareplanObj.challengesWithTransportation && !addEditMAsterCareplanObj.functionalNone) ||
+        (!addEditMAsterCareplanObj.dailyLivingAll && !addEditMAsterCareplanObj.dailyLivingBath && !addEditMAsterCareplanObj.dailyLivingWalk && !addEditMAsterCareplanObj.dailyLivingDress && !addEditMAsterCareplanObj.dailyLivingEat && !addEditMAsterCareplanObj.dailyLivingTransfer && !addEditMAsterCareplanObj.dailyLivingRestroom && !addEditMAsterCareplanObj.dailyLivingNone) ||
+        (!addEditMAsterCareplanObj.instrumentalDailyAll && !addEditMAsterCareplanObj.instrumentalDailyGrocery && !addEditMAsterCareplanObj.instrumentalDailyTelephone && !addEditMAsterCareplanObj.instrumentalDailyHouseWork && !addEditMAsterCareplanObj.instrumentalDailyFinances && !addEditMAsterCareplanObj.instrumentalDailyTransportation && !addEditMAsterCareplanObj.instrumentalDailyMeals && !addEditMAsterCareplanObj.instrumentalDailyMedication && !addEditMAsterCareplanObj.instrumentalDailyNone) ||
+         !addEditMAsterCareplanObj.iLive || (!addEditMAsterCareplanObj.secondLanguage && !addEditMAsterCareplanObj.esl) || !addEditMAsterCareplanObj.utilizingCommunity|| addEditMAsterCareplanObj.internetAccess === null || addEditMAsterCareplanObj.cellPhone === null || !addEditMAsterCareplanObj.satisfactionWithMedicalCare  || !addEditMAsterCareplanObj.wantToImproveOnComment "
+        class="btn btn-dynamic-2c btn-sm px-sm-4 px-3" *ngIf="!IsPatientLoginId" (click)="isUpdate=true;addEditMAsterCareplanObj.isCarePlanUpdate = true;AddEditCarePlanMaster()">
+        Update</button>
+      <button [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken"
+        class="btn btn-dynamic-secondary-2c btn-sm px-sm-4 px-3" *ngIf="!IsPatientLoginId" (click)="isUpdate=false;addEditMAsterCareplanObj.isCarePlanUpdate = false;AddEditCarePlanMaster()">
+        Save</button>
+      <button [disabled]="!addEditMAsterCareplanObj.isCCMConsentTaken" class="btn btn-dark btn-sm px-sm-4 px-3"
+        *ngIf="!IsPatientLoginId" [routerLink]="['/admin/patient/' + PatientId + '/summary']">
+        Cancel</button>
+    </ng-container>
+    <!-- <ng-container>
+      <button class="btn btn-dynamic-2c btn-sm px-sm-4 px-3" *ngIf="!IsPatientLoginId" (click)="AddEditCarePlanMaster()">
+        Update</button>
+      <button class="btn btn-dynamic-2c btn-sm px-sm-4 px-3" *ngIf="!IsPatientLoginId" [routerLink]="['/admin/patient/' + PatientId + '/summary']">
+        Cancel</button>
+    </ng-container> -->
+
+
+  </div>
+
+</div>
+<div mdbModal #rejectReasonModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="rejectReasonModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel"><i class="fa fa-exclamation-triangle yellow-text"></i>Reason of
+          Rejection
+        </h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="form-group">
+              <label for="reason">Reason <sup class="text-danger">*</sup></label>
+              <textarea type="text" id="reason" rows="15" [(ngModel)]="rejectReason" placeholder="Reason"
+                class="form-control" style="height: 150px;"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+          (click)="rejectReasonModal.hide()" mdbWavesEffect>Close</button>
+        <button type="button" (click)="AcceptRejectCarePLan(2);rejectReasonModal.hide()"
+          class="relative waves-light btn btn-sm btn-dynamic-2c" mdbWavesEffect>Proceed</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- <div mdbModal #carePlanHistoryViewModal="mdbModal" class="modal fade" role="dialog" aria-labelledby="myBasicModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-fluid" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="carePlanHistoryViewModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">History View</h4>
+      </div>
+      <div class="modal-body p-0 " style="height: 100vh;">
+
+
+        <object type="application/pdf" width="100%" height="100%" [data]="carePlanHistoryView"
+          id="pdf_content"></object>
+
+      </div>
+
+
+      <div class="modal-footer">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="carePlanHistoryViewModal.hide()">
+          <span aria-hidden="true">Close</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div> -->

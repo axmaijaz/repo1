@@ -1,0 +1,27 @@
+.bhi-header .mega-dropdown {
+  position: static !important;
+}
+.task-patient-info {
+  p,.cp-list {
+    margin: 0;
+    font-size: 14px;
+    display: flex;
+    align-items: self-start;
+    justify-content: space-between;
+    border-bottom: 1px solid #f0f0f0;
+    background: #53b0481f;
+    padding: 3px 5px;
+    margin-bottom: 4px;
+    border-radius: 2px;
+    strong {
+      display: inline-block;
+      width: 110px;
+    }
+
+  }
+}
+
+table.table-nowrap thead tr th,
+table.table-nowrap tbody tr td  {
+    white-space: pre
+}

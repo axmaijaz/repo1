@@ -1,0 +1,850 @@
+<div class="d-flex align-items-center flex-wrap justify-content-between mb-3">
+  <h1 class="page-title mb-0 flex-sm-grow-1 mb-3">Patients</h1>
+  <div>
+    <button class="btn btn-dynamic-2c btn-sm ml-0" [disabled]="isLoadingZip" (click)="DownloadModal.show();"
+      title="export"><i *ngIf="!isLoadingZip" class="fa fa-print fa-lg"></i> <span *ngIf="isLoadingZip"
+        class="mr-1 spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Download</button>
+    <button [disabled]="!selected || selected.length < 1" type="button" class="btn btn-dynamic-secondary-2c btn-sm"
+      (click)="getProvidersForPatient();assignCareProviderModal.show()"><i class="fa fa-arrow-alt-circle-up fa-lg"></i>
+      Assign</button>
+    <!-- <button type="button" class="btn btn-dynamic-2c btn-sm mr-0" title="Add Patient" placement="left"
+      (click)="addPatient.show()">Add New</button> -->
+    <button *hasClaim=" ['CanAddPatient']" type="button" class="btn btn-dynamic-2c btn-sm mr-0" title="Add Patient"
+      placement="left" [routerLink]="['/admin/addPatient']" routerLinkActive="router-link-active"><i
+        class="fa fa-plus fa-lg"></i> Add New</button>
+  </div>
+</div>
+
+
+
+<div mdbModal #DownloadModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myDownloadModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="DownloadModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100 text-centerd" myModalLabel>Download</h4>
+      </div>
+      <div class="modal-body">
+        <p> Please select your option</p>
+        <div class="form-check form-check-inline">
+          <input type="radio" class="form-check-input" id="materialInline1" name="download" [(ngModel)]="downloadData"
+            [value]="'all'" mdbInput>
+          <label class="form-check-label" for="materialInline1">All History</label>
+        </div>
+
+        <!-- Material inline 2 -->
+        <div class="form-check form-check-inline" *ngIf="selected.length > 0">
+          <input type="radio" class="form-check-input" id="materialInline2" name="download" [(ngModel)]="downloadData"
+            [value]="'selected'" mdbInput>
+          <label class="form-check-label" for="materialInline2">Selected History</label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" [disabled]="!downloadData"
+          (click)="DownloadModal.hide();DownLoadZip()" class="relative btn btn-sm btn-dynamic-2c">Proceed</button>
+        <button type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+          (click)="DownloadModal.hide();">Close</button>
+        <!-- <button type="button" mdbBtn class="btn btn-dynamic-2c btn-sm relative waves-light" mdbWavesEffect>Selected</button> -->
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="form-group mb-4">
+  <label for="searchBy">Search Patient</label>
+  <div class="d-flex align-items-center justify-content-start">
+    <input type="text" #searchPatient [(ngModel)]="FilterPatientDto.SearchParam" autocomplete="off"
+      class="form-control form-control-sm box-shadow w-100" id="searchBy" placeholder="Search by Name,EMR Id" />
+    <!-- (keyup)="filterSearchParamData()" /> -->
+    <button type="button" class="btn btn-dynamic-2c btn-sm my-0 flex-shrink-0 mr-0" (click)="test.toggle()"><i
+        class="fa fa-filter fa-lg"></i> Filter</button>
+  </div>
+</div>
+<div class="search-filter collapseable" mdbCollapse #test="bs-collapse">
+  <div class="panel">
+    <div class="panel-header d-flex justify-content-between align-items-center">
+      <h3>Search Filter</h3>
+      <div>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="test.toggle()">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-xl-3 col-lg-6 col-sm-6">
+          <div class="form-group">
+            <label for="name">Assigned/Unassigned</label>
+            <ng-select [(ngModel)]="FilterPatientDto.Assigned" appendTo="body" [searchable]="false"
+              class="ng-select-small" placeholder="Assigned/Unassigned" [closeOnSelect]="true">
+              <ng-option [value]="0">All Patients </ng-option>
+              <ng-option [value]="1">Assigned</ng-option>
+              <ng-option [value]="2">un Assigned</ng-option>
+            </ng-select>
+          </div>
+        </div>
+        <div class="col-xl-3 col-lg-6 col-sm-6">
+          <div class="form-group">
+            <label for="name">CCM Status</label>
+            <ng-select [(ngModel)]="FilterPatientDto.ccmStatus" appendTo="body" [searchable]="false"
+              [closeOnSelect]="true" class="ng-select-small" placeholder="C">
+              <ng-option [value]="-1">All</ng-option>
+              <ng-option [value]="item.number" *ngFor="let item of getccmStatusArray()">{{item.word}} </ng-option>
+            </ng-select>
+          </div>
+        </div>
+        <div class="col-xl-3 col-lg-6 col-sm-6">
+          <div class="form-group">
+            <label for="named">Rpm Status</label>
+            <ng-select [(ngModel)]="FilterPatientDto.RpmStatus" appendTo="body" [searchable]="false"
+              [closeOnSelect]="true" class="ng-select-small" placeholder="Rpm Status">
+              <ng-option [value]="-1">All</ng-option>
+              <ng-option [value]="0">Active</ng-option>
+              <ng-option [value]="1">Not Started</ng-option>
+              <ng-option [value]="2">Not Eligible</ng-option>
+              <ng-option [value]="3">Identified</ng-option>
+            </ng-select>
+          </div>
+        </div>
+        <div class="col-xl-3 col-lg-6 col-sm-6">
+          <div class="form-group">
+            <label for="PatientS">Patient Status</label>
+            <ng-select [(ngModel)]="FilterPatientDto.PatientStatus" appendTo="body" [searchable]="false"
+              class="ng-select-small" placeholder="Patient Status" [closeOnSelect]="true">
+              <ng-option [value]="1">Active</ng-option>
+              <ng-option [value]="0">All</ng-option>
+              <!-- <ng-option [value]="2">Archived</ng-option> -->
+              <ng-option [value]="3">Deceased</ng-option>
+              <ng-option [value]="4">Duplicate Entry </ng-option>
+              <ng-option [value]="5">Added Erronously </ng-option>
+            </ng-select>
+          </div>
+        </div>
+        <div class="col-xl-3 col-lg-6 col-sm-6" [hidden]="currentUser?.userType === 3">
+          <div class="form-group">
+            <label for="namea">Care Provider</label>
+            <ng-select class="ng-select-small" [disabled]="currentUser.userType === 4" appendTo="body"
+              [(ngModel)]="FilterPatientDto.CareProviderId" [closeOnSelect]="true" [multiple]="false"
+              [searchable]="true" placeholder="Care Provider">
+              <ng-option [value]="0">All Care Providers </ng-option>
+              <ng-option *ngFor="let item of CareProvidersList" [value]="item.id">{{item.lastName}},{{item.firstName}}
+              </ng-option>
+            </ng-select>
+          </div>
+        </div>
+
+        <div class="col-xl-3 col-lg-6 col-sm-6" [hidden]="currentUser?.userType === 3">
+          <div class="form-group">
+            <label for="namee">Billing Provider</label>
+            <ng-select class="ng-select-small" [(ngModel)]="FilterPatientDto.BillingProviderId" appendTo="body"
+              [closeOnSelect]="true" [multiple]="false" [searchable]="true" placeholder="Billing Provider">
+              <ng-option [value]="0">All Billing Providers </ng-option>
+              <ng-option *ngFor="let item of BIllingProviderList" [value]="item.id">{{item.lastName}},{{item.firstName}}
+              </ng-option>
+            </ng-select>
+          </div>
+        </div>
+        <div class="col-xl-3 col-lg-6 col-sm-6" *ngIf="currentUser?.userType === 3">
+          <div class="form-group">
+            <label for="namea">Select Facility</label>
+            <ng-select class="ng-select-small" [(ngModel)]="FilterPatientDto.FacilityId" appendTo="body"
+              [closeOnSelect]="true" [multiple]="false" [searchable]="true" placeholder="Select Facility">
+              <ng-option [value]="0">All</ng-option>
+              <ng-option *ngFor="let item of facilityList" [value]="item.id">{{item.facilityName}}
+              </ng-option>
+            </ng-select>
+          </div>
+        </div>
+        <div class="col-xl-3 col-lg-6 col-sm-6">
+          <div class="form-group">
+            <label for="namea">Select Month</label>
+            <ng-select [searchable]="false" [(ngModel)]="FilterPatientDto.serviceMonth" [closeOnSelect]="true"
+              [multiple]="false" appendTo="body" class="ng-select-small" placeholder="Select Month"
+              (click)="$event.stopPropagation();" style="min-width:200px">
+              <ng-option [value]="1">January</ng-option>
+              <ng-option [value]="2">February</ng-option>
+              <ng-option [value]="3">March</ng-option>
+              <ng-option [value]="4">April</ng-option>
+              <ng-option [value]="5">May</ng-option>
+              <ng-option [value]="6">June</ng-option>
+              <ng-option [value]="7">July</ng-option>
+              <ng-option [value]="8">August</ng-option>
+              <ng-option [value]="9">September</ng-option>
+              <ng-option [value]="10">October</ng-option>
+              <ng-option [value]="11">November</ng-option>
+              <ng-option [value]="12">December</ng-option>
+            </ng-select>
+          </div>
+        </div>
+        <div class="col-xl-3 col-lg-6 col-sm-6">
+          <div class="form-group">
+            <label for="namea">Select Year</label>
+            <ng-select [searchable]="false" [appendTo]="'body'" class="ng-select-small" placeholder="Select Year"
+              [closeOnSelect]="true" [multiple]="false" [(ngModel)]="FilterPatientDto.serviceYear"
+              (click)="$event.stopPropagation();" style="min-width:200px">
+              <ng-option *ngFor="let year of listOfYears" [value]="year">{{year}}</ng-option>
+            </ng-select>
+          </div>
+        </div>
+        <div class="col-xl-3 col-lg-6 col-sm-6">
+          <div class="form-group">
+            <label for="name">Select Chronic Disease</label>
+            <ng-select class="ng-select-small" [(ngModel)]="FilterPatientDto.chronicDiseasesIds" appendTo="body"
+              [closeOnSelect]="true" [multiple]="false" [searchable]="true" placeholder="Select Chronic Disease">
+              <ng-option [value]="0">All</ng-option>
+              <ng-option *ngFor="let item of AllCronicDiseaseList" [value]="item.id">{{item.detail}}</ng-option>
+              <!-- <ng-option  [value]="35">all</ng-option> -->
+            </ng-select>
+          </div>
+        </div>
+        <div class="col-xl-3 col-lg-6 col-sm-6">
+          <div class="btn-group pt-4">
+            <button type="button" class="btn btn-dynamic-2c btn-sm my-0 flex-shrink-0" (click)="getFilterPatients()"><i
+                class="fa fa-filter fa-lg"></i> Search</button>
+            <button type="button" class="btn btn-dynamic-secondary-2c btn-sm my-0 flex-shrink-0"
+              (click)="resetFilter();getFilterPatients()"><i class="fa fa-refresh fa-lg"></i> Reset</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+<mat-form-field class="show-rocord">
+  Show Record
+  <a [class.active]="FilterPatientDto.PageSize===10" (click)="FilterPatientDto.PageSize=10; getFilterPatients()"
+    class="link">10</a>
+  <a [class.active]="FilterPatientDto.PageSize===25" (click)="FilterPatientDto.PageSize=25; getFilterPatients()"
+    class="link">25</a>
+  <a [class.active]="FilterPatientDto.PageSize===50" (click)="FilterPatientDto.PageSize=50; getFilterPatients()"
+    class="link">50</a>
+  <a [class.active]="FilterPatientDto.PageSize===100" (click)="FilterPatientDto.PageSize=100; getFilterPatients()"
+    class="link">100</a>
+  <!-- <input matInput [(ngModel)]="FilterPatientDto.PageSize"> -->
+</mat-form-field>
+<!-- <mat-paginator [length]="100"
+              [pageSize]="10"
+              [pageSizeOptions]="[5, 10, 25, 100]">
+</mat-paginator> -->
+<div class="table-data-list">
+
+  <div *ngIf="isLoading" class="d-flex justify-content-center text-center">
+    <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+  </div>
+  <ngx-datatable #table appRecalculateNgxTable class="material content-center fullscreen" [columnMode]="'force'"
+    [headerHeight]="50" [footerHeight]="50" [rowHeight]="35" [scrollbarV]="false" [scrollbarH]="true" [rows]="rows"
+    [count]="pagingData.elementsCount" [externalSorting]="true" [externalPaging]="true" [selected]="selected"
+    [selectionType]="SelectionType.single" (sort)="onSort($event)" [selectAllRowsOnPage]="false"
+    [displayCheck]="displayCheck" (select)='onSelect($event)' (page)='setPage($event)' [offset]="pagingData.pageNumber"
+    [limit]="pagingData.pageSize">
+
+    <ngx-datatable-column [width]="60" [sortable]="false" [canAutoResize]="false" [draggable]="false"
+      [resizeable]="false">
+
+      <ng-template ngx-datatable-header-template let-value="value" let-allRowsSelected="allRowsSelected"
+        let-rowIndex="rowIndex" let-selectFn="selectFn">
+        <mdb-checkbox [default]="true" [checked]="allRowsSelected" (change)="HeaderSelect(!allRowsSelected  ,$event)">
+        </mdb-checkbox>
+
+      </ng-template>
+      <ng-template ngx-datatable-cell-template let-value="value" let-isSelected="isSelected" let-row="row"
+        let-rowIndex="rowIndex" let-onCheckboxChangeFn="onCheckboxChangeFn">
+        <!-- <span>{{(rowIndex + 1) + ((pagingData.pageNumber) * FilterPatientDto.PageSize) }}</span> -->
+        <mdb-checkbox [default]="true" [checked]="isSelected" (change)="RowSelected(!isSelected , row)">
+        </mdb-checkbox>
+
+      </ng-template>
+    </ngx-datatable-column>
+    <!-- <ngx-datatable-column name="#" [maxWidth]=20>
+      <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+        {{rowIndex + 1}}
+      </ng-template>
+    </ngx-datatable-column> -->
+    <ngx-datatable-column name="Name" [frozenLeft]="true" class="myClass" [cellClass]="'nameCell'" [width]="250">
+      <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+        <div class="d-flex align-items-center justify-content-start">
+
+          <small class="mr-3">{{(rowIndex + 1) + ((pagingData.pageNumber) * FilterPatientDto.PageSize) }}</small>
+
+          <span *ngIf="row.profileStatus" class="status-bullet bg-success" title="Profile Complete"
+            data-placement="right"></span>
+          <span *ngIf="!row.profileStatus" class="status-bullet bg-danger" title="Profile Incomplete"
+            data-placement="right"></span>
+          <a class="mb-0 text-capitalize link text-dynamic-2c text-left ml-2"
+            [ngClass]="{rowBackgroundColorDiv: row.isDeleted}" style="white-space: normal"
+            (click)="onClickRow(row)">{{item.lastName}},{{item.firstName}}</a>
+          <i class="fa fa-pencil text-dynamic-2c  ml-auto" style="font-size: 20px; cursor: pointer;" (click)="openPatientNote(row)"></i>
+          <i (appIsOutside)="pop.isOpen=false" [class]="pop.isOpen == true ? 'fa fa-bolt text-dynamic-2c': 'fa fa-bolt text-secondry'" #pop="bs-mdbPopover" container="body" placement="right"
+          [mdbPopover]="popTemplate"
+          (click)="ccmEncounterListDto.patientId = row.id; profileStatus = row.profileStatus" style="font-size: 20px; cursor: pointer;"></i>
+
+          <!-- <button id="popTemplate" [container]="'body'" type="button"
+            class="btn btn-icon btn-gray z-depth-0 flex-shrink-0 mr-0"
+            [class.dropdown-active]="pop.isOpen == true" #pop="bs-mdbPopover" container="body" placement="right"
+            [mdbPopover]="popTemplate"
+            (click)="ccmEncounterListDto.patientId = row.id; profileStatus = row.profileStatus">
+            <i class="fa fa-bolt open-button" (appIsOutside)="pop.isOpen=false"></i>
+          </button> -->
+
+          <ng-template #popTemplate>
+            <!-- <i class="fa fa-close popover-close" (click)="pop.hide()"></i> -->
+            <ul class="link-list">
+              <li> <a class="link"
+                  (click)="resetCcmEncounterlist();ccmEncounterListDto.ccmServiceTypeId = 8;AssignValueCcmService();addEncounterModalFn();calculateEndtime();pop.toggle()">Discussion
+                  with other providers</a></li>
+              <li> <a class="link"
+                  (click)="resetCcmEncounterlist();ccmEncounterListDto.ccmServiceTypeId = 12;AssignValueCcmService();addEncounterModalFn();calculateEndtime();pop.toggle()">ePrescribe/Refill</a>
+              </li>
+              <li> <a class="link"
+                  (click)="resetCcmEncounterlist();ccmEncounterListDto.ccmServiceTypeId = 18;addEncounterModalFn();calculateEndtime();pop.toggle()">Lab
+                  test
+                  results discussed with patients</a></li>
+              <li> <a class="link"
+                  (click)="resetCcmEncounterlist();ccmEncounterListDto.ccmServiceTypeId = 19;AssignValueCcmService();addEncounterModalFn();calculateEndtime();pop.toggle()">Lab/Radiology/results
+                </a></li>
+              <li> <a class="link"
+                  (click)="resetCcmEncounterlist();ccmEncounterListDto.ccmServiceTypeId = 35;AssignValueCcmService();addEncounterModalFn();calculateEndtime();pop.toggle();">Preauthorization</a>
+              </li>
+              <li> <a class="link"
+                  (click)="resetCcmEncounterlist();ccmEncounterListDto.ccmServiceTypeId = 40; AssignValueCcmService();addEncounterModalFn();calculateEndtime();pop.toggle()">Referrals</a>
+              </li>
+              <li> <a class="link"
+                  (click)="resetCcmEncounterlist();ccmEncounterListDto.ccmServiceTypeId = 27;addEncounterModalFn();calculateEndtime();pop.toggle()">Other</a>
+              </li>
+            </ul>
+          </ng-template>
+        </div>
+      </ng-template>
+    </ngx-datatable-column>
+    <!-- <ngx-datatable-column name="City">
+    </ngx-datatable-column>
+    <ngx-datatable-column name="State">
+    </ngx-datatable-column> -->
+    <ngx-datatable-column name="CCM Time" [width]="130">
+      <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+        <div style="width:100px" class="completed-status d-flex align-items-center">
+          <!-- <mdb-progress class="time-completed" value="10" min="0" max="20" type="primary" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100">10</mdb-progress> -->
+          <ng-container
+            *ngIf="row.currentMonthCompletedTime.split(':')[0] && row.currentMonthCompletedTime.split(':')[0] !== '00'">
+            <mdb-progress class="time-completed" [class.TimeLog]="IsCCMCompleted(row.currentMonthCompletedTime)"
+              value="60" min="0" max="20" type="primary" aria-valuemin="0" aria-valuemax="20">
+              <ng-container>
+                {{row.currentMonthCompletedTime.split(':')[0]}} hour</ng-container>
+              {{'6/14/19 ' + row.currentMonthCompletedTime | date: 'mm'}} min
+            </mdb-progress>
+          </ng-container>
+          <ng-container
+            *ngIf="row.currentMonthCompletedTime.split(':')[0] && row.currentMonthCompletedTime.split(':')[0] === '00'">
+            <mdb-progress class="time-completed" [class.TimeLog]="IsCCMCompleted(row.currentMonthCompletedTime)"
+              value="{{'6/14/19 ' + row.currentMonthCompletedTime | date: 'm'}}" min="0" max="20" type="primary"
+              aria-valuemin="0" aria-valuemax="20">
+              {{'6/14/19 ' + row.currentMonthCompletedTime | date: 'mm'}} min
+            </mdb-progress>
+          </ng-container>
+          <!-- <small
+            class="text-dynamic-2c ml-1 font-500">{{'6/14/19 ' + row.currentMonthCompletedTime | date: 'HH:mm'}}</small> -->
+        </div>
+
+      </ng-template>
+    </ngx-datatable-column>
+
+    <ngx-datatable-column name="CCM Status" prop="ccmStatus">
+      <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+
+
+        <div class="d-flex align-items-center justify-content-between">
+          <a class="mb-0 text-capitalize link text-dynamic-2c text-center" [class.link-active]="pop.isOpen == true"
+            (dbclick)="ccmEncounterListDto.patientId = row.id;" #pop="bs-mdbPopover" placement="right" container="body"
+            [mdbPopover]="popTemplate" (appIsOutside)="pop.isOpen=false"
+            style="white-space: normal; line-height: 1.2;">{{ccmStatusEnum[row.ccmStatus]}}</a>
+          <!-- <button id="popTemplate" [container]="'body'" type="button"
+            class="btn btn-icon btn-gray z-depth-0 flex-shrink-0 m-0" #pop="bs-mdbPopover" placement="right"
+            [mdbPopover]="popTemplate" (dbclick)="ccmEncounterListDto.patientId = row.id;">
+            <i class="fa fa-bolt open-button" (appIsOutside)="pop.isOpen=false"></i>
+          </button> -->
+
+          <ng-template #popTemplate>
+            <!-- <i class="fa fa-close popover-close" (click)="pop.hide()"></i> -->
+            <ul class="link-list" style="height: 300px;" malihu-scrollbar [scrollbarOptions]="dropdownScroll">
+              <div *ngFor="let item of ccmStatusList">
+                <li [class.active]="row.ccmStatus=== item.value"> <a class="link"
+                    (click)="ccmStatusChangeDto.newStatusValue = item.value; row.ccmStatus= item.value;AssignCcmStatus(row.id)">{{item.text}}
+                  </a>
+                </li>
+              </div>
+            </ul>
+          </ng-template>
+        </div>
+      </ng-template>
+
+    </ngx-datatable-column>
+    <ngx-datatable-column name="CCM-MS" title="CCM Monthly Status" prop="ccmMonthlyStatus" [width]="150">
+      <ng-template let-row="row" let-value="value" let-rowIndex="rowIndex" ngx-datatable-cell-template>
+        <!-- <p class="mb-0" style="font-size:13px;line-height: 1.3;">{{row.recentPcpAppointment | date: 'M/d/yy h:mm a'}}</p> -->
+        <div class="d-flex align-items-center justify-content-between">
+          <a class="mb-0 text-capitalize link text-dynamic-2c" [class.link-active]="pop.isOpen == true"
+            (dbclick)="ccmEncounterListDto.patientId = row.id;" #pop="bs-mdbPopover" placement="right" container="body"
+            [mdbPopover]="popTemplate" (appIsOutside)="pop.isOpen=false"
+            style="white-space: normal">{{ccmMonthlyStatusEnum[row.ccmMonthlyStatus]}}</a>
+          <!-- <button id="popTemplate" [container]="'body'" type="button"
+                    class="btn btn-icon btn-gray z-depth-0 flex-shrink-0 m-0" #pop="bs-mdbPopover" placement="right"
+                    [mdbPopover]="popTemplate" (dbclick)="ccmEncounterListDto.patientId = row.id;">
+                    <i class="fa fa-bolt open-button" (appIsOutside)="pop.isOpen=false"></i>
+                  </button> -->
+
+          <ng-template #popTemplate>
+            <!-- <i class="fa fa-close popover-close" (click)="pop.hide()"></i> -->
+            <ul class="link-list">
+              <li [class.active]="row.ccmMonthlyStatus===0"> <a class="link"
+                  (click)="row.ccmMonthlyStatus=0;ccmMonthlyStatusChangeDto.ccmMonthlyStatus =0;AssignCcmMonthlyStatus(row.id) ">None
+
+                </a>
+
+              </li>
+              <li [class.active]="row.ccmMonthlyStatus===1"> <a class="link"
+                  (click)="row.ccmMonthlyStatus=1;ccmMonthlyStatusChangeDto.ccmMonthlyStatus =1;AssignCcmMonthlyStatus(row.id) ">
+                  Call Not answered</a>
+
+              </li>
+              <li [class.active]="row.ccmMonthlyStatus===2"> <a class="link"
+                  (click)="row.ccmMonthlyStatus=2;ccmMonthlyStatusChangeDto.ccmMonthlyStatus =2;AssignCcmMonthlyStatus(row.id) ">Completed
+                </a>
+              </li>
+              <li [class.active]="row.ccmMonthlyStatus===3"> <a class="link"
+                  (click)="row.ccmMonthlyStatus=3;ccmMonthlyStatusChangeDto.ccmMonthlyStatus =3;AssignCcmMonthlyStatus(row.id)  ">Partially
+                  completed
+                </a>
+              </li>
+              <li [class.active]="row.ccmMonthlyStatus===4"> <a class="link"
+                  (click)="row.ccmMonthlyStatus=4;ccmMonthlyStatusChangeDto.ccmMonthlyStatus =4;AssignCcmMonthlyStatus(row.id) ">Clinic
+                  appointment scheduled
+                </a>
+              </li>
+            </ul>
+          </ng-template>
+        </div>
+      </ng-template>
+    </ngx-datatable-column>
+
+    <!-- <ngx-datatable-column name="Profile Status" prop="profileStatus">
+      <ng-template let-row="row" let-value="value" let-rowIndex="rowIndex" ngx-datatable-cell-template>
+        <span *ngIf="row.profileStatus" class="badge badge-pill bg-success">Complete</span>
+        <span *ngIf="!row.profileStatus" class="badge badge-pill bg-danger">Incomplete</span>
+
+      </ng-template>
+    </ngx-datatable-column> -->
+    <ngx-datatable-column name="Last CCM" [width]="150">
+      <ng-template let-row="row" let-value="value" let-rowIndex="rowIndex" ngx-datatable-cell-template>
+        <p *ngIf="row.ccmDate !== '0001-01-01T00:00:00' && row.ccmMinutes" class="mb-0"
+          style="font-size:13px; line-height: 1.3;">
+          {{row.ccmDate | dateFormatPipe}} <span class="font-500"> ({{getCCMMinutes(row.ccmMinutes)}})</span></p>
+      </ng-template>
+
+
+
+      <!-- Last-Visit: MM-DD-YY -->
+    </ngx-datatable-column>
+
+    <ngx-datatable-column name="Rpm Status" [width]="100" prop="rpmStatus">
+      <!-- <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+        {{rpmStatusEnum[row.rpmStatus]}}
+      </ng-template> -->
+      <ng-template let-row="row" let-value="value" let-rowIndex="rowIndex" ngx-datatable-cell-template>
+        <!-- <p class="mb-0" style="font-size:13px;line-height: 1.3;">{{row.recentPcpAppointment | date: 'M/d/yy h:mm a'}}</p> -->
+        <div class="d-flex align-items-center justify-content-between">
+          <a class="mb-0 text-capitalize link text-dynamic-2c" [class.link-active]="pop.isOpen == true"
+            (click)="rpmStatusChangeDto.patientId = row.id;" #pop="bs-mdbPopover" placement="right" container="body"
+            [mdbPopover]="popTemplate" (appIsOutside)="pop.isOpen=false"
+            style="white-space: normal">{{rpmStatusEnum[row.rpmStatus]}}</a>
+          <!-- <button id="popTemplate" [container]="'body'" type="button"
+                    class="btn btn-icon btn-gray z-depth-0 flex-shrink-0 m-0" #pop="bs-mdbPopover" placement="right"
+                    [mdbPopover]="popTemplate" (dbclick)="ccmEncounterListDto.patientId = row.id;">
+                    <i class="fa fa-bolt open-button" (appIsOutside)="pop.isOpen=false"></i>
+                  </button> -->
+
+          <ng-template #popTemplate>
+            <!-- <i class="fa fa-close popover-close" (click)="pop.hide()"></i> -->
+            <ul class="link-list">
+              <div *ngFor="let item of rpmStatusList">
+                <li [class.active]="row.rpmStatus=== item.value"> <a class="link"
+                    (click)="row.rpmStatus= item.value;rpmStatusChangeDto.newStatusValue = item.value;AssignRPMStatus(row.id) ">{{item.text}}
+                  </a>
+                </li>
+              </div>
+            </ul>
+            <!-- <ul class="link-list">
+              <li [class.active]="row.rpmStatus===0"> <a class="link"
+                  (click)="row.rpmStatus=0;rpmStatusChangeDto.newStatusValue =0;AssignRPMStatus(row.id) ">Active
+                </a>
+              </li>
+              <li [class.active]="row.rpmStatus===1"> <a class="link"
+                  (click)="row.rpmStatus=1;rpmStatusChangeDto.newStatusValue =1;AssignRPMStatus(row.id) ">Not Started
+                </a>
+              </li>
+              <li [class.active]="row.rpmStatus===2"> <a class="link"
+                  (click)="row.rpmStatus=2;rpmStatusChangeDto.newStatusValue =2;AssignRPMStatus(row.id) ">Not Eligible
+                </a>
+              </li>
+              <li [class.active]="row.rpmStatus===3"> <a class="link"
+                  (click)="row.rpmStatus=3;rpmStatusChangeDto.newStatusValue =3;AssignRPMStatus(row.id) ">Identified
+                </a>
+              </li>
+            </ul> -->
+          </ng-template>
+        </div>
+      </ng-template>
+    </ngx-datatable-column>
+
+    <ngx-datatable-column name="Assigned Date" [width]="100">
+      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+        <div class="d-flex justify-content-start align-items-center" style="width: 100px;">
+          <a class="" (click)="assignedDateProp=row.dateAssigned;assignedDateModal.show();"><i
+            class="fa fa-calendar text-dynamic-secondary-2c mx-2" style="font-size: 20px;"></i></a>
+            <span>{{row.dateAssigned | dateFormatPipe}}</span>
+        </div>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Last Visit" [width]="150">
+      <ng-template let-row="row" let-value="value" let-rowIndex="rowIndex" ngx-datatable-cell-template>
+        <p class="mb-0" style="font-size:13px;line-height: 1.3;">{{row.recentPcpAppointment | dateFormatPipe}}
+        </p>
+      </ng-template>
+    </ngx-datatable-column>
+
+    <!-- <ngx-datatable-column name="Consent Date" [width]="120" prop="consentDate">
+      <ng-template let-row="row" let-value="value" let-rowIndex="rowIndex" ngx-datatable-cell-template>
+        {{row.consentDate | dateFormatPipe}}
+      </ng-template>
+    </ngx-datatable-column> -->
+
+    <ngx-datatable-column name="CP Name" [width]="100" prop="careProviderName">
+      <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+        <!-- {{row.careProviderName}} -->
+        <div class="user-name-list">
+          <div class="name-caption" title="{{item}}" data-placement="right"
+            *ngFor="let item of generateCareProvidersCaption(row.careProviderName)"><span>{{item[0]}}</span></div>
+        </div>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="BP Name" [width]="100" prop="billingProviderName">
+      <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+        <!-- {{row.billingProviderName}} -->
+        <div class="user-name-list">
+          <div class="name-caption" title="{{item}}" data-placement="right"
+            *ngFor="let item of generateCareProvidersCaption(row.billingProviderName)"><span>{{item[0]}}</span></div>
+        </div>
+      </ng-template>
+    </ngx-datatable-column>
+
+    <ngx-datatable-column name="Action" [width]="80" [canAutoResize]=false>
+      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+        <div class="action-button d-flex justify-content-center">
+          <!-- <a class="btn btn-danger btn-icon" (click)="deletePatient(row.id)"><i class="fa fa-trash"></i></a> -->
+          <a class="btn btn-danger btn-icon" (click)="deletePatientDto.patientId=row.id;deletePatientModal.show();"><i
+              class="fa fa-trash"></i></a>
+        </div>
+      </ng-template>
+    </ngx-datatable-column>
+
+
+
+    <!-- <ngx-datatable-column name="Action" [canAutoResize]=false [frozenRight]=true>
+      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+        <ng-select [searchable]="false" class="ng-select-small" appendTo="body" placeholder="Yes"
+          (click)="$event.stopPropagation();">
+          <ng-option [value]="true">Yes</ng-option>
+          <ng-option [value]="false">No</ng-option>
+        </ng-select>
+      </ng-template>
+    </ngx-datatable-column> -->
+
+  </ngx-datatable>
+</div>
+
+<div mdbModal #clickOnRow="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myBasicModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog flat-modal" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+
+        <h4 class="modal-title w-100 text-center" id="myModalLabel">Incomplete
+          Profile
+        </h4>
+      </div>
+      <div class="modal-body">
+        <p class="text-center">
+          <i class="fa fa-exclamation-triangle text-danger" style="font-size: 3rem;"></i>
+        </p>
+
+        <p class="text-center">
+          Patient profile looks incomplete. <br> Would you like to edit patient profile?
+        </p>
+
+        <!-- Some required fields are missing.Please enter that data first. -->
+        <div class="d-flex justify-content-center mt-3">
+          <button type="button" (click)="addRequiredData()" class="relative btn btn-sm btn-dynamic-2c"
+            mdbWavesEffect>YES</button>
+          <button type="button" class="btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+            (click)="clickOnRow.hide()">NO</button>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<div mdbModal #unApprovedCarePLanModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <!-- <button type="button" class="close pull-right" aria-label="Close" (click)="unApprovedCarePLanModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel"><i class="fa fa-exclamation-triangle yellow-text"></i>Unapproved
+          Profile
+        </h4> -->
+        <h4 class="modal-title w-100 text-center" id="myModalLabel">Unapproved Profile
+        </h4>
+      </div>
+      <div class="modal-body">
+        <!-- Care Plan is not approved by Billing Provider. -->
+        <p class="text-center"><i class="fa fa-exclamation-triangle text-danger" style="font-size: 3rem;"></i> </p>
+        <p class="text-center"> Care Plan is not approved by Billing Provider.</p>
+      </div>
+      <div class="modal-footer">
+        <button  type="button"  class="waves-light btn btn-sm btn-dynamic-2c btn-sm"
+          aria-label="Close" (click)="approveCarePlanLink()" mdbWavesEffect>Approve</button>
+        <button type="button"  class="waves-light btn btn-sm btn-dynamic-2c btn-sm" *ngIf="profileStatus" aria-label="Close"
+          (click)="ProceedToCCm()" mdbWavesEffect>Proceed</button>
+        <button type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+          (click)="unApprovedCarePLanModal.hide()" mdbWavesEffect>Cancel</button>
+        <!-- <button type="button" mdbBtn color="primry" (click)="addRequiredData()" class="relative waves-light"
+          mdbWavesEffect>Add Data</button> -->
+      </div>
+    </div>
+  </div>
+</div>
+<div mdbModal #assignedDateModal="mdbModal" class="modal fade" tabindex="-1" role="dialog" (opened)="datPickerRef.openBtnClicked()"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title w-100 text-center" id="myModalLabel">Assigned Date
+        </h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="input-group form-group mt-3">
+              <label class="w-100">Patient Assigned Date<small class="text-danger">*</small></label>
+              <mdb-date-picker #datPickerRef class="custom-datepicker" [options]="myDatePickerOptions" [(ngModel)]="assignedDateProp"
+                [outlineInput]="true" [inline]="true" name="mydate" [placeholder]="'Patient Assiged Date'">
+              </mdb-date-picker>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" [disabled]="assigningDate" class="waves-light btn btn-sm btn-dynamic-2c"
+          aria-label="Close" (click)="SaveAssignedDate(assignedDateModal);" mdbWavesEffect> <span *ngIf="assigningDate"
+          class="mr-1 spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Save</button>
+        <button type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+          (click)="assignedDateModal.hide()" mdbWavesEffect>Close</button>
+        <!-- <button type="button" mdbBtn color="primry" (click)="addRequiredData()" class="relative waves-light"
+          mdbWavesEffect>Add Data</button> -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<div mdbModal #assignCareProviderModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg flat-modal" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="assignCareProviderModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100">Assign Care Provider</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <!-- <div class="col-sm-12 mb-2">
+            <small class="text-dynamic-2c text-uppercase font-500">User Information</small>
+          </div> -->
+          <div class="col-sm-12">
+            <div class="form-group">
+              <label for="practiceName">Select Care Provider</label>
+              <ng-select class="ng-select-small" [(ngModel)]="AssignCareProviderToPatientsDto.careProviderIds"
+                [ngModelOptions]="{standalone: true}" [closeOnSelect]="false" [multiple]="true" [searchable]="true"
+                placeholder="Select Care Provider">
+                <ng-option *ngFor="let item of CareProvidersList" [value]="item.id">{{item.lastName}},{{item.firstName}}
+                </ng-option>
+              </ng-select>
+            </div>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-dynamic-2c btn-sm"
+            (click)="assignCareProviderModal.hide();AssignPatients();">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div mdbModal #deletePatientModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-md flat-modal" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="deletePatientModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100">Delete Patient</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-12">
+
+            <div class="alert alert-danger" role="alert">
+
+              <p class="mb-0" style="font-size: 14px;">Only delete the patient in case the patient was added erroneously
+                or there is a duplicate record.<br>
+                For any other reason please change the CCM status of the patient.
+                Deleted patients will be erased from the database along with their previous records. In most cases
+                changing status is
+                more appropriate. Never delete the patient with current month activity else it will affect the invoice,
+                please contact
+                support for appropriate action.
+              </p>
+            </div>
+
+          </div>
+          <!-- <div class="col-sm-12 mb-2">
+            <small class="text-dynamic-2c text-uppercase font-500">User Information</small>
+          </div> -->
+          <div class="col-sm-12">
+            <div class="form-group">
+              <label for="practiceName">Delete Status <sup class="text-danger">*</sup></label>
+              <ng-select class="ng-select-small" [(ngModel)]="deletePatientDto.reasonDeleted"
+                [ngModelOptions]="{standalone: true}" [multiple]="false" [searchable]="true" placeholder="Status">
+                <ng-option [value]="0">None</ng-option>
+                <ng-option [value]="1">Deceased </ng-option>
+                <ng-option [value]="2">Duplicate Entry </ng-option>
+                <ng-option [value]="3">Added Erronously </ng-option>
+              </ng-select>
+            </div>
+
+            <div class="form-group">
+              <label for="reason">Reason <sup class="text-danger">*</sup></label>
+              <textarea type="text" id="reason" rows="15" [(ngModel)]="deletePatientDto.reasonDeleteDetails"
+                placeholder="Reason" class="form-control" style="height: 150px;"></textarea>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-dark btn-sm" (click)="deletePatientModal.hide()">Close</button>
+        <button type="submit" class="btn btn-dynamic-2c btn-sm" (click)="deletePatientModal.hide();deletePatient()"
+          [disabled]="!deletePatientDto.reasonDeleted || !deletePatientDto.reasonDeleteDetails">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div mdbModal #addEncounterModal="mdbModal" [config]="{ignoreBackdropClick: true}" class="modal fade" tabindex="-1"
+  role="dialog" aria-labelledby="myroleManagementModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-md flat-modal modal-dialog-scrollable " role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="addEncounterModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">Add Encounter</h4>
+      </div>
+
+      <div class="modal-body">
+        <div class="row">
+          <!-- <div class="col-sm-12 mb-2">
+            <small class="text-dynamic-2c text-uppercase font-500">User Information</small>
+          </div> -->
+          <div class="col-sm-12" *ngIf="securityService && securityService.securityObject.fullName">
+            <p><strong>Provider Name</strong> {{securityService.securityObject.fullName}}</p>
+          </div>
+
+          <div class="col-sm-12">
+            <label>Service Name</label>
+            <div class="form-group">
+              <ng-select [searchable]="true" [(ngModel)]="ccmEncounterListDto.ccmServiceTypeId"
+                (ngModelChange)="AssignValueCcmService()" class="w-100 ng-select-small"
+                placeholder="Select Service Type" (click)="$event.stopPropagation();">
+                <ng-option [value]="8">Discussion with provider/patient/family</ng-option>
+                <ng-option [value]="12">ePrescribe</ng-option>
+                <ng-option [value]="18">Lab test results discussed with patients</ng-option>
+                <ng-option [value]="19">Lab/Radiology Orders</ng-option>
+                <ng-option [value]="35">Preauthorization</ng-option>
+                <ng-option [value]="40">Referrals</ng-option>
+                <ng-option [value]="27">Other</ng-option>
+              </ng-select>
+            </div>
+          </div>
+
+          <div class="col-sm-6">
+            <div class="form-group d-flex flex-wrap">
+              <label class="w-100">Start Time</label>
+              <input type="text" class="form-control form-control-sm" #dateDpTime="dpDayPicker"
+                [dpDayPicker]="timePickerConfig" [(ngModel)]="ccmEncounterListDto.startTime"
+                (ngModelChange)="calculateDuration()" [theme]="'dp-material ccm-date-picker'" [mode]="'time'" />
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="form-group d-flex flex-wrap">
+              <label class="w-100">End Time</label>
+              <input type="text" class="form-control form-control-sm" #dateDpTime="dpDayPicker"
+                [dpDayPicker]="timePickerConfig" [(ngModel)]="ccmEncounterListDto.endTime"
+                [theme]="'dp-material ccm-date-picker'" [mode]="'time'" />
+            </div>
+          </div>
+
+          <div class="col-sm-12">
+            <div class="form-group">
+              <label for="isChronic">Duration<small> in minutes</small></label>
+              <input type="text" [(ngModel)]="ccmEncounterListDto.duration" class="form-control form-control-sm"
+                id="isChronic" (ngModelChange)="calculateTime()" placeholder="Duration">
+            </div>
+          </div>
+          <div class="col-sm-12">
+            <div class="form-group">
+              <label for="formmm7">Note</label>
+              <textarea type="text" id="formmm7" [(ngModel)]="ccmEncounterListDto.note" class="form-control"></textarea>
+            </div>
+          </div>
+        </div>
+        <div #alert *ngIf="showAlertFEncounter" class="alert alert-warning alert-dismissible animated fade show"
+          role="alert">
+          <!-- <button type="button" class="close" aria-label="Close" >
+            <span aria-hidden="true">&times;</span>
+          </button> -->
+          <strong>End Time must be greater than Start Time!</strong>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-dynamic-2c btn-sm" [disabled]="isLoading" (click)="addEncounter()"><span
+            *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          Add</button>
+      </div>
+    </div>
+  </div>
+</div>

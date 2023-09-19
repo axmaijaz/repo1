@@ -1,0 +1,23 @@
+.ccm-nav .ccm-navbar li a.close-aw {
+    // position: absolute;
+    right: 0;
+    padding: 0;
+    top: 12px;
+    width: 16px;
+    height: 16px;
+    background: #ffcdd2;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    color: #e57373;
+    border-radius: 2px;
+    font-size: 12px;
+}
+
+.ccm-nav .ccm-navbar li a.close-aw:hover {
+    border: none;
+    box-shadow: none;
+    background-color: #e57373;
+    color: #ffebee;
+}

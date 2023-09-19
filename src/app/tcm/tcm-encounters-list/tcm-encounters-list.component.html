@@ -1,0 +1,171 @@
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <div class="d-flex align-items-center justify-content-start">
+    <h4 class="mr-3 mb-0"><a class="text-dark" (click)="navigateBack()">
+        <i class="fa fa-arrow-left"></i></a></h4>
+    <h1 class="page-title mb-0">TCM Encounters</h1>
+  </div>
+
+  <div>
+    <button type="button" [disabled]="isShowAddButton" class="btn btn-dynamic-2c btn-sm text-capitalize"
+      (click)="HospitalizationDateModal.show()">
+      <span *ngIf="creatingTcm" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      Add Encounter</button>
+  </div>
+</div>
+<app-patient-details></app-patient-details>
+<!-- <div *ngIf="!isLoading" class="d-flex justify-content-center text-center"> -->
+<div class="d-flex justify-content-center text-center">
+  <mdb-progress-bar *ngIf="IsLoading" class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+</div>
+<div class="panel">
+  <div class="panel-header">
+    <h3>TCM Encounters</h3>
+  </div>
+  <div class="panel-body p-0">
+    <div class="table-responsive">
+      <table class="table btn-table table-sm tcm-table">
+        <thead class="bg-dynamic-2c text-white">
+          <tr>
+            <th>#</th>
+            <th >Discharge Date</th>
+            <th>Hospitalization Date</th>
+            <th>Status</th>
+            <th>Is Tcm Eligible</th>
+            <th >Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let item of tcmList; let i= index;">
+            <th scope="row">{{ i + 1}}</th>
+
+            <td style="min-width: 115px;">
+              <div *ngIf="item.dischargeDate !== '0001-01-01T00:00:00'">{{ item.dischargeDate | date}}</div>
+            </td>
+            <td style="min-width: 150px;">
+              <div *ngIf="item.hospitalizationDate !== '0001-01-01T00:00:00'">{{ item.hospitalizationDate | date}}</div>
+            </td>
+            <td  style="min-width: 210px;">{{ tcmStatusEnum[item.tcmStatus]}}</td>
+            <!-- <td><a class="link text-dynamic-2c" (click)="singleRowData(item);ClosedStatusModal.show();">{{tcmClosedStatusEnum[item.closedStatus]}}</a></td> -->
+            <td style="min-width: 120px;">
+              <div>
+                <strong class=" text-danger" *ngIf="item.isTcmEligible" >No</strong>
+                <strong class=" text-dynamic-2c" *ngIf="!item.isTcmEligible">Yes</strong>
+              </div>
+              </td>
+            <td style="min-width: 120px; ">
+              <div class="action-button">
+                <a class="btn btn-dynamic-2c btn-icon my-0 ml-0" (click)="singleRowData(item);ClosedStatusModal.show();"><i class="fa fa-pencil"></i> </a>
+                <a class="btn btn-dynamic-2c btn-icon ml-1  my-0" routerLink="/tcm/dischargeOverview/{{PatientId}}/{{item.id}}" title="View"><i class="fa fa-eye text-white"></i> </a>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div mdbModal #ClosedStatusModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="myBasicModalLabel" aria-hidden="true" mdbTableScroll>
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close pull-right" aria-label="Close" (click)="ClosedStatusModal.hide()">
+            <span aria-hidden="true">×</span>
+          </button>
+          <h4 class="modal-title w-100" id="myModalLabel">Closed Status</h4>
+        </div>
+        <div class="modal-body" *ngIf="ClosedStatusModal.isShown">
+          <div>
+            <ul class="status-list">
+              <!-- <li [class.active]="tcmEncounterCloseDto.ClosedStatus === 0"> <a class="link"
+                (click)="tcmEncounterCloseDto.ClosedStatus = 0;openConfirmModal()">None
+              </a>
+            </li> -->
+              <li [class.active]="tcmEncounterCloseDto.ClosedStatus === 3"> <a class="link"
+                  (click)="tcmEncounterCloseDto.ClosedStatus = 3;openConfirmModal()">Time Lapse
+                </a>
+              </li>
+              <li [class.active]="tcmEncounterCloseDto.ClosedStatus === 4"> <a class="link"
+                  (click)="tcmEncounterCloseDto.ClosedStatus = 4;openConfirmModal()">IneligibleDischarge
+                </a>
+              </li>
+              <li [class.active]="tcmEncounterCloseDto.ClosedStatus === 5"> <a class="link"
+                  (click)="tcmEncounterCloseDto.ClosedStatus = 5;openConfirmModal()">Death
+                </a>
+              </li>
+              <li [class.active]="tcmEncounterCloseDto.ClosedStatus === 7"> <a class="link"
+                  (click)="tcmEncounterCloseDto.ClosedStatus = 7;openConfirmModal()">AddErrornously
+                </a>
+              </li>
+              <li [class.active]="tcmEncounterCloseDto.ClosedStatus === 8"> <a class="link"
+                  (click)="tcmEncounterCloseDto.ClosedStatus = 8;openConfirmModal()">Duplicate
+                </a>
+              </li>
+              <li [class.active]="tcmEncounterCloseDto.ClosedStatus === 9"> <a class="link"
+                  (click)="tcmEncounterCloseDto.ClosedStatus = 9;openConfirmModal()">WrongPatient
+                </a>
+              </li>
+              <li [class.active]="tcmEncounterCloseDto.ClosedStatus === 10"> <a class="link"
+                  (click)="tcmEncounterCloseDto.ClosedStatus = 10;openConfirmModal()">Other
+                </a>
+              </li>
+              <li [class.active]="tcmEncounterCloseDto.ClosedStatus === 11"> <a class="link"
+                (click)="tcmEncounterCloseDto.ClosedStatus = 11;openConfirmModal()">Re Admission
+              </a>
+            </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+
+          <button type="button" (click)="ClosedStatusModal.hide()" class="waves-light btn btn-sm btn-dynamic-secondary-2c"
+            aria-label="Close" mdbWavesEffect>Cancel</button>
+          <!-- <button type="button" mdbBtn color="primay" (click)="addRequiredData()" class="relative waves-light"
+          mdbWavesEffect>Add Data</button> -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+<div mdbModal #HospitalizationDateModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+aria-labelledby="myBasicModalLabel" aria-hidden="true" mdbTableScroll>
+<div class="modal-dialog" role="document">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close pull-right" aria-label="Close" (click)="HospitalizationDateModal.hide()">
+        <span aria-hidden="true">×</span>
+      </button>
+      <h4 class="modal-title w-100" id="myModalLabel">Hospitalization Date</h4>
+    </div>
+    <div class="modal-body" *ngIf="HospitalizationDateModal.isShown">
+
+        <div class="d-flex justify-content-between">
+          <label class="mt-1">Hospitalization Date </label>
+        </div>
+        <div class="form-group mb-0">
+          <!-- <div class="chip">  Jane Doe </div> -->
+          <!-- <input type="text"
+           [(ngModel)]="followUpDataObj.hospitalizationDate"
+            class="form-control form-control-sm" #dateDPicker="dpDayPicker" [dpDayPicker]="onlydatePickerConfig"
+            [theme]="'dp-material ccm-date-picker'" [mode]="'day'" /> -->
+            <input type="text" [ngModel]="followUpDataObj.recentHospitalizationDate | dateFormatPipe"
+                  (ngModelChange)="followUpDataObj.recentHospitalizationDate=$event;"
+                  class="form-control form-control-sm" #dateDPicker="dpDayPicker" [dpDayPicker]="onlydatePickerConfig"
+                  placeholder="MM-DD-YYYY" [theme]="'dp-material ccm-date-picker'" [mode]="'day'" />
+        </div>
+
+    </div>
+
+    <div class="modal-footer">
+
+      <button type="button" (click)="HospitalizationDateModal.hide()" class="waves-light btn btn-sm btn-dynamic-secondary-2c"
+        aria-label="Close" mdbWavesEffect>Cancel</button>
+      <button type="button" [disabled]="creatingTcm || !followUpDataObj.recentHospitalizationDate" (click)="updateHospitalizationDate()" class="waves-light btn btn-sm btn-dynamic-2c"
+      mdbWavesEffect>
+      <span *ngIf="creatingTcm" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>Add Data</button>
+    </div>
+  </div>
+</div>
+</div>
+

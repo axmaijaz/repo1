@@ -1,0 +1,44 @@
+.checked-users {
+  display: flex;
+  flex-wrap: wrap;
+  > span{
+    margin-right: 0.75rem;
+    margin-bottom: 0.75rem;
+    border: 1px solid #ccc;
+
+
+    padding: 5px 10px;
+    border-radius: 5px;
+    .highligher {
+      width: 15px;
+      height: 15px;
+      border-radius: 15px;
+      display: inline-block;
+      margin-right: 10px;
+      flex: 0 0 15px;
+    }
+  }
+
+}
+
+
+.date-time {
+  background: #4b515d;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  border-bottom: 1px solid #f2f3f8;
+
+  padding-left: 11.5rem;
+  p {
+    margin-bottom: 0;
+    color: white;
+    flex: 1;
+    text-align: center;
+    padding: .3rem;
+    border-left: 1px solid white;
+    &:nth-child(2){
+      border-left: 1px solid #f2f3f8;
+    }
+  }
+}

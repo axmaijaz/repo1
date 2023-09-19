@@ -1,0 +1,23 @@
+$dynamic-colour: var(--dynamic-colour);
+$dynamic-secondary-colour: var(--dynamic-secondary-colour);
+$dynamic-sidenav: var(--dynamic-sidenav);
+
+$dynamic-sidenav:#2b373d;
+// $dynamic-colour:green;
+$font-weight: (400, 500, 600, 700, 900);
+$primary-color: #4285f4;
+$secondary-color: #a6c;
+$primary: $primary-color;
+$secondary: $secondary-color;
+$dark: #2b373d;
+$success: #61d270;
+$danger: #c73230;
+$light-grey: #f6f6f6;
+$grey: #cccccc;
+$box-shadow: 0 10px 15px 0  #e9ecee;
+$white: #fff;
+$header-hight: 60px;
+$side-nav: 240px;
+$theme-font: 'Roboto', sans-serif;
+
+@import '../../../node_modules/ng-uikit-pro-standard/assets/scss/core/colors';

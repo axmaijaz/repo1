@@ -1,0 +1,117 @@
+<div class="d-flex align-items-center flex-wrap justify-content-between mb-3">
+  <h1 class="page-title mb-0 flex-sm-grow-1 mb-3">Daily Report</h1>
+  <div>
+    <button type="button" class="btn btn-dynamic-2c btn-sm my-0 flex-shrink-0 mr-0" (click)="test232.toggle()"><i
+        class="fa fa-filter fa-lg"></i> Filter</button>
+  </div>
+</div>
+
+
+<div class="row widget-block">
+  <div class="col-sm-12">
+    <div class="search-filter collapseable" mdbCollapse #test232="bs-collapse">
+      <div class="panel" style="overflow: visible;">
+        <div class="panel-header d-flex justify-content-between align-items-center">
+          <h3>Search Filter</h3>
+          <div>
+            <button type="button" class="close pull-right" aria-label="Close" (click)="test232.toggle()">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-xl-4 col-lg-4 col-sm-4" *ngIf="securityService.securityObject.userType === 3">
+              <label for="namea">Select Facility</label>
+              <ng-select class="ng-select-small" [(ngModel)]="ccmDailyProgressParamsDto.facilityId" appendTo="body"
+                [loading]="isLoading"
+                (ngModelChange)="getCareGapsChartData();GetCcmPatientsCompletedProgress()"
+                [multiple]="false" [searchable]="true" placeholder="Select Facility">
+                <ng-option [value]="0">Select Facility</ng-option>
+                <ng-option *ngFor="let item of facilitylistdata" [value]="item.id">{{item.facilityName}}
+                </ng-option>
+              </ng-select>
+            </div>
+
+            <div class="col-xl-4 col-lg-4 col-sm-4" >
+              <label for="namea321">Select Care Provider</label>
+              <ng-select class="ng-select-small" [readonly]="isCareProviderDisable1" id="SCPname" name="CP123" appendTo="body"
+                (ngModelChange)="getCareGapsChartData();GetCcmPatientsCompletedProgress()" [(ngModel)]="ccmDailyProgressParamsDto.facilityUserId" [multiple]="false" [searchable]="true"
+                 placeholder="Select Facility">
+                <ng-option [value]="0">Select Care Provider</ng-option>
+                <ng-option *ngFor="let item of CareProvidersList1" [value]="item.id">{{item.lastName}},{{item.firstName}}
+                </ng-option>
+              </ng-select>
+            </div>
+
+            <div class="col-xl-4 col-lg-4 col-sm-4">
+              <div class="form-group">
+                <label class="w-100">Assigned Date</label>
+               <input type="text" class="form-control form-control-sm" autocomplete="nope" name="daterangeInput" daterangepicker [(ngModel)]="selectedDateRange"
+                   [options]="options" (selected)="selectedDate($event, daterange)" (cancelDaterangepicker)="clearDate($event, daterange)" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+<div class="col-lg-12 col-sm-12">
+  <div class="db-block">
+    <p><strong class="mb-3">Daily Report</strong></p>
+    <div style="display: block; height: 300px" class="block-2 p-0">
+      <div *ngIf="pcmGraphisLoading" class="d-flex justify-content-center text-center">
+        <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+      </div>
+      <!-- <div style="position: relative; height:90%; width:100%" *ngIf="!pcmGraphisLoading && careGapsChartsData2">
+        <canvas mdbChart [datasets]="careGapsChartsData2" [labels]="careGapsChartsLabels2"
+          [colors]="careGapschartColorss" [options]="careGapChartOptions" [legend]="true" (chartHover)="chartHovered($event)"
+          (chartClick)="chartClicked($event)" [chartType]="doughnut3">
+        </canvas>
+      </div> -->
+      <div style="position: relative; height:100%; width:100%" *ngIf="!pcmGraphisLoading">
+        <canvas mdbChart #careGapsChart [datasets]="bubbleChartData"
+        [options]="bubbleChartOptions"
+        [colors]="careGapschartColorss"
+        [legend]="false"
+        [chartType]="'bubble'">
+        </canvas>
+        <!-- <canvas mdbChart
+    [datasets]="bubbleChartData"
+    [options]="bubbleChartOptions"
+    [colors]="chartColors"
+    [legend]="bubbleChartLegend"
+    [chartType]="bubbleChartType">
+  </canvas> -->
+      </div>
+      <!-- <p *ngIf="!bubbleChartData">No Record Found</p> -->
+    </div>
+  </div>
+</div>
+<div class="col-lg-12 col-sm-12">
+  <div class="db-block">
+    <div class="d-flex align-items-center justify-content-end mb-4 ">
+      <div style="display: block; height: 300px;" class="block-2 w-100 p-0">
+        <p><strong class="mb-3">Daily Progress Graph</strong></p>
+
+        <div *ngIf="isLoading" class="d-flex justify-content-center text-center">
+          <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+        </div>
+        <div style="position: relative; height:100%; width:100%" *ngIf="!isLoading && (!SummaryBarChartDataSets || !SummaryBarChartDataSets.length )">
+          <h3>No record found</h3>
+        </div>
+        <div style="position: relative; height:100%; width:100%" *ngIf="!isLoading && SummaryBarChartDataSets && SummaryBarChartDataSets.length ">
+          <canvas mdbChart [datasets]="SummaryBarChartDataSets" [labels]="SummaryBarChartLabels"
+            [colors]="linechartColors" [options]="chartOptions" [legend]="true" (chartHover)="chartHovered($event)"
+            (chartClick)="chartClicked($event)" [chartType]="'bar'">
+          </canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- The information between the BODY and /BODY tags is displayed.-->
+<!-- <button (click)="copyText()">Copy</button> -->

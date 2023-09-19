@@ -1,0 +1,39 @@
+<div class="input-group mb-3" style="width: 150px;">
+    <input readOnly style="height:32px;width:100px;" type="text" value="{{selectedDate | date: 'MMM yyyy'}}"
+        class="form-control bg-white" autocomplete="off">
+    <div class="input-group-append ">
+        <span style="cursor: pointer;border-radius: 0 4px 4px 0;border-color: #ced4da;"
+            [dpDayPicker]="datePickerConfig2" [theme]="'dp-material ccm-date-picker'" [mode]="'month'"
+            (onSelect)="filterByMonth($event)" class="input-group-text bg-white">
+            <i class="fa fa-calendar fa-lg"></i>
+        </span>
+    </div>
+</div>
+
+<div class="panel-body">
+    <div class="row">
+        <div class="col-xl-3 col-lg-6 col-sm-6">
+            <div class="form-group">
+                <label for="name">CCM Targets</label>
+                <input type="number" [disabled]="!isSameMonth" [(ngModel)]="monthlyProjectionDto.ccmTarget" placeholder="Number"
+                    class="form-control form-control-sm">
+            </div>
+        </div>
+        <div class="col-xl-3 col-lg-6 col-sm-6">
+            <div class="form-group">
+                <label for="name">RPM Targets</label>
+                <input type="number" [disabled]="!isSameMonth" [(ngModel)]="monthlyProjectionDto.rpmTarget" placeholder="Number"
+                    class="form-control form-control-sm">
+            </div>
+        </div>
+        <div class="col-xl-3 col-lg-6 col-sm-6 ">
+            <div class="btn-group" style="padding-top: 1.85rem;">
+                <button *ngIf="isSameMonth"
+                    [disabled]="isEditingServiceTarget"
+                    type="button" class="btn btn-dynamic-2c btn-sm my-0 flex-shrink-0"
+                    (click)="editMonthlyProjectionById()"><i class="fa fa-save fa-lg"></i> Save</button>
+            </div>
+        </div>
+    </div>
+
+</div>

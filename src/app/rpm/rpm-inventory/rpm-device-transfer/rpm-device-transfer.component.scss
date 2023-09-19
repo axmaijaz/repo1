@@ -1,0 +1,64 @@
+@import "theme";
+
+.view .mask {
+  position: relative !important;
+}
+.searchable-list {
+  z-index: 1;
+  border-radius: 5px;
+  background: white;
+  box-shadow: 2px 2px 10px #dedbdb;
+  margin-top: 0.6rem;
+  position: relative;
+}
+
+.userList ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 0.7rem 0.5rem 1.2rem;
+    border-bottom: 1px solid #ced4da;
+    cursor: pointer;
+    &:hover {
+      background: lighten($grey, 13%);
+    }
+    p {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.pb-info {
+    @include media-breakpoint-down(md) {
+      margin-bottom: 1rem;
+    }
+    padding: 5px;
+    border: 1px solid lighten($grey, 13%);
+    p {
+      margin-bottom: 0;
+      display: flex;
+      justify-content: flex-start;
+      background: #f7f7f7;
+      &:not(:last-child) {
+        margin-bottom: 5px;
+      }
+      padding: 5px 5px;
+      strong {
+        background-color: lighten($primary, 45%);
+        display: inline-block;
+        width: 130px;
+        padding: 5px 8px;
+        margin: -5px;
+        margin-right: 1rem;
+        flex: 0 0 130px;
+      }
+    }
+  }
+  .ng-dropdown-panel-items.scroll-host {
+    position: absolute;
+    width: 100%;
+  }

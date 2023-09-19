@@ -1,0 +1,11 @@
+
+<!-- <label class="m-0" for="21212112">Text</label> -->
+<div class="input-area">
+  <div #TCFieldRef type="textarea" [id]="id" [style.height]="height" style="overflow-y: auto;resize:vertical;" rows="4" placeholder="Enter text..." class="form-control" contenteditable="true"
+  (focus)="CheckCaretPosition()" (input)="triggerPopOverCheck($event);CheckCaretPosition()"
+   (mouseup)="CheckCaretPosition()" (mousedown)="CheckCaretPosition()" (keyup)="CheckCaretPosition()" (keyup.enter)="EnterPressed()">
+  </div>
+  <!-- <span *ngIf="speechState" (click)="stopSpeech()" class="fa fa-microphone speechIcon"></span>
+  <span *ngIf="!speechState" (click)="startSpeech()" class="fa fa-microphone-slash speechIcon"></span> -->
+</div>
+

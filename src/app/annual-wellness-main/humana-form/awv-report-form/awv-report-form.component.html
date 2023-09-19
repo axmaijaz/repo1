@@ -1,0 +1,106 @@
+
+<div class="ccm-body">
+  <div class="col-sm-12">
+  <!-- <div class="col-sm-12"> -->
+    <!-- <app-patient-details></app-patient-details> -->
+    <div class="d-flex align-items-center justify-content-between px-3 py-2 border-bottom">
+      <div class="d-flex align-items-center justify-content-start">
+        <h1 class="page-title mb-0">AW Report </h1>
+        <button class="btn btn-icon btn-dynamic-secondary-2c border-left" (click)="editor12.editor.focus();copyPWform()"><i class="fa fa-copy"></i></button>
+      </div>
+
+      <div>
+        <button class="btn btn-sm btn-dynamic-2c border-left" (click)="openConfirmModal()"><span *ngIf="updateFormData" class="mr-1 spinner-border spinner-border-sm " role="status" aria-hidden="true"></span>Refresh</button>
+        <!-- <button class="btn btn-sm btn-dynamic-2c border-left" (click)="PreviousAWReport()" >Previous</button> -->
+        <button class="btn btn-sm btn-dynamic-2c border-left" [disabled]="!getAWReportDto.hasPreviousReport" (click)="isPreviousFormData = !isPreviousFormData;GetPreviousAWReport()" >Previous</button>
+        <!-- <button type="button" [disabled]="printingData" class="btn btn-dynamic-2c btn-sm text-capitalize"
+          (click)="DownLoadPdf(viewPdfModal)">
+          <span *ngIf="printingData" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          <i class="fa fa-download"></i>
+          DOWNLOAD</button>
+        <button type="button" [disabled]="printingDataHM" class="btn btn-dynamic-2c btn-sm text-capitalize" id="superBillBtn"
+          (click)="PrintData(viewPdfModal)">
+          <span *ngIf="printingDataHM" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          <i class="fa fa-download"></i>
+          DOWNLOAD SUPER BILL</button> -->
+      </div>
+    </div>
+    <div class="row p-3">
+      <div [ngClass]="{'col-sm-12': !isPreviousFormData, 'col-sm-6': isPreviousFormData }">
+        <ng-container *ngIf="loadingEditor;then loadingSkelton"></ng-container>
+        <!-- <div *ngIf="loadingEditor" class="d-flex justify-content-center text-center">
+          <mdb-progress-bar class="progress primary-color-dark mb-0"
+            mode="indeterminate"
+          ></mdb-progress-bar>
+        </div> -->
+        <editor style="width: 100%;" (onPostRender)="loadingEditor=false" [(ngModel)]="getAWReportDto.report" #editor12 appOnDebounce [debounceTime]="500" (onDebounce)="UpdateAWReport()"
+          apiKey="d8t35ignh0gnngobzvmdpf3pnxi74f0gcqhmr0xgu5xt0qr5"
+          [init]="{
+            height: 500,
+            menubar: false,
+            plugins: [
+              'advlist autolink lists link image charmap print preview anchor',
+              'searchreplace visualblocks code fullscreen',
+              'insertdatetime media table paste code help wordcount'
+            ],
+            contextmenu: '',
+            toolbar:
+              'undo redo | formatselect | bold italic backcolor | \
+              alignleft aligncenter alignright alignjustify | \
+              bullist numlist outdent indent | removeformat | help '
+          }"></editor>
+
+      </div>
+    <!-- </div>
+    <div class="row p-3"> -->
+      <div *ngIf="isPreviousFormData" [ngClass]="{'col-sm-12': !isPreviousFormData, 'col-sm-6': isPreviousFormData }">
+        <ng-container *ngIf="loadingEditor1;then loadingSkelton"></ng-container>
+        <!-- <div *ngIf="loadingEditor" class="d-flex justify-content-center text-center">
+          <mdb-progress-bar class="progress primary-color-dark mb-0"
+            mode="indeterminate"
+          ></mdb-progress-bar>
+        </div> -->
+        <editor style="width: 100%;" (onPostRender)="loadingEditor1=false" [(ngModel)]="PreviousPWFormData" #preveditor12
+          apiKey="d8t35ignh0gnngobzvmdpf3pnxi74f0gcqhmr0xgu5xt0qr5" [disabled]="true"
+          [init]="{
+            height: 500,
+            menubar: false,
+            plugins: [
+              'advlist autolink lists link image charmap print preview anchor',
+              'searchreplace visualblocks code fullscreen',
+              'insertdatetime media table paste code help wordcount'
+            ],
+            contextmenu: '',
+            toolbar:
+              'undo redo | formatselect | bold italic backcolor | \
+              alignleft aligncenter alignright alignjustify | \
+              bullist numlist outdent indent | removeformat | help '
+          }"></editor>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<ng-template #loadingSkelton>
+  <div class="panel-body">
+    <div class="row">
+      <div class="col-sm-12 p-0">
+        <skltn-root duration="2000" [rectRadius]="0" flareWidth="50%" bgFill="#f2f3f8"
+          flareFill="rgba(255,255,255, 0.5)">
+          <!-- Card with Avatar -->
+          <div class="p-3">
+            <div class="skltn-card">
+              <div class="skltn-card__body">
+                <div skltn-bone class="skltn-card__line"></div>
+                <div skltn-bone class="skltn-card__line"></div>
+                <div skltn-bone class="skltn-card__line"></div>
+                <div skltn-bone class="skltn-card__line"></div>
+              </div>
+            </div>
+          </div>
+        </skltn-root>
+      </div>
+    </div>
+  </div>
+</ng-template>

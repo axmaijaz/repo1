@@ -1,0 +1,265 @@
+<div class="d-flex flex-row align-items-center justify-content-between mb-3">
+  <div>
+    <h1 class="page-title mb-0">Invoices</h1>
+  </div>
+  <div *ngIf="showInvoiceFieldsForSubVendor">
+    <div class="action-button" >
+      <button class="btn btn-dynamic-2c btn-sm" [disabled]="(!OrganizationId || !facilityId || facilityId.length > 1) && securityService?.securityObject?.userType === userTypeEnum.AppAdmin" *hasClaim="['CanPreviewInvoice']" (click)="previewInvoiceByFacilityId()"
+        title="Preview invoice details">Preview</button>
+      <!-- <button class="btn btn-dynamic-2c btn-sm" *hasClaim="['IsAppAdmin']" [routerLink]="['/config/verification']"
+        title="Verification">Verification</button>
+        <button class="btn btn-dynamic-2c btn-sm" *hasClaim="['IsAppAdmin']" [routerLink]="['/config/cpt-configration']"
+        title="CPT code configuration">CPT code configuration</button> -->
+      <button [disabled]=updatingQBPaymentStatus *hasClaim="['IsAppAdmin', 'IsFacilityUser']" class="btn btn-dynamic-2c btn-sm" (click)="UpdateInvoicesPaymentStatus()"
+        title="Sync Quick Books Data">
+        <span *ngIf="updatingQBPaymentStatus" class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
+        </span>
+        <i class="fa fa-sync-alt fa-lg"></i> Sync QB Data</button>
+      <!-- <button [disabled]=generatingInvoice *hasClaim="['CanGenerateInvoice']" class="btn btn-dynamic-2c btn-sm" (click)="GenerateInvoice()"
+        title="Generate Invoice">
+        <span *ngIf="generatingInvoice" class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
+        </span>
+        <i class="fa fa-dollar fa-lg"></i> Generate Invoice</button> -->
+      <!-- <a class="btn btn-dynamic-2c btn-sm" (click)="DownLoadPdf()"  title="export"><i
+          class="fa fa-print fa-lg"></i> Print</a> -->
+    </div>
+  </div>
+</div>
+
+<div class="row" >
+  <div class="col-lg-4 col-sm-12" *hasClaim="'IsAppAdmin'">
+    <label>Organization<small class="text-danger">*</small></label>
+    <div class="form-group">
+      <ng-select class="ng-select-small" [(ngModel)]="OrganizationId" name="myOrganization" [clearable]="false" [loading]="IsLoadingORG"
+        [multiple]="false" [searchable]="true" (ngModelChange)="facilityId=null;getFacilitiesbyOrgId()"
+        placeholder="Select Organization" required #IssueOrganizationid="ngModel" [ngClass]="{ 'is-invalid':(IssueOrganizationid.touched ||
+      IssueOrganizationid.dirty) &&
+      !IssueOrganizationid.valid }">
+        <ng-option [value]="0">All</ng-option>
+        <ng-option [value]="item.id" *ngFor="let item of organizationList">{{item.name}}</ng-option>
+      </ng-select>
+      <div *ngIf="IssueOrganizationid.invalid && (IssueOrganizationid.dirty || IssueOrganizationid.touched)"
+        class="invalid invalid-text">
+        <div *ngIf="IssueOrganizationid.errors['required']">
+          <small class="text-danger">Please Select Oraganization.</small>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4 col-sm-12" *hasClaim="'IsAppAdmin'">
+    <div class="form-group">
+      <label for="Facilities">Facilities<small class="text-danger">*</small></label>
+      <ng-select class="ng-select-small" name="myFacilities" [(ngModel)]="facilityId" [disabled]="!OrganizationId"
+        [loading]="IsLoadingFC" [multiple]="true" [searchable]="true"  (add)="checkFilter($event)" (ngModelChange)="updateFilter($event)"
+        placeholder="Select Facility" required #IssueFacility="ngModel" >
+        <ng-option [value]="''">All</ng-option>
+        <ng-option [value]="item.id" *ngFor="let item of facilityList">{{item.facilityName}}</ng-option>
+      </ng-select>
+      <div *ngIf="IssueFacility.invalid && (IssueFacility.dirty || IssueFacility.touched)" class="invalid invalid-text">
+        <div *ngIf="IssueFacility.errors['required']">
+          <small class="text-danger">Please Select Facility Name.</small>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4 col-sm-12">
+    <div class="form-group">
+      <label for="Facilities">Month Range<small class="text-danger">*</small></label>
+      <div class="input-group  d-flex align-items-center mb-3">
+        <button class="btn btn-dynamic-2c btn-icon mr-2 ml-0 my-0 " title="Last 12 Month"  (click)="selectMonthRange('previous')"><i
+          class="fa fa-arrow-circle-left"></i> </button>
+        <input readOnly style="height:32px;width:180px;"  type="text" value="{{startDate | date: 'MMM yyyy'}} - {{endDate | date: 'MMM yyyy'}}" class="form-control bg-white"  autocomplete="off"
+         >
+         <button class="btn btn-dynamic-2c btn-icon ml-2 mr-0 my-0 " (click)="selectMonthRange('next')" title="Next 6 Month"><i
+           class="fa fa-arrow-circle-right"></i></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="row mb-4">
+  <!-- <div class="col-lg-4 col-sm-12">
+    <div class="form-group">
+      <label for="namea">Select Facility</label>
+      <ng-select class="ng-select-small" [multiple]="false"
+        [searchable]="true" [loading]="LoadingData" placeholder="Filter By Facility">
+        <ng-option [value]="0">All</ng-option>
+      </ng-select>
+    </div>
+  </div> -->
+  <!-- <div class="col-lg-4 col-sm-12">
+    <div class="form-group">
+      <label for="namea">Select Month</label>
+      <ng-select class="ng-select-small" [multiple]="false"
+        [searchable]="true" [loading]="LoadingData" placeholder="Filter By Month">
+        <ng-option [value]="0">All</ng-option>
+        <ng-option [value]="1">January</ng-option>
+        <ng-option [value]="2">February</ng-option>
+        <ng-option [value]="3">March</ng-option>
+        <ng-option [value]="4">April</ng-option>
+        <ng-option [value]="5">May</ng-option>
+        <ng-option [value]="6">June</ng-option>
+        <ng-option [value]="7">July</ng-option>
+        <ng-option [value]="8">August</ng-option>
+        <ng-option [value]="9">September</ng-option>
+        <ng-option [value]="10">October</ng-option>
+        <ng-option [value]="11">November</ng-option>
+        <ng-option [value]="12">December</ng-option>
+      </ng-select>
+    </div>
+  </div> -->
+</div>
+<div  id="page_length" class="dataTables_length">
+  <label >Show
+      <select [(ngModel)]="this.pagingData.pageSize" >
+      <option  [value]="10">10</option>
+      <option  [value]="25">25</option>
+      <option  [value]="50">50</option>
+      <option  [value]="100">100</option>
+    </select> entries
+  </label>
+</div>
+<div class="table-data-list">
+  <div *ngIf="isLoading" class="d-flex justify-content-center text-center">
+    <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+  </div>
+  <ngx-datatable #table class="material" appRecalculateNgxTable  [headerHeight]="50"
+    [footerHeight]="50"  columnMode="force" [rowHeight]="40" [count]="pagingData.elementsCount" [scrollbarV]="false" [scrollbarH]="true"
+    [rows]="rows" [offset]="0" [limit]="pagingData.pageSize">
+    <ngx-datatable-column name="#" width=50>
+      <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+        {{rowIndex + 1}}
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="NO" prop="invoiceNumber" width="300">
+      <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+        <div class="d-flex justify-content-between align-items-center w-100">
+          {{ row.invoiceNumber }}
+
+          <div class="ml-auto">
+            <button class="btn btn-dynamic-2c btn-icon my-2 mr-2"  *hasClaim="'IsAppAdmin'" title="Add Payment Link" placement="left"
+            (click)="paymentLink='';seletedInvoice(row);addLink.show()">
+            <span *ngIf="row.isLoading" class="spinner-border spinner-border-sm" role="status"
+              aria-hidden="true"></span><i class="fa fa-pencil"></i>
+            </button>
+            <button [disabled]="row.loading" class="btn btn-dynamic-2c btn-icon m-0 my-2 " (click)="GetEncounterClaimsByInvoiceId(row)" title="Excel" placement="left">
+              <span *ngIf="row.loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+              <i class="fa fa-file-excel-o"></i> </button>
+            <button class="btn btn-dynamic-2c btn-icon my-2 " (click)="MakePDF(row)" title="PDF" placement="left">
+              <i class="fa fa-file-pdf-o"></i> 
+            </button>
+            <button *ngIf="showInvoiceFieldsForSubVendor" class="btn btn-dynamic-2c btn-icon m-0 my-2 " (click)="PreviewInvoiceDetail(row)" title="Preview" placement="left"><i
+                class="fa fa-eye"></i> </button>
+            <button class="btn btn-dynamic-2c btn-icon my-2 " (click)="viewInvoiceDetail(row.id)" title="View" placement="left"><i
+                class="fa fa-list"></i> </button>
+            <button *hasClaim="'IsAppAdmin'"  class="btn btn-dynamic-2c btn-icon my-2 ml-0" (click)="viewInvoiceReconciliation(row.id, row.invoiceNumber)" title="Reconciliation" placement="left"><i
+                class="fa fa-file"></i> </button>
+
+            <!-- <a  class="btn btn-danger btn-icon" title="Remove" placement="left"><i class="fa fa-trash"></i></a> -->
+          </div>
+        </div>
+
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Facility Name" prop="facilityName">
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Period" prop="payPeriod" width="100">
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Date" prop="invoiceDate" width="100">
+      <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+        {{ row.invoiceDate | dateFormatPipe }}
+      </ng-template>
+    </ngx-datatable-column>
+    <ng-container *ngIf="showInvoiceFieldsForSubVendor">
+
+
+
+    <ngx-datatable-column name="Status" prop="invoiceStatus"  [width]="150">
+      <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+        <div style="width: 130px;">
+          <mdb-badge pill="true" success="true" color="w-100">{{row.invoiceStatus}}</mdb-badge>
+        </div>
+      </ng-template>
+    </ngx-datatable-column>
+    <!-- <ngx-datatable-column name="Deposit" prop="deposit">
+    </ngx-datatable-column> -->
+    <ngx-datatable-column name="Total" prop="invoiceTotal" width="100">
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Adjustment" prop="totalAdjAmount" width="100">
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Payments" prop="payment" width="100">
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Balance" prop="balance" width="100">
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Payment Link">
+
+      <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+        <div class="d-flex justify-content-lg-center">
+          <a *ngIf="row.payInvoiceLink" class="text-capitalize text-dynamic-2c" style="white-space: normal"
+            (click)="viewLink(row)">Pay/View</a>
+        </div>
+      </ng-template>
+    </ngx-datatable-column>
+  </ng-container>
+    <!-- <ngx-datatable-column name="BIlling Provider" prop="billingProvider" [maxWidth]=150>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Facility" prop="facilityName">
+    </ngx-datatable-column> -->
+    <!-- <ngx-datatable-column name="Action"  [width]="150">
+      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+        <div class="action-button d-flex justify-content-center">
+          <a class="btn btn-dynamic-2c btn-icon" (click)="viewInvoiceDetail(row.id)" title="View" placement="left"><i
+              class="fa fa-eye"></i> View</a>
+          <a class="btn btn-dynamic-2c btn-icon" *hasClaim="'IsAppAdmin'" title="Add Payment Link" placement="left"
+            (click)="paymentLink='';seletedInvoice(row);addLink.show()">
+            <span *ngIf="row.isLoading" class="spinner-border spinner-border-sm" role="status"
+              aria-hidden="true"></span><i class="fa fa-pencil"></i>
+          </a>
+          <a  class="btn btn-danger btn-icon" title="Remove" placement="left"><i class="fa fa-trash"></i></a>
+        </div>
+      </ng-template>
+    </ngx-datatable-column> -->
+    <!-- <ngx-datatable-column name="Action" [canAutoResize]=false [frozenRight]=true [width]="150">
+        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+          <ng-select [searchable]="false" appendTo="body" placeholder="Yes" (click)="$event.stopPropagation();">
+            <ng-option [value]="true">Yes</ng-option>
+            <ng-option [value]="false">No</ng-option>
+          </ng-select>
+        </ng-template>
+      </ngx-datatable-column> -->
+  </ngx-datatable>
+</div>
+<div mdbModal #addLink="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myBasicModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg flat-modal" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="addLink.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">Add Payment Link</h4>
+      </div>
+      <div class="modal-body" *ngIf="addLink.isShown">
+        <div class="col-sm-12">
+          <div class="form-group">
+            <label for="note">Payment Link</label>
+            <textarea [(ngModel)]="paymentLink" class="md-textarea form-control " rows="3" id="note"
+              type="text"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <!-- <button [disabled]="diagnoseForm.invalid || selectCronicdieseas1.invalid || selectCronicdieseas1.invalid"
+          type="submit" class="btn btn-dynamic-2c btn-sm" (click)="adddiagnose();diagnoseForm.reset();selectCronicdieseas1.reset();diagnosisDate.reset()">Add</button> -->
+        <button type="submit" class="btn btn-dynamic-2c btn-sm" [disabled]="!paymentLink"
+          (click)="addLink.hide();addInvoicePaymentLink();">Save</button>
+        <button type="submit" class="btn btn-dynamic-2c btn-sm" (click)="addLink.hide();">Cancel</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- <app-invoices-dashboard></app-invoices-dashboard> -->

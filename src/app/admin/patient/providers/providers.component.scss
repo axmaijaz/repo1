@@ -1,0 +1,123 @@
+@import "theme";
+
+.provider-grid {
+  h4 {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: $dynamic-colour;
+    margin-bottom: 0;
+  }
+  .provider-info {
+    border: 1px solid $blue-grey-lighten-5;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+    position:relative;
+    // box-shadow: $box-shadow;
+    .body {
+      padding: 1rem;
+      text-align: center;
+      i{
+        font-size: 3rem;
+        color: $dynamic-colour;
+      }
+    }
+    .provider-appointment {
+      display: flex;
+      .pre-appointment,
+      .next-appointment {
+        flex: 1;
+        padding: 0.5rem;
+        text-align: center;
+        p {
+          margin: 0;
+          font-size: .9rem;
+          font-weight: 500;
+        }
+      }
+      .pre-appointment {
+        background-color: $blue-grey-lighten-5;
+        p{
+          color: $dynamic-colour;
+        }
+      }
+      .next-appointment {
+        background-color: $dynamic-colour;
+        color: $white;
+        p,small{
+          color:$white;
+        }
+      }
+    }
+    i.edit-other-provider {
+      width: 40px;
+      height: 40px;
+      background: #eceff1;
+      font-size: 1.5rem !important;
+      top: 0px;
+      position: absolute;
+      right: 0;
+      line-height: 40px;
+      cursor: pointer;
+      opacity:0;
+      transition: opacity ease-in-out .3s;
+  }
+  &:hover{
+    i.edit-other-provider {
+      opacity:1;
+    }
+  }
+  }
+}
+
+.ccm-header {
+  background-color: $white;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  box-shadow: $box-shadow;
+  .patient-profile {
+    padding: 2rem;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    > div {
+      flex: 1 1 25%;
+      @include media-breakpoint-down(md) {
+        flex: 1 1 50%;
+        margin-bottom: 1rem;
+      }
+      flex: 1 1 25%;
+      @include media-breakpoint-down(sm) {
+        flex: 1 1 100%;
+      }
+    }
+    p {
+      margin: 0;
+      color: darken($grey, 20%);
+      span {
+        color: darken($grey, 50%);
+        font-weight: 500;
+        text-transform: capitalize;
+      }
+    }
+    .profile-img {
+      margin-right: 1rem;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background:#eceff1;
+      line-height: 58px;
+      text-align: center;
+      i{
+        font-size: 2rem;
+        color: $primary
+      }
+      img {
+        border-radius: 50%;
+        width: 75px;
+        height: 75px;
+      }
+    }
+  }
+}

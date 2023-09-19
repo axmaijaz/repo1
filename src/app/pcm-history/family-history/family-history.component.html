@@ -1,0 +1,212 @@
+<div class="ccm-body">
+  <div class="d-flex align-items-center justify-content-between p-3">
+    <strong>Family History</strong>
+    <a class="btn btn-dynamic-2c btn-sm m-0" *hasClaim="['CanModifyFamilyHistory']" (click)="addFamiliyHistory.show();" date-placement="left">Add New</a>
+  </div>
+
+
+
+    <div *ngIf="isLoadingFH" class="d-flex justify-content-center text-center">
+      <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+    </div>
+
+
+    <ngx-datatable [columnMode]="'force'" class="material z-depth-0" [headerHeight]="50"
+      [footerHeight]="50" [rowHeight]="35" [scrollbarV]="false" [scrollbarH]="true" [rows]="fhListData" [limit]="20">
+      <ngx-datatable-column name="#" [maxWidth]=50>
+        <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+          {{rowIndex + 1}}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="Relation" prop="relation">
+      </ngx-datatable-column>
+      <ngx-datatable-column name="Condition" prop="condition">
+      </ngx-datatable-column>
+      <ngx-datatable-column name="Date" prop="updatedOn">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          {{row.updatedOn | dateFormatPipe}}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column [width]="150" name="Note" prop="note">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          {{row.note | slice:0:20}} {{row.note && row.note.length > 20 ? '...' : ''}}
+        </ng-template>
+
+      </ngx-datatable-column>
+      <ngx-datatable-column name="Action" *hasClaim="['CanModifyFamilyHistory']" [canAutoResize]=false [width]="120">
+        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+          <ng-container *ngIf="row.relation !== 'NA'">
+            <button [disabled]="awDisable" class="btn btn-dynamic-2c btn-icon" (click)="OpenEditHistoryMOdal(row , editfHistoryModal)" title="Edit"
+              placement="left"><i class="fa fa-pencil"></i> </button>
+            <button class="btn btn-danger btn-icon" [disabled]="awDisable || row['deleting']" (click)="openConfirmModal(row)"> <span
+                *ngIf="row['deleting']" class="mr-1 spinner-border spinner-border-sm" role="status"
+                aria-hidden="true"></span><i class="fa fa-trash"></i></button>
+          </ng-container>
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
+
+
+  <!-- <table class="table table-striped table-sm family-history-table mb-0">
+      <thead class="bg-dynamic-secondary-2c white-text">
+        <tr>
+          <th class="text-left" scope="col">#</th>
+          <th class="text-left" scope="col">Relation</th>
+          <th class="text-left" scope="col">Condititon</th>
+          <th class="text-left" scope="col">Updated on</th>
+          <th class="text-left" scope="col">Note</th>
+          <th class="text-left" scope="col">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of fhListData;let index = index; trackBy: index">
+          <th class="text-left" scope="row">{{index + 1}}</th>
+          <td class="text-left">{{item.condition}}</td>
+          <td class="text-left">{{item.updatedOn | date}}</td>
+          <td class="text-left">{{item.relation}}</td>
+          <td class="text-left">{{item.note | slice:0:20}}</td>
+          <td class="text-left">
+            <div class="action-button">
+              <a class="btn btn-dynamic-2c btn-icon" (click)="OpenEditHistoryMOdal(item , editfHistoryModal)"><i class="fa fa-pencil"></i> </a>
+
+              <button class="btn btn-danger btn-icon ml-1" [disabled]="item['deleting']" (click)="openConfirmModal(item)">
+                <span *ngIf="item['deleting']" class="mr-1 spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                <i class="fa fa-trash"></i></button>
+            </div>
+          </td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>-->
+
+</div>
+
+
+
+
+<div mdbModal #addFamiliyHistory="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myaddFamiliyHistoryLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="addFamiliyHistory.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">Family History</h4>
+      </div>
+      <div class="modal-body p-0">
+
+        <table class="table table-striped table-sm family-history-table mb-0">
+          <thead class="bg-dynamic-secondary-2c white-text">
+            <tr>
+              <!-- <th scope="col">#</th> -->
+              <th scope="col" class="text-left pl-3">Condititon</th>
+              <th scope="col">Father</th>
+              <th scope="col">Mother</th>
+              <th scope="col">Sister</th>
+              <th scope="col">Brother</th>
+              <th scope="col">Son</th>
+              <th scope="col">Daughter</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of lookUpData;let index = index; ">
+              <!-- <th scope="row">{{index + 1}}</th> -->
+              <td class="text-left pl-3">{{item.condition}}</td>
+              <td>
+                <div class="custom-control custom-checkbox">
+                  <input class="custom-control-input" type="checkbox" id="father{{index}}" [(ngModel)]="item.father">
+                  <label class="custom-control-label" for="father{{index}}"></label>
+                </div>
+              <td>
+                <div class="custom-control custom-checkbox">
+                  <input class="custom-control-input" type="checkbox" id="mother{{index}}" [(ngModel)]="item.mother">
+                  <label class="custom-control-label" for="mother{{index}}"></label>
+                </div>
+              <td>
+                <div class="custom-control custom-checkbox">
+                  <input class="custom-control-input" type="checkbox" id="sis{{index}}" [(ngModel)]="item.sister">
+                  <label class="custom-control-label" for="sis{{index}}"></label>
+                </div>
+              <td>
+                <div class="custom-control custom-checkbox">
+                  <input class="custom-control-input" type="checkbox" id="bss{{index}}" [(ngModel)]="item.brother">
+                  <label class="custom-control-label" for="bss{{index}}"></label>
+                </div>
+              <td>
+                <div class="custom-control custom-checkbox">
+                  <input class="custom-control-input" type="checkbox" id="sons{{index}}" [(ngModel)]="item.son">
+                  <label class="custom-control-label" for="sons{{index}}"></label>
+                </div>
+              <td>
+                <div class="custom-control custom-checkbox">
+                  <input class="custom-control-input" type="checkbox" id="sdsd{{item.condition}}{{index}}"
+                    [(ngModel)]="item.daughter">
+                  <label class="custom-control-label" for="sdsd{{item.condition}}{{index}}"></label>
+                </div>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+          (click)="addFamiliyHistory.hide()" mdbWavesEffect>Close</button>
+        <button type="button" (click)="AddFamilyHistory(addFamiliyHistory)" [disabled]="isAddingFHistory"
+         class="relative waves-light btn btn-sm btn-dynamic-2c" mdbWavesEffect> <span *ngIf="isAddingFHistory"
+            class="mr-1 spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div mdbModal #editfHistoryModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  [config]="{ignoreBackdropClick: true}" aria-labelledby="myeditfHistoryModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable" le="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <!-- <button type="button" class="close pull-right" aria-label="Close" (click)="editfHistoryModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button> -->
+        <h4 class="modal-title w-100 text-center" id="myModalLabel">Family History</h4>
+      </div>
+      <div class="modal-body">
+        <!-- <div class="alert alert-info p-2 pb-3">
+          <a class="close font-weight-normal initialism" data-dismiss="alert" href="#"><samp>&times;</samp></a>
+          CVC code is required.
+        </div> -->
+        <!-- <form class="form" role="form" autocomplete="off" [formGroup]="changePasswordForm"> -->
+        <div class="form-group">
+          <label for="inputPasswordOld">Relation</label>
+          <input type="text" disabled readonly [(ngModel)]="familyHistoryEditObj.relation" class="form-control"
+            id="inputtextOld">
+        </div>
+        <div class="form-group">
+          <label for="inputtextNew">Condition</label>
+          <input type="text" disabled readonly [(ngModel)]="familyHistoryEditObj.condition" class="form-control"
+            id="inputtextNew">
+        </div>
+        <div class="form-group">
+          <label for="23232">Updated On</label>
+          <input type="text" disabled readonly [ngModel]="familyHistoryEditObj.updatedOn | dateFormatPipe"
+            class="form-control" id="23232">
+        </div>
+        <div class="form-group">
+          <label for="inputtextNewVerify">Note</label>
+          <textarea type="text" [(ngModel)]="familyHistoryEditObj.note" class="form-control"
+            id="inputPasswordNewVerify"></textarea>
+        </div>
+        <!-- <div class="form-group">
+                  <button type="submit" class="btn btn-success btn-lg float-right">Save</button>
+              </div> -->
+        <!-- </form> -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+          (click)="editfHistoryModal.hide()" mdbWavesEffect>Close</button>
+        <button type="button" class="relative btn-success waves-light btn btn-sm btn-dynamic-2c" mdbWavesEffect
+          (click)="editfHistoryModal.hide();UpdateHistory()">Update</button>
+      </div>
+    </div>
+  </div>
+</div>

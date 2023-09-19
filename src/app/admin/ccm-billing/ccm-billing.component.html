@@ -1,0 +1,518 @@
+<div class="d-flex flex-row align-items-center justify-content-between mb-3">
+  <div class="d-flex align-item-center justify-content-start">
+    <h4 class="mr-3 mb-0"><a class="text-dark" [routerLink]="['/accounts/invoices']">
+        <i class="fa fa-arrow-left"></i></a></h4>
+    <h1 class="page-title mb-0">Encounter Claims</h1>
+  </div>
+
+  <div>
+    <!-- <a class="btn btn-dynamic-2c btn-sm px-3" (click)="addQuestion.show();editQuestion(row)">Assign</a> -->
+    <div class="action-button">
+      <a *ngIf="!isLoading" class="btn btn-dynamic-2c btn-sm" (click)="MakePDF();" title="export">
+        <span *ngIf="isSpinner" class="spinner-border spinner-border-sm" role="status"
+        aria-hidden="true"></span><i
+          class="fa fa-print fa-lg"></i>Print</a>
+      <a *ngIf="!isLoading" class="btn btn-dynamic-2c btn-sm" (click)="MakeExcel()" title="excel">Excel</a>
+    </div>
+  </div>
+</div>
+<!-- <div class="row mb-4">
+  <div class="col-lg-4 col-sm-12">
+    <div class="form-group">
+      <label for="namea">Select Facility</label>
+      <ng-select class="ng-select-small" [multiple]="false" [(ngModel)]="facilityId" (ngModelChange)="filterBills()"
+        [searchable]="true" [loading]="LoadingData" placeholder="Filter By Facility">
+        <ng-option [value]="0">All</ng-option>
+        <ng-option *ngFor="let item of facilityList" [value]="item.id">{{item.facilityName}}
+        </ng-option>
+      </ng-select>
+    </div>
+  </div>
+  <div class="col-lg-4 col-sm-12">
+    <div class="form-group">
+      <label for="namea">Select Month</label>
+      <ng-select class="ng-select-small" [multiple]="false" [(ngModel)]="BillingMonth" (ngModelChange)="filterBills()"
+        [searchable]="true" [loading]="LoadingData" placeholder="Filter By Month">
+        <ng-option [value]="0">All</ng-option>
+        <ng-option [value]="1">January</ng-option>
+        <ng-option [value]="2">February</ng-option>
+        <ng-option [value]="3">March</ng-option>
+        <ng-option [value]="4">April</ng-option>
+        <ng-option [value]="5">May</ng-option>
+        <ng-option [value]="6">June</ng-option>
+        <ng-option [value]="7">July</ng-option>
+        <ng-option [value]="8">August</ng-option>
+        <ng-option [value]="9">September</ng-option>
+        <ng-option [value]="10">October</ng-option>
+        <ng-option [value]="11">November</ng-option>
+        <ng-option [value]="12">December</ng-option>
+      </ng-select>
+    </div>
+  </div>
+  <div class="col-lg-4 col-sm-12">
+  </div>
+</div> -->
+<div class="d-flex justify-content-between align-items-center">
+  <p class="mb-0"><b>Facility Name:</b> {{facilityName}}</p>
+  <div class="d-flex align-items-end mb-0" *ngIf="facility?.claimSubmission || facility?.clinicalDocumentSubmission">
+    <div class="form-group my-0">
+      <label for="Service Type">Service Type</label>
+      <ng-select class="ng-select-small" name="myService Type" [(ngModel)]="serviceTypeFilter" [multiple]="true"
+      [searchable]="true" (ngModelChange)="FilterClaims()"
+        placeholder="Filter By Service" required #IssueFacility="ngModel" >
+        <ng-option [value]="item.value" *ngFor="let item of EncounterClaimTypeArr">{{item.name}}</ng-option>
+      </ng-select>
+    </div>
+    <button [disabled]="!claimsIds?.length" class="btn btn-dynamic-2c btn-sm my-0" (click)="claimDocumentsModal.show()">Submit Claim</button>
+  </div>
+</div>
+<div class="table-data-list">
+
+  <div class="dataTables_length" id="example_length"><label>Show
+    <select name="example_length" aria-controls="example" [(ngModel)]="pagingData.pageSize" class="">
+      <option value="10">10</option>
+      <option value="25">25</option>
+      <option value="50">50</option>
+      <option value="100">100</option>
+    </select> entries</label>
+</div>
+  <div *ngIf="isLoading" class="d-flex justify-content-center text-center">
+    <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+  </div>
+  <ngx-datatable class="material" [columnMode]="'force'" [headerHeight]="50" [footerHeight]="50" [rowHeight]="40"
+    [externalPaging]="false" [count]="pagingData.elementsCount" [scrollbarV]="false" [scrollbarH]="true" [rows]="rows"
+    [limit]="pagingData.pageSize">
+
+    <ngx-datatable-column name="#"  [maxWidth]=50 >
+      <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+        {{rowIndex + 1}}
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column *ngIf="facility?.claimSubmission || facility?.clinicalDocumentSubmission" [width]="50" [sortable]="false" [canAutoResize]="false" [draggable]="false"
+    [resizeable]="false">
+    <ng-template ngx-datatable-header-template let-value="value" let-allRowsSelected="allRowsSelected"
+      let-selectFn="selectFn">
+      <div class="text-center">
+        <div class="custom-control custom-checkbox">
+          <input class="custom-control-input" type="checkbox" id="selectAll" [(ngModel)]="gridCheckAll"
+            (click)="gridAllRowsCheckBoxChecked($event)">
+          <label class="custom-control-label" for="selectAll"></label>
+        </div>
+      </div>
+    </ng-template>
+
+    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+      <div class="text-center" style="width: 35px;">
+        <div class="custom-control custom-checkbox">
+          <input [disabled]="row.encounterClaimType!=EncounterClaimTypeEnum.CCM && row.encounterClaimType!=EncounterClaimTypeEnum.RPM" class="custom-control-input" type="checkbox" id="{{(row.id)}}cl" [(ngModel)]="row.checked"
+            (ngModelChange)="rowCheckBoxChecked($event, row)">
+          <label class="custom-control-label" for="{{(row.id)}}cl"></label>
+        </div>
+      </div>
+    </ng-template>
+
+  </ngx-datatable-column>
+    <!-- <ngx-datatable-column name="Name" prop="patientName">
+    </ngx-datatable-column> -->
+    <ngx-datatable-column name="Name" prop="patientName" [width]="200">
+      <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+        <div class="d-flex justify-content-between align-items-center w-100">
+          {{ row.patientName }}
+          <ng-container *ngIf="row.encounterClaimType==EncounterClaimTypeEnum.CCM || row.encounterClaimType==EncounterClaimTypeEnum.RPM"></ng-container>
+          <div class="ml-auto" *ngIf="facility.integrationEnabled">
+            <span title="Claim submitted" *ngIf="row.emrClaimSubmitted" class="badge badge-light mx-1" style="font-size: 18px;">
+              <i class="fa fa-arrow-circle-o-up"></i>
+            </span>
+            <span title="Document submitted" *ngIf="row.emrDocumentSubmitted" class="badge badge-light" style="font-size: 18px;">
+              <i class="fa fa-file-pdf-o"></i>
+            </span>
+            <!-- <button *ngIf="facility?.claimSubmission" class="btn btn-dynamic-2c btn-icon my-2 mr-2" title="Submit claim"
+              placement="left" (click)="openConfirmModal(row)">
+              <span *ngIf="row.loading" class="spinner-border spinner-border-sm" role="status"
+                aria-hidden="true"></span><i class="fa fa-arrow-circle-o-up"></i>
+            </button>
+            <button *ngIf="facility?.clinicalDocumentSubmission" class="btn btn-dynamic-2c btn-icon my-2 mr-2" title="Upload Document"
+              placement="left" (click)="openConfirmDocumentModal(row)">
+              <span *ngIf="row.loading" class="spinner-border spinner-border-sm" role="status"
+                aria-hidden="true"></span><i class="fa fa-file-pdf-o"></i>
+            </button> -->
+          </div>
+        </div>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="FQHC" prop="fqhcCode" *ngIf="displayFQHCProp">
+    </ngx-datatable-column>
+    <ngx-datatable-column name="CPT Code" prop="cptCode">
+      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+        ( {{row.cptCode}} ) <span class="badge badge-light">{{EncounterClaimTypeEnum[row.encounterClaimType]}}</span>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Units" prop="units">
+    </ngx-datatable-column>
+    <ngx-datatable-column name="ICD-10 Codes" prop="icd10Code">
+    </ngx-datatable-column>
+    <!-- <ngx-datatable-column name="ICD-10 Codes">
+      <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+        <div *ngFor="let item of row.chronicDiseases">
+          <small>{{item.detail}}</small>
+          <br>
+          <strong>{{item.algorithm}} </strong><small class="text-dynamic-2c"> {{item.icdCode}}</small>
+        </div>
+      </ng-template>
+    </ngx-datatable-column> -->
+    <ngx-datatable-column name="Time Completed" prop="timeCompleted">
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Service Date" prop="serviceDate">
+      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+        {{row.serviceDate | dateFormatPipe}}
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Billing Provider" prop="billingProviderName">
+    </ngx-datatable-column>
+    <!-- <ngx-datatable-column name="Facility" prop="facilityName">
+    </ngx-datatable-column> -->
+    <!-- <ngx-datatable-column name="Action" [canAutoResize]=false [frozenRight]=true [width]="160">
+        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+          <div class="action-button">
+              <a  class="btn btn-dynamic-2c btn-icon" title="Edit" placement="left"><i class="fa fa-pencil"></i> </a>
+              <a  class="btn btn-danger btn-icon" title="Remove" placement="left"><i class="fa fa-trash"></i></a>
+          </div>
+      </ng-template>
+      </ngx-datatable-column> -->
+    <!-- <ngx-datatable-column name="Action" [canAutoResize]=false [frozenRight]=true [width]="150">
+        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+          <ng-select [searchable]="false" appendTo="body" placeholder="Yes" (click)="$event.stopPropagation();">
+            <ng-option [value]="true">Yes</ng-option>
+            <ng-option [value]="false">No</ng-option>
+          </ng-select>
+        </ng-template>
+      </ngx-datatable-column> -->
+  </ngx-datatable>
+</div>
+<div style="visibility: hidden" *ngIf="ispLoading">
+  <div class="onlineConset" id="onlineConset">
+    <style>
+      @media print {
+        body {
+          font-family: "IBM Plex Sans", sans-serif;
+          font-size: 12px;
+          margin: 0;
+          padding: 0;
+        }
+      }
+
+      @media print {
+        @page {
+          size: landscape
+        }
+
+        .pagebreak {
+          page-break-after: always;
+        }
+
+        .report-title {
+          margin-top: 0;
+          font-size: 1rem;
+        }
+
+        .profile-info {
+          margin-bottom: 3rem;
+        }
+
+        .report-name {
+          margin-top: 0;
+        }
+      }
+    </style>
+
+    <div class="header" style="background: #e8eaf6; padding: 1rem; margin-bottom: 1rem;">
+      <h4 class="report-name" style="margin: 0; color: #333;">Patients Billing Report <small
+          style="font-weight: normal; padding-left: 1rem">{{reportGeneratedTime | dateFormatPipe: 'time'}}</small>
+      </h4>
+    </div>
+    <!-- <p style="text-align: right;margin:1rem 0;"><strong style="color: #333;">CCM Completed Time:</strong> 10:00 </p>
+  <table cellspacing="0" width="100%" class="profile-info"
+    style="width: 100%; border-spacing: 0; border-collapse: collapse;">
+    <tr>
+      <td width="50%" style="vertical-align: top; padding-right: 25px;" valign="top">
+        <table class="user-information"
+          style="width: 100%; border-spacing: 0; border-collapse: collapse; border: 1px solid #e8eaf6;" width="100%">
+          <tr style="border: 1px solid #e8eaf6;">
+            <td colspan="2" style="padding: 0; vertical-align: top;" valign="top"><strong class="section-title"
+                style="color: #333; padding: 0.5rem; display: block; background-color: #e8eaf6;">Patient
+                Informatoin</strong></td>
+          </tr>
+          <tr style="border: 1px solid #e8eaf6;">
+
+            <td style="padding: 0; vertical-align: top;" valign="top">
+              <p class="bold" style="margin: 0px; padding: 0.3rem 0.5rem; font-weight: 500; color: #333;">Patient Name:
+              </p>
+            </td>
+            <td style="padding: 0; vertical-align: top;" valign="top">
+              <p style="margin: 0px; padding: 0.3rem 0.5rem;">Camila Callaman</p>
+            </td>
+          </tr>
+          <tr style="border: 1px solid #e8eaf6;">
+            <td style="padding: 0; vertical-align: top;" valign="top">
+              <p class="bold" style="margin: 0px; padding: 0.3rem 0.5rem; font-weight: 500; color: #333;">Gender</p>
+            </td>
+            <td style="padding: 0; vertical-align: top;" valign="top">
+              <p style="margin: 0px; padding: 0.3rem 0.5rem;">F</p>
+            </td>
+          </tr>
+          <tr style="border: 1px solid #e8eaf6;">
+            <td style="padding: 0; vertical-align: top;" valign="top">
+              <p class="bold" style="margin: 0px; padding: 0.3rem 0.5rem; font-weight: 500; color: #333;">Mediacal
+                Record No: </p>
+            </td>
+            <td style="padding: 0; vertical-align: top;" valign="top">
+              <p style="margin: 0px; padding: 0.3rem 0.5rem;">000000000126</p>
+            </td>
+          </tr>
+          <tr style="border: 1px solid #e8eaf6;">
+            <td style="padding: 0; vertical-align: top;" valign="top">
+              <p class="bold" style="margin: 0px; padding: 0.3rem 0.5rem; font-weight: 500; color: #333;">Address:</p>
+            </td>
+            <td style="padding: 0; vertical-align: top;" valign="top">
+              <p style="margin: 0px; padding: 0.3rem 0.5rem;">Douglasville GA USA 30134</p>
+            </td>
+          </tr>
+        </table>
+      </td>
+      <td width="50%" style="vertical-align: top; padding-left: 25px;" valign="top">
+        <table class="user-information"
+          style="width: 100%; border-spacing: 0; border-collapse: collapse; border: 1px solid #e8eaf6;" width="100%">
+          <tr style="border: 1px solid #e8eaf6;">
+            <td colspan="2" style="padding: 0; vertical-align: top;" valign="top"><strong class="section-title"
+                style="color: #333; padding: 0.5rem; display: block; background-color: #e8eaf6;">Care Provider
+                Information</strong></td>
+          </tr>
+          <tr style="border: 1px solid #e8eaf6;">
+
+            <td style="padding: 0; vertical-align: top;" valign="top">
+              <p class="bold" style="margin: 0px; padding: 0.3rem 0.5rem; font-weight: 500; color: #333;">Care Provider
+                Name:</p>
+            </td>
+            <td style="padding: 0; vertical-align: top;" valign="top">
+              <p style="margin: 0px; padding: 0.3rem 0.5rem;">Camila Callaman</p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table> -->
+
+
+
+    <!-- <h2 class="report-title"
+    style="margin: 0px; padding: 1rem; background: #e8eaf6; text-align: center; margin-top: 4rem; margin-bottom: 5px; font-size: 1.3rem; color: #333; text-align: left;">
+    CCM Summary Report</h2> -->
+    <!-- <table class="summary-table"
+    style="width: 100%; border-spacing: 0; border-collapse: collapse; border: 1px solid #e8eaf6; margin-bottom: 5px;"
+    width="100%">
+    <tr>
+      <td class="ccm-title deg-90 theme-bg" style="background: #e8eaf6; color: #333; height: 100px; min-height: 300px;"
+        height="100">
+        <p style="margin: 0px; padding: 0.2rem; -webkit-transform: rotate(90deg); transform: rotate(90deg);"><strong
+            style="color: #333;">General</strong></p>
+      </td>
+      <td>
+        <table class="ccm-plan" style="width: 100%; border-spacing: 0; border-collapse: collapse;" width="100%">
+          <tr>
+            <td width="50%" style="vertical-align: top;" valign="top">
+              <p class="bold "
+                style="margin: 0px; padding: 0.2rem; font-weight: 500; color: #333; background: transparent;">Lorem
+                ipsum dolor sit amet consectetur adipisicing elit. Aspernatur
+                recusandae aperiam?</p>
+            </td>
+            <td width="50%" style="vertical-align: top;" valign="top">
+              <p style="margin: 0px; padding: 0.2rem;">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nobis
+                veritatis eum dicta
+                beatae, quae, quis deserunt assumenda a itaque quaerat sapiente, accusamus numquam
+                labore. Quae placeat eum voluptatum saepe nihil.</p>
+            </td>
+          </tr>
+          <tr>
+            <td width="50%" style="vertical-align: top; border-top: 1px solid #e8eaf6;" valign="top">
+              <p class="bold "
+                style="margin: 0px; padding: 0.2rem; font-weight: 500; color: #333; background: transparent;">Lorem
+                ipsum dolor sit amet consectetur adipisicing elit. Aspernatur
+                recusandae aperiam?</p>
+            </td>
+            <td width="50%" style="vertical-align: top; border-top: 1px solid #e8eaf6;" valign="top">
+              <p style="margin: 0px; padding: 0.2rem;">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nobis
+                veritatis eum dicta
+                beatae, quae, quis deserunt assumenda a itaque quaerat sapiente, accusamus numquam
+                labore. Quae placeat eum voluptatum saepe nihil.</p>
+            </td>
+          </tr>
+          <tr>
+            <td width="50%" style="vertical-align: top; border-top: 1px solid #e8eaf6;" valign="top">
+              <p class="bold "
+                style="margin: 0px; padding: 0.2rem; font-weight: 500; color: #333; background: transparent;">Lorem
+                ipsum dolor sit amet consectetur adipisicing elit. Aspernatur
+                recusandae aperiam?</p>
+            </td>
+            <td width="50%" style="vertical-align: top; border-top: 1px solid #e8eaf6;" valign="top">
+              <p style="margin: 0px; padding: 0.2rem;">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nobis
+                veritatis eum dicta
+                beatae, quae, quis deserunt assumenda a itaque quaerat sapiente, accusamus numquam
+                labore. Quae placeat eum voluptatum saepe nihil.</p>
+            </td>
+          </tr>
+          <tr>
+            <td width="50%" style="vertical-align: top; border-top: 1px solid #e8eaf6;" valign="top">
+              <p class="bold "
+                style="margin: 0px; padding: 0.2rem; font-weight: 500; color: #333; background: transparent;">Lorem
+                ipsum dolor sit amet consectetur adipisicing elit. Aspernatur
+                recusandae aperiam?</p>
+            </td>
+            <td width="50%" style="vertical-align: top; border-top: 1px solid #e8eaf6;" valign="top">
+              <p style="margin: 0px; padding: 0.2rem;">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nobis
+                veritatis eum dicta
+                beatae, quae, quis deserunt assumenda a itaque quaerat sapiente, accusamus numquam
+                labore. Quae placeat eum voluptatum saepe nihil.</p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table> -->
+    <!-- <table class="summary-table"
+    style="width: 100%; border-spacing: 0; border-collapse: collapse; border: 1px solid #e8eaf6; margin-bottom: 5px;"
+    width="100%">
+    <tr>
+      <td class="ccm-title deg-90 theme-bg" style="background: #e8eaf6; color: #333; height: 100px; min-height: 300px;"
+        height="100">
+        <p style="margin: 0px; padding: 0.2rem; -webkit-transform: rotate(90deg); transform: rotate(90deg);"><strong
+            style="color: #333;">Barriers</strong></p>
+      </td>
+      <td>
+        <table class="ccm-plan" style="width: 100%; border-spacing: 0; border-collapse: collapse;" width="100%">
+          <tr>
+            <td width="50%" style="vertical-align: top;" valign="top">
+              <p class="bold"
+                style="margin: 0px; padding: 0.2rem; font-weight: 500; color: #333; background: transparent;">Lorem
+                ipsum dolor sit amet consectetur adipisicing elit. Aspernatur
+                recusandae aperiam?</p>
+            </td>
+            <td width="50%" style="vertical-align: top;" valign="top">
+              <p style="margin: 0px; padding: 0.2rem;">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nobis
+                veritatis eum dicta
+                beatae, quae, quis deserunt assumenda a itaque quaerat sapiente, accusamus numquam
+                labore. Quae placeat eum voluptatum saepe nihil.</p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table> -->
+
+
+    <!-- <div class="pagebreak"></div> -->
+    <!-- <h2 class="report-title"
+    style="margin: 0px; padding: 1rem; background: #e8eaf6; text-align: center; margin-top: 4rem; margin-bottom: 5px; font-size: 1.3rem; color: #333; text-align: left;">
+    CCM Logs</h2> -->
+
+    <table class="logs-table" style="width: 100%; border-spacing: 0; border-collapse: collapse;" width="100%">
+      <p><b>Facility Name:</b> {{facilityName}}</p>
+      <thead>
+        <tr style="background-color: #e8eaf6;" bgcolor="#e8eaf6">
+          <th style="padding: 0.3rem 1rem; border: 1px solid #e8eaf6; color: #333;">#</th>
+          <th style="padding: 0.3rem 1rem; border: 1px solid #e8eaf6; color: #333;">Name</th>
+          <th style="padding: 0.3rem 1rem; border: 1px solid #e8eaf6; color: #333;">CPT Code</th>
+          <th style="padding: 0.3rem 1rem; border: 1px solid #e8eaf6; color: #333;">ICD-10 Codes</th>
+          <th style="padding: 0.3rem 1rem; border: 1px solid #e8eaf6; color: #333;">Time Completed</th>
+          <th style="padding: 0.3rem 1rem; border: 1px solid #e8eaf6; color: #333;">Service Date</th>
+          <th style="padding: 0.3rem 1rem; border: 1px solid #e8eaf6; color: #333;">Billing Provider</th>
+          <!-- <th style="padding: 0.3rem 1rem; border: 1px solid #e8eaf6; color: #333;">Facility</th> -->
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of PrintData; let index = index;">
+          <td width="10%" style="border: 1px solid #e8eaf6; padding: 0.3rem;">
+            <p style="margin: 0px; padding: 0.2rem;"> {{index + 1}}</p>
+          </td>
+          <td width="15%" style="border: 1px solid #e8eaf6; padding: 0.3rem;">
+            <p style="margin: 0px; padding: 0.2rem;"> {{item.patientName}}</p>
+          </td>
+          <td width="10%" style="border: 1px solid #e8eaf6; padding: 0.3rem;">
+            <p style="margin: 0px; padding: 0.2rem;"> {{item.cptCode}}</p>
+          </td>
+          <td width="10%" style="border: 1px solid #e8eaf6; padding: 0.3rem;">
+            <p style="margin: 0px; padding: 0.2rem;"> {{item.icd10Code}}</p>
+          </td>
+          <!-- <td width="30%" style="border: 1px solid #e8eaf6; padding: 0.3rem;">
+            <span *ngFor="let disease of item.chronicDiseases">
+              <p style="margin: 0px; padding: 0.2rem;"><strong style="color: #333;">{{disease.algorithm}}</strong>
+                {{disease.icdCode}}
+              </p>
+              <p style="margin: 0px; padding: 0.2rem;">{{disease.detail}}</p>
+            </span>
+          </td> -->
+          <td width="10%" style="border: 1px solid #e8eaf6; padding: 0.3rem;">{{item.timeCompleted}}</td>
+          <td width="10%" style="border: 1px solid #e8eaf6; padding: 0.3rem;">{{item.serviceDate| date}}</td>
+          <td width="10%" style="border: 1px solid #e8eaf6; padding: 0.3rem;">{{item.billingProviderName}}</td>
+          <!-- <td width="15%" style="border: 1px solid #e8eaf6; padding: 0.3rem;">{{item.facilityName}}</td> -->
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<div mdbModal #claimDocumentsModal="mdbModal" class="modal fade" id="centralModalSm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true" (close)="claimSubmitActionType=''">
+
+  <!-- Change class .modal-sm to change the size of the modal -->
+  <div class="modal-dialog modal-dialog-centered" role="document">
+
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="claimDocumentsModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title" id="myModalLabel">Confirm Submission</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-12">
+            <p class="mt-3"><strong>Please select the following number of documents to submit in Athena</strong></p>
+          </div>
+          <div  (click)="claimSubmitActionType='both'" *ngIf="facility?.claimSubmission && facility?.clinicalDocumentSubmission" class="col-4 ">
+            <div [class.active]="claimSubmitActionType=='both'" class="claim-select">Both</div>
+          </div>
+          <div  (click)="claimSubmitActionType='claim'" *ngIf="facility?.claimSubmission" class="col-4 pl-0">
+            <div [class.active]="claimSubmitActionType=='claim'" class="claim-select">Encounter Claims</div>
+          </div>
+          <div  (click)="claimSubmitActionType='doc'" *ngIf="facility?.clinicalDocumentSubmission" class="col-4 pl-0">
+            <div [class.active]="claimSubmitActionType=='doc'" class="claim-select">
+              Encounter Documents
+            </div>
+          </div>
+          <div class="col-sm-12">
+            <p class="mt-3"><strong>You have selected the following number of documents to submit in Athena</strong></p>
+          </div>
+          <div  class="col-sm-12">
+            <ul>
+              <li *ngIf="facility?.claimSubmission">{{submissionDetails?.claims}} Encounter Claims</li>
+              <li *ngIf="facility?.clinicalDocumentSubmission">{{submissionDetails?.documents}} Encounter Documents</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit"   class="btn btn-dynamic-secondary-2c btn-sm" (click)="claimDocumentsModal.hide()">
+          Close
+        </button>
+        <button [disabled]="!claimSubmitActionType || submitToEmr"  type="button" class="btn btn-dynamic-2c btn-sm" (click)="SubmitClaimToEmr()">
+          Submit
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

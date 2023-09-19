@@ -1,0 +1,83 @@
+<div class="d-flex align-item-center justify-content-start">
+  <h4 class="mr-3 mb-0"><a class="text-dark" (click)="navigateBack()">
+      <i class="fa fa-arrow-left"></i></a></h4>
+  <h1 class="page-title">External Data</h1>
+</div>
+
+<div class="row mb-4">
+  <div class="col-sm-6">
+    <div class="">
+      <label for="State">Select State</label>
+      <ng-select class="ng-select-small" [(ngModel)]="stateCode" [ngModelOptions]="{standalone: true}"
+        (ngModelChange)="GetSupportedSystems('')" [multiple]="false" [searchable]="true" placeholder="Select State">
+        <!-- <ng-template ng-header-tmp>
+          <input style="width: 100%; line-height: 24px" type="text" [(ngModel)]="searchDisease" [ngModelOptions]="{standalone: true}" (ngModelChange)="getFilterDisease(searchDisease)" />
+        </ng-template> -->
+        <ng-option *ngFor="let item of States" [value]="item.code">{{item.code}} {{item.name}}
+        </ng-option>
+      </ng-select>
+    </div>
+  </div>
+  <div class="col-sm-6">
+    <label for="selectedSystemId">Select System</label>
+
+    <div class="d-flex flex-wrap align-items-end justify-content-start">
+      <ng-select class="ng-select-small flex-grow-1" [items]="systemsList" [(ngModel)]="selectedSystemId" bindLabel="name"
+        [typeahead]="searchWatch" [loading]="isSearching" bindValue="id" placeholder="Select System">
+
+        <!-- <ng-option *ngFor="let item of searchTerm" [value]="item.code">{{item.name}}
+        </ng-option> -->
+
+      </ng-select>
+      <button class="btn btn-sm btn-dynamic-2c m-0 ml-2" (click)="addSystem()"
+        [disabled]="!selectedSystemId || isLoading">Add </button>
+    </div>
+  </div>
+</div>
+
+<p><strong>Connected Data Providers</strong> <a class="text-dynamic-2c pull-right"
+    (click)="GetConnectedHealthSystemsByPatientId()"><i class="fa fa-refresh fa-lg"></i> Refresh</a></p>
+
+<div class="row">
+  <div appCcmLoader>
+    <div class="loader-wrap" *ngIf="isLoading">
+      <div class="text-dynamic-2c la-ball-pulse ccm-loader">
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-3 col-sm-6" *ngFor="let item of connectedSystemsList">
+    <div class="card mb-3">
+      <div class="card-body">
+        <div class="d-flex justify-content-center flex-wrap">
+          <div class="sys-img w-100 flex-grow-1 text-center mb-3">
+            <!-- <img height="100" width="100" class="rounded-circle" [src]="item.logo" /> -->
+          </div>
+          <p class="w-100 text-center"><strong>{{item.systemName}}</strong></p>
+          <div class="d-flex align-items-center w-100">
+            <button *ngIf="!item.isConnected" (click)="selectedSystemId=+item.systemCode;ConnectSystem()"
+              [disabled]="isLoading" class="btn btn-sm btn-dynamic-secondary-2c w-100">connect </button>
+            <button *ngIf="item.isConnected" class="btn btn-sm btn-dynamic-2c w-100">Connected </button>
+            <a class="btn btn-danger btn-icon flex-shrink-0"
+              (click)="selectedSystemId=+item.systemCode;RemoveSystem();"><i class="fa fa-trash"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- <div class="col-lg-3 col-sm-6" *ngFor="let item of cities">
+    <div class="card mb-3">
+      <div class="card-body">
+        <div class="d-flex justify-content-center flex-wrap">
+          <div class="sys-img w-100 flex-grow-1 text-center mb-3">
+            <img height="100" width="100" class="rounded-circle" [src]="item.avatar" />
+          </div>
+          <p class="w-100 text-center"><strong>{{item.name}}</strong></p>
+          <button class="btn btn-sm btn-dynamic-secondary-2c w-100">Disconnect </button>
+        </div>
+      </div>
+    </div>
+  </div> -->
+</div>

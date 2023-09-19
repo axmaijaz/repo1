@@ -1,0 +1,1770 @@
+<div class="d-flex align-items-center flex-wrap justify-content-between mb-3">
+  <div></div>
+  <!-- <div class="d-inline-flex align-items-center ">
+    <p class="mr-3 ">Completion:</p>
+    <div title="{{CCMMonthlyDataResponseDtoObj.completedPatientsCount || 0}} Completed" style="width: 300px; height: 30px;" id="progress-bar">
+      <mdb-progress [value]="CCMMonthlyDataResponseDtoObj.completedPatientsCount || 0" min="0" [max]="CCMMonthlyDataResponseDtoObj.activePatientsCount || 100" type="info"></mdb-progress>
+    </div>
+  </div> -->
+</div>
+<div class="d-flex align-items-center flex-wrap justify-content-between mb-3">
+  <div>
+    <h1 class="page-title mb-0 flex-sm-grow-1 pb-1" (click)="randomColor()">Chronic Care</h1>
+    <h1 class="page-title mb-0 mt-4 flex-sm-grow-1" style="font-size: 18px;color: #666;">{{careProviderName}}</h1>
+  </div>
+  <div class="">
+    <!-- <div class="d-flex justify-content-end ">
+      <div class="d-inline-flex mr-2 ">
+        <div class="border rounded px-3 main-index-box py-2 mb-3 bg-white" [class.active]="selectedFilterWidget==='noteligible'"  (click)="ChangeAndApplyCCMStatus('noteligible', [4,21,22])">
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 style="font-size: 16px;" class="title mb-0 mr-4"><strong>Not Eligible</strong></h5>
+            <p class="mb-0 number-index">
+              <span *ngIf="true">{{CCMMonthlyDataResponseDtoObj.inEligiblePatientsCount || 0}}</span>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="d-inline-flex mr-2 ">
+        <div class="border rounded px-3 main-index-box py-2 mb-3 bg-white active" [class.active]="selectedFilterWidget==='eligible'" (click)="ChangeAndApplyCCMStatus('eligible', [0,12,24])">
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 style="font-size: 16px;" class="title mb-0 mr-4"><strong>Eligible</strong></h5>
+            <p class="mb-0 number-index">
+              <span *ngIf="true">{{CCMMonthlyDataResponseDtoObj.eligiblePatientsCount || 0}}</span>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="d-inline-flex mr-2 ">
+        <div class="border rounded px-3 main-index-box py-2 mb-3 bg-white" [class.active]="selectedFilterWidget==='declined'" (click)="ChangeAndApplyCCMStatus('declined', [5,17,18,19])">
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 style="font-size: 16px;" class="title mb-0 mr-4"><strong>Decline</strong></h5>
+            <p class="mb-0 number-index">
+              <span *ngIf="true">{{CCMMonthlyDataResponseDtoObj.declinedPatientsCount || 0}}</span>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="d-inline-flex ">
+        <div class="border rounded px-3 py-2 main-index-box mb-3 bg-white" [class.active]="selectedFilterWidget==='deffered'" (click)="ChangeAndApplyCCMStatus('deffered', [6,25,26])">
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 style="font-size: 16px;" class="title mb-0 mr-4"><strong>Deferred</strong></h5>
+            <p class="mb-0 number-index">
+              <span *ngIf="true">{{CCMMonthlyDataResponseDtoObj.defferedPatientsCount || 0}}</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div> -->
+    <!-- <div class="w-100 d-flex justify-content-end">
+      <button class="btn btn-outline-primary btn-sm" [class.active]="selectedFilterWidget==='noteligible'" (click)="ChangeAndApplyCCMStatus('noteligible', [4,21,22])">
+        Not Eligible <span style="margin-left:5px;padding:2px 5px;color: #4eb048; background-color: #4db04828; border-color: #ccc; font-size: 12px !important; font-weight: 500;">{{CCMMonthlyDataResponseDtoObj.inEligiblePatientsCount || 0}}</span></button>
+      <button class="btn btn-outline-primary btn-sm"  [class.active]="selectedFilterWidget==='eligible'" (click)="ChangeAndApplyCCMStatus('eligible', [0,12,24])">
+        Eligible <span style="margin-left:5px;padding:2px 5px;color: #4eb048; background-color: #4db04828; border-color: #ccc; font-size: 12px !important; font-weight: 500;"> {{CCMMonthlyDataResponseDtoObj.eligiblePatientsCount || 0}}</span></button>
+      <button class="btn btn-outline-primary btn-sm" [class.active]="selectedFilterWidget==='declined'" (click)="ChangeAndApplyCCMStatus('declined', [5,17,18,19])">
+        Decline <span style="margin-left:5px;padding:2px 5px;color: #4eb048; background-color: #4db04828; border-color: #ccc; font-size: 12px !important; font-weight: 500;"> {{CCMMonthlyDataResponseDtoObj.declinedPatientsCount || 0}}</span></button>
+      <button class="btn btn-outline-primary btn-sm" [class.active]="selectedFilterWidget==='deffered'" (click)="ChangeAndApplyCCMStatus('deffered', [6,25,26])">
+        Deferred <span style="margin-left:5px;padding:2px 5px;color: #4eb048; background-color: #4db04828; border-color: #ccc; font-size: 12px !important; font-weight: 500;"> {{CCMMonthlyDataResponseDtoObj.defferedPatientsCount || 0}}</span></button>
+    </div> -->
+    <div class="w-100 d-flex flex-wrap justify-content-end">
+      <div class="form-group d-inline-flex align-items-center ml-2">
+        <label f class="mb-0 mr-1 " or="namea"><strong> Care Coordinator</strong></label>
+        <ng-select style="min-width:200px;max-width: 200px;" class="ng-select-small"
+          [disabled]="currentUser.userType === 4" [(ngModel)]="filterPatientDto.CareProviderId"
+          (ngModelChange)="filterPatients();FillCareProvider()" [closeOnSelect]="true" [multiple]="false"
+          [searchable]="true" placeholder="Care Coordinator">
+          <ng-option [value]="0">All Care Coordinator </ng-option>
+          <ng-option *ngFor="let item of CareProvidersList" [value]="item.id">{{item.lastName}},{{item.firstName}}
+          </ng-option>
+        </ng-select>
+      </div>
+      <div class="form-group d-inline-flex align-items-center ml-2">
+        <label class="mb-0 mr-1" for="namea"><strong>Month</strong></label>
+        <ng-select [searchable]="false" [(ngModel)]="filterPatientDto.serviceMonth" (ngModelChange)="MonthChanged()"
+          [closeOnSelect]="true" [multiple]="false" appendTo="body" class="ng-select-small" placeholder="Month"
+          [clearable]="false" (click)="$event.stopPropagation();" style="min-width:150px"
+          [ngClass]="{'my-class': filterPatientDto.serviceMonth !== currentMonth}">
+          <ng-option [value]="1">January</ng-option>
+          <ng-option [value]="2">February</ng-option>
+          <ng-option [value]="3">March</ng-option>
+          <ng-option [value]="4">April</ng-option>
+          <ng-option [value]="5">May</ng-option>
+          <ng-option [value]="6">June</ng-option>
+          <ng-option [value]="7">July</ng-option>
+          <ng-option [value]="8">August</ng-option>
+          <ng-option [value]="9">September</ng-option>
+          <ng-option [value]="10">October</ng-option>
+          <ng-option [value]="11">November</ng-option>
+          <ng-option [value]="12">December</ng-option>
+        </ng-select>
+      </div>
+      <div class="form-group d-inline-flex align-items-center ml-2 mr-1">
+        <label class="mb-0 mr-1" for="namea"><strong>Year</strong></label>
+        <ng-select [searchable]="false" [appendTo]="'body'" class="ng-select-small" placeholder="Year"
+          [clearable]="false" [closeOnSelect]="true" [multiple]="false" [(ngModel)]="filterPatientDto.serviceYear"
+          (ngModelChange)="YearChanged()" (click)="$event.stopPropagation();" style="min-width:150px"
+          [ngClass]="{'my-class': filterPatientDto.serviceYear !== currentYear}">
+          <ng-option *ngFor="let year of listOfYears" [value]="year">{{year}}</ng-option>
+        </ng-select>
+      </div>
+      <div class="dropdown" mdbDropdown>
+        <button mdbDropdownToggle class="btn btn-dynamic-2c mt-0 btn-icon mr-0" type="button"><i
+            class="fa fa-ellipsis-v"></i>
+        </button>
+
+        <div class="dropdown-menu dropdown-menu-right">
+          <a class="dropdown-item" *hasClaim=" ['CanAddPatient']" [routerLink]="['/admin/addPatient']"
+            routerLinkActive="router-link-active">
+            <i class="fa fa-plus fa-lg mr-1"></i>
+            Add New
+          </a>
+          <a class="dropdown-item" [ngClass]="{disabledDiv: !selected || selected.length < 1}"
+            (click)="selectedPatientsCareProviders();assignCareProviderModal.show()">
+            <i class="fa fa-arrow-alt-circle-up fa-lg mr-1"></i>
+            Assign
+          </a>
+          <a class="dropdown-item" [disabled]="isLoadingZip" (click)="DownloadModal.show();">
+            <i class="fa fa-print fa-lg mr-1" *ngIf="!isLoadingZip"></i><span *ngIf="isLoadingZip"
+              class="mr-1 spinner-border spinner-border-sm " role="status" aria-hidden="true"></span>
+            Download Log
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="d-flex align-items-stretch col-xl-6 col-lg-12 col-md-12 col-sm-12">
+    <div class="d-flex align-items-stretch w-100">
+      <div [class.active]="selectedFilterWidget==='cPatientTime'"
+        (click)="ChangeAndApplyMinutesFilter('cPatientTime', [3,4,5,6,7])"
+        class="rpm-content-box rpm-content-box-hover d-flex align-items-center justify-content-center">
+        <div class="text-center">
+          <div class="progress-mh mb-1">
+            <div class="custom-mh" style="height:5px;" [style.width]="CCMMonthlyDataResponseDtoObj['completedPercent']">
+            </div>
+          </div>
+          <p class="mb-0">Time Completed</p>
+          <p class="mb-0 item-bold" style="font-size: 20px;"><strong>{{CCMMonthlyDataResponseDtoObj.ccmTime_20_plus_plus
+              || 0}} / {{CCMMonthlyDataResponseDtoObj.activePatientsCount || 0}}</strong></p>
+        </div>
+      </div>
+
+      <div class="d-flex flex-wrap rpm-content-box flex-1 text-center p-0">
+        <div class="item-top-centent d-flex justify-content-center align-items-center w-100">
+          <p class="mb-0 item-bold text-center"> Monthly Status </p>
+        </div>
+        <div class="item-bottom-content d-flex flex-1">
+          <div class="completed-min" [class.active]="selectedFilterWidget==='notstarted'"
+            (click)="ChangeAndApplyCCMMonthlyStatus('notstarted', [0])">
+            <p class="mb-0"><small class="text-info font-700">Not Started </small></p>
+            <p class="mb-0"><small class="font-700">{{CCMMonthlyDataResponseDtoObj.msNotStartedCount || 0}}</small></p>
+          </div>
+          <div class="completed-min" style="line-height: 13px;" [class.active]="selectedFilterWidget==='incomplete'"
+            (click)="ChangeAndApplyCCMMonthlyStatus('incomplete', [3])">
+            <p class="mb-0">
+              <small class="text-info font-700 d-block">Partially </small>
+              <small class="text-info font-700 d-block">Completed</small>
+            </p>
+            <p class="mb-0"><small class="font-700">{{CCMMonthlyDataResponseDtoObj.msIncompleteCount || 0}}</small></p>
+          </div>
+          <div class="completed-min" [class.active]="selectedFilterWidget==='contacted'"
+            (click)="ChangeAndApplyCCMMonthlyStatus('contacted', [2])">
+            <p class="mb-0"><small class="text-info font-700">Completed </small></p>
+            <p class="mb-0"><small class="font-700">{{CCMMonthlyDataResponseDtoObj.completedPatientsCount || 0}}</small>
+            </p>
+          </div>
+          <div class="completed-min" style="line-height: 13px;" [class.active]="selectedFilterWidget==='unanswered'"
+            (click)="ChangeAndApplyCCMMonthlyStatus('unanswered', [1])">
+            <p class="mb-0"><small class="text-info font-700 d-block">Call not </small>
+              <small class="text-info font-700 d-block">answered </small>
+            </p>
+            <p class="mb-0"><small class="font-700">{{CCMMonthlyDataResponseDtoObj.msUnAnsweredCount || 0}}</small></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
+    <div class="row">
+      <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6">
+        <div class="d-flex">
+          <div class="d-flex flex-wrap rpm-content-box flex-1 text-center p-0">
+            <div
+              class="item-top-centent item-top-centent-hover  d-flex justify-content-between align-items-center w-100"
+              [class.active]="selectedFilterWidget==='minutesA'"
+              (click)="ChangeAndApplyMinutesFilter('minutesA', [3,4])">
+              <div class="index-value">A</div>
+              <div class="index-unit align-items-center">
+                <p class="mb-0 item-bold"> <strong>{{CCMMonthlyDataResponseDtoObj.ccmTime_20_plus || 0 }}</strong> </p>
+              </div>
+              <div class="index-time">
+                <p class="mb-0">20 min</p>
+              </div>
+            </div>
+            <div class="item-bottom-content d-flex flex-1">
+              <div class="completed-min" [class.active]="selectedFilterWidget==='minutes10'"
+                (click)="ChangeAndApplyMinutesFilter('minutes10', [1])">
+                <p class="mb-0"><small class="text-info font-700">01-09 </small></p>
+                <p class="mb-0"><small class="font-700">{{CCMMonthlyDataResponseDtoObj.ccmTime_1_9 || 0}}</small></p>
+              </div>
+              <div class="completed-min" [class.active]="selectedFilterWidget==='minutes20'"
+                (click)="ChangeAndApplyMinutesFilter('minutes20', [2])">
+                <p class="mb-0"><small class="text-info font-700">10-19</small></p>
+                <p class="mb-0"><small class="font-700">{{CCMMonthlyDataResponseDtoObj.ccmTime_10_19 || 0}}</small></p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6">
+        <div class="d-flex">
+          <div class="d-flex flex-wrap rpm-content-box flex-1 text-center p-0">
+            <div
+              class="item-top-centent item-top-centent-hover  d-flex justify-content-between align-items-center w-100 completed-min"
+              [class.active]="selectedFilterWidget==='minutesB'"
+              (click)="ChangeAndApplyMinutesFilter('minutesB', [5,6])">
+              <div class="index-value">B</div>
+              <div class="index-unit align-items-center">
+                <p class="mb-0 item-bold"> <strong>{{CCMMonthlyDataResponseDtoObj.ccmTime_40_plus || 0 }}</strong> </p>
+              </div>
+              <div class="index-time">
+                <p class="mb-0">40 min</p>
+              </div>
+            </div>
+            <div class="item-bottom-content d-flex flex-1">
+              <div class="completed-min" [class.active]="selectedFilterWidget==='minutes30'"
+                (click)="ChangeAndApplyMinutesFilter('minutes30', [3])">
+                <p class="mb-0"><small class="text-info font-700">20-29 </small></p>
+                <p class="mb-0"><small class="font-700">{{CCMMonthlyDataResponseDtoObj.ccmTime_20_29 || 0}}</small></p>
+              </div>
+              <div class="completed-min" [class.active]="selectedFilterWidget==='minutes40'"
+                (click)="ChangeAndApplyMinutesFilter('minutes40', [4])">
+                <p class="mb-0"><small class="text-info font-700">30-39 </small></p>
+                <p class="mb-0"><small class="font-700">{{CCMMonthlyDataResponseDtoObj.ccmTime_30_39 || 0}}</small></p>
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6">
+        <div class="d-flex">
+          <div class="d-flex flex-wrap rpm-content-box flex-1 text-center p-0">
+            <div
+              class="item-top-centent item-top-centent-hover  d-flex justify-content-between align-items-center w-100"
+              [class.active]="selectedFilterWidget==='minutesC'" (click)="ChangeAndApplyMinutesFilter('minutesC', [7])">
+              <div class="index-value">C</div>
+              <div class="index-unit align-items-center">
+                <p class="mb-0 item-bold"> <strong>{{CCMMonthlyDataResponseDtoObj.ccmTime_60_plus || 0 }}</strong> </p>
+              </div>
+              <div class="index-time">
+                <p class="mb-0">60 min</p>
+              </div>
+            </div>
+            <div class="item-bottom-content d-flex flex-1">
+              <div class="completed-min" [class.active]="selectedFilterWidget==='minutes50'"
+                (click)="ChangeAndApplyMinutesFilter('minutes50', [5])">
+                <p class="mb-0"><small class="text-info font-700">40-49 </small></p>
+                <p class="mb-0"><small class="font-700">{{CCMMonthlyDataResponseDtoObj.ccmTime_40_49 || 0}}</small></p>
+
+              </div>
+              <div class="completed-min" [class.active]="selectedFilterWidget==='minutes60'"
+                (click)="ChangeAndApplyMinutesFilter('minutes60', [6])">
+                <p class="mb-0"><small class="text-info font-700">50-59 </small></p>
+                <p class="mb-0"><small class="font-700">{{CCMMonthlyDataResponseDtoObj.ccmTime_50_59 || 0}}</small></p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+
+
+<div class="d-flex align-items-center flex-wrap justify-content-between mb-3">
+  <!-- <h1 class="page-title mb-0 flex-sm-grow-1">Chronic Care</h1> -->
+  <div class="d-flex">
+
+    <!-- <button class="btn btn-dynamic-2c btn-sm ml-0 px-2 px-md-4 px-sm-4 " [disabled]="isLoadingZip" (click)="DownloadModal.show();"
+      title="export"><i *ngIf="!isLoadingZip" class="fa fa-print fa-lg"></i> <span *ngIf="isLoadingZip"
+        class="mr-1 spinner-border spinner-border-sm " role="status" aria-hidden="true"></span>Assign to custom List</button> -->
+    <!-- <button class="btn btn-dynamic-2c btn-sm ml-0 px-2 px-md-4 px-sm-4 " [disabled]="isLoadingZip" (click)="DownloadModal.show();"
+      title="export"><i *ngIf="!isLoadingZip" class="fa fa-print fa-lg"></i> <span *ngIf="isLoadingZip"
+        class="mr-1 spinner-border spinner-border-sm " role="status" aria-hidden="true"></span> Download Log</button>
+    <button [disabled]="!selected || selected.length < 1" type="button" class="btn btn-dynamic-secondary-2c btn-sm px-2 px-md-4 px-sm-4 ml-0"
+      (click)="selectedPatientsCareProviders();assignCareProviderModal.show()"><i
+        class="fa fa-arrow-alt-circle-up fa-lg"></i>
+      Assign</button>
+
+    <button *hasClaim=" ['CanAddPatient']" type="button" class="btn btn-dynamic-2c btn-sm mr-0 px-2 px-md-4 px-sm-4 ml-0" title="Add Patient"
+      placement="left" [routerLink]="['/admin/addPatient']" routerLinkActive="router-link-active"><i
+        class="fa fa-plus fa-lg"></i> Add New</button> -->
+
+  </div>
+</div>
+
+
+
+<div mdbModal #DownloadModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myDownloadModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="DownloadModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100 text-centerd" myModalLabel>Download Log</h4>
+      </div>
+      <div class="modal-body">
+        <p> Please select your option</p>
+        <!-- <div class="form-check form-check-inline">
+          <input type="radio" class="form-check-input" disabled id="materialInline1" name="download"
+            [(ngModel)]="downloadData" [value]="'all'" mdbInput>
+          <label class="form-check-label" for="materialInline1">All History</label>
+        </div> -->
+
+        <!-- Material inline 2 -->
+        <div class="form-check form-check-inline" *ngIf="selected.length > 0">
+          <input type="radio" class="form-check-input" id="materialInline2" name="download" [(ngModel)]="downloadData"
+            [value]="'selected'" mdbInput>
+          <label class="form-check-label" for="materialInline2">Selected Patient</label>
+        </div>
+        <!-- Material inline 2 -->
+        <div class="form-check form-check-inline">
+          <input type="radio" class="form-check-input" id="materialInline3" name="download" [(ngModel)]="downloadData"
+            [value]="'active'" mdbInput>
+          <label class="form-check-label" for="materialInline3">Active</label>
+        </div>
+        <!-- Material inline 2 -->
+        <div class="form-check form-check-inline">
+          <input type="radio" class="form-check-input" id="materialInline4" name="download" [(ngModel)]="downloadData"
+            [value]="'completed'" mdbInput>
+          <label class="form-check-label" for="materialInline4">Time Completed</label>
+        </div>
+        <div class="checkb ml-1">
+          <!-- Default inline 1-->
+          <mdb-checkbox [inline]="true" [default]="true" [(ngModel)]="downloadLogHistory.includeCarePlan">Include Care
+            Plan
+          </mdb-checkbox>
+          <mdb-checkbox [inline]="true" [default]="true" [(ngModel)]="downloadLogHistory.includeLogsHistory">Include
+            Logs History
+          </mdb-checkbox>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button"
+          [disabled]="!downloadData || (!downloadLogHistory.includeLogsHistory && !downloadLogHistory.includeCarePlan)"
+          (click)="DownloadModal.hide();DownLoadZip()" class="relative btn btn-sm btn-dynamic-2c">Proceed</button>
+        <button type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+          (click)="DownloadModal.hide();">Close</button>
+        <!-- <button type="button" mdbBtn class="btn btn-dynamic-2c btn-sm relative waves-light" mdbWavesEffect>Selected</button> -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="d-flex align-items-end mb-2">
+  <div class="flex-1">
+    <label for="searchBy">Search Patient</label>
+    <div class="d-flex align-items-center justify-content-start">
+      <input [hidden]="filterPatientDto.filterBy === 2" type="text" #searchPatient
+        [(ngModel)]="filterPatientDto.SearchParam" autocomplete="off"
+        class="form-control form-control-sm box-shadow w-100" id="searchBy"
+        placeholder="{{ filterPatientDto.filterBy === 1 ? 'Name / EMR ID' : filterPatientDto.filterBy === 2 ? 'Date of Birth e.g yyyy-MM-dd': 'Phone No'}}" />
+      <input [hidden]="filterPatientDto.filterBy !== 2" id="searchBy" type="text"
+        class="bg-white form-control form-control-sm box-shadow w-100" #dateDPicker="dpDayPicker" autocomplete="off"
+        [dpDayPicker]="datePickerConfig2" placeholder="MM-DD-YYYY" [(ngModel)]="filterPatientDto.SearchParam"
+        (ngModelChange)="filterPatientDto.SearchParam.length == 10 ? filterPatients(): ''"
+        [theme]="'dp-material ccm-date-picker'" [mode]="'day'" [appendTo]="'body'" />
+    </div>
+  </div>
+  <div class="flex-1 ml-1" [hidden]="currentUser?.userType === 3">
+    <div>
+      <label for="namea">Filter By</label>
+      <ng-select class="ng-select-small" [disabled]="currentUser.userType === 4" [(ngModel)]="filterPatientDto.filterBy"
+        (ngModelChange)="filterPatientDto.SearchParam = '';filterPatients()" [closeOnSelect]="true" [multiple]="false"
+        [searchable]="true" placeholder="Filter By">
+        <ng-option [value]="1">Name, EMR ID </ng-option>
+        <ng-option [value]="2">Date of Birth </ng-option>
+        <ng-option [value]="3">Phone No </ng-option>
+      </ng-select>
+    </div>
+  </div>
+  <div class="d-inline-flex" [hidden]="currentUser?.userType === 3">
+    <button type="button" class="btn btn-dynamic-2c btn-sm my-0 flex-shrink-0 mr-0 px-sm-3 ml-1 px-md-4" title="Filter" appDebounceClick
+      (debounceClick)="test.toggle()"><i class="fa fa-filter fa-lg"></i> Filter</button>
+    <button type="button" class="btn btn-dynamic-secondary-2c btn-sm my-0 flex-shrink-0"
+      (click)="clearDatePickerSelection();resetFilter();FillCareProvider();filterPatients();initialiceCCMMonthlyParamObj();GetMonthlyCcmData()" title="Reset Filters"><i
+        class="fa fa-refresh fa-lg"></i> Reset</button>
+    <button [disabled]="isLoading" class="d-flex ml-auto btn btn-dynamic-2c btn-sm my-0 flex-shrink-0" title="{{pagingData.elementsCount}} Patients"
+      (click)="getPatientListExcelFile()">Download</button>
+
+  </div>
+</div>
+<div class="search-filter collapseable" mdbCollapse #test="bs-collapse">
+  <div class="panel" style="overflow: visible;">
+    <div class="panel-header d-flex justify-content-between align-items-center">
+      <h3>Search Filter</h3>
+      <div>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="test.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-xl-3 col-lg-6 col-sm-6">
+          <div class="form-group">
+            <label for="name">Assigned/Unassigned</label>
+            <ng-select [(ngModel)]="filterPatientDto.Assigned" appendTo="body" [searchable]="false"
+              class="ng-select-small" placeholder="Assigned/Unassigned"
+              [ngClass]="{'my-class': filterPatientDto.Assigned > 0}" [closeOnSelect]="true">
+              <ng-option [value]="0">All Patients </ng-option>
+              <ng-option [value]="1">Assigned</ng-option>
+              <ng-option [value]="2">Unassigned</ng-option>
+            </ng-select>
+          </div>
+        </div>
+        <div class="col-xl-3 col-lg-6 col-sm-6">
+          <div class="form-group mb-0">
+            <label class="w-100">Assigned Date </label>
+            <input *ngIf="showAssignDateField" id="assignedDateField"
+              class="form-control form-control-sm box-shadow w-100" type="text" autocomplete="nope"
+              [(ngModel)]="selectedDateRange" name="daterangeInput" daterangepicker [options]="options"
+              (selected)="selectedDate($event, daterange)" placeholder="Date"
+              (cancelDaterangepicker)="clearDate();clearDatePickerSelection()" />
+            <input *ngIf="!showAssignDateField" id="assignedDateField"
+              class="form-control form-control-sm box-shadow w-100" type="text" autocomplete="nope"
+              [(ngModel)]="selectedDateRange" name="daterangeInput" daterangepicker [options]="options"
+              (selected)="selectedDate($event, daterange)" placeholder="Date"
+              (cancelDaterangepicker)="clearDate();clearDatePickerSelection()" />
+          </div>
+        </div>
+        <div class="col-xl-3 col-lg-6 col-sm-6">
+          <div class="form-group">
+            <label for="name">CCM Status</label>
+            <ng-select [(ngModel)]="filterPatientDto.ccmStatus" (ngModelChange)="ccmStatusFilterChanged()"
+              appendTo="body" [searchable]="false" [closeOnSelect]="true" class="ng-select-small"
+              placeholder="Ccm Status" [multiple]="true">
+              <ng-option [value]="-1">All</ng-option>
+              <ng-option [value]="item.value" *ngFor="let item of ccmStatusList">{{item.text}} </ng-option>
+            </ng-select>
+          </div>
+        </div>
+        <div class="col-xl-3 col-lg-6 col-sm-6">
+          <div class="form-group">
+            <label for="name">Encounter Time</label>
+            <ng-select [(ngModel)]="filterPatientDto.ccmTimeRange" (ngModelChange)="TimeRangeChanged()" appendTo="body"
+              [searchable]="false" [closeOnSelect]="true" class="ng-select-small" placeholder="Encounter Time"
+              [multiple]="true">
+              <!-- <ng-option [value]="-1">All</ng-option> -->
+              <ng-option [value]="item.value" *ngFor="let item of CcmEncounterTimeEnumList">{{item.name}} </ng-option>
+            </ng-select>
+          </div>
+        </div>
+        <!-- <div class="col-xl-3 col-lg-6 col-sm-6" [hidden]="currentUser?.userType === 3">
+          <div class="form-group">
+            <label for="namee">Billing Provider</label>
+            <ng-select class="ng-select-small" [(ngModel)]="filterPatientDto.BillingProviderId" appendTo="body"
+              [closeOnSelect]="true" [multiple]="false" [searchable]="true" placeholder="Billing Provider"
+              [ngClass]="{'my-class': filterPatientDto.BillingProviderId > 0}">
+              <ng-option [value]="0">All Billing Providers </ng-option>
+              <ng-option *ngFor="let item of BIllingProviderList" [value]="item.id">{{item.lastName}},{{item.firstName}}
+              </ng-option>
+            </ng-select>
+          </div>
+        </div> -->
+        <div class="col-xl-3 col-lg-6 col-sm-6" *ngIf="currentUser?.userType === 3">
+          <div class="form-group">
+            <label for="namea">Facility</label>
+            <ng-select class="ng-select-small" [(ngModel)]="filterPatientDto.FacilityId" appendTo="body"
+              [closeOnSelect]="true" [multiple]="false" [searchable]="true" placeholder="Facility"
+              [ngClass]="{'my-class': filterPatientDto.FacilityId > 0}">
+              <ng-option [value]="0">All</ng-option>
+              <ng-option *ngFor="let item of facilityList" [value]="item.id">{{item.facilityName}}
+              </ng-option>
+            </ng-select>
+          </div>
+        </div>
+        <div class="col-xl-3 col-lg-6 col-sm-6">
+          <div class="form-group">
+            <label for="name">CCM Monthly Status</label>
+            <ng-select [(ngModel)]="filterPatientDto.ccmMonthlyStatus" (ngModelChange)="ccmMOnthltStatusFilterChanged()"
+              appendTo="body" [searchable]="false" [closeOnSelect]="true" class="ng-select-small"
+              placeholder="Ccm Monthly Status" [multiple]="true">
+              <ng-option [value]="-1">All</ng-option>
+              <ng-option [value]="item.value" *ngFor="let item of CcmMonthlyStatusList">{{item.name}} </ng-option>
+            </ng-select>
+          </div>
+        </div>
+        <div class="col-xl-3 col-lg-6 col-sm-6">
+          <div class="form-group">
+            <label for="isChronic1">Select Chronic Condition</label>
+            <ng-select [virtualScroll]="true" [(ngModel)]="filterPatientDto.conditionsIds"
+              [ngModelOptions]="{standalone: true}" [clearable]="false" [hideSelected]="false"
+              (ngModelChange)="applyChronicFilterLogic();getDependentDiseases(filterPatientDto.conditionsIds)"
+              (remove)="filterPatientDto.chronicDiseasesIds = ['0']" [multiple]="true" [searchable]="true"
+              placeholder="Select chronic Condition" id="isChronic1">
+              <ng-option [value]="'0'">All</ng-option>
+              <ng-option [value]="item.id" *ngFor="let item of cronicDiseaseList">{{item.algorithm}}</ng-option>
+            </ng-select>
+          </div>
+        </div>
+        <div class="col-xl-3 col-lg-6 col-sm-6">
+          <div class="form-group">
+            <label for="name">ICD Codes</label>
+            <ng-select class="ng-select-small" style="min-height: 36px;"
+              [(ngModel)]="filterPatientDto.chronicDiseasesIds" (ngModelChange)="applyICDFilterLogic();" appendTo="body"
+              [loading]="isLoadingDependentDiseases" [closeOnSelect]="true" [multiple]="true" [searchable]="true"
+              placeholder="Chronic Disease">
+              <ng-option [value]="'0'">All</ng-option>
+              <ng-option *ngFor="let item of AllCronicDiseaseList" [value]="item.id">{{item.icdCode}} {{item.detail}}
+              </ng-option>
+              <!-- <ng-option  [value]="35">all</ng-option> -->
+            </ng-select>
+          </div>
+        </div>
+        <div class="col-xl-3 col-lg-6 col-sm-6">
+          <div class="form-group">
+            <label for="PatientS">Patient Status</label>
+            <ng-select [(ngModel)]="filterPatientDto.PatientStatus" appendTo="body" [searchable]="false"
+              class="ng-select-small" placeholder="Patient Status" [closeOnSelect]="true"
+              [ngClass]="{'my-class': filterPatientDto.PatientStatus !== 1}">
+              <ng-option [value]="0">All</ng-option>
+              <ng-option [value]="item.value" *ngFor="let item of patientStatusArr">{{item.name}}</ng-option>
+            </ng-select>
+          </div>
+        </div>
+        <!-- <div class="col-xl-3 col-lg-6 col-sm-6">
+          <div class="form-group mb-0">
+            <label class="w-100">Assigned From</label>
+            <input type="text" class="form-control form-control-sm" #dateDPicker="dpDayPicker"
+              [dpDayPicker]="datePickerConfig2" placeholder="MM-DD-YYYY" [(ngModel)]="filterPatientDto.DateAssignedFrom"
+              [theme]="'dp-material ccm-date-picker'" [mode]="'day'" [appendTo]="'body'" />
+
+          </div>
+        </div>
+        <div class="col-xl-3 col-lg-6 col-sm-6">
+          <div class="form-group mb-0">
+            <label class="w-100">Assigned To</label>
+            <input type="text" class="form-control form-control-sm" #dateDPicker="dpDayPicker"
+              [dpDayPicker]="datePickerConfig2" placeholder="MM-DD-YYYY" [(ngModel)]="filterPatientDto.DateAssignedTo"
+              [theme]="'dp-material ccm-date-picker'" [mode]="'day'" [appendTo]="'body'" />
+
+          </div>
+        </div> -->
+        <!-- <div class="col-xl-3 col-lg-6 col-sm-6">
+          <div class="form-group mb-0">
+            <label class="w-100">Assigned Date </label>
+            <input id="assignedDateField" class="form-control form-control-sm box-shadow w-100" type="text" autocomplete="nope"
+              [(ngModel)]="selectedDateRange" name="daterangeInput" daterangepicker [options]="options"
+              (selected)="selectedDate($event, daterange)" placeholder="Date" (cancelDaterangepicker)="clearDate()" />
+
+          </div>
+        </div> -->
+        <!-- <div class="col-xl-3 col-lg-6 col-sm-6">
+          <div class="form-group">
+            <label for="rpmStatus">Rpm Status</label>
+            <ng-select [(ngModel)]="filterPatientDto.RpmStatus" id="rpmStatus" appendTo="body" [searchable]="false"
+              [closeOnSelect]="true" class="ng-select-small" placeholder="Rpm Status"
+              [ngClass]="{'my-class': filterPatientDto.RpmStatus !== -1}">
+              <ng-option [value]="-1">All</ng-option>
+              <ng-option [value]="0">Active</ng-option>
+              <ng-option [value]="1">Not Started</ng-option>
+              <ng-option [value]="2">Not Eligible</ng-option>
+              <ng-option [value]="3">Identified</ng-option>
+            </ng-select>
+          </div>
+        </div> -->
+        <div class="col-xl-3 col-lg-6 col-sm-6">
+          <div class="form-group">
+            <label for="smsConsented">SMS Consent</label>
+            <ng-select [(ngModel)]="filterPatientDto.communicationConsent" id="smsCOnsented" appendTo="body" [searchable]="false"
+              [closeOnSelect]="true" [clearable]="false" class="ng-select-small" placeholder="SMS Consent">
+              <ng-option *ngFor="let item of communicationConsentList" [value]="item.value">{{item.name}}</ng-option>
+            </ng-select>
+          </div>
+        </div>
+        <div class="col-xl-3 col-lg-6 col-sm-6">
+          <div class="form-group">
+            <label for="smsConsented">Last Care Plan</label>
+            <ng-select [(ngModel)]="filterPatientDto.carePlanUpdated" id="smsCOnsented" appendTo="body" [searchable]="false"
+              [closeOnSelect]="true" [clearable]="false" class="ng-select-small" placeholder="Care Plan Updated">
+              <ng-option *ngFor="let item of carePlanUpdatedList" [value]="item.value">{{item.name}}</ng-option>
+            </ng-select>
+          </div>
+        </div>
+        <div class="col-xl-3 col-lg-6 col-sm-6">
+          <div class="form-group">
+            <label for="smsConsented">Patient Not Responded</label>
+            <ng-select [(ngModel)]="filterPatientDto.patientNotRespond" id="smsCOnsented" appendTo="body" [searchable]="false"
+              [closeOnSelect]="true" [clearable]="false" class="ng-select-small" placeholder="Care Plan Updated">
+              <ng-option *ngFor="let item of daysPatientNotRespondList" [value]="item.value">{{item.name}}</ng-option>
+            </ng-select>
+          </div>
+        </div>
+
+        <div class="col-xl-3 col-lg-6 col-sm-6 ">
+          <div class="btn-group" style="padding-top: 1.85rem;">
+            <button type="button" class="btn btn-dynamic-2c btn-sm my-0 flex-shrink-0"
+              (click)="filterPatients();scrollToTable();"><i class="fa fa-filter fa-lg"></i> Search</button>
+            <!-- <button type="button" class="btn btn-dynamic-secondary-2c btn-sm my-0 flex-shrink-0"
+              (click)="resetFilter();FillCareProvider();filterPatients();initialiceCCMMonthlyParamObj();GetMonthlyCcmData()"><i
+                class="fa fa-refresh fa-lg"></i> Reset</button> -->
+            <!-- <button type="button"  class="btn btn-dynamic-secondary-2c btn-sm my-0 flex-shrink-0 float-right"
+              (click)="getPatientListExcelFile()"> Download</button> -->
+          </div>
+        </div>
+        <!-- <div class="col ml-auto align-self-end">
+          <button class="d-flex ml-auto btn btn-dynamic-2c btn-sm mx-0" title="{{pagingData.elementsCount}} Patients"
+            (click)="getPatientListExcelFile()">Download</button>
+        </div> -->
+
+      </div>
+    </div>
+
+
+  </div>
+</div>
+<!-- <mat-form-field class="show-rocord">
+  Show Record
+  <a [class.active]="filterPatientDto.PageSize===10" (click)="filterPatientDto.PageSize=10; filterPatients()"
+    class="link">10</a>
+  <a [class.active]="filterPatientDto.PageSize===25" (click)="filterPatientDto.PageSize=25; filterPatients()"
+    class="link">25</a>
+  <a [class.active]="filterPatientDto.PageSize===50" (click)="filterPatientDto.PageSize=50; filterPatients()"
+    class="link">50</a>
+  <a [class.active]="filterPatientDto.PageSize===100" (click)="filterPatientDto.PageSize=100; filterPatients()"
+    class="link">100</a>
+  <input matInput [(ngModel)]="filterPatientDto.PageSize">
+</mat-form-field> -->
+<!-- <mat-paginator [length]="100"
+              [pageSize]="10"
+              [pageSizeOptions]="[5, 10, 25, 100]">
+</mat-paginator> -->
+<!-- <table datatable [dtOptions]="dtOptions" class="row-border hover nowrap ccm-datatable" id="ccm-datatable"> -->
+
+<div class="position-relative patients-list pt-3">
+  <div appCcmLoader>
+    <div class="loader-wrap" *ngIf="loadingOnStart">
+      <div class="text-dynamic-2c la-ball-pulse ccm-loader">
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+    </div>
+  </div>
+<app-custom-list-for-patient-lists #customListForPatientsListCompRef  *hasClaim="['CanViewCustomList']" (deselectRows)="deselectCheckedRows()" (selectedCustomList)="fillCustomListValue($event)"></app-custom-list-for-patient-lists>
+  <!-- <div *hasClaim="['CanViewCustomList']" style="top:7px;" class="col-xl-8 col-lg-8 col-8 custom-list-dropdown px-0">
+    <div class="d-flex align-items-center mb-2" *ngIf="CustomListDto && CustomListDto.length > 0">
+      <div class="d-inline-flex align-items-center w-100">
+        <label class="mb-0" for="name">Apply Custom List</label>
+        <ng-select [(ngModel)]="filterPatientDto.customListId" [searchable]="false" [closeOnSelect]="true"
+          (ngModelChange)="filterPatients()"  class="flex-grow-1 ml-3 ng-select-small" placeholder="Custom Lists"
+          [ngClass]="{'my-class': filterPatientDto.customListId > 0}">
+          <ng-option [value]="0">Select Custom List</ng-option>
+          <ng-option [value]="item.id" *ngFor="let item of CustomListDto">{{item.name}} </ng-option>
+        </ng-select>
+      </div>
+      <div class="d-inline-flex">
+        <div class="" *hasClaim="['CanViewCustomList']">
+          <ng-container  *ngIf="(CustomListDto && CustomListDto.length) && (selected && selected.length) && filterPatientDto.customListId == 0" >
+            <div title="Add to custom list" class="dropdown" mdbDropdown  [isDisabled]="addingPatientToCustomList">
+              <button mdbDropdownToggle mdbBtn class="btn btn-icon btn-dynamic-2c mt-0 mb-0  mr-0" placement="left">
+               <i class="fa fa-plus"></i>
+              </button>
+              <div class="dropdown-menu dropdown-menu-right ">
+                <a class="dropdown-item" *ngFor="let item of CustomListDto"
+                  (click)="$event.stopPropagation();AddPatientsToList(item.id)"><i
+                    class="fa fa-arrow-alt-circle-up fa-lg mr-1"></i>{{item.name}}
+                  </a>
+              </div>
+            </div>
+          </ng-container>
+
+        </div>
+        <button title="Delete from custom list" [disabled]="isDeletingPatientFromCustomList" *ngIf="(CustomListDto && CustomListDto.length) && (selected && selected.length) && filterPatientDto.customListId > 0" class="btn btn-icon my-0 btn-danger "
+          (click)="removePatientsFromList()" >
+          <span class="fa fa-trash"></span>
+        </button>
+      </div>
+    </div>
+  </div> -->
+
+  <div  *ngIf="isLoading && !loadingOnStart" style="top: 40px;"
+    class="d-flex justify-content-center text-center loadingrow">
+    <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+  </div>
+  <table datatable [dtSelect]="dtSelect" [dtOptions]="dtOptions" id="patientList" [dtTrigger]="dtTrigger"
+    class="cell-border hover text-nowrap ccm-datatable">
+    <thead>
+      <tr>
+        <th>
+          <div class="custom-control custom-checkbox">
+            <input class="custom-control-input" type="checkbox" id="selectAll" [(ngModel)]="gridCheckAll"
+              (change)="gridAllRowsCheckBoxChecked($event)">
+            <label class="custom-control-label" for="selectAll"></label>
+          </div>
+        </th>
+        <th>ID</th>
+        <th><span style="white-space: nowrap; display: block;">Name</span></th>
+        <th style="width: 24px;">Chat &nbsp;</th>
+        <th>CCM Time</th>
+        <th>Assigned Date</th>
+        <th>CCM Status</th>
+        <th title="Last Care Plan" >Care Plan</th>
+        <th [hidden]="filterPatientDto.serviceMonth !== currentMonth">CCM MS</th>
+        <th style="width: 168px;">Last CCM</th>
+        <th>Last Visit</th>
+        <!-- <th [hidden]="filterPatientDto.serviceMonth !== currentMonth">Quality Check</th> -->
+        <th [hidden]="true">Quality Check</th>
+        <!-- <th>Rpm Status</th> -->
+        <th>CF Name</th>
+        <th>CP Name</th>
+        <th>BP Name</th>
+        <!-- <th>Action</th> -->
+      </tr>
+    </thead>
+    <tbody>
+      <!-- <tr>
+        <td colspan="12" class="p-0">
+          <div class="d-flex justify-content-center text-center">
+            <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+          </div>
+        </td>
+      </tr> -->
+      <tr *ngFor="let row of rows; let i = index" [ngClass]="{disabledDiv: row.isDeleted}">
+        <!-- (click)="row.checked = !row.checked; selectRow(row)" -->
+        <td>
+          <div class="text-center">
+            <div class="custom-control custom-checkbox">
+              <input class="custom-control-input" type="checkbox" id="{{(i + 1) + rowIndex}}" [(ngModel)]="row.checked"
+                (click)="rowCheckBoxChecked($event, row)">
+              <label class="custom-control-label" for="{{(i + 1) + rowIndex}}"></label>
+            </div>
+          </div>
+        </td>
+        <td>
+          <small class="mr-3">{{(i + 1) + rowIndex}}</small>
+        </td>
+        <td class="position-relative">
+          <div class="d-flex justify-content-between align-items-center">
+            <!-- <small class="mr-3">{{(i + 1) + rowIndex}}</small> -->
+            <ng-container *ngIf="row.patientStatus == 1">
+              <span *ngIf="row.profileStatus" (click)="OpenEncounterLogsModal(row,openEncounterLogsModal)"
+                class="status-bullet bg-success" title="Profile Complete&#013;Click to see Logs History"></span>
+              <span *ngIf="!row.profileStatus" (click)="OpenEncounterLogsModal(row,openEncounterLogsModal)"
+                class="status-bullet bg-danger" title="Profile Incomplete&#013;Click to see Logs History"></span>
+            </ng-container>
+
+            <a class="mb-0 text-capitalize link text-dynamic-2c text-left ml-2" placement="right" container="body"
+              [mdbTooltip]="popTemplates" (mouseover)='delayForMouseOver(row.id)'
+              (mouseleave)="clearMouseInterval(row.id)" (click)="onClickRow(row, $event)"
+              [ngClass]="{rowBackgroundColorDiv: row.isDeleted}" style="white-space: nowrap; height: 36px; display: inline-flex;margin-right:10px;min-width: 101px;
+              align-items: center">
+              {{row.fullName}} </a>
+
+            <ng-template #popTemplates>
+              <div class="p-2">
+                <p class="mb-0  text-left"><strong>DOB:</strong> {{row.dateOfBirth | dateFormatPipe}} </p>
+                <p class="mb-2  text-left"><strong>EMR ID:</strong> {{row.patientEmrId}} </p>
+                <div *ngFor="let item of patientActieServicesDto.activeServices">
+                  <div class="mb-2" *ngIf="!isServiceLoad">
+                    <p class="mb-1 text-left" style="font-size: 14px;"><strong>{{item.serviceName}}</strong></p>
+                    <p class="mb-0 pl-1 text-left" style="font-size: 12px;"
+                      *ngIf="item.serviceName !== 'BHI' && item.serviceName !== 'RPM' && item.assignedDate">
+                      <strong>Assigned Date:</strong>
+                      {{item.assignedDate | dateFormatPipe}} </p>
+                    <p *ngIf="item.lastEncounterDate" class="mb-0 pl-1 text-left" style="font-size: 12px;"><strong>Last
+                        Encounter date:</strong>
+                      {{item.lastEncounterDate | dateFormatPipe}} </p>
+                    <p class="mb-0 pl-1 text-left" style="font-size: 12px;" *ngIf="item.updatedDate"><strong>Last
+                        Updated date:</strong> {{item.updatedDate | dateFormatPipe}} </p>
+                  </div>
+                </div>
+              </div>
+
+
+            </ng-template>
+
+
+            <ng-container *ngIf="row.patientStatus == 1">
+
+              <div class="user-name-list ml-auto">
+                <div class="app-new-primary-bg name-caption" title="Due Gaps Count: {{row.dueGapsCount}}"
+                  (click)="GetPatientDueCareGaps(row, pcmDueGapsModal);" >
+                  <span>{{row.dueGapsCount}}</span>
+                </div>
+              </div>
+              <div (click)="ChangeCcmFlag(row)" [class.checked]="row.ccmFlagged"
+                [style.border]="row.ccmFlagged ? '1px solid #4eb048' : '1px solid #d3d5d8'"
+                class="boxed-checkbox checked mx-2" title="CCM Flag" placement="right" container='body'>
+                <span [style.background]="row.ccmFlagged ? '#4eb048' : '#d3d5d8'"></span>
+              </div>
+              <button type="button" triggers="hover" class="btn btn-dynamic-2c btn-icon my-1 mr-0 hover-btn-inline">
+                <i class="fa fa-ellipsis-h"></i>
+              </button>
+              <div class="hover-body d-flex align-items-center">
+                <button class="btn btn-icon btn-dynamic-2c z-depth-0 flex-shrink-0 my-1  mr-0 ml-2"
+                  (click)="openPatientNote(row)" title="Quick Notes">
+                  <i class="fa fa-pencil"></i>
+                </button>
+                <button [disabled]="!row.isConsentTaken"
+                  class="btn btn-icon btn-dynamic-2c z-depth-0 flex-shrink-0 my-1 mr-0 ml-2" title="CCM Monthly Review"
+                  (click)="openMonthlyReview(row, $event)">
+                  <i class="fa fa-play"></i>
+                </button>
+                <button type="button" class="btn btn-icon btn-dynamic-2c z-depth-0 flex-shrink-0 my-1   mr-0 my-1"
+                  placement="right" title="Quick Encounter" (click)="selectModalList = 'ServiceTypes';getLogsByPatientAndMonthId(row.id);changeStatus(row);checkRevoked(row);">
+                  <i class="fa fa-bolt"></i>
+                </button>
+                <button type="button" class="btn btn-icon btn-dynamic-2c z-depth-0 flex-shrink-0 my-1   mr-0 my-1"
+                  title="Add Task" placement="right"
+                  (click)="addPTaskRef.CareProvidersList=CareProvidersList;addPTaskRef.OpenTaskViewModal(row)">
+                  <i class="fa fa-plus-circle"></i>
+                </button>
+                <button (click)="OpenQuickViewModal(row)" title="Patient Insights"
+                  class="btn btn-dynamic-2c btn-icon my-1 mr-0">
+                  <i class="fa fa-exclamation-circle"></i>
+                </button>
+                <button title="Consent" [class.status-primary]="row.isConsentTaken"
+                  [class.status-danger]="!row.isConsentTaken" class="btn btn-dynamic-2c btn-icon my-1 mr-0"
+                  routerLink="/admin/consentdoc/{{row.id}}">
+                  <i class="fa fa-clipboard"></i>
+                </button>
+                <!-- <button class="btn btn-icon btn-dynamic-2c z-depth-0 flex-shrink-0 my-1 mr-0 ml-2"
+                  title="Financial Hardship Form"
+                  (click)="sendToPatientModal.show();assignFinancialHardshipFormValue(row)">
+                  <i class="fa fa-file"></i>
+                </button> -->
+              </div>
+
+
+              <button type="button" class="btn btn-icon btn-dynamic-2c z-depth-0 flex-shrink-0  mr-0 my-1"
+                [class.status-danger]="row.complaintStatusColor === 1"
+                [class.status-warning]="row.complaintStatusColor === 2"
+                [class.status-primary]="row.complaintStatusColor === 3" title="Complaint Dialogue" placement="right"
+                (click)="openComplaintsModal(row)">
+                <i class="fa fa-bug"></i>
+              </button>
+            </ng-container>
+          </div>
+        </td>
+        <td class="text-center">
+          <ng-container *hasClaim="['ChatService','TelephonyCommunication']">
+            <button type="button" [class.btn-dynamic-2c]="row.telephonyCommunication" [class.btn-danger]="!row.telephonyCommunication"  class="btn  btn-icon my-1 position-relative">
+              <i (click)="getChatGroup(row, 2)" class="fa fa-comments"></i>
+              <div (click)="selectedPatient=row;OpenCCMEncounterModel()" class="comments-counts" *ngIf="row.unAssociatedCommunication > 0">{{row.unAssociatedCommunication}}</div>
+            </button>
+          </ng-container>
+        </td>
+        <td>
+          <div *ngIf="row.currentMonthCompletedTime >= '20'" style="width: 100px; height: 15px;" id="progress-bar">
+            <mdb-progress value="{{row.currentMonthCompletedTime}}" min="0" max="20" type="success">
+              <span class="min-label" data-label="min"> {{row.currentMonthCompletedTime}} </span>
+            </mdb-progress>
+          </div>
+          <div *ngIf="row.currentMonthCompletedTime < '20'" style="width: 100px; height: 15px;" id="progress-bar">
+            <mdb-progress value="{{row.currentMonthCompletedTime}}" min="0" max="20" type="primary">
+              <span class="min-label" data-label="min"> {{row.currentMonthCompletedTime}} </span>
+            </mdb-progress>
+          </div>
+        </td>
+        <td>
+          <div class="d-flex justify-content-start align-items-center" style="width: 135px;">
+            <ng-container *ngIf="CanEditAssignedDate || !row.dateAssigned">
+              <a class="" (click)="assignDate(row);changeStatus(row);assignedDateModal.show();" title="Assigned Date"><i
+                  class="fa fa-calendar text-dynamic-secondary-2c mr-1 fa-lg"></i></a>
+            </ng-container>
+            <span style="font-size: 14px;">{{row.dateAssigned | dateFormatPipe}}</span>
+          </div>
+        </td>
+        <td>
+          <div class="d-flex justify-content-between align-items-center" style="width: 150px;">
+            <a class="link {{row.hhcEndDateClass}}" [mdbTooltip]="ccmSTT" (mouseover)='delayForMouseOverCCMStatusToolTip(row.id)' (mouseleave)="clearMouseIntervalCCMStatusToolTip(row.id)"
+            placement="right" container="body" (click)="tempCcmStatusVal = row.ccmStatus ;changeStatus(row);selectModalList = 'ccmStatus'; ccmStatusModal.show();"
+            >{{ccmStatusEnum[row.ccmStatus] | ellipsis:15 }}</a>
+            <!-- <a class="link text-dynamic-2c" [title]="row.LastStatusChangedByNameAndDate"
+            (click)="changeStatus(row); tempCcmStatusVal = row.ccmStatus ;selectModalList = 'ccmStatus'; ccmStatusModal.show();"
+            title="{{ccmStatusEnum[row.ccmStatus]}}">{{ccmStatusEnum[row.ccmStatus] | ellipsis:15 }}</a> -->
+            <ng-template #ccmSTT>
+              <div class="p-2" >
+                <span *ngIf="loadingMRToolTip" class="mr-1 spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                <p class="mb-0  text-left" [innerHTML]="ccmSToolTip"> </p>
+              </div>
+            </ng-template>
+            <div>
+              <i class=" ml-2 fa fa-history mr-1 fa-lg text-dynamic-2c" style="cursor: pointer;" title="CCM Status History" (click)="getCcmStatusHistory(row.id)"></i>
+              <span *ngIf="filterPatientDto.serviceMonth !== currentMonth" class="status-bullet" [class.bg-success]="row.qualityCheckStatus == 0" [class.bg-danger]="row.qualityCheckStatus == 1" [class.bg-warning]="row.qualityCheckStatus == 2"
+              (click)="selectedPatient=row;openMonthlyReviewModal(row.id);" title="Monthly Review"></span>
+            </div>
+        </div>
+          </td>
+        <td>
+          <div
+           class="d-flex justify-content-between align-items-center" style="width: 120px;">
+          <p>{{row?.carePlanUpdatedDate | dateFormatPipe}}</p>
+          </div>
+        </td>
+        <td [hidden]="filterPatientDto.serviceMonth !== currentMonth" >
+          <div
+           class="d-flex justify-content-between align-items-center" style="width: 120px;">
+            <a [mdbTooltip]="ccmMSTT" (mouseover)='delayForMouseOverMRToolTip(row.id)' (mouseleave)="clearMouseIntervalMRToolTip(row.id)"
+            placement="right" container="body" class="link text-dynamic-2c"
+              (click)="changeStatus(row); selectModalList = 'ccmMonthlyStatus'; ccmStatusModal.show();"
+              >{{ccmMonthlyStatusEnum[row.ccmMonthlyStatus] |
+              ellipsis:15 }}</a>
+            <ng-template #ccmMSTT>
+              <div class="p-2" >
+                <span *ngIf="loadingMRToolTip" class="mr-1 spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                <p class="mb-0  text-left" [innerHTML]="ccmMSToolTip"> </p>
+              </div>
+            </ng-template>
+            <span *ngIf="filterPatientDto.serviceMonth == currentMonth" class="status-bullet" [class.bg-success]="row.qualityCheckStatus == 0" [class.bg-danger]="row.qualityCheckStatus == 1" [class.bg-warning]="row.qualityCheckStatus == 2"
+              (click)="selectedPatient=row;openMonthlyReviewModal(row.id);" title="Monthly Review"></span>
+          </div>
+        </td>
+        <td>
+          {{row.lastCcm}}
+        </td>
+        <td>
+          <ng-container >
+            <a class="" (click)="lastVisitAssignDate(row);changeStatus(row);pcpAppointmentDateModal.show();" title="Last Visit Date"><i
+                class="fa fa-calendar text-dynamic-secondary-2c mr-1 fa-lg"></i></a>
+          </ng-container>
+          <span style="font-size: 14px;">{{row.recentPcpAppointment | dateFormatPipe}}</span>
+
+          <!-- {{row.recentPcpAppointment | dateFormatPipe}} -->
+        </td>
+        <!-- <td [hidden]="filterPatientDto.serviceMonth !== currentMonth"> -->
+        <td [hidden]="true">
+          <div class="user-name-list" *ngIf="row.msQualityCheckedByNameAbbreviation">
+            <div [title]="row.msQualityCheckedByNameAndDate" class="name-caption">
+              <span>{{row.msQualityCheckedByNameAbbreviation}}</span>
+            </div>
+          </div>
+        </td>
+        <!-- <td>
+          <a class="link text-dynamic-2c"
+            (click)="changeStatus(row); selectModalList = 'rpmStatus'; ccmStatusModal.show();" title="Change RPM Status">{{rpmStatusEnum[row.rpmStatus]}}</a>
+        </td> -->
+        <td>
+          <!-- {{row.careFacilitatorName}} -->
+          <div class="user-name-list" *ngIf="row.careFacilitatorNameAbbreviation">
+            <div title="{{row.careFacilitatorName}}" class="name-caption">
+              <span>{{row.careFacilitatorNameAbbreviation}}</span>
+            </div>
+          </div>
+        </td>
+        <td>
+          <div class="user-name-list">
+            <div title="{{item.fullName}}" class="name-caption" *ngFor="let item of row.careProviders">
+              <span>{{item['nameAbbreviation']}}</span>
+            </div>
+          </div>
+        </td>
+        <td>
+          <div class="user-name-list" *ngIf="row.billingProviderNameAbbreviation">
+            <div title="{{row.billingProviderName}}" class="name-caption"
+              *ngFor="let item of generateBillingProvidersCaption(row.billingProviderName)">
+              <span>{{row.billingProviderNameAbbreviation}}</span>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+    <tbody *ngIf="rows.length === 0">
+      <td class="bg-white p-3 text-danger" colspan="12">No Record Found</td>
+    </tbody>
+  </table>
+
+</div>
+
+<div mdbModal #clickOnRow="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myBasicModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog flat-modal" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+
+        <h4 class="modal-title w-100 text-center" id="myModalLabel">Incomplete
+          Profile
+        </h4>
+      </div>
+      <div class="modal-body">
+        <p class="text-center">
+          <i class="fa fa-exclamation-triangle text-danger" style="font-size: 3rem;"></i>
+        </p>
+
+        <p class="text-center">
+          Patient profile looks incomplete. <br> Would you like to edit patient profile?
+        </p>
+
+        <!-- Some required fields are missing.Please enter that data first. -->
+        <div class="d-flex justify-content-center mt-3">
+          <button type="button" (click)="addRequiredData()" class="relative btn btn-sm btn-dynamic-secondary-2c"
+            mdbWavesEffect>YES</button>
+          <button type="button" class="btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+            (click)="clickOnRow.hide()">NO</button>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<div mdbModal #unApprovedCarePLanModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <!-- <button type="button" class="close pull-right" aria-label="Close" (click)="unApprovedCarePLanModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel"><i class="fa fa-exclamation-triangle yellow-text"></i>Unapproved
+          Profile
+        </h4> -->
+        <h4 class="modal-title w-100 text-center" id="myModalLabel">Unapproved Profile
+        </h4>
+      </div>
+      <div class="modal-body">
+        <!-- Care Plan is not approved by Billing Provider. -->
+        <p class="text-center"><i class="fa fa-exclamation-triangle text-danger" style="font-size: 3rem;"></i> </p>
+        <p class="text-center"> Care Plan is not approved by Billing Provider.</p>
+      </div>
+      <div class="modal-footer">
+        <button  type="button"  class="waves-light btn-sm btn btn-sm btn-dynamic-2c"
+          aria-label="Close" (click)="approveCarePlanLink()" mdbWavesEffect>Approve</button>
+        <button type="button" class="waves-light btn btn-sm btn-dynamic-2c" *ngIf="profileStatus" aria-label="Close"
+          (click)="ProceedToCCm()" mdbWavesEffect>Proceed</button>
+        <button type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+          (click)="unApprovedCarePLanModal.hide()" mdbWavesEffect>Cancel</button>
+        <!-- <button type="button" mdbBtn color="priary" (click)="addRequiredData()" class="relative waves-light"
+          mdbWavesEffect>Add Data</button> -->
+      </div>
+    </div>
+  </div>
+</div>
+<div mdbModal #assignedDateModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+   aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title w-100 text-center" id="myModalLabel">Assigned Date
+        </h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class=" form-group mt-3">
+              <label class="w-100">Patient Assigned Date<small class="text-danger">*</small></label>
+              <input type="text" [(ngModel)]="assignedDateProp" class="form-control form-control-sm"
+                #dateDPicker="dpDayPicker" [dpDayPicker]="assignedDatePickerConfig" placeholder="YYYY-MM-DD"
+                [theme]="'dp-material ccm-date-picker'" [mode]="'day'" />
+              <!-- <mdb-date-picker #datPickerRef class="custom-datepicker" [options]="myDatePickerOptions"
+                [(ngModel)]="assignedDateProp" [outlineInput]="true" [inline]="true" name="mydate"
+                [placeholder]="'Patient Assiged Date'">
+              </mdb-date-picker> -->
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" [disabled]="!assignedDateProp ||assigningDate" class="waves-light btn btn-sm btn-dynamic-2c"
+          aria-label="Close" (click)="SaveAssignedDate(assignedDateModal);" mdbWavesEffect> <span *ngIf="assigningDate"
+            class="mr-1 spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Save</button>
+        <button type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+          (click)="assignedDateModal.hide()" mdbWavesEffect>Close</button>
+        <!-- <butmdbModalton type="button" mdbBtn color="prmary" (click)="addRequiredData()" class="relative waves-light"
+          mdbWavesEffect>Add Data</button> -->
+      </div>
+    </div>
+  </div>
+</div>
+<div mdbModal #pcpAppointmentDateModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+   aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title w-100 text-center" id="myModalLabel">Last Visit Date
+        </h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class=" form-group mt-3">
+              <label class="w-100">Last Visit Date<small class="text-danger">*</small></label>
+              <input type="text" [(ngModel)]="lastVisitDateProp" class="form-control form-control-sm"
+                #dateDPicker="dpDayPicker" [dpDayPicker]="lastVisitDatePickerConfig" placeholder="YYYY-MM-DD"
+                [theme]="'dp-material ccm-date-picker'" [mode]="'day'" />
+              <!-- <mdb-date-picker #datPickerRef class="custom-datepicker" [options]="myDatePickerOptions"
+                [(ngModel)]="assignedDateProp" [outlineInput]="true" [inline]="true" name="mydate"
+                [placeholder]="'Patient Assiged Date'">
+              </mdb-date-picker> -->
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" [disabled]="!lastVisitDateProp ||lastVisitAssigningDate" class="waves-light btn btn-sm btn-dynamic-2c"
+          aria-label="Close" (click)="SaveLastVisitDate(pcpAppointmentDateModal);" mdbWavesEffect> <span *ngIf="lastVisitAssigningDate"
+            class="mr-1 spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Save</button>
+        <button type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+          (click)="pcpAppointmentDateModal.hide()" mdbWavesEffect>Close</button>
+        <!-- <butmdbModalton type="button" mdbBtn color="prmary" (click)="addRequiredData()" class="relative waves-light"
+          mdbWavesEffect>Add Data</button> -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<div mdbModal #assignCareProviderModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg flat-modal" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="assignCareProviderModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100">Assign</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <!-- <div class="col-sm-12 mb-2">
+            <small class="text-dynamic-2c text-uppercase font-500">User Information</small>
+          </div> -->
+          <div class="col-sm-12 w-100 mb-2"
+            *ngIf="selectedPatientsCareProvidersList && selectedPatientsCareProvidersList.length > 0">
+            <div class="file-field d-flex flex-wrap align-items-center">
+              <div *ngFor="let careProvider of selectedPatientsCareProvidersList" class="file-item">
+                <small class="mb-0">{{careProvider.fullName}}<a
+                    (click)="deSelectPatientCareProviders(careProvider.careProviderId)"><i
+                      class="ml-2 fa fa-times fa-lg text-danger"></i>
+                  </a></small>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-12">
+            <div class="form-group">
+              <label for="practiceName">Care Provider</label>
+              <ng-select class="ng-select-small"
+                [(ngModel)]="assignRemoveCareProvidersToPatientsDto.careProviderIdsToAssign" [closeOnSelect]="true"
+                [multiple]="true" [searchable]="true" placeholder="Care Provider">
+                <ng-option *ngFor="let item of CareProvidersList" [value]="item.id">{{item.lastName}},{{item.firstName}}
+                </ng-option>
+              </ng-select>
+            </div>
+          </div>
+          <div class="col-sm-12">
+            <div class="form-group">
+              <label for="practiceName">Care Facilitator</label>
+              <ng-select class="ng-select-small" [(ngModel)]="assignRemoveCareProvidersToPatientsDto.careFacilitatorId"
+                [closeOnSelect]="true" [multiple]="false" [searchable]="true" placeholder="Care Facilitator">
+                <ng-option [value]="0">Select Care Facilitator</ng-option>
+                <ng-option [value]="-1">Remove All</ng-option>
+                <ng-option *ngFor="let item of CareFacilitatorsList" [value]="item.id">{{item.lastName}},{{item.firstName}}
+                </ng-option>
+              </ng-select>
+            </div>
+          </div>
+          <div class="col-sm-12">
+            <div class="form-group">
+              <label class="w-100">Patient Assigned Date</label>
+              <!-- <mdb-date-picker #datPickerRef class="custom-datepicker" [options]="myDatePickerOptions"
+                [(ngModel)]="assignRemoveCareProvidersToPatientsDto.dateAssigned" [outlineInput]="true" [inline]="true" name="mydate215"
+                [placeholder]="'Patient Assiged Date'">
+              </mdb-date-picker> -->
+
+              <input type="text" class="form-control form-control-sm" #dateDPicker="dpDayPicker"
+                [dpDayPicker]="datePickerConfig2" placeholder="MM-DD-YYYY"
+                [(ngModel)]="assignRemoveCareProvidersToPatientsDto.dateAssigned"
+                [theme]="'dp-material ccm-date-picker'" [mode]="'day'" [appendTo]="'body'" />
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-dynamic-2c btn-sm"
+          (click)="assignCareProviderModal.hide();assignRemoveCareProvidersToPatients(null);">Save</button>
+        <!-- <button type="submit" class="btn btn-dynamic-2c btn-sm"
+            (click)="clearCareProviders()">Clear</button> -->
+        <button type="button" class="btn btn-dynamic-secondary-2c btn-sm" (click)="assignCareProviderModal.hide()">Clear</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<div mdbModal #deletePatientModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-md flat-modal modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="deletePatientModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100">Delete Patient</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-12">
+
+            <div class="alert alert-danger" role="alert">
+
+              <p class="mb-0" style="font-size: 14px;">Only delete the patient in case the patient was added
+                erroneously
+                or there is a duplicate record.<br>
+                For any other reason please change the CCM status of the patient.
+                Deleted patients will be erased from the database along with their previous records. In most cases
+                changing status is
+                more appropriate. Never delete the patient with current month activity else it will affect the
+                invoice,
+                please contact
+                support for appropriate action.
+              </p>
+            </div>
+
+          </div>
+          <!-- <div class="col-sm-12 mb-2">
+            <small class="text-dynamic-2c text-uppercase font-500">User Information</small>
+          </div> -->
+          <div class="col-sm-12">
+            <div class="form-group">
+              <label for="practiceName">Delete Status <sup class="text-danger">*</sup></label>
+              <ng-select class="ng-select-small" [(ngModel)]="deletePatientDto.reasonDeleted" [multiple]="false"
+                [searchable]="true" placeholder="Status">
+                <ng-option [value]="0">None</ng-option>
+                <ng-option [value]="1">Deceased </ng-option>
+                <ng-option [value]="2">Duplicate Entry </ng-option>
+                <ng-option [value]="3">Added Erronously </ng-option>
+                <ng-option [value]="4">Deactivated </ng-option>
+                <ng-option [value]="5">Unable To Contact </ng-option>
+              </ng-select>
+            </div>
+
+            <div class="form-group">
+              <label for="reason">Reason <sup class="text-danger">*</sup></label>
+              <textarea type="text" id="reason" rows="15" [(ngModel)]="deletePatientDto.reasonDeleteDetails"
+                placeholder="Reason" class="form-control" style="height: 150px;"></textarea>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-dark btn-sm" (click)="deletePatientModal.hide()">Close</button>
+        <button type="submit" class="btn btn-dynamic-2c btn-sm" (click)="deletePatientModal.hide();deletePatient()"
+          [disabled]="!deletePatientDto.reasonDeleted || !deletePatientDto.reasonDeleteDetails">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div mdbModal #addEncounterModal="mdbModal"  class="modal fade"
+  tabindex="-1" role="dialog" aria-labelledby="myroleManagementModalLabel" aria-hidden="true" (open)="ccmEncounterModalOpened()" (closed)="ResetStopWatch()">
+  <div class="modal-dialog modal-md modal-dialog-centered modal-dialog-scrollable " style="max-width: 650px;" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="addEncounterModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">Quick Encounter</h4>
+      </div>
+
+      <div class="modal-body" *ngIf="addEncounterModal.isShown">
+        <div class="row">
+          <!-- <div class="col-sm-12 mb-2">
+            <small class="text-dynamic-2c text-uppercase font-500">User Information</small>
+          </div> -->
+          <div class="col-sm-12" *ngIf="securityService && securityService.securityObject.fullName">
+            <p><strong>Provider Name</strong> {{securityService.securityObject.fullName}}</p>
+          </div>
+
+          <div class="col-sm-6">
+            <label>Service Name</label>
+            <div class="form-group">
+              <ng-select [searchable]="true"  [(ngModel)]="ccmEncounterListDto.ccmServiceTypeId"
+                (ngModelChange)="AssignValueCcmService();this.calculateEndtime()" style="font-size: 12px;" class="w-100 ng-select-small"
+                placeholder="Select Service Type" (click)="$event.stopPropagation();">
+                <ng-option [value]="8">Discussion with Provider/Patient/Family</ng-option>
+                <ng-option [value]="12">ePrescribe</ng-option>
+                <ng-option [value]="18">Lab test results discussed with patients</ng-option>
+                <ng-option [value]="19">Lab/Radiology Orders</ng-option>
+                <ng-option [value]="35">Preauthorization</ng-option>
+                <ng-option [value]="40">Referrals</ng-option>
+                <ng-option [value]="27">Other</ng-option>
+              </ng-select>
+            </div>
+          </div>
+          <div class="col-sm-6 pl-sm-0">
+            <div class="input-group">
+              <label class="w-100">Date<sup class="text-danger">*</sup></label>
+              <input type="text" class="form-control form-control-sm" #dateDPicker="dpDayPicker"
+                 [dpDayPicker]="datePickerConfig1" [(ngModel)]="ccmEncounterListDto.encounterDate"
+                [theme]="'dp-material ccm-date-picker'" [mode]="'daytime'" />
+                <a class="input-group-append">
+                  <span class="input-group-text text-white bg-dynamic-2c" id="category">
+                    <i class="fa fa-calendar fa-lg"></i>
+                  </span>
+                </a>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group d-flex flex-wrap">
+              <label class="w-100">Start Time <small class="text-info" *ngIf="ccmEncounterListDto.startTime">{{('6/15/15
+                  ' + ccmEncounterListDto.startTime) | date: 'shortTime'}}</small></label>
+              <!-- <input type="text" class="form-control form-control-sm bg-white" readonly #dateDpTime="dpDayPicker"
+                [dpDayPicker]="timePickerConfig" [(ngModel)]="ccmEncounterListDto.startTime"
+                (ngModelChange)="calculateDuration()" [theme]="'dp-material ccm-date-picker'" [mode]="'time'" /> -->
+              <input type="text" [(ngModel)]="ccmEncounterListDto.startTime" (onChange)="calculateDuration()"
+                class="form-control form-control-sm bg-white" #dateDpTime="dpDayPicker" [dpDayPicker]="timePickerConfig"
+                [theme]="'dp-material ccm-date-picker'" [mode]="'time'" />
+            </div>
+          </div>
+          <div class="col-sm-3  pl-sm-0">
+            <div class="form-group d-flex flex-wrap">
+              <label class="w-100">End Time <small class="text-info" *ngIf="ccmEncounterListDto.startTime">{{('6/15/15 '
+                  + ccmEncounterListDto.endTime) | date: 'shortTime'}}</small></label>
+              <input type="text" readonly class="form-control form-control-sm" [(ngModel)]="ccmEncounterListDto.endTime"
+                placeholder="End Time" />
+            </div>
+          </div>
+
+          <div class="col-sm-3 pl-sm-0">
+            <div class="form-group">
+              <label for="isChronic">Duration</label>
+              <input type="text" [(ngModel)]="ccmEncounterListDto.duration" class="form-control form-control-sm"
+                id="isChronic" (input)="durationChanged(ccmEncounterListDto.duration)" placeholder="in minutes">
+            </div>
+          </div>
+          <div class="col-sm-3  pl-sm-0">
+            <div class="form-group flex-grow-1">
+              <label for="endTime">Timer</label>
+              <div class="d-flex">
+                <input type="text" id="stopwatchFieldCCM1"
+                class="form-control form-control-sm text-dynamic-secondary-2c" placeholder="00:00:00">
+                <button *ngIf="stopWatchInterval" class="btn btn-dynamic-2c my-0 mr-0 px-2 btn-sm " (click)="ResetStopWatch()">Stop </button>
+                <button *ngIf="!stopWatchInterval" class="btn btn-dynamic-2c my-0 mr-0 px-2 btn-sm " (click)="startStopWatch()">Start </button>
+
+              </div>
+
+            </div>
+          </div>
+          <div class="col-sm-12">
+            <div class="form-group">
+              <label for="formmm7">Note<sup class="text-danger">*</sup></label>
+              <app-two-c-text-area #myFIeldRefRPM [value]="ccmEncounterListDto.note" [height]="'140px'" [PatientId]="ccmEncounterListDto.patientId" (valueChanged)="ccmEncounterListDto.note=$event"></app-two-c-text-area>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div
+            *ngIf="!PatientEncounterMonthlyStatusAcknowledge || (PatientEncounterMonthlyStatus === ccmMonthlyStatusEnum['Not Started']) || !ccmEncounterListDto.duration">
+            <div #alert class="alert mb-1 alert-warning alert-dismissible animated fade show" role="alert">
+              <strong
+                *ngIf="!PatientEncounterMonthlyStatusAcknowledge || (PatientEncounterMonthlyStatus === ccmMonthlyStatusEnum['Not Started'])">Acknowledge/update
+                monthly status to save</strong>
+              <br
+                *ngIf="!PatientEncounterMonthlyStatusAcknowledge || (PatientEncounterMonthlyStatus === ccmMonthlyStatusEnum['Not Started']) && !ccmEncounterListDto.duration">
+              <strong *ngIf="!ccmEncounterListDto.duration">Encounter duration is not valid.</strong>
+            </div>
+          </div>
+        </div>
+        <!-- <div #alert *ngIf="showAlertFEncounter" class="alert alert-warning alert-dismissible animated fade show"
+          role="alert">
+          <button type="button" class="close" aria-label="Close" >
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <strong>End Time must be greater than Start Time!</strong>
+        </div> -->
+      </div>
+      <div class="modal-footer d-block ">
+
+        <div class="d-flex align-items-center justify-content-between">
+          <div>
+            <div class="d-flex align-items-center  p-1">
+              <p class="m-0">Monthly Status:</p>
+              <div style="padding: 2px;" class=" ml-3 border rounded"
+                [class.border-success]="PatientEncounterMonthlyStatusAcknowledge && (PatientEncounterMonthlyStatus !== ccmMonthlyStatusEnum['Not Started'])"
+                [class.border-warning]="!PatientEncounterMonthlyStatusAcknowledge || (PatientEncounterMonthlyStatus === ccmMonthlyStatusEnum['Not Started'])">
+                <div class="btn-group cursor-pointer" mdbDropdown>
+                  <mdb-badge style="line-height: 14px;" mdbDropdownToggle success="true"
+                    (click)="PatientEncounterMonthlyStatusAcknowledge=true;">{{PatientEncounterMonthlyStatusTExt}}
+                  </mdb-badge>
+
+                  <div class="dropdown-menu status-dropdown" style="    bottom: 50px;top: unset;left: -3px;">
+                    <div>
+                      <!-- <span [ngStyle]="{'backgroupcmMOdelDatand': item.color}"></span> -->
+                      <a [class.active]="PatientEncounterMonthlyStatus === value"
+                        (click)="changeMonthlyStatus(item)"
+                        *ngFor="let item of CcmMonthlyStatusList" class="dropdown-item">{{item.name}}</a>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <button type="submit" class="btn btn-dynamic-2c btn-sm"
+            [disabled]="isLoading || !ccmEncounterListDto.note?.length ||!PatientEncounterMonthlyStatusAcknowledge || (PatientEncounterMonthlyStatus === ccmMonthlyStatusEnum['Not Started']) || !ccmEncounterListDto.duration"
+            (click)="addEncounter()"><span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status"
+              aria-hidden="true"></span>
+            Add</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<div mdbModal #ccmStatusModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true" mdbTableScroll (close)="clearCCMStatusChangeDtoValues()">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="ccmStatusModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" *ngIf="selectModalList === 'ccmStatus'" id="myModalLabel">CCM Status</h4>
+        <h4 class="modal-title w-100" *ngIf="selectModalList === 'ccmMonthlyStatus'" id="myModalLabel">CCM Monthly
+          Status</h4>
+        <h4 class="modal-title w-100" *ngIf="selectModalList === 'rpmStatus'" id="myModalLabel">RPM
+          Status</h4>
+        <h4 class="modal-title w-100" *ngIf="selectModalList === 'ServiceTypes'" id="myModalLabel">Service Name</h4>
+      </div>
+      <div class="modal-body">
+        <div *ngIf="selectModalList === 'ccmStatus'">
+          <ul class="status-list">
+            <li *ngFor="let item of ccmStatusList" [class.active]="tempCcmStatusVal=== item.value"> <a
+                class="link"
+                (click)="ccmStatusChangeDto.newStatusValue = item.value;tempCcmStatusVal=item.value">{{item.text}}
+              </a>
+            </li>
+          </ul>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="ml-1 form-group mt-2 mb-2">
+                <textarea name="status" id="" cols="30" rows="10" class="form-control form-control-sm"
+                  [(ngModel)]="ccmStatusChangeDto.reason" id="medName" placeholder="Reason"></textarea>
+              </div>
+            </div>
+            <div class="col-md-12" *ngIf="tempCcmStatusVal==25">
+              <div class="form-group ml-1 ">
+                <div class="d-flex justify-content-between align-items-center">
+                  <label class="mb-0"><strong>Duration</strong></label>
+                  <div class="ml-1">
+                    <div class="custom-control custom-checkbox">
+                      <input class="custom-control-input" [checked]="!ccmStatusChangeDto.hhcEndDate" (change)="ccmStatusChangeDto.hhcEndDate=''" type="checkbox" id="selectd" >
+                      <label class="custom-control-label" for="selectd">Not Known</label>
+                    </div>
+                  </div>
+                </div>
+                <input type="text" class="form-control form-control-sm" [(ngModel)]="ccmStatusChangeDto.hhcEndDate"
+                #dateDPicker="dpDayPicker" [dpDayPicker]="assignedDatePickerConfig" placeholder="YYYY-MM-DD"
+                [theme]="'dp-material ccm-date-picker'" [mode]="'day'" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="selectModalList === 'ccmMonthlyStatus'">
+          <ul class="status-list">
+            <li *ngFor="let item of ccmMonthlyStatusEnumList"
+              [class.active]="selectedPatient.ccmMonthlyStatus === item.number"
+              (click)="AssignCcmMonthlyStatus(item.number)"> <a class="link">{{item.word}}
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div *ngIf="selectModalList === 'rpmStatus'">
+          <ul class="status-list">
+            <li *ngFor="let item of rpmStatusList" [class.active]="selectedPatient.rpmStatus=== item.value"> <a
+                class="link"
+                (click)="selectedPatient.rpmStatus= item.value;rpmStatusChangeDto.newStatusValue = item.value;AssignRPMStatus(selectedPatient.id) ">{{item.text}}
+              </a>
+            </li>
+          </ul>
+
+          <!-- <ul *ngFor="let item of rpmStatusEnumList">
+            <li [class.active]="selectedPatient.rpmStatus === item.number" (click)=" AssignRPMStatus(item)"> <a
+                >{{item.word}}
+              </a>
+            </li>
+          </ul> -->
+        </div>
+        <div *ngIf="selectModalList === 'ServiceTypes'">
+          <ul class="status-list">
+            <li *ngFor="let item of serviceTypes"> <a class="link"
+                (click)="resetCcmEncounterlist();ccmEncounterListDto.ccmServiceTypeId = item.id;ccmStatusModal.hide();AssignValueCcmService();addEncounterModalFn();calculateEndtime();">{{item.name}}
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button [disabled]="isChangingCCMStatus" *ngIf="selectModalList === 'ccmStatus'" [disabled]="!ccmStatusChangeDto.reason" type="button"  class="waves-light btn btn-sm btn-dynamic-2c"
+        aria-label="save" mdbWavesEffect (click)="AssignCcmStatus(selectedPatient.id)" > <span *ngIf="isChangingCCMStatus"  class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>  Save</button>
+        <button type="button" (click)="ccmStatusModal.hide()" class="waves-light btn btn-sm btn-dynamic-secondary-2c"
+          aria-label="Close" mdbWavesEffect>Cancel</button>
+        <!-- <button type="button" mdbBtn color="priary" (click)="addRequiredData()" class="relative waves-light"
+          mdbWavesEffect>Add Data</button> -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-add-task #addPTaskRef></app-add-task>
+
+
+<div mdbModal #pcmDueGapsModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="mypcmDueGapsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content ">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="pcmDueGapsModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">Due Gaps</h4>
+      </div>
+      <div class="modal-body" style="height: 350px;overflow-y: auto;" *ngIf="pcmDueGapsModal.isShown">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="table-responsive">
+
+              <table class="table table-striped table-hover mb-0">
+                <thead class="bg-dynamic-secondary-2c white-text">
+                  <tr>
+                    <th>Measure Name </th>
+                    <th>Status</th>
+                    <th>Last Done</th>
+                    <th>Next Due</th>
+                    <th>Note</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <ng-container *ngFor="let item of dueGapsList">
+                    <tr>
+                      <td>{{item.measureName}}</td>
+                      <td>
+                        <span class="badge status status-{{item.color ? item.color : 'primary'}}">{{ item['cStatus']
+                          }}</span>
+                      </td>
+                      <td style="min-width:120px">{{item.lastDone | dateFormatPipe}}</td>
+                      <td style="min-width:120px">{{item.nextDue | dateFormatPipe}}</td>
+                      <td style="min-width: 150px;"><textarea (blur)="UpdateDueGapeNote(item)" rows="1"
+                          [(ngModel)]="item.note" class="form-control"></textarea></td>
+                    </tr>
+                  </ng-container>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+        <ng-container *ngIf="gettingDueGaps;then loadingSkelton"></ng-container>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+          (click)="pcmDueGapsModal.hide()" mdbWavesEffect>Close</button>
+
+      </div>
+    </div>
+  </div>
+</div>
+<ng-template #loadingSkelton>
+  <div class="row">
+    <div class="col-sm-12 p-0">
+      <skltn-root duration="2000" [rectRadius]="0" flareWidth="50%" bgFill="#f2f3f8" flareFill="rgba(255,255,255, 0.5)">
+        <!-- Card with Avatar -->
+        <div class="p-3">
+          <div class="skltn-card">
+            <div class="skltn-card__body">
+              <div skltn-bone class="skltn-card__line"></div>
+              <div skltn-bone class="skltn-card__line"></div>
+              <div skltn-bone class="skltn-card__line"></div>
+              <div skltn-bone class="skltn-card__line"></div>
+            </div>
+          </div>
+        </div>
+      </skltn-root>
+    </div>
+  </div>
+  <!-- </div> -->
+</ng-template>
+
+<div mdbModal #IsRevokedModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog flat-modal" role="document">
+    <div class="modal-content">
+      <!-- <div class="modal-header">
+
+        <h4 class="modal-title w-100 text-center" id="myModalLabel">
+        </h4>
+      </div> -->
+      <div class="modal-body">
+        <p class="text-center">
+          <i class="fa fa-exclamation-triangle text-danger" style="font-size: 3rem;"></i>
+        </p>
+
+        <p class="text-center">
+          Patient CCM Consent is revoked. <br> this patient is not eligible for this work.
+        </p>
+
+        <!-- Some required fields are missing.Please enter that data first. -->
+        <div class="d-flex justify-content-center mt-3">
+          <!-- <button type="button" mdbBtn color="priary" size="sm" (click)="addRequiredData()" class="relative"
+            mdbWavesEffect>YES</button> -->
+          <button type="button" class="btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+            (click)="IsRevokedModal.hide()">OK</button>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<div mdbModal #openEncounterLogsModal="mdbModal" class="modal fade" id="frameModalTop" tabindex="-1" role="dialog"
+  aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl mt-2" role="document">
+
+    <!--Content-->
+    <div class="modal-content">
+
+      <!--Body-->
+      <div class="modal-body mb-0 p-0" *ngIf="openEncounterLogsModal.isShown">
+        <div class="embed-responsive embed-responsive-16by9 z-depth-1-half" style="height: calc(100vh - 20px);">
+          <iframe class="embed-responsive-item" [src]="ccmLogsModalLink" allowfullscreen></iframe>
+        </div>
+      </div>
+
+    </div>
+    <!--/.Content-->
+
+  </div>
+</div>
+
+<div mdbModal #sendToPatientModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true" (close)="clearFinancialHardshipFormValues()" >
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="sendToPatientModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">Send to Patient</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-sm-12">
+            <div class="form-group">
+              <label for="defaultLoginFormsignature">Email</label>
+              <div class="d-flex">
+                <input [disabled]="hasEmail" type="email" [(ngModel)]="financialFormSendToPatientDto.email" name="email"
+                  autocomplete="new-email" id="defaultLoginFormemail" class="form-control form-control-sm"
+                  placeholder="Email">
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-12 col-md-12 col-sm-12">
+            <div class="form-group">
+              <label for="defaultLoginFormsignature">Phone</label>
+              <div class="d-flex">
+                <input [disabled]="hasPhoneNo" type="Phone" mask="(000)000-0000" [(ngModel)]="financialFormSendToPatientDto.phoneNo" name="Phone"
+                  autocomplete="new-Phone" id="defaultLoginFormPhone" class="form-control form-control-sm"
+                  placeholder="Phone">
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-12 col-md-12 col-sm-12">
+            <div class="file-field flex-wrap align-items-center">
+              <div class="btn btn-success btn-icon mx-0 mt-0">
+                <span class="w-100"><i class="fa fa-paperclip"></i></span>
+                <input type="file" mdbFileSelect #select (change)="onUploadOutput($event);">
+              </div>
+              <div class="file-path-wrapper">
+                <input *ngIf="financialFormSendToPatientDto.documentTitle"
+                  class="file-path" type="text" class="form-control form-control-sm" readonly
+                  placeholder="Upload your file" [value]="financialFormSendToPatientDto.documentTitle">
+                <input *ngIf="!financialFormSendToPatientDto.documentTitle" class="file-path" type="text"
+                  class="form-control form-control-sm " placeholder="Upload your file" [value]="">
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-12 col-md-12 col-sm-12" *ngIf="financialFormSendToPatientDto.documentTitle">
+            <div class="card d-flex px-3 py-2 justify-content-between align-items-center" style="flex-direction: row;">
+              <div class="d-inline-flex align-items-center">
+                <span class="fa fa-2x text-dynamic-2c fa-file mr-2"></span>
+                <h6 style="font-weight:500 ;font-size: 13px;" class="m-0">{{financialFormSendToPatientDto.documentTitle}}</h6>
+              </div>
+              <div style="cursor:pointer" (click)="financialFormSendToPatientDto.documentTitle= '';financialFormSendToPatientDto.documentLink= '';">
+                <i class="fa fa-times fa-lg"></i>
+              </div>
+            </div>
+          </div>
+          <p ></p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button"  class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+          (click)="sendToPatientModal.hide()" mdbWavesEffect>Close</button>
+        <button
+          [disabled]="sendingToPatient || uploadingDocument || !financialFormSendToPatientDto.documentTitle ||(!financialFormSendToPatientDto.email && !financialFormSendToPatientDto.phoneNo)"
+          (click)="uploadFinancialFormToS3()" type="button"
+          class="relative waves-light btn btn-dynamic-2c btn-sm" mdbWavesEffect>
+          <span *ngIf="sendingToPatient || uploadingDocument" class="spinner-border spinner-border-sm" role="status"
+            aria-hidden="true"></span>
+          Send</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div mdbModal #ccmStatusHistoryModal="mdbModal" class="modal fade bottom" tabindex="-1" role="dialog"
+  aria-labelledby="addDepartmentLabel" aria-hidden="true" [config]="{backdrop: true, ignoreBackdropClick: true}">
+  <div class="modal-dialog modal-680 modal-dialog-scrollable" role="document">
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="ccmStatusHistoryModal.hide() ">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">CCM Status History</h4>
+      </div>
+      <div class="modal-body">
+        <div>
+          <div class=" timeline-main toDoList type-action-1"  *ngFor="let ccmStatus of ccmStatusHistoryList">
+              <div class="timeline-item "  >
+                  <div class="mb-2 d-flex justify-content-between align-items-center">
+                      <p class="mb-0"><span class="fa fa-user fa-lg mr-2"></span><strong>{{ccmStatus.updatedBy}}</strong> changed the status to <strong>{{ccmStatusEnum[ccmStatus.status]}}</strong></p>
+                      <small *ngIf="ccmStatus.status== 7 || ccmStatus.status== 19 || ccmStatus.status== 27" class="badge badge-success">{{ccmStatusEnum[ccmStatus.status]}}</small>
+                      <small *ngIf="ccmStatus.status== 0 || ccmStatus.status== 4 || ccmStatus.status== 6 || ccmStatus.status== 12 || ccmStatus.status== 24" class="badge badge-warning">{{ccmStatusEnum[ccmStatus.status]}}</small>
+                      <small *ngIf="ccmStatus.status== 5 || ccmStatus.status== 17 || ccmStatus.status== 18 || ccmStatus.status== 25" class="badge badge-danger">{{ccmStatusEnum[ccmStatus.status]}}</small>
+                  </div>
+                  <p> <span class="fa fa-comment fa-lg mr-2"></span> <strong>Reason:</strong> {{ccmStatus.reason}}</p>
+              </div>
+              <div class="date-time">
+                  <p class="mb-0">{{ccmStatus.updatedDateTime | dateFormatPipe}}</p>
+              </div>
+          </div>
+      </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-dark btn-sm" aria-label="Close"
+          (click)="ccmStatusHistoryModal.hide()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<app-ccm-quality-check></app-ccm-quality-check>

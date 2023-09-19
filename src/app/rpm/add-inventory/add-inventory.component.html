@@ -1,0 +1,672 @@
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <div class="d-flex align-items-center justify-content-start">
+    <!-- <h4 class="mr-3 mb-0"><a class="text-dark" (click)="navigateBack()"><i class="fa fa-arrow-left"></i></a></h4> -->
+    <h1 class="page-title mb-0">Add Inventory</h1>
+  </div>
+  <div>
+    <div class="d-flex align-items-center">
+      <!-- <ul class="status-list custom-column-list">
+          <li [class.active]="manualOrder" (click)="OrderTypeChanged()">
+            <a class="link" style="padding-top: 5px;padding-bottom:5px;">Manual</a>
+          </li>
+        </ul> -->
+      <button class="btn btn-sm btn-dynamic-2c ml-2" [disabled]="!addInventoryDto?.devices?.length" (click)="createOrder()">Submit Order</button>
+    </div>
+
+  </div>
+</div>
+<div class="card mb-3">
+  <div class="d-flex align-items-center justify-content-between  px-3 py-2 w-100">
+    <h6 class="m-0"><strong>Select Vendor</strong></h6>
+    <div class="form-group mb-0">
+      <ul class="status-list custom-column-list">
+        <ng-container *ngFor="let item of deviceVendorsList">
+
+          <li *ngIf="manualOrder || item.code!='TT'" [class.active]="selectedVendor.id===item.id"
+            (click)="selectedVendor=item;VendorChanged()">
+            <a class="link">{{item.name}}</a>
+          </li>
+        </ng-container>
+      </ul>
+    </div>
+  </div>
+</div>
+<!-- <div class="card mb-3" *ngIf="manualOrder">
+    <div class="d-flex align-items-center justify-content-between  px-3 py-2 w-100">
+      <h6 class="m-0"><strong>Order Number</strong></h6>
+      <div class="form-group m-0">
+        <input type="text" [(ngModel)]="createSMOrderObj.order_number"
+          class="form-control form-control-sm box-shadow w-100" id="order_number" placeholder="Order Number" />
+      </div>
+    </div>
+  </div> -->
+
+
+<div class="card">
+  <div class="card-body">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+      <div class="d-flex align-items-center justify-content-start">
+        <h6 class="page-title mb-0"><strong>Recipient Detail</strong></h6>
+      </div>
+      <div>
+        <div class="form-check form-check-inline" *ngIf="!manualOrder">
+          <input [disabled]="false" [(ngModel)]="customerType" (ngModelChange)="CustomerTypeCHanged();"
+            class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" [value]="0" />
+          <label class="form-check-label" for="inlineRadio1">Facility</label>
+        </div>
+
+        <div class="form-check form-check-inline" *ngIf="!manualOrder">
+          <input [disabled]="false" [(ngModel)]="customerType" (ngModelChange)="CustomerTypeCHanged();"
+            class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" [value]="1" />
+          <label class="form-check-label" for="inlineRadio2">Patient</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input [disabled]="false" [(ngModel)]="customerType" (ngModelChange)="CustomerTypeCHanged();"
+            class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" [value]="2" />
+          <label class="form-check-label" for="inlineRadio3">2C Health</label>
+        </div>
+
+      </div>
+    </div>
+    <fieldset *ngIf="!manualOrder && customerType !== 2" [disabled]="!customerType && +customerType !== 0">
+      <div class="row">
+        <div class="col-6">
+          <div class="d-flex align-items-center justify-content-start">
+            <div class="form-group w-100">
+              <label>Facility</label>
+              <ng-select class="ng-select-small" [multiple]="false" [(ngModel)]="facilityId"
+                (ngModelChange)="facilityChanged()" [searchable]="true" placeholder="Select Facility" [clearable]=false>
+                <ng-option [value]="0" [disabled]="true">Select Facility</ng-option>
+                <ng-option [value]="user.id" *ngFor="let user of facilityList">{{
+                  user.facilityName
+                  }}</ng-option>
+              </ng-select>
+            </div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <div class="w-100 px-0 position-relative">
+              <label for="searchBy">Search Patient</label>
+              <ng-select id="medNameSearch" class="ng-select-small" #medicationName1="ngModel"
+                [readonly]="!facilityId || createSMOrderObj.customer_type !== 1" [(ngModel)]="filterPatientId"
+                (ngModelChange)="getPatientById(filterPatientId)" [loading]="LoadingData" [multiple]="false"
+                [searchable]="true" placeholder="Search Patient" [typeahead]="searchWatch">
+
+                <ng-option [value]="item.id" *ngFor="let item of patientList">{{item.fullName}}
+                  ({{item.patientEmrId}})</ng-option>
+              </ng-select>
+              <!-- <input [readonly]="!facilityId || createSMOrderObj.customer_type !== 1"  type="text" autocomplete="off" [(ngModel)]="searchParam" (ngModelChange)="changed(searchParam)"
+                    #chatUSerSearchInput class="form-control form-control-sm box-shadow w-100" placeholder="Search by Name" />
+                  <span *ngIf="searchIngPatients" class="spinner-border spinner-border-sm position-absolute"
+                    style="right: 1.5rem;"></span> -->
+
+              <!-- <div *ngIf="(searchedChatUserList && searchedChatUserList.length > 0)" (appIsOutside)="searchedChatUserList=[]" class="userList searchable-list"
+                  style="height: 300px;" >
+                  <ul *ngIf="!searchIngPatients" style="overflow-y: auto;height: 100%;">
+                    <li *ngFor="let item of searchedChatUserList" (click)="getPatientById(item)">
+                      <p>{{item.fullName}}</p>
+                    </li>
+                  </ul>
+                </div> -->
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <div class="d-flex align-items-center justify-content-start">
+            <div class="form-group w-100">
+              <label>Address 1</label>
+              <input type="text" [(ngModel)]="createSMOrderObj.address1"
+                class="form-control form-control-sm box-shadow " id="searchBy" placeholder="Address 1" />
+            </div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="d-flex align-items-center justify-content-start">
+            <div class="form-group  w-100">
+              <label>Address 2</label>
+              <input type="text" [(ngModel)]="createSMOrderObj.address2"
+                class="form-control form-control-sm box-shadow w-100" id="searchBy" placeholder="Address 2" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <div class="d-flex align-items-center justify-content-start">
+            <div class="form-group w-100">
+              <label>Zip Code</label>
+              <input type="text" [(ngModel)]="createSMOrderObj.zipcode" class="form-control form-control-sm box-shadow "
+                id="searchBy" placeholder="Facility" />
+            </div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="d-flex align-items-center justify-content-start">
+            <div class="form-group  w-100">
+              <label>City</label>
+              <input type="text" [(ngModel)]="createSMOrderObj.city"
+                class="form-control form-control-sm box-shadow w-100" id="searchBy" placeholder="Name" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <div class="d-flex align-items-center justify-content-start">
+            <div class="form-group w-100">
+              <label>State</label>
+              <input type="text" [(ngModel)]="createSMOrderObj.state" class="form-control form-control-sm box-shadow "
+                id="searchBy" placeholder="State" />
+            </div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="d-flex align-items-center justify-content-start">
+            <div class="form-group  w-100">
+              <label>Shipping Method</label>
+              <ng-select class="ng-select-small" [multiple]="false" [(ngModel)]="createSMOrderObj.shipping_method"
+                [searchable]="true" placeholder="Select Shipping Method" [clearable]=false>
+                <ng-option [value]="'MAIL'">MAIL - First class and Priority level service</ng-option>
+                <ng-option [value]="'UPS'">UPS - Residential Ground</ng-option>
+                <ng-option [value]="'UPN'">UPN - Next Day Air</ng-option>
+                <ng-option [value]="'UP2'">UP2 - 2nd Day Air</ng-option>
+                <ng-option [value]="'UP3'">UP3 - 3 Day Select</ng-option>
+                <ng-option [value]="'UNS'">UNS - Next Day Air Saver</ng-option>
+                <ng-option [value]="'UNA'">UNA - Next Day Air AM</ng-option>
+              </ng-select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <div class="d-flex align-items-center justify-content-start">
+            <div class="form-group w-100">
+              <label>Notes</label>
+              <textarea type="text" [(ngModel)]="createSMOrderObj.notes" rows="4" autocomplete="off"
+                class="h-100 form-control form-control-sm" id="transmission" placeholder="Note"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </fieldset>
+  </div>
+</div>
+<fieldset [disabled]="!customerType && +customerType !== 0">
+  <div class="card p-3 mt-3">
+    <div class="d-flex align-items-center justify-content-between">
+      <h6 class="page-title "><strong>Devices Detail</strong></h6>
+      <!-- <button class="btn btn-dynamic-2c btn-sm "><span class="fa fa-file-excel-o fa-lg mr-2"></span>Add Excel</button> -->
+      <div>
+        <div class="" *ngIf="manualOrder && selectedVendor?.id">
+          <label for="file" class="flex-shrink-0" style="width: 70px;"></label>
+          <div class="file-field flex-wrap align-items-center w-100 ml-3">
+
+            <div *ngIf="selectedVendor.code == 'SM'" class="btn btn-success btn-sm mx-2 mt-0"
+              (click)="manualOrderModal.show()">
+              <span class="w-100">Manual Order </span>
+            </div>
+            <div class="btn btn-success btn-sm mx-0 mt-0">
+              <span class="w-100"><i class="fa fa-paperclip fa-lg"></i> Attach File <span
+                  *ngIf="allDevicesFile?.name">({{allDevicesFile.name}})</span>
+              </span>
+              <!-- accept=".pdf, .xlsx,.docx, .doc, .odt , .txt, .ppt, .pptx" -->
+              <input type="file" mdbFileSelect accept=".xlsx, .csv , .xls" (change)="OnAddAllDevices($event);" #select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row d-flex ">
+      <div class="modal-body">
+        <div class="row" *ngIf="customerType!=2">
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label>Sale Type</label>
+              <ng-select class="ng-select-small" [multiple]="false" [(ngModel)]="selectedSkuLine.saleType"
+                (ngModelChange)="SaleTypeCHanged()" [searchable]="true" placeholder="Sale Type" [clearable]=false>
+                <ng-option [value]="1">Sale</ng-option>
+                <ng-option [value]="2">Lease</ng-option>
+              </ng-select>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label for="price">Sale Price<small> ($)</small></label>
+              <div class="d-flex align-items-center justify-content-start">
+                <input type="number" [(ngModel)]="selectedSkuLine.salePrice" (ngModelChange)="PricesChanged()"
+                  autocomplete="off" class="form-control form-control-sm" min="0" id="price" placeholder="Sale Price" />
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label for="period">Shipping</label>
+              <div class="d-flex align-items-center justify-content-start">
+                <input type="number" [(ngModel)]="selectedSkuLine.shipping" (ngModelChange)="PricesChanged()"
+                  autocomplete="off" class="form-control form-control-sm" id="period" placeholder="Shipping" />
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label for="transmission">Discount</label>
+              <div class="d-flex align-items-center justify-content-start">
+                <input type="number" [(ngModel)]="selectedSkuLine.discount" (ngModelChange)="PricesChanged()"
+                  autocomplete="off" class="form-control form-control-sm" id="transmission" placeholder="Discount" />
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label for="transmission">Total Price</label>
+              <div class="d-flex align-items-center justify-content-start">
+                <input type="number" readonly [(ngModel)]="selectedSkuLine.totalPrice" autocomplete="off"
+                  class="form-control form-control-sm" id="transmission" placeholder="Total Price" />
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-3" *ngIf="selectedSkuLine.saleType ===  SaleTypeEnumObj.Lease">
+            <div class="form-group">
+              <label for="transmission">Installment Count</label>
+              <div class="d-flex align-items-center justify-content-start">
+                <input type="number" [(ngModel)]="selectedSkuLine.installmentCount"
+                  (ngModelChange)="InstallmentChanged()" autocomplete="off" class="form-control form-control-sm"
+                  id="transmission" placeholder="Installment Count" />
+              </div>
+            </div>
+          </div>
+          <!-- <div class="col-sm-3">
+              <div class="form-group">
+                <label for="transmission">Transmission Charges</label>
+                <div class="d-flex align-items-center justify-content-start">
+                  <input type="number" [(ngModel)]="selectedSkuLine.transmissionCharges"  autocomplete="off" class="form-control form-control-sm" id="transmission"
+                    placeholder="Transmission Charges" />
+                </div>
+              </div>
+            </div> -->
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label for="transmission">Free Transmission Months</label>
+              <div class="d-flex align-items-center justify-content-start">
+                <input type="number" [(ngModel)]="selectedSkuLine.freeTransmissionMonths" autocomplete="off"
+                  class="form-control form-control-sm" id="transmission" placeholder="Free Transmission Months" />
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-12">
+            <div class="form-group">
+              <label for="transmission">Note</label>
+              <div class="d-flex align-items-center justify-content-start">
+                <textarea type="text" [(ngModel)]="selectedSkuLine.note" rows="4" autocomplete="off"
+                  class="h-100 form-control form-control-sm" id="transmission" placeholder="Note"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- <div class="card">
+            <div class="card-header bg-dynamic-2c">
+              <h6 class="m-0 text-white">Add Device</h6>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-6">
+                  <div class="form-group">
+                    <label for="serial">Serial No.</label>
+                    <div class="d-flex align-items-center justify-content-start">
+                      <input type="text" autocomplete="off" class="form-control form-control-sm" id="serial"
+                        placeholder="Serial No." />
+                    </div>
+                  </div>
+                  <div class="form-group mb-0">
+                    <label for="mac">Mac</label>
+                    <div class="d-flex align-items-center justify-content-start">
+                      <input type="text" autocomplete="off" class="form-control form-control-sm" id="mac"
+                        placeholder="Mac" />
+                    </div>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-group mb-0">
+                    <label for="mac">Mac</label>
+                    <div class="d-flex align-items-center justify-content-start">
+                      <input type="text" autocomplete="off" class="form-control form-control-sm" id="mac"
+                        placeholder="Mac" />
+                    </div>
+                  </div>
+                  <div class="">
+                    <div class="d-flex align-items-center">
+                      <label for="file" class="flex-shrink-0" style="width: 70px;"></label>
+                      <div class="file-field flex-wrap align-items-center w-100 ml-3">
+                        <div class="btn btn-success btn-sm mx-0 mt-0">
+                          <span class="w-100"><i class="fa fa-paperclip fa-lg"></i> Attach File <span
+                              *ngIf="skuDevicesFile?.name">({{skuDevicesFile.name}})</span>
+                          </span>
+                          <input type="file" mdbFileSelect accept=".xlsx, .csv , .xls" (change)="OnAddSkuDevices($event);"
+                            #select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div> -->
+        <div class="mt-3">
+          <div style="height: 400px;">
+            <div style="height: 100%;overflow-y: auto;">
+              <table class="table table-hovered table-striped">
+                <thead class="bg-dynamic-2c text-white">
+                  <tr>
+                    <th>#</th>
+                    <th>Model</th>
+                    <th>Mac</th>
+                    <th>Serial No.</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <p *ngIf="!addInventoryDto?.devices || !addInventoryDto.devices?.length ">No Record Found</p>
+                  <tr *ngFor="let device of addInventoryDto?.devices; let i= index;">
+                    <th scope="row">{{ i + 1}}</th>
+                    <td>{{device.model}}</td>
+                    <td>{{device.macAddress}}</td>
+                    <td>{{device.serialNo}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</fieldset>
+
+<div mdbModal #manualOrderModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel11" aria-hidden="true" (close)="OrderDeviceDetailMOdalClosed()">
+  <div class="modal-dialog modal-dialog-scrollable modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="manualOrderModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title" id="myModalLabel">Manual Order</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="form-group">
+              <label for="price">Order Id</label>
+              <div class="d-flex align-items-center justify-content-start">
+                <input type="text" [(ngModel)]="manualOrderId" autocomplete="off" class="form-control form-control-sm"
+                  placeholder="Enter Order Id" />
+                <button style="width:120px;" [disabled]="!manualOrderId.trim()" (click)="GetSmartMeterOrderDetail(manualOrderModal)" class="btn btn-sm  ml-2 mr-0 btn-dynamic-2c" title="Fetch Order">
+                  Fetch <span *ngIf="LoadingDataOrder"  class="spinner-border spinner-border-sm ml-1" role="status" aria-hidden="true"></span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <p><strong>Shipping Method: </strong>{{orderDetailObj?.order?.shipping_method}}</p>
+          </div>
+          <div class="col-md-6">
+            <p><strong>Tracking No: </strong> {{orderDetailObj?.order?.tracking_number}}</p>
+            <!-- <p class="tracking" title="Track" (click)="openTracking(item)" *ngFor="let item of trackingNumberList">{{item}}</p> -->
+          </div>
+          <!-- <div class="col-md-12">
+            <p>{{orderDetailObj?.order?.notes || 'No Data'}}</p>
+          </div> -->
+          <div class="col-md-8">
+            <p><span class="text-danger"> Last Updated: {{orderDetailObj?.order?.last_updated | dateFormatPipe:
+                'time'}}</span></p>
+          </div>
+          <!-- <div class="col-md-4">
+            <div class="custom-control custom-checkbox w-info-90 mx-1">
+              <input type="checkbox" class="custom-control-input"
+                id="cpt1">
+              <label class="custom-control-label" for="cpt1">Show Devices With Serial</label>
+            </div>
+          </div> -->
+        </div>
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead class="bg-dynamic-2c text-white">
+              <tr>
+                <th>SKU</th>
+                <th>Serial</th>
+                <th>Lot</th>
+                <th>Part No.</th>
+                <th>UDC</th>
+                <th>Qty</th>
+                <th>Modal</th>
+                <th>IMEI</th>
+                <!-- <th>Action</th> -->
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let item of orderDetailObj?.order?.lines">
+                <tr *ngIf="item.serial_number">
+                  <td>{{item.sku}}</td>
+                  <td>{{item.serial_number}}</td>
+                  <td>{{item.lot_number}}</td>
+                  <td>{{item.part_number}}</td>
+                  <td>{{item.udc_number}}</td>
+                  <td>{{item.qty}}</td>
+                  <td>{{item.device_model}}</td>
+                  <td>{{item.imei}}</td>
+                  <!-- <td>
+                    <button [disabled]="receivingOrder" *ngIf="item.serial_number && !item.addedToInventory" type="button" class="btn btn-info py-1 px-2 btn-sm" title="Add device to Inventory" (click)="ConfirmAddDeviceToInventory(item)">
+                       Mark As Received</button>
+                       <span *ngIf="item.addedToInventory" style="min-width: 80px;" class="badge px-3 badge-success m-0 mr-2">
+                        Received
+                      </span>
+                  </td> -->
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button (click)="manualOrderModal.hide()" type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c"
+          aria-label="Close" mdbWavesEffect>Close</button>
+        <button [disabled]="!orderDetailObj?.order?.lines?.length" (click)="AddSMOrderDevice(manualOrderModal)"
+          type="button" mdbBtn class="btn btn-dynamic-2c btn-sm waves-light btn-sm" aria-label="Close"
+          mdbWavesEffect>Add</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div mdbModal #orderDevicesDetailModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel11" aria-hidden="true" (close)="OrderDeviceDetailMOdalClosed()">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="orderDevicesDetailModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title" id="myModalLabel">Order Details</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row" *ngIf="customerType!=2">
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label>Sale Type</label>
+              <ng-select class="ng-select-small" [multiple]="false" [(ngModel)]="selectedSkuLine.saleType"
+                (ngModelChange)="SaleTypeCHanged()" [searchable]="true" placeholder="Sale Type" [clearable]=false>
+                <ng-option [value]="1">Sale</ng-option>
+                <ng-option [value]="2">Lease</ng-option>
+              </ng-select>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label for="price">Sale Price<small> ($)</small></label>
+              <div class="d-flex align-items-center justify-content-start">
+                <input type="number" [(ngModel)]="selectedSkuLine.salePrice" (ngModelChange)="PricesChanged()"
+                  autocomplete="off" class="form-control form-control-sm" min="0" id="price" placeholder="Sale Price" />
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label for="period">Shipping</label>
+              <div class="d-flex align-items-center justify-content-start">
+                <input type="number" [(ngModel)]="selectedSkuLine.shipping" (ngModelChange)="PricesChanged()"
+                  autocomplete="off" class="form-control form-control-sm" id="period" placeholder="Shipping" />
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label for="transmission">Discount</label>
+              <div class="d-flex align-items-center justify-content-start">
+                <input type="number" [(ngModel)]="selectedSkuLine.discount" (ngModelChange)="PricesChanged()"
+                  autocomplete="off" class="form-control form-control-sm" id="transmission" placeholder="Discount" />
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label for="transmission">Total Price</label>
+              <div class="d-flex align-items-center justify-content-start">
+                <input type="number" readonly [(ngModel)]="selectedSkuLine.totalPrice" autocomplete="off"
+                  class="form-control form-control-sm" id="transmission" placeholder="Total Price" />
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-3" *ngIf="selectedSkuLine.saleType ===  SaleTypeEnumObj.Lease">
+            <div class="form-group">
+              <label for="transmission">Installment Count</label>
+              <div class="d-flex align-items-center justify-content-start">
+                <input type="number" [(ngModel)]="selectedSkuLine.installmentCount"
+                  (ngModelChange)="InstallmentChanged()" autocomplete="off" class="form-control form-control-sm"
+                  id="transmission" placeholder="Installment Count" />
+              </div>
+            </div>
+          </div>
+          <!-- <div class="col-sm-3">
+              <div class="form-group">
+                <label for="transmission">Transmission Charges</label>
+                <div class="d-flex align-items-center justify-content-start">
+                  <input type="number" [(ngModel)]="selectedSkuLine.transmissionCharges"  autocomplete="off" class="form-control form-control-sm" id="transmission"
+                    placeholder="Transmission Charges" />
+                </div>
+              </div>
+            </div> -->
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label for="transmission">Free Transmission Months</label>
+              <div class="d-flex align-items-center justify-content-start">
+                <input type="number" [(ngModel)]="selectedSkuLine.freeTransmissionMonths" autocomplete="off"
+                  class="form-control form-control-sm" id="transmission" placeholder="Free Transmission Months" />
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-12">
+            <div class="form-group">
+              <label for="transmission">Note</label>
+              <div class="d-flex align-items-center justify-content-start">
+                <textarea type="text" [(ngModel)]="selectedSkuLine.note" rows="4" autocomplete="off"
+                  class="h-100 form-control form-control-sm" id="transmission" placeholder="Note"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- <div class="card">
+            <div class="card-header bg-dynamic-2c">
+              <h6 class="m-0 text-white">Add Device</h6>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-6">
+                  <div class="form-group">
+                    <label for="serial">Serial No.</label>
+                    <div class="d-flex align-items-center justify-content-start">
+                      <input type="text" autocomplete="off" class="form-control form-control-sm" id="serial"
+                        placeholder="Serial No." />
+                    </div>
+                  </div>
+                  <div class="form-group mb-0">
+                    <label for="mac">Mac</label>
+                    <div class="d-flex align-items-center justify-content-start">
+                      <input type="text" autocomplete="off" class="form-control form-control-sm" id="mac"
+                        placeholder="Mac" />
+                    </div>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-group mb-0">
+                    <label for="mac">Mac</label>
+                    <div class="d-flex align-items-center justify-content-start">
+                      <input type="text" autocomplete="off" class="form-control form-control-sm" id="mac"
+                        placeholder="Mac" />
+                    </div>
+                  </div>
+                  <div class="">
+                    <div class="d-flex align-items-center">
+                      <label for="file" class="flex-shrink-0" style="width: 70px;"></label>
+                      <div class="file-field flex-wrap align-items-center w-100 ml-3">
+                        <div class="btn btn-success btn-sm mx-0 mt-0">
+                          <span class="w-100"><i class="fa fa-paperclip fa-lg"></i> Attach File <span
+                              *ngIf="skuDevicesFile?.name">({{skuDevicesFile.name}})</span>
+                          </span>
+                          <input type="file" mdbFileSelect accept=".xlsx, .csv , .xls" (change)="OnAddSkuDevices($event);"
+                            #select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div> -->
+        <div class="mt-3">
+          <table class="table table-hovered">
+            <thead class="bg-dynamic-2c text-white">
+              <tr>
+                <th>#</th>
+                <th>Model</th>
+                <th>Modality</th>
+                <th>Mac</th>
+                <th>Serial No.</th>
+              </tr>
+            </thead>
+            <tbody>
+              <p *ngIf="!selectedSkuLine?.devices || !selectedSkuLine.devices?.length ">No Record Found</p>
+              <tr *ngFor="let device of selectedSkuLine?.devices; let i= index;">
+
+                <th scope="row">{{ i + 1}}</th>
+                <td>{{device.model}}</td>
+                <td>{{device.modality}}</td>
+                <td>{{device.macAddress}}</td>
+                <td>{{device.serialNo}}</td>
+                <!-- <td>{{device.status}}</td> -->
+                <!-- <td>
+                    <span style="min-width: 80px;" class="m-auto badge  badge-info">{{row.status}}</span>
+                  </td> -->
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button (click)="orderDevicesDetailModal.hide()" type="button"
+          class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close" mdbWavesEffect>Close</button>
+        <!-- <button type="button" mdbBtn class="btn btn-dynamic-2c btn-sm waves-light btn-sm" aria-label="Close"
+            mdbWavesEffect>Submitt</button> -->
+      </div>
+    </div>
+  </div>
+</div>

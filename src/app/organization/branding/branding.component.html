@@ -1,0 +1,27 @@
+<div class="mb-3">
+    <div class="row">
+        <div class="col-sm-4" *ngFor="let logo of logos; let ind = index">
+            <div>
+                <label *ngIf="'logo2' === logo.id">Upload For Web (1024x265)</label>
+                <label *ngIf="'logo3' === logo.id">Upload For Mobile (1024x1024)</label>
+                <label *ngIf="'logo1' === logo.id">Upload For Favicon (64x64)</label>
+                <div class="dropzone" fileDragDrop (filesChangeEmiter)="onFileChange($event, logo)">
+                    <div class="text-wrapper">
+                        <div class="centered">
+                            <input type="file" name="{{logo.id}}-file" id="{{logo.id}}-file" (change)="onFileChange($event.target.files,logo)" >
+                            <label for="{{logo.id}}-file"><span class="textLink"><span class="fa fa-upload mr-1"></span>Upload</span> or Drop it here!</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <mdb-progress class="my-upload-logos" *ngIf="logo.uploading" value="{{logo.percentage}}" min="0" max="100" type="success" >
+                <span class="min-label" data-label="%">{{logo.percentage}}</span>
+              </mdb-progress>
+            <div class="fileItem" >
+                <!-- <img *ngIf="logo.uploading"  src="../../../assets/img/ring-loading.gif" width="50" > -->
+                <img [src]="logo.src" class="img-fluid" id="{{logo.id}}-img">
+            </div>
+        </div>
+    </div>
+	<button class="btn btn-dynamic-2c btn-sm" (click)="UploadLogo()" >Save</button>
+</div>

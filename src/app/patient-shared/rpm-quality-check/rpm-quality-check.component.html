@@ -1,0 +1,265 @@
+<div mdbModal #rpmQualityCheckModal="mdbModal" [config]="{backdrop: false, ignoreBackdropClick: true}" class="modal fade" tabindex="-1"  role="dialog"
+aria-labelledby="myrpmQualityCheckModalLabel" aria-hidden="true" (close)="onCloseRpmQualityCheckModal()">
+<div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+  <div class="modal-content ">
+    <div class="modal-header">
+      <button type="button" class="close pull-right" aria-label="Close" (click)="rpmQualityCheckModal.hide()">
+        <span aria-hidden="true">×</span>
+      </button>
+      <h4 class="modal-title w-100" id="myModalLabel">RPM Quality Check</h4>
+    </div>
+    <div class="modal-body">
+
+      <!-- <div appCcmLoader>
+        <div class="loader-wrap" *ngIf="GettingMRData">
+          <div class="text-dynamic-2c la-ball-pulse ccm-loader">
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+      </div> -->
+
+
+        <p>Total Time: <mdb-badge success="true">{{rpmEncounterTime?.duration}}</mdb-badge>
+        </p>
+        <div class="panel z-depth-0 border">
+          <div class="panel-header border-bottom">
+            <h3>RPM Care Plan</h3>
+          </div>
+          <div class="panel-body">
+            <div [innerHTML]="rpmCarePlan"></div>
+           <!-- {{rpmCarePlan}} -->
+          </div>
+        </div>
+        <div class="panel z-depth-0 border">
+          <div class="panel-header border-bottom">
+            <h3>Notes</h3>
+          </div>
+          <div class="panel-body">
+            <ng-container *ngFor="let item of rpmEncounterList">
+              <div class="border p-2 mb-2">
+                <!-- <p class="mb-0"><strong class="d-inline-block" style="width: 100px;">Service Type:</strong>
+                  {{rpmServiceTypeEnum[item.rpmServiceType]}}</p> -->
+                <p class="mb-2"><strong class="d-inline-block" style="width: 100px;">Note: </strong> {{item.note}}</p>
+
+                <div class="d-flex ">
+                  <!-- <small class="font-400 mr-2">
+                    <span class="text-unique-color"> Created By :</span> {{item.careProviderName}}
+                    <span class="text-unique-color"> &nbsp;&nbsp; Date:</span> {{item.encounterDate| dateFormatPipe}}
+                    <span class="text-unique-color"> &nbsp;&nbsp; Start Time:</span> {{'6/14/19 ' + item.startTime | date: 'shortTime' }}
+                    <span class="text-unique-color"> &nbsp;&nbsp; End Time:</span> {{'6/14/19 ' + item.endTime | date: 'shortTime' }}
+                  </small> -->
+                  <small class="mr-2"><span class="text-unique-color">Created By :</span> <strong
+                      class="text-dynamic-2c">
+                      {{item.facilityUserName}}</strong></small>
+
+                  <small class="font-400 mr-2"><span class="text-unique-color">Date:</span>
+                    {{item.encounterDate| dateFormatPipe}}</small>
+
+                  <small class="text-unique-color mr-2">Start Time:
+                    {{'6/14/19 ' + item.startTime | date: 'shortTime' }}</small>
+                  <small class="text-unique-color mr-2">End Time:
+                    {{'6/14/19 ' + item.endTime | date: 'shortTime' }}</small>
+                  <small class="text-unique-color">Duration: {{item.duration}}</small>
+                </div>
+                <!-- <div class="d-flex align-items-center mb-2" > -->
+                  <!-- <label class="mr-3 mb-0" style="font-weight: 600;">Quality Check: </label>
+                  <div class="form-group mb-0">
+                    <div class="form-check form-check-inline ml-0 mr-3 mb-0">
+                      <div class="custom-control custom-radio">
+                        <input [disabled]="item.encounterClaimId || this.isPrDashboardQC" type="radio" class="custom-control-input" [name]="'defaultUnchecked' + item.id" [value]="0" [(ngModel)]="item.qualityChecked" (click)="ChangeQualityCheckValue(rpmQualityCheckedEnum.Failed, item.id)" [id]="'defaultUnchecked' + item.id"
+                          mdbInput >
+                        <label class="custom-control-label" [for]="'defaultUnchecked' + item.id">Failed</label>
+                      </div>
+                    </div>
+                   
+                    <div class="form-check form-check-inline m-0 mr-3 mb-0">
+                      <div class="custom-control custom-radio">
+                        <input [disabled]="item.encounterClaimId || this.isPrDashboardQC" type="radio" class="custom-control-input" [name]="'defaultUnchecked1' + item.id" [value]="1" [(ngModel)]="item.qualityChecked" (click)="ChangeQualityCheckValue(rpmQualityCheckedEnum.Passed, item.id)" [id]="'defaultUnchecked1' + item.id"
+                          mdbInput>
+                        <label class="custom-control-label" [for]="'defaultUnchecked1' + item.id">Passed</label>
+                      </div>
+                    </div>
+                  </div> -->
+                  <div class="d-flex justify-content-between align-items-center">
+                  <div class="d-inline-flex">
+                    <p class="mb-0 " *ngIf="item.qualityCheckedByName && item.qualityChecked"><strong>Quality Checked By:</strong> {{item.qualityCheckedByName}}
+                    </p>
+                    <p class="mb-0 ml-3" *ngIf="item.qualityCheckedDate && item.qualityChecked"><strong>Checked Date:</strong>{{item?.qualityCheckedDate | dateFormatPipe}}</p>
+                  </div>
+                  <ng-container  *ngIf="!this.isPrDashboardQC" >
+                    <button  type="button" *ngIf="!item.qualityChecked" title="Quality Check"
+                    [disabled]="SetQualityCheckForMR || item.encounterClaimId" size="sm" mdbBtn color="danger" class="waves-light " aria-label="Close"
+                    (click)="ChangeQualityCheckValue(rpmQualityCheckedEnum.Passed, item.id)" mdbWavesEffect> <i class="fa fa-times fa-lg"></i> Quality Checked</button>
+                  <button type="button" *ngIf="item.qualityChecked" title="Quality Check"
+                  disabled  class="waves-light btn btn-sm btn-dynamic-2c" aria-label="Close"
+                    mdbWavesEffect> <i class="fa fa-check fa-lg"></i> Quality Checked</button>
+                  </ng-container>
+                  </div>
+                </div>
+              <!-- </div> -->
+
+
+
+              <!-- <p class="text-dynamic-2c"><strong>{{item.encounterDate}}-{{item.ccmServiceType}}</strong></p>
+              <p class="mb-2"><span class="text-info">Start Time: </span>{{item.startTime}}</p>
+              <p class="mb-2"><span class="text-info"> End Time: </span>{{item.endTime}}</p>
+              <p class="mb-2"><span class="text-info"> Duration: </span>{{item.duration}}</p>
+              <p class="mb-2"><span class="text-info"> Note: </span>{{item.note}}</p> -->
+              <!-- <p class="mb-2">{{item.note}}</p> -->
+              <!-- <p class="mb-2">{{item.note}}</p> -->
+
+              <!-- <p><span class="text-primar"></span> Created By: <mdb-badge success="true">{{item.careProviderName}}
+                </mdb-badge>
+              </p> -->
+            </ng-container>
+
+          </div>
+        </div>
+        <div class="panel z-depth-0 border">
+          <div class="panel-header border-bottom">
+            <h3>Quality Check by Modality Logs</h3>
+          </div>
+          <div class="panel-body">
+
+
+            <div class="row justify-content-center">
+              <div class="col-sm-12">
+                <div appCcmLoader class="loader-wrap" *ngIf="isLoading">
+                  <div class="spinner-border text-dynamic-secondary-2c ccm-loader" role="status">
+                  </div>
+                </div>
+                <!-- <p class="text-center" > -->
+                <span class="alert alert-warning " *ngIf="!isLoading && (!devicesList || !devicesList.length)" role="alert">
+                  <strong> No Devices configured !</strong>
+                  <!-- No Data Found -->
+                </span>
+                <!-- </p> -->
+
+
+                <div class="border-0">
+                  <div class="modality-info p-0" style="margin-left:-0.5rem;margin-right:-0.5rem;" >
+                    <div class="modality-list " *ngFor="let item of devicesList">
+                      <div class="item position-relative active my-2"
+                        [class.active]="selectedModalityCode === item.modality"
+                        (click)="selectedModalityCode = item.modality;selectGraph()">
+                        <span class="dot4g" *ngIf="item.isIotDevice">4G</span>
+                        <div class="flex-1 d-flex align-items-center" style="margin: 0 10px;">
+                          <img src="/assets/rpm-devices/mbp.svg" *ngIf="item.modality == 'BP'" alt="Blood Pressure">
+                          <img src="/assets/rpm-devices/mw.svg" *ngIf="item.modality == 'WT'" alt="Weight">
+                          <img src="/assets/rpm-devices/pulse.svg" *ngIf="item.modality == 'PO'" alt="Pulse Oximetry">
+                          <img src="/assets/rpm-devices/mbg.svg" style="width: 32px;" *ngIf="item.modality == 'BG'"
+                            alt="Blood Glucose">
+                          <img src="/assets/rpm-devices/activity.svg" *ngIf="item.modality == 'AT'" alt="Activity">
+                          <img src="/assets/rpm-devices/mcgm.svg" *ngIf="item.modality == 'CGM'" alt="Continuous Blood Glucose">
+                          <p *ngIf="item.modalityName"><strong>{{item.modalityName}}</strong></p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+
+
+            <div class="row" *ngIf="devicesList.length">
+              <div class="col-12">
+                <div class="table-responsive">
+                  <div >
+                    <table class="table table-bordered table-hover mb-0" >
+                      <colgroup>
+                        <col width="50%">
+                        <col width="50%">
+                      </colgroup>
+                      <thead class="bg-dynamic-2c text-white">
+                        <tr>
+                          <th>Date</th>
+                          <th>Reading</th>
+                        </tr>
+                      </thead>
+
+                    </table>
+                  </div>
+                  <div malihu-scrollbar [scrollbarOptions]="dropdownScroll" style="max-height: 300px;">
+                    <table class="table table-bordered table-hover">
+                      <colgroup>
+                        <col width="50%">
+                        <col width="50%">
+                      </colgroup>
+                      <tbody *ngIf="selectedModalityCode == 'BP'">
+                        <tr *ngIf="!BPDeviceDataList || !BPDeviceDataList.length">
+                          <td>No Record Found</td>
+                        </tr>
+                        <tr *ngFor="let bpitem of BPDeviceDataList">
+                          <td> {{bpitem.measurementDate}}</td>
+                          <td>Sys: {{bpitem.highPressure | number: '1.0-0'}}, dys: {{bpitem.lowPressure | number: '1.0-0'}}, HR: {{bpitem.heartRate| number: '1.0-0'}}</td>
+                        </tr>
+                      </tbody>
+                      <tbody *ngIf="selectedModalityCode == 'BG'">
+                        <tr *ngIf="!BGDeviceDataList || !BGDeviceDataList.length">
+                          <td>No Record Found</td>
+                        </tr>
+                        <tr *ngFor="let bgitem of BGDeviceDataList">
+                          <td>{{bgitem.measurementDate | dateFormatPipe: 'time'}}</td>
+                          <td>BG: {{bgitem.bg | number: '1.0-0'}}</td>
+                        </tr>
+                      </tbody>
+                      <tbody *ngIf="selectedModalityCode == 'WT'">
+                        <tr *ngIf="!weightDataList || !weightDataList.length">
+                          <td>No Record Found</td>
+                        </tr>
+                        <tr *ngFor="let witem of weightDataList">
+                          <td>{{witem.measurementDate | dateFormatPipe: 'time'}}</td>
+                          <td>Wt: {{witem.weightValue| number: '1.0-0'}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+
+    </div>
+    <div class="modal-footer">
+      <!-- <div class="d-flex align-items-center mb-2">
+        <label class="mr-3 mb-0" style="font-weight: 600;">Quality Check: </label>
+        <div class="form-group mb-0">
+          <div class="form-check form-check-inline ml-0 mr-3 mb-0">
+            <div class="custom-control custom-radio">
+              <input type="radio" class="custom-control-input" [value]="0" [(ngModel)]="selectedPatientRPMQC" (click)="ChangeQualityCheckValue(rpmQualityCheckedEnum.Deferred)" id="defaultUnchecked"
+                mdbInput >
+              <label class="custom-control-label" for="defaultUnchecked">Deferred</label>
+            </div>
+          </div>
+          <div class="form-check form-check-inline m-0 mr-3 mb-0">
+            <div class="custom-control custom-radio">
+              <input type="radio" class="custom-control-input" [value]="1" [(ngModel)]="selectedPatientRPMQC" (click)="ChangeQualityCheckValue(rpmQualityCheckedEnum.Passed)" id="defaultUnchecked1"
+                mdbInput>
+              <label class="custom-control-label" for="defaultUnchecked1">Passed</label>
+            </div>
+          </div>
+          <div class="form-check form-check-inline m-0 mr-3 mb-0">
+            <div class="custom-control custom-radio">
+              <input type="radio" class="custom-control-input" [value]="2" [(ngModel)]="selectedPatientRPMQC" (click)="ChangeQualityCheckValue(rpmQualityCheckedEnum.Failed)" id="defaultUnchecked2"
+                mdbInput>
+              <label class="custom-control-label" for="defaultUnchecked2">Failed</label>
+            </div>
+          </div>
+        </div>
+      </div> -->
+      <button type="button" title="copy" #copyDataBtn  (click)="CopyModalitiesData()"
+            class="waves-light btn btn-sm btn-dynamic-2c" aria-label="Close"  mdbWavesEffect> <i
+              class="fa fa-copy fa-lg"></i> </button>
+      <button type="button" class="btn btn-sm btn-dynamic-secondary-2c" (click)="rpmQualityCheckModal.hide()" >Close</button>
+
+    </div>
+  </div>
+</div>
+</div>

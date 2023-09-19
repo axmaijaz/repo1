@@ -1,0 +1,328 @@
+<!-- <div class="d-flex align-items-center justify-content-between mb-3"> -->
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <div class="d-flex align-items-center justify-content-start">
+      <h4 class="mr-3 mb-0"><a class="text-dark"><i class="fa fa-arrow-left" (click)="goBack()"></i></a></h4>
+      <h1 class="page-title mb-0">Admin User</h1>
+    </div>
+    <button type="button" class="btn btn-dynamic-2c btn-sm"
+      (click)="addUsermodal.show();f.reset();resetAdduserModal()">Add
+      New</button>
+
+  </div>
+
+  <form autocomplete="off" class="mb-5">
+    <div class="form-group">
+      <label for="searchByFacility">Search Admin User</label>
+      <input type="text" class="form-control form-control-sm box-shadow" autocomplete="off" id="searchByFacility"
+        placeholder="Search by Name & Surname" (keyup)="updateFilter($event)" />
+    </div>
+  </form>
+
+    <div *ngIf="isLoading" class="d-flex justify-content-center text-center">
+      <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+    </div>
+    <ngx-datatable #table class="material" [columnMode]="'force'" [headerHeight]="50" [footerHeight]="50" [rowHeight]="50"
+      [scrollbarV]="false" [scrollbarH]="true" [rows]="appAdminList" [limit]="15" (activate)="onActivate($event)"
+      [sorts]="[{prop: 'firstName', dir: 'asc'}]">
+      <ngx-datatable-column name="#" [maxWidth]=50>
+        <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+          {{rowIndex + 1}}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="First Name">
+        <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+          <div class="facility-email py-3">
+            <p class="mb-0">{{row.lastName}},{{row.firstName}}</p>
+          </div>
+
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column prop="userName" name="User Name">
+      </ngx-datatable-column>
+      <!-- <ngx-datatable-column name="Roles">
+      </ngx-datatable-column> -->
+      <ngx-datatable-column name="Email">
+        <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+          <div class="facility-email py-3">
+            <p class="mb-0">{{row.email}}</p>
+          </div>
+
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="Phone No">
+        <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+          <div class="facility-email py-3">
+            <p class="mb-0">{{row.phoneNumber  | mask: '(000)000-0000'}}</p>
+            <!-- <a class="link text-danger" *ngIf="row.phoneNo && row.isPhoneNumberVerified === false;"
+              (click)="verificationModal.show();sendPhoneNoVerificationToken(row);">verify phone</a>
+            <strong class=" text-dynamic-2c" *ngIf="row.phoneNo && row.isPhoneNumberVerified === true;">(Verified)</strong> -->
+          </div>
+        </ng-template>
+
+      </ngx-datatable-column>
+      <ngx-datatable-column name="Action" [canAutoResize]=true [width]=225>
+        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+          <a class="btn btn-dynamic-2c btn-icon" title="Active" placement="left" *ngIf="row.isActiveState === true;"
+          (click)="setAppAdminInActive(row)">
+            <i class="fa fa-toggle-on"></i>
+          </a>
+          <a class="btn btn-danger btn-icon" title="Deactive" placement="left" *ngIf="row.isActiveState === false;"
+          (click)="setAppAdminActive(row)">
+            <i class="fa fa-toggle-off"></i>
+          </a>
+          <a class="btn btn-dynamic-2c btn-icon" title="Edit" placement="left"
+            (click)="addUsermodal.show();createAdminDto = row;"><i class="fa fa-pencil"></i></a>
+
+          <!-- <a class="btn btn-dynamic-2c btn-icon" title="Assign Facilities" placement="left"
+            (click)="selectedFacilityUser=row.id;selectedFacilityUserObj=row;getFacilitiesbyUserId();assignFacilitiesMOdal.show()"><i
+              class="fa fa-gear"></i> </a> -->
+          <a class="btn btn-dynamic-2c btn-icon" title="Assign Roles" placement="left"
+            (click)="selectedUser(row);assignRolesModal.show()"><i
+              class="fa fa-lock"></i> </a>
+          <!-- <button *ngIf="securityService.securityObject.id !== row.id" class="btn btn-dynamic-2c btn-icon"
+            title="Send Message" placement="left" [disabled]="isLoading"
+            (click)="selectedFacilityUser=row.id;selectedFacilityUserObj=row;getChatGroup()"><i
+              class="fa fa-comments"></i> </button> -->
+          <button [disabled]="row.isLoading" class="btn btn-danger btn-icon" title="Delete" placement="left" (click)="openConfirmModal(row)">
+            <span *ngIf="row.isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
+            </span><i
+                class="fa fa-trash"></i></button>
+              <!-- <div *ngIf="isShownDeletedUsers">
+                <a class="btn btn-dynamic-2c btn-icon" title="Recover User" placement="left"
+            (click)="openConfirmModalForRecoverUser(row.id)"><i class="fa fa-sign-in-alt"></i></a>
+          </div> -->
+        </ng-template>
+      </ngx-datatable-column>
+
+    </ngx-datatable>
+
+
+    <div style="overflow-y: auto" mdbModal #addUsermodal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+      aria-labelledby="myroleManagementModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg flat-modal" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close pull-right" aria-label="Close" (click)="addUsermodal.hide()">
+              <span aria-hidden="true">×</span>
+            </button>
+            <h4 class="modal-title w-100" id="myModalLabel" *ngIf="createAdminDto.id === 0">Add Admin User</h4>
+            <h4 class="modal-title w-100" id="myModalLabel" *ngIf="createAdminDto.id > 0">Edit Admin User</h4>
+          </div>
+
+          <div class="modal-body">
+            <form name="form" #f="ngForm" novalidate>
+              <div class="row">
+                <div class="col-sm-12 mb-2">
+                  <small class="text-dynamic-2c text-uppercase font-500">User Information</small>
+                </div>
+                <div class="col-sm-12" *ngIf="createAdminDto.id === 0">
+                  <div class="form-group">
+                    <label for="title">Role</label>
+                    <ng-select class="ng-select-small" [(ngModel)]="createAdminDto.title" name="title" [multiple]="false"
+                      [searchable]="true" placeholder="Select Role">
+                      <ng-option [value]="item.name" *ngFor="let item of rolesList">{{item.name}} </ng-option>
+                    </ng-select>
+                  </div>
+                </div>
+                <!-- <div class="col-sm-6">
+                <div class="form-group">
+                    <label>Is Billing Provider</label>
+                    <div class="ml-auto d-flex">
+                      <mdb-checkbox [default]="true" [(ngModel)]="facilityUser.isBillingProvider"></mdb-checkbox>
+                    </div>
+                </div>
+              </div> -->
+                <div class="col-sm-4">
+                  <div class="form-group">
+                    <label for="firstName">First Name<small class="text-danger">*</small></label>
+                    <input type="text" [(ngModel)]="createAdminDto.firstName" class="form-control form-control-sm"
+                      placeholder="First Name" required name="firstName" #firstName="ngModel"
+                      [ngClass]="{ 'is-invalid': firstName.touched && firstName.invalid }">
+                    <div *ngIf="firstName.touched && firstName.invalid" class="invalid-feedback">
+                      <div *ngIf="firstName.errors.required">First Name is required</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-sm-4">
+                  <div class="form-group">
+                    <label for="isChronic">Middle Name</label>
+                    <input type="text" [(ngModel)]="createAdminDto.middleName" name="middleName" class="form-control form-control-sm"
+                      id="isChronic" placeholder="Middle Name">
+                  </div>
+                </div>
+
+                <div class="col-sm-4">
+                  <div class="form-group">
+                    <label for="lastName">Last Name<small class="text-danger">*</small></label>
+                    <input type="text" [(ngModel)]="createAdminDto.lastName" class="form-control form-control-sm"
+                      placeholder="Last Name" name="lastName" required #lastName="ngModel"
+                      [ngClass]="{ 'is-invalid': lastName.touched && lastName.invalid }">
+                    <!-- <div *ngIf="lastName.invalid && (lastName.dirty || lastName.touched)" class="invalid invalid-text">
+                    <div *ngIf="lastName.errors.required">
+                      <small class="text-danger">Last name must be filled out.</small>
+                    </div>
+                  </div> -->
+                    <div *ngIf="lastName.touched && lastName.invalid" class="invalid-feedback">
+                      <div *ngIf="lastName.errors.required">Last Name is required</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-6" >
+                  <div class="form-group">
+                    <div class="d-flex justify-content-between">
+                      <label for="email">Email
+                        <small class="text-danger">*</small><small
+                          *ngIf="emailinvalid" class="text-danger"> Email already exist.</small>
+                      </label>
+                      <!-- <mdb-checkbox *ngIf="createAdminDto.id === 0" [(ngModel)]="makeEmailAsUserName" [default]="true" [checked]="false"
+                        (change)="FillUserNameUserName($event.checked)">Make this Email my Username as well
+                      </mdb-checkbox> -->
+                      <div *ngIf="createAdminDto.id === 0" class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input"  (change)="FillUserNameUserName($event.checked)"
+                          [(ngModel)]="makeEmailAsUserName"
+                          id="homeHealthCare" name="homeHealthCare">
+                        <label class="custom-control-label" for="homeHealthCare">Make this Email my Username as well</label>
+                      </div>
+                    </div>
+                    <!-- <label for="email">Email<small class="text-danger">*</small><small *ngIf="emailinvalid"
+                      class="text-danger"> Email already exist.</small></label> -->
+                    <input type="text" [(ngModel)]="createAdminDto.email" class="form-control form-control-sm"
+                      placeholder="sample@mail.com" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,3}$" required name="email" #email="ngModel"
+                      [ngClass]="{ 'is-invalid': email.touched && email.invalid }">
+                    <!-- <div *ngIf="email.invalid && (email.dirty || email.touched)" class="invalid invalid-text">
+                    <div *ngIf="email.errors.required || email.errors.touched">
+                      <small class="text-danger">Email must be filled out.</small>
+                    </div>
+                  </div> -->
+                    <div *ngIf="email.touched && email.invalid" class="d-flex invalid-feedback">
+                      <div >Example: sample@mail.com</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-6" *ngIf="createAdminDto.id === 0">
+                  <div class="form-group">
+                    <label for="Username">Username<small class="text-danger">*</small><small *ngIf="userNameInvalid"
+                      class="text-danger"> User Name already exist.</small></label>
+                    <input type="text" [(ngModel)]="createAdminDto.userName" class="form-control form-control-sm"
+                      placeholder="sample1231" (blur)="checkAvailibility(createAdminDto.userName)" required name="Username" #Username="ngModel"
+                      [ngClass]="{ 'is-invalid': Username.touched && Username.invalid }">
+                    <!-- <div *ngIf="Username.invalid && (Username.dirty || Username.touched)" class="invalid invalid-text">
+                    <div *ngIf="Username.errors.required || Username.errors.touched">
+                      <small class="text-danger">Username must be filled out.</small>
+                    </div>
+                  </div> -->
+                    <div *ngIf="Username.touched && Username.invalid" class="d-flex invalid-feedback">
+                      <div >Example: sample1231</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-12">
+                  <div class="row">
+                    <div class="col-sm-6">
+                      <div class="form-group">
+                        <label for="phn1">Country Calling Code<small class="text-danger">*</small></label>
+                        <ng-select #countryCode="ngModel" id="countryCallingCode" class="ng-select-small" [ngModelOptions]="{standalone: true}" [(ngModel)]="createAdminDto.countryCallingCode" [multiple]="false" [clearable]="false" [searchable]="true"
+                          placeholder="Select Country Calling Code">
+                          <ng-option *ngFor="let item of countriesList" [value]="item.callingCode">{{item.callingCode}} {{item.name}}
+                          </ng-option>
+                        </ng-select>
+                        <div *ngIf="countryCode.touched && countryCode.invalid" class="invalid-feedback">
+                          <div *ngIf="countryCode.errors.required">Country Calling Code is required</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-sm-6">
+                      <div class="form-group">
+                        <label for="phn1">Phone No<small class="text-danger">*</small></label>
+                        <input type="text" [(ngModel)]="createAdminDto.phoneNumber"
+                          class="form-control form-control-sm" placeholder="Phone" name="phoneNo" #phoneNo="ngModel" id="phn1"
+                          autocomplete="nope" mask="(000)000-0000" required [ngClass]="{ 'is-invalid': phoneNo.touched && phoneNo.invalid }">
+    
+                        <div *ngIf="phoneNo.touched && phoneNo.invalid" class="invalid-feedback">
+                          <div *ngIf="phoneNo.errors.required">Phone No is required</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-sm-6"  *ngIf="createAdminDto.id === 0">
+                  <div class="form-group">
+                    <label for="password">Password<small class="text-danger">*</small></label>
+                    <input [(ngModel)]="createAdminDto.password" type="password" class="form-control form-control-sm"
+                      autocomplete="new-password" placeholder="Minimum 6 characters " required name="password"
+                      #password="ngModel" minlength="6"
+                      [ngClass]="{ 'is-invalid': password.touched && password.invalid }">
+                    <div *ngIf="password.touched && password.invalid" class="invalid-feedback">
+                      <div *ngIf="password.errors.required">Password is required</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-6"  *ngIf="createAdminDto.id === 0">
+                  <div class="form-group">
+                    <label for="confirmPassword">Confirm Password<small class="text-danger">*</small></label>
+                    <input [(ngModel)]="createAdminDto.confirmPassword" class="form-control form-control-sm" rows="3"
+                      placeholder="Confirm Password" type="password" minlength="6" required name="confirmPassword"
+                      #confirmPassword="ngModel"
+                      [ngClass]="{ 'is-invalid': confirmPassword.touched && confirmPassword.invalid }">
+
+                    <div *ngIf="confirmPassword.touched && confirmPassword.invalid" class="invalid-feedback">
+                      <div *ngIf="confirmPassword.errors.required">Confirm Password is required</div>
+                    </div>
+                    <div *ngIf="(createAdminDto.password !== createAdminDto.confirmPassword)">
+                      <small class="text-danger">Those passwords didn't match. Try again.</small>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              [disabled]="!createAdminDto.email || !createAdminDto.countryCallingCode|| !createAdminDto.userName || !createAdminDto.password || checkemail  || !createAdminDto.confirmPassword || f.invalid || !createAdminDto.firstName || !createAdminDto.lastName || (createAdminDto.password !== createAdminDto.confirmPassword)"
+              type="submit" class="btn btn-dynamic-2c btn-sm" *ngIf="createAdminDto.id === 0"
+              (click)="addAppAdminUsers()">Add</button>
+            <button [disabled]="!createAdminDto.firstName || !createAdminDto.lastName || f.invalid"
+              type="submit" class="btn btn-dynamic-2c btn-sm" *ngIf="createAdminDto.id > 0"
+              (click)="editAppAdmin();">Update</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div mdbModal #assignRolesModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+      [config]="{ignoreBackdropClick: true}" aria-labelledby="myassignRolesModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close pull-right" aria-label="Close" (click)="assignRolesModal.hide()">
+              <span aria-hidden="true">×</span>
+            </button>
+            <h4 class="modal-title w-100" id="myModalLabel">Assign Roles</h4>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <label for="Roles">Roles</label>
+                  <ng-select  [(ngModel)]="selectedRoles" [ngModelOptions]="{standalone: true}"
+                    [multiple]="true" [searchable]="true" placeholder="Select Roles">
+                    <ng-option [value]="item.id" *ngFor="let item of rolesList">{{item.name}}</ng-option>
+                  </ng-select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="waves-light btn-sm btn btn-dynamic-secondary-2c" aria-label="Close"
+              (click)="assignRolesModal.hide()" mdbWavesEffect>Close</button>
+            <button type="button" (click)="assignRolesModal.hide();AssignRolesToUsers();"
+              class="relative waves-light btn-sm btn btn-dynamic-2c" mdbWavesEffect>Save
+              changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+

@@ -1,0 +1,42 @@
+version: 0.2
+
+# env:
+#     variables:
+#         CACHE_CONTROL: "86400"
+#         S3_BUCKET: {-INSERT BUCKET NAME FOR STATIC WEBSITE HERE-}
+#         BUILD_FOLDER: {-INSERT THE NAME OF THE BUILD FOLDER HERE-}
+#         BUILD_ENV: "prod"
+
+phases:
+  install:
+    runtime-versions:
+      # NodeJS included in the docker image
+      nodejs: 12
+    commands:
+      # Install node dependancies.
+      - npm install
+      - npm install -g @angular/cli
+  build:
+    commands:
+      # Builds Angular application.
+      # - npm run testing
+      # - node ./node_modules/@angular/cli/bin/ng build --configuration=test
+      - node ./node_modules/@angular/cli/bin/ng build --configuration=test --optimization=false
+      # - node ./node_modules/@angular/cli/bin/ng build --prod --configuration=test --aot --vendor-chunk --common-chunk --delete-output-path --buildOptimizer
+      # - ng build --prod --configuration=test --aot --vendor-chunk --common-chunk --delete-output-path --buildOptimizer
+
+  post_build:
+    commands:
+      # Clear S3 bucket.
+      - aws s3 rm s3://locummed-dev/ --recursive
+      # Copy files from dist to S3
+      # - cd dist
+      - aws s3 cp ./dist/mdb-angular-pro/ s3://locummed-dev/ --recursive
+      # Begin cloudfront invalidation
+      - aws cloudfront create-invalidation --distribution-id EYKY047WSZDIP --paths "/*"
+
+artifacts:
+    files:
+        - '**/*'
+    base-directory: 'dist/mdb-angular-pro'
+    discard-paths: no

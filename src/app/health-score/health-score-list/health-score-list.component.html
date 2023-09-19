@@ -1,0 +1,89 @@
+<div class="d-flex align-items-center flex-wrap justify-content-between mb-3">
+    <h1 class="page-title mb-0 flex-sm-grow-1 mb-3">Patient Health Score Forms</h1>
+    <div>
+      <button routerLink="/health-score/form" class="btn btn-dynamic-2c btn-sm ml-0">Add new form</button>
+    </div>
+  </div>
+ <div class="row">
+    <div class="col-md-12">
+        <div class="form-group d-flex align-items-center">
+            <label for="searchBy" class="mb-0 mr-3">Search</label>
+            <div class="flex-grow-1">
+              <input type="text" [(ngModel)]="searchFormParam" (ngModelChange)="filterForms($event)"  autocomplete="off"
+                class="form-control form-control-sm box-shadow w-100" id="searchBy" placeholder="Search" />
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group d-flex align-items-center">
+            <label for="searchBy" class="mb-0 mr-3">Module</label>
+            <div class="flex-grow-1">
+              <ng-select class="ng-select-small" (add)="addChange($event, 'modules')" (remove)="removeChange($event)" (change)="changeFilter($event, 'modules')" [multiple]="true" [clearable]="false" [searchable]="true"  [(ngModel)]="filterPHSFormDto.moduleIds"
+              placeholder="Module">
+              <ng-option [value]="''" >All</ng-option>
+              <ng-option [value]="item.value" *ngFor="let item of twoCModulesEnumList" >{{item.name}}</ng-option>
+          </ng-select>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group d-flex align-items-center">
+            <label for="searchBy" class="mb-0 mr-3">Diagnosis</label>
+            <div class="flex-grow-1">
+              <ng-select class="ng-select-small" [clearable]="false" [multiple]="true" (ngModelChange)="getAllPHSForms()" [searchable]="true"  [(ngModel)]="filterPHSFormDto.chronicConditionIds"
+              placeholder="Select Diagnosis">
+              <ng-option [value]="item.id" *ngFor="let item of cronicDiseaseList" >{{item.code}} {{item.detail}}</ng-option>
+          </ng-select>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group d-flex align-items-center">
+            <label for="searchBy" class="mb-0 mr-3">Care Episode</label>
+            <div class="flex-grow-1">
+              <ng-select class="ng-select-small" (add)="addChange($event, 'episodes')" (remove)="removeChange($event)" (change)="changeFilter($event,'episodes')" [clearable]="false" [multiple]="true" [searchable]="true"  [(ngModel)]="filterPHSFormDto.careEpisodeIds"
+                    placeholder="Episode">
+                    <ng-option [value]="''" >All</ng-option>
+                    <ng-option [value]="item.id" *ngFor="let item of phsCareEpisodesList" >{{item.name}}</ng-option>
+              </ng-select>
+            </div>
+        </div>
+    </div>
+ </div>
+ <div>
+   <mdb-progress-bar *ngIf="isLoadingForms" class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+    <ngx-datatable #table class="material" [columnMode]="'force'" [headerHeight]="50" [footerHeight]="50" [rowHeight]="50"
+    [scrollbarV]="false" [scrollbarH]="true" [rows]="phsFormsList" [limit]="15" >
+    <ngx-datatable-column name="No." [maxWidth]=50>
+      <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+        {{rowIndex + 1}}
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column  prop="title" name="Title">
+    </ngx-datatable-column>
+    <ngx-datatable-column prop="questionsCount" name="Questions Count">
+    </ngx-datatable-column>
+    <ngx-datatable-column prop="status" name="Status">
+      <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+        {{ phsFormStatusEnum[row.status]}}
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column prop="publishedDate" name="Published Date">
+      <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+        {{ row.publishedDate | dateFormatPipe }}
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Action" [canAutoResize]=true [width]=225>
+      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+        <!-- <button class="btn btn-dynamic-2c btn-icon" title="View" >
+          <i class="fa fa-eye"></i>
+        </button> -->
+        <button (click)="navigateToFormDetails(row.id)" class="btn btn-dynamic-2c btn-icon" title="Edit" >
+            <i class="fa fa-pencil"></i>
+        </button>
+        <button (click)="openConfirmModal(row.id)" class="btn btn-danger btn-icon" title="Delete" placement="left">
+            <i class="fa fa-trash"></i></button>
+      </ng-template>
+    </ngx-datatable-column>
+  </ngx-datatable>
+ </div>

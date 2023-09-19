@@ -1,0 +1,70 @@
+<div class="d-flex flex-row align-items-center justify-content-between mb-3">
+  <div class="d-flex justify-content-start align-items-center">
+    <h4 class="mr-3 mb-0"><a class="text-dark" (click)="goBack()">
+        <i class="fa fa-arrow-left"></i></a></h4>
+    <h1 class="page-title mb-0">Annual Wellness Encounters</h1>
+  </div>
+  <div>
+    <div class="action-button">
+      <button type="button" [disabled]="isCreatingEncounter" class="btn btn-dynamic-2c btn-sm text-capitalize"
+      (click)="AddAWEncounter()">
+      <span *ngIf="isCreatingEncounter" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      Add</button>
+    </div>
+  </div>
+  <!-- <div>
+    <div class="action-button">
+      <div class="btn-group" mdbDropdown>
+        <a mdbDropdownToggle class="btn btn-dynamic-2c btn-icon" placement="left"><i class="fa fa-plus"></i></a>
+        <div class="dropdown-menu dropdown-menu-right status-dropdown">
+          <div>
+            <button [disabled]="isCreatingScreening" (click)="$event.stopPropagation();AddAMScreening()" class="dropdown-item">AM Screening <span *ngIf="isCreatingScreening" class="spinner-border spinner-border-sm" role="status"
+              aria-hidden="true"></span></button>
+              <button [disabled]="isCreatingAMCounselling" (click)="$event.stopPropagation();AddAlcoholCounselling()" class="dropdown-item">AM Counselling <span *ngIf="isCreatingAMCounselling" class="spinner-border spinner-border-sm" role="status"
+                aria-hidden="true"></span></button>
+            <button [disabled]="isCreatingDPScreening" (click)="$event.stopPropagation();AddDepressionScreening()" class="dropdown-item">DP Screening <span *ngIf="isCreatingDPScreening" class="spinner-border spinner-border-sm" role="status"
+              aria-hidden="true"></span></button>
+            <button [disabled]="isCreatingDPCounselling" (click)="$event.stopPropagation();AddDepressionCounselling()" class="dropdown-item">DP Counselling <span *ngIf="isCreatingDPCounselling" class="spinner-border spinner-border-sm" role="status"
+              aria-hidden="true"></span></button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div> -->
+</div>
+<app-patient-details></app-patient-details>
+
+<ngx-datatable #table class="material" [columnMode]="'force'" [headerHeight]="50" [footerHeight]="50" [rowHeight]="40"
+  [scrollbarV]="false" [scrollbarH]="true" [rows]="awEncountersList" [offset]="0">
+  <ngx-datatable-column name="#" [maxWidth]=50>
+    <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+      <small class="mr-3">{{(rowIndex + 1)}}</small>
+    </ng-template>
+  </ngx-datatable-column>
+  <!-- <ngx-datatable-column name="Measure Name " prop="measureName"> </ngx-datatable-column>
+  <ngx-datatable-column name="Measure Code" prop="measureCode"> </ngx-datatable-column> -->
+  <!-- <ngx-datatable-column name="Dependency Score" prop="dependenceScore"> </ngx-datatable-column> -->
+  <!-- <ngx-datatable-column name="Encounter Type" prop="encounterType"> </ngx-datatable-column>
+  <ngx-datatable-column name="Result" prop="result"> </ngx-datatable-column> -->
+  <!-- <ngx-datatable-column name="Note" prop="note"> </ngx-datatable-column> -->
+   <ngx-datatable-column name="Created On">
+    <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+      {{ row.encounterDate | dateFormatPipe }}
+    </ng-template>
+  </ngx-datatable-column>
+  <!-- <ngx-datatable-column name="Next Due" prop="nextDue">
+    <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+      {{ row.nextDue | dateFormatPipe }}
+    </ng-template>
+  </ngx-datatable-column> -->
+  <ngx-datatable-column name="Action" >
+    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+
+      <button type="button" class="btn btn-icon btn-dynamic-2c ml-2"
+        (click)="ProceedNavigation(row);"><i class="fa fa-eye"></i></button>
+
+    </ng-template>
+  </ngx-datatable-column>
+  <!-- <ngx-datatable-column name="action" prop="Notes"> </ngx-datatable-column> -->
+</ngx-datatable>

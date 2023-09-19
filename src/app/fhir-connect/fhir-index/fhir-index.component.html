@@ -1,0 +1,59 @@
+<section id="home" class="response-page divider fullscreen bg-lightest">
+
+
+  <div class="w-50">
+    <div style="width:250px" class="mb-3 p-2 bg-white rounded">
+        <img class="img-fluid" src="{{brandingService.logoPath}}logo-1024-265.png" alt="{{brandingService.appTitle}}">
+    </div>
+    <div>
+        <!-- <h1 class="font-150 text-theme-colored mt-0 mb-0"><i class="fa fa-map-signs text-gray-silver"></i>Connected!</h1> -->
+        <h2 class="mt-0 text-dynamic-2c">Smart App</h2>
+        <!-- <p class="pb-30">Your system configuration setting has been saved.</p> -->
+
+        <!-- <p *ngIf="routeData" class="pb-30">{{routeData | json}}</p> -->
+        <h3 *ngIf="authorized && fhirLoginObj.firstName" class="mt-0 text-dynamic-2c"><span >{{fhirLoginObj.firstName + ' ' + fhirLoginObj.lastName}}</span></h3>
+        <h3 *ngIf="!authorized" class="mt-0 text-dynamic-2c"><span ></span> Authorizing...</h3>
+        <ng-container *ngIf="alertReason">
+          <div class="text-center alert alert-warning w-75 mt-2" role="alert">
+            <p class="mb-0" style="font-size: 14px;">{{alertReason}}
+            </p>
+          </div>
+        </ng-container>
+        <div class="row" *ngIf="patient?.firstName">
+          <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 px-2">
+            <div class="pb-info pb-info-d w-100">
+              <p ><strong>Patient Name:</strong> {{patient.firstName}} {{patient.lastName}} </p>
+              <!-- <p ><strong>Emr Id:</strong> {{patient.patientEmrId}}</p> -->
+              <p ><strong>DOB:</strong> {{patient.dateOfBirth}}</p>
+              <p ><strong>Primary Phone:</strong> {{patient.homePhone}}</p>
+            </div>
+
+          </div>
+          <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 px-2">
+            <div class="pb-info pb-info-d w-100">
+              <p ><strong>Conditions:</strong> {{conditions?.length}} </p>
+              <p ><strong>Allergies:</strong> {{allergies?.length}} </p>
+              <p ><strong>Medications:</strong> {{medications?.length}} </p>
+            </div>
+
+          </div>
+        </div>
+
+        <ng-container *ngIf="fhirLoginObj.patientEmrId && alertReason">
+          <div class="row mt-2">
+
+              <div class="col-sm-6">
+                <div class="input-group form-group">
+                  <input readonly [(ngModel)]="fhirLoginObj.patientEmrId" type="text" placeholder="Enter Emr id" class="form-control form-control-sm" />
+                  <a [class.disabled]="!fhirLoginObj.patientEmrId" (click)="RegisterPatientIn2C()" class="input-group-append">
+                    <span class="input-group-text text-white bg-dynamic-2c" >
+                      Load
+                    </span>
+                  </a>
+                </div>
+              </div>
+          </div>
+        </ng-container>
+    </div>
+  </div>
+  </section>

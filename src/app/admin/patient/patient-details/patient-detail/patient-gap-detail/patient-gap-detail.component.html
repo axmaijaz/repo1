@@ -1,0 +1,384 @@
+<div class="pcm-status-container">
+
+
+  <div class="insurance-gap pcm-status"  *ngIf="hasPayerGap || gettingGetPatientsMeasuresSummary">
+    <skltn-root *ngIf="gettingGetPatientsMeasuresSummary" duration="2000" [rectRadius]="0" flareWidth="30%" bgFill="#fff"
+      flareFill="#f2f3f8">
+      <div class="skltn-card d-flex align-item-center justify-content-between">
+        <div skltn-bone class="skltn-card__avatar mr-1 mb-1" style="height: 30px; width: 30px;" type="circle"></div>
+        <div skltn-bone class="skltn-card__avatar mr-1 mb-1" style="height: 30px; width: 30px;" type="circle"></div>
+        <div skltn-bone class="skltn-card__avatar mr-1 mb-1" style="height: 30px; width: 30px;" type="circle"></div>
+        <div skltn-bone class="skltn-card__avatar mr-1 mb-1" style="height: 30px; width: 30px;" type="circle"></div>
+        <div skltn-bone class="skltn-card__avatar mr-1 mb-1" style="height: 30px; width: 30px;" type="circle"></div>
+      </div>
+      <div class="skltn-card d-flex align-item-center justify-content-between">
+        <div skltn-bone class="skltn-card__avatar mr-1 mb-1" style="height: 30px; width: 30px;" type="circle"></div>
+        <div skltn-bone class="skltn-card__avatar mr-1 mb-1" style="height: 30px; width: 30px;" type="circle"></div>
+        <div skltn-bone class="skltn-card__avatar mr-1 mb-1" style="height: 30px; width: 30px;" type="circle"></div>
+        <div skltn-bone class="skltn-card__avatar mr-1 mb-1" style="height: 30px; width: 30px;" type="circle"></div>
+        <div skltn-bone class="skltn-card__avatar mr-1 mb-1" style="height: 30px; width: 30px;" type="circle"></div>
+      </div>
+    </skltn-root>
+    <!-- [ngStyle]="{'background': item.color}" -->
+    <ul *ngIf="!gettingGetPatientsMeasuresSummary && pcmMeasuresList.length > 0" id="{{pcmMeasuresListGap.length}}"  [style.maxWidth.px]="ListGApWidth * 34">
+      <li [class.active]="selectedMeasure.code===item.code" *ngFor="let item of pcmMeasuresListGap">
+        <ng-container *ngIf="item.isPayerGap">
+          <a class="status-{{item.color}}" (click)="selectedMeasure=item;getMeasureDataByCode(item.code, pcmMOdel)"
+          title="{{item.measureName}}"
+            data-placement="auto" container="body"><span>{{item.code}}</span></a>
+          </ng-container>
+        </li>
+        <!-- <li><a class="btn btn-dynamic-2c btn-icon rounded-pill m-0" routerLink="/pcm/encounters/{{PatientId}}" title="View All" data-placement="bottom"></a></li> -->
+      </ul>
+  </div>
+  <div class="facility-gap pcm-status" *ngIf="hasFacilityGap || gettingGetPatientsMeasuresSummary">
+    <skltn-root *ngIf="gettingGetPatientsMeasuresSummary" duration="2000" [rectRadius]="0" flareWidth="30%" bgFill="#fff"
+      flareFill="#f2f3f8">
+      <div class="skltn-card d-flex align-item-center justify-content-between">
+        <div skltn-bone class="skltn-card__avatar mr-1 mb-1" style="height: 30px; width: 30px;" type="circle"></div>
+        <div skltn-bone class="skltn-card__avatar mr-1 mb-1" style="height: 30px; width: 30px;" type="circle"></div>
+        <div skltn-bone class="skltn-card__avatar mr-1 mb-1" style="height: 30px; width: 30px;" type="circle"></div>
+        <div skltn-bone class="skltn-card__avatar mr-1 mb-1" style="height: 30px; width: 30px;" type="circle"></div>
+        <div skltn-bone class="skltn-card__avatar mr-1 mb-1" style="height: 30px; width: 30px;" type="circle"></div>
+      </div>
+      <div class="skltn-card d-flex align-item-center justify-content-between">
+        <div skltn-bone class="skltn-card__avatar mr-1 mb-1" style="height: 30px; width: 30px;" type="circle"></div>
+        <div skltn-bone class="skltn-card__avatar mr-1 mb-1" style="height: 30px; width: 30px;" type="circle"></div>
+        <div skltn-bone class="skltn-card__avatar mr-1 mb-1" style="height: 30px; width: 30px;" type="circle"></div>
+        <div skltn-bone class="skltn-card__avatar mr-1 mb-1" style="height: 30px; width: 30px;" type="circle"></div>
+        <div skltn-bone class="skltn-card__avatar mr-1 mb-1" style="height: 30px; width: 30px;" type="circle"></div>
+      </div>
+    </skltn-root>
+    <!-- [ngStyle]="{'background': item.color}" -->
+    <ul *ngIf="!gettingGetPatientsMeasuresSummary && pcmMeasuresList.length > 0" [style.maxWidth.px]="ListGApNotWidth * 34">
+      <li [class.active]="selectedMeasure.code===item.code" *ngFor="let item of pcmMeasuresListNotGap">
+        <ng-container *ngIf="!item.isPayerGap">
+          <a class="status-{{item.color}}" (click)="selectedMeasure=item;getMeasureDataByCode(item.code, pcmMOdel)"
+          title="{{item.measureName}}"
+            data-placement="auto" container="body"><span>{{item.code}}</span></a>
+        </ng-container>
+      </li>
+      <!-- <li><a class="btn btn-dynamic-2c btn-icon rounded-pill m-0" routerLink="/pcm/encounters/{{PatientId}}" title="View All" data-placement="bottom"></a></li> -->
+    </ul>
+  </div>
+</div>
+<div mdbModal (close)="selectedMeasure={}" #pcmMOdel="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="mypcmMOdelLabel767huih" aria-hidden="true" [config]="{backdrop: true, ignoreBackdropClick: true}" >
+  <div class="modal-dialog modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header py-2">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="pcmMOdel.hide();hideModal()">
+          <span aria-hidden="true">×</span>
+        </button>
+
+        <div class="d-flex align-items-center">
+          <ng-container *ngIf="pcmMOdelData && pcmMOdelData.measureName">
+            <h4 class="modal-title w-100" title="{{pcmMOdelData.measureName}}">
+              {{pcmMOdelData.measureName | ellipsis:30 }} </h4>
+          </ng-container>
+          <!-- <a id="popTemplate" class="ml-3" container="body" [mdbPopover]="popTemplate" placement="bottom"
+            triggers="focus"><i class="fa fa-exclamation-circle fa-lg"></i></a> -->
+
+            <a id="popTemplate" #popupInfo="bs-mdbPopover" class="ml-3" container="body" [mdbPopover]="popTemplate" placement="bottom" (click)="popupQustion ? popupQustion.hide(): ''"
+            triggers="focus"><i class="fa fa-exclamation-circle fa-lg"></i></a>
+
+            <a id="popTemplateTwo"  #popupQustion="bs-mdbPopover" *ngIf="pcmMOdelData.guideline" class="ml-3" container="body" [mdbPopover]="popTemplateTwo" (click)="popupInfo.hide();" placement="bottom"
+            triggers="focus"><i class="fa  fa-question-circle fa-lg"></i></a>
+          <ng-template #popTemplate>
+            <div class="bg-dark text-white py-3 pl-3 pr-2" style="width: 300px;">
+              <div class="who-covered" (click)="$event.stopPropagation()" [innerHTML]="whoIsCovered" malihu-scrollbar
+                [scrollbarOptions]="scrollbarOptionsTimeline" style="max-height: 350px;"></div>
+            </div>
+          </ng-template>
+          <ng-template #popTemplateTwo>
+            <div class="bg-dark text-white py-3 pl-2 pr-2" style="width: 300px;">
+              <div class="who-covered" (click)="$event.stopPropagation()" [innerHTML]="pcmMOdelData.guideline"  malihu-scrollbar
+                [scrollbarOptions]="scrollbarOptionsTimeline" style="max-height: 350px;">
+              </div>
+            </div>
+          </ng-template>
+
+        </div>
+
+      </div>
+      <div class="modal-body">
+        <skltn-root *ngIf="pcmModelLoading" duration="2000" [rectRadius]="0" flareWidth="50%" bgFill="#f2f3f8"
+          flareFill="rgba(255,255,255, 0.5)">
+          <!-- Card with Avatar -->
+          <div class="skltn-card">
+            <div skltn-bone class="skltn-card__avatar" type="circle"></div>
+            <div class="skltn-card__body">
+              <div skltn-bone class="skltn-card__title"></div>
+              <div skltn-bone class="skltn-card__line"></div>
+              <div skltn-bone class="skltn-card__line"></div>
+            </div>
+          </div>
+        </skltn-root>
+        <ng-container *ngIf="!pcmModelLoading">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <div class="d-flex align-items-center">
+              <p class="m-0">Status:</p>
+              <div class="btn-group ml-3" *ngIf="selectedPcmStatus" mdbDropdown>
+                <mdb-badge mdbDropdownToggle success="true">{{selectedPcmStatus.name}}</mdb-badge>
+
+                <div class="dropdown-menu status-dropdown">
+                  <div>
+                    <!-- <span [ngStyle]="{'backgroupcmMOdelDatand': item.color}"></span> -->
+                    <a [class.active]="pcmMOdelData.currentStatus===item.value"
+                      (click)="pcmMOdelData.currentStatus=item.value;selectedPcmStatus=item;"
+                      *ngFor="let item of pcmMOdelData.statusList" class="dropdown-item">{{item.name}}</a>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+            <div class="btn-group ml-3" >
+                <div>
+                  <div class="custom-control custom-checkbox custom-control-inline">
+                    <input type="checkbox" [(ngModel)]="pcmMOdelData.controlled" class="custom-control-input" id="Controlled232"
+                      name="Controlleds">
+                    <label class="custom-control-label" for="Controlled232">Controlled</label>
+                  </div>
+                </div>
+            </div>
+            <div class="btn-group ml-3" *ngIf="pcmMOdelData.hasEncounters" mdbDropdown>
+              <a mdbDropdownToggle class="btn btn-dynamic-2c btn-icon" placement="right"><i class="fa fa-plus"></i></a>
+              <div class="dropdown-menu dropdown-menu-right status-dropdown">
+                <div>
+                  <button *ngIf="pcmMOdelData.code !== 'AW'" [disabled]="isCreatingScreening" (click)="$event.stopPropagation();AddScreening()" class="dropdown-item">{{pcmMOdelData.code}} Screening <span *ngIf="isCreatingScreening" class="spinner-border spinner-border-sm" role="status"
+                    aria-hidden="true"></span></button>
+                  <button *ngIf="pcmMOdelData.code !== 'AW'" [disabled]="isCreatingCounselling" (click)="$event.stopPropagation();AddCounselling()" class="dropdown-item">{{pcmMOdelData.code}} Counselling <span *ngIf="isCreatingCounselling" class="spinner-border spinner-border-sm" role="status"
+                    aria-hidden="true"></span></button>
+                  <button *ngIf="pcmMOdelData.code === 'AW'" [disabled]="isCreatingAWEncounter" (click)="$event.stopPropagation();AddAWEncounter()" class="dropdown-item">Add Encounter <span *ngIf="isCreatingAWEncounter" class="spinner-border spinner-border-sm" role="status"
+                    aria-hidden="true"></span></button>
+                  <!-- <button class="dropdown-item">Counselling</button> -->
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <div class="border p-2 border-bottom-0">
+            <!-- <p class="mb-3"><label> Reference Link: </label> <a>Demo Link</a></p> -->
+            <div class="input-group form-group">
+              <label style="width: 70px;" class="flex-shrink-0">Last Done</label>
+              <input type="text" class="form-control form-control-sm ml-3" [(ngModel)]="pcmMOdelData.lastDone"
+                #date="dpDayPicker" [dpDayPicker]="datePickerConfig" [theme]="'dp-material ccm-date-picker'"
+                [mode]="'day'" />
+              <a (click)="date.api.open();" class="input-group-append">
+                <span class="input-group-text text-white bg-dynamic-2c" id="category1"><i
+                    class="fa fa-calendar fa-lg"></i></span> </a>
+            </div>
+            <!-- <div class="d-flex">
+              <label style="width: 70px;" class="flex-shrink-0" for="result">Result</label>
+              <div class="form-group flex-1 ml-3">
+                <input [(ngModel)]="pcmMOdelData.result" type="text" class="form-control" id="result"
+                  placeholder="Risk Level">
+              </div>
+            </div> -->
+            <!-- <ng-container *ngIf="pcmMOdelData.pcmMeasureInfoResultType == 0">
+              <div class="d-flex" *ngIf="!pcmMOdelData.isResultNumeric">
+                <label style="width: 70px;" class="flex-shrink-0" for="result3">Result</label>
+                <div class="form-group flex-1 ml-3">
+                  <input [(ngModel)]="pcmMOdelData.result" type="text" class="form-control" id="result3"
+                    placeholder="" name="result">
+                </div>
+              </div>
+              <div class="d-flex" *ngIf="pcmMOdelData.isResultNumeric">
+                <label style="width: 70px;" class="flex-shrink-0" for="resulta1">Result</label>
+                <div class="form-group flex-1 ml-3">
+                  <input [(ngModel)]="pcmMOdelData.result" OnlyNumbers type="text" class="form-control" id="resulta1"
+                    placeholder="" name="resulta">
+                </div>
+              </div>
+            </ng-container> -->
+
+            <ng-container *ngIf="pcmMOdelData.pcmMeasureInfoResultType == 0">
+              <div class="d-flex" *ngIf="pcmMOdelData.isResultNumeric">
+                <label style="width: 70px;" class="flex-shrink-0" for="result">Result</label>
+                <div class="form-group flex-1 ml-3">
+                  <input [(ngModel)]="pcmMOdelData.result" type="text" class="form-control" id="result"
+                    placeholder="" name="result1">
+                </div>
+              </div>
+              <div class="d-flex" *ngIf="!pcmMOdelData.isResultNumeric">
+                <label style="width: 70px;" class="flex-shrink-0" for="result1">Result</label>
+                <div class="form-group flex-1 ml-3">
+                  <input [(ngModel)]="pcmMOdelData.result" type="text" class="form-control" id="result1"
+                    placeholder="" name="result">
+                </div>
+              </div>
+            </ng-container>
+
+            <ng-container *ngIf="pcmMOdelData.pcmMeasureInfoResultType == 1">
+              <div class="d-flex">
+                <!-- <div class="col-lg-6 col-sm-12"> -->
+                  <label style="width: 70px;" class='flex-shrink-0'>Result</label>
+                  <div class="form-group w-100 ml-3">
+                    <ng-select class="ng-select-small" [(ngModel)]="pcmMOdelData.result" name="myresult"
+                      [multiple]="false" [searchable]="false"
+                      placeholder="Select Result">
+                      <ng-option [value]="item.value" *ngFor="let item of pcmMOdelData.pcmMeasureDropdownResultValues">{{item.value}}</ng-option>
+                      <!-- <ng-container *ngIf="pcmMOdelData.pcmMeasureInfoDropdownResultValue == 0">
+                        <ng-option [value]="'Yes'">Yes</ng-option>
+                        <ng-option [value]="'No'">No</ng-option>
+                      </ng-container>
+                      <ng-container *ngIf="pcmMOdelData.pcmMeasureInfoDropdownResultValue == 1">
+                        <ng-option [value]="'Normal'">Normal</ng-option>
+                        <ng-option [value]="'Abnormal'">Abnormal</ng-option>
+                      </ng-container> -->
+
+                    </ng-select>
+                  </div>
+                <!-- </div> -->
+              </div>
+
+            </ng-container>
+            <!-- <div class="form-form form-group d-flex mb-0" *ngIf="pcmMOdelData.insuranceGapFlags && pcmMOdelData.insuranceGapFlags.length > 0">
+              <label  style="width: 70px;" class="flex-shrink-0" for="note">Care Flags</label>
+
+              <div class="mb-2">
+                <div class="d-flex flex-wrap align-items-center justify-content-start">
+                  <div class="w-100" *ngFor="let item of pcmMOdelData.insuranceGapFlags">
+                    <div class="d-flex custom-control custom-checkbox flex-1 pl-3">
+                        <mdb-checkbox [(ngModel)]="item.checked" [default]="true" [checked]="false">
+                          {{item.name}}
+                        </mdb-checkbox>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div> -->
+            <div class="form-form form-group d-flex mb-0">
+              <label style="width: 70px;" class="flex-shrink-0" for="note">Notes</label>
+              <textarea [(ngModel)]="pcmMOdelData.note" type="text" id="note" style="height:55px" rows="2"
+                class="form-control ml-3"></textarea>
+            </div>
+          </div>
+          <!-- care flag -->
+          <div class="border p-2 border-bottom-0" *ngIf="pcmMOdelData.insuranceGapFlags && pcmMOdelData.insuranceGapFlags.length > 0">
+            <div class="row">
+              <div class="col-6 mb-2" *ngFor="let item of pcmMOdelData.insuranceGapFlags">
+                <div class="custom-control custom-checkbox custom-control-inline pl-0">
+                    <mdb-checkbox [(ngModel)]="item.checked" name="{{item.name}}" [default]="true" [checked]="false">
+                      {{item.name}}
+                    </mdb-checkbox>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="border p-2 border-bottom-0">
+            <div class="input-group form-group">
+              <label style="width: 70px;" class="flex-shrink-0 ">Next Due</label>
+              <input [(ngModel)]="pcmMOdelData.nextDue" type="text" class="form-control form-control-sm ml-3"
+                #dateDPicker="dpDayPicker" [dpDayPicker]="datePickerConfig" [theme]="'dp-material ccm-date-picker'"
+                [mode]="'day'" />
+              <a (click)="dateDPicker.api.open();" class="input-group-append">
+                <span class="input-group-text text-white bg-dynamic-2c" id="category"><i
+                    class="fa fa-calendar fa-lg"></i></span> </a>
+            </div>
+            <div class="d-flex align-items-start">
+              <label for="file" class="flex-shrink-0" style="width: 70px;">Attachment</label>
+              <div class="file-field flex-wrap align-items-center w-100 ml-3">
+                <div class="btn btn-success btn-sm mx-0 mt-0">
+                  <span class="w-100"><i class="fa fa-paperclip fa-lg"></i> Attach File<span
+                      *ngIf="uploadImg" class="mr-1 spinner-border spinner-border-sm" role="status"
+                      aria-hidden="true"></span></span>
+                  <input type="file" mdbFileSelect accept=".pdf, .xlsx,.docx, .doc, .odt , .txt, .ppt, .pptx"
+                    (change)="onUploadOutput($event);" #select>
+                </div>
+              </div>
+            </div>
+            <!-- <div class="w-100" *ngIf="pcmMOdelData.pcmDocuments && pcmMOdelData.pcmDocuments.length > 0">
+              <div class="file-field flex-wrap align-items-center">
+                <div *ngFor="let doc of pcmMOdelData.pcmDocuments" class="file-item">
+                  <small class="mb-0">{{doc.title | slice:0:40}}</small>
+                </div>
+              </div>
+            </div> -->
+
+            <div class="w-100" *ngIf="pcmMOdelData.pcmDocuments && pcmMOdelData.pcmDocuments.length > 0">
+              <div class="file-field flex-wrap align-items-center">
+                <div *ngFor="let doc of pcmMOdelData.pcmDocuments" class="file-item">
+                  <small class="mb-0"><a (click)="viewDoc(doc)">{{doc.title | slice:0:40}}</a><a (click)="DeleteDoc(doc)"><i
+                        class="ml-2 fa fa-times fa-lg text-danger"></i>
+                    </a></small>
+                </div>
+              </div>
+            </div>
+            <div class="d-flex m-0 justify-content-between align-items-center w-100">
+              <div *ngIf="pcmMOdelData.updatedUser">
+                <label class="mb-0" style="font-size: 14px;font-weight: 500;">Last updated by:</label>
+                {{pcmMOdelData.updatedUser}}
+              </div>
+              <div *ngIf="pcmMOdelData.updatedOn">{{pcmMOdelData.updatedOn | dateFormatPipe: 'time'}}</div>
+            </div>
+          </div>
+          <div class="border p-2 " style="background-color: #4eb04814;">
+            <!-- <p class="mb-3"><label> Reference Link: </label> <a>Demo Link</a></p> -->
+            <!-- <div class="col-xl-3 col-lg-6 col-sm-6"> -->
+              <div class="input-group form-group">
+                <label style="width: 70px;" class="flex-shrink-0 mr-3" for="scheduleflag">Sch Flag</label>
+                <ng-select [(ngModel)]="pcmMOdelData.scheduleFlag" class=" flex-grow-1 ng-select-small" name="schdulefl" appendTo="body" [searchable]="false"
+                  [closeOnSelect]="true" placeholder="Select Schedule Flag"
+                  >
+                  <!-- <ng-option [value]="-1">All</ng-option> -->
+                  <ng-option [value]="item.number" *ngFor="let item of ScheduleFlagEnumList">{{item.word}} </ng-option>
+                </ng-select>
+              </div>
+            <!-- </div> -->
+            <div class="input-group form-group">
+              <label style="width: 70px;" class="flex-shrink-0">Event Date</label>
+              <input type="text" class="form-control form-control-sm ml-3" name="eventDate11" [(ngModel)]="pcmMOdelData.eventDate"
+                #date1="dpDayPicker" [dpDayPicker]="disableDatePickerConfig" [minDate]="currentDate" [theme]="'dp-material ccm-date-picker'"
+                [mode]="'day'" />
+              <a (click)="date1.api.open();" class="input-group-append">
+                <span class="input-group-text text-white bg-dynamic-2c" id="eventDate1"><i
+                    class="fa fa-calendar fa-lg"></i></span> </a>
+            </div>
+            <div class="form-form form-group d-flex mb-0">
+              <label style="width: 70px;" class="flex-shrink-0" for="scheduleNote">Note</label>
+              <textarea [(ngModel)]="pcmMOdelData.scheduleNote" type="text" id="scheduleNote" name="note12" style="height:55px" rows="2"
+                class="form-control ml-3"></textarea>
+            </div>
+            <div class="d-flex justify-content-between mt-2 align-items-center w-100">
+              <div *ngIf="pcmMOdelData.scheduleUpdatedUser">
+                <label class="mb-0" style="font-size: 14px;font-weight: 500;">Last updated by:</label>
+                {{pcmMOdelData.scheduleUpdatedUser}}
+              </div>
+              <div *ngIf="pcmMOdelData.scheduleUpdatedOn">{{pcmMOdelData.scheduleUpdatedOn | dateFormatPipe: 'time'}}</div>
+            </div>
+          </div>
+
+
+        </ng-container>
+      </div>
+      <div class="modal-footer py-2">
+        <div class="d-flex m-0 justify-content-end align-items-center w-100">
+          <div>
+
+            <button type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+              (click)="pcmMOdel.hide();hideModal()" mdbWavesEffect>Cancel</button>
+            <button [disabled]="editingPcmData" type="button" (click)="AddEditMeasureData(pcmMOdel)"
+              size="sm" class="relative waves-light btn btn-sm btn-dynamic-2c" mdbWavesEffect><span *ngIf="editingPcmData"
+                class="mr-1 spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Update</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div mdbModal #viewPdfModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" [config]="{backdrop: true, ignoreBackdropClick: true}" aria-hidden="true"
+  (close)="objectURLStrAW=''">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-body" style="height:calc(100vh - 50px); padding: 0px;">
+        <button type="button" class="close pull-right document-close" aria-label="Close" (click)="viewPdfModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <app-pdf-view *ngIf="objectURLStrAW" [documentUrl]="objectURLStrAW"></app-pdf-view>
+      </div>
+    </div>
+  </div>
+</div>

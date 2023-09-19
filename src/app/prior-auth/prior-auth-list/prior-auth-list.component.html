@@ -1,0 +1,495 @@
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <div class="d-flex align-items-center justify-content-start">
+    <h4 class="mr-3 mb-0"><a class="text-dark"><i class="fa fa-arrow-left" (click)="goBack()"></i></a></h4>
+    <h1 class="page-title mb-0">Prior Authorization</h1>
+  </div>
+  <div>
+    <button type="button" class="btn btn-dynamic-2c btn-sm mr-0" title="Download Excel" placement="left"
+      routerLinkActive="router-link-active" (click)="getPatientListExcelFile()"> Download Excel</button>
+
+    <button *hasClaim=" ['CanAddPatient']" type="button" class="btn btn-dynamic-2c btn-sm mr-0" title="Add Patient"
+      placement="left" [routerLink]="['/admin/addPatient']" routerLinkActive="router-link-active"><i
+        class="fa fa-plus fa-lg"></i> Add Patient</button>
+        <button type="button" class="btn btn-dynamic-2c btn-sm"
+      (click)="setNewModelProps(addEditPriorRef);addEditPriorRef.ShowAddEditModal();">Add
+      Prior Auth</button>
+  </div>
+</div>
+<!-- <div class="ccm-body">
+  <div *ngIf="isLoading" class="d-flex justify-content-center text-center">
+    <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+  </div>
+
+  <ngx-datatable style="width: 100%;" [columnMode]="'force'" class="material z-depth-0" [headerHeight]="50"
+    [footerHeight]="50" [rowHeight]="50" [scrollbarV]="false" [scrollbarH]="true" [rows]="priorAuthList" [limit]="15">
+    <ngx-datatable-column name="#" [maxWidth]=50>
+      <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+        {{rowIndex + 1}}
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Patient" prop="patientName">
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Request Date">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        {{row.requestDate | dateFormatPipe}}
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Received Date">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        {{row.receivedDate | dateFormatPipe}}
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Case type" prop="paCaseTypeName">
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Case step" prop="paCaseStepName">
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Req Status" prop="paRequestStatus">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        {{paRequestStatusEnum[row.paRequestStatus]}}
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Case Status" prop="paCaseStatus">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        {{paCaseStatusEnum[row.paCaseStatus]}}
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="PA Handler" prop="caseCoordinator">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        <div class="user-name-list" *ngIf="row.caseCoordinator && row.caseCoordinator.nameAbbreviation">
+          <div title="{{row.caseCoordinator.fullName}}" class="name-caption">
+            <span>{{row.caseCoordinator.nameAbbreviation}}</span></div>
+        </div>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="PA Manager" prop="caseManager">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        <div class="user-name-list" *ngIf="row.caseManager && row.caseManager.nameAbbreviation">
+          <div title="{{row.caseManager.fullName}}" class="name-caption">
+            <span>{{row.caseManager.nameAbbreviation}}</span></div>
+        </div>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Assigned To" prop="assignedTo">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        <div class="user-name-list" *ngIf="row.assignedTo && row.assignedTo.nameAbbreviation">
+          <div title="{{row.assignedTo.fullName}}" class="name-caption">
+            <span>{{row.assignedTo.nameAbbreviation}}</span></div>
+        </div>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Notes" prop="notes">
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Attachment" prop="paDocuments">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        <ng-container *ngIf="row.paDocuments && row.paDocuments.length > 0">
+          <div class="user-name-list user-name-list-colorspan" >
+            <div title="{{item.title}}" class="name-caption" (click)="viewDoc(item.path)" *ngFor="let item of row.paDocuments">
+              <span>{{item.title[0]}}{{ item.title[1] }}</span>
+            </div>
+          </div>
+        </ng-container>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Action" [canAutoResize]=false >
+      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+        <button class="btn btn-dynamic-2c btn-icon" title="Edit" (click)="OpenEditMOdel(addEditPriorRef, row)"
+          placement="left"><i class="fa fa-pencil"></i> </button>
+        <button class="btn btn-danger btn-icon" (click)="openConfirmModal(row.id)"><i class="fa fa-trash"></i></button>
+      </ng-template>
+    </ngx-datatable-column>
+  </ngx-datatable>
+</div> -->
+
+<div class="row d-flex form-group">
+  <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+    <div class="d-flex align-items-end justify-content-start">
+      <div  class="w-100">
+        <label for="searchBy">Search Patient</label>
+        <input type="text" #searchPatient [(ngModel)]="filterPatientDto.SearchParam" autocomplete="off"
+        class="form-control form-control-sm box-shadow w-100" id="searchBy" />
+      </div>
+
+        <div class="d-inline-flex" style="min-width: 205px;">
+          <button type="button" class="btn btn-dynamic-2c btn-sm mb-0 flex-shrink-0 mr-0 px-sm-3 px-md-4" appDebounceClick
+          (debounceClick)="paFilter.toggle()"><i class="fa fa-filter fa-lg"></i> Filter</button>
+          <button type="button" (click)="resetFilter(); GetPriorAuthsByFacilityId()"
+          class="btn btn-dynamic-secondary-2c btn-sm mr-0 flex-shrink-0 mb-0">
+          <i class="fa fa-refresh fa-lg"></i> Reset
+          </button>
+        </div>
+
+    </div>
+  </div>
+
+  <!-- <div class="d-flex align-items-end col-xl-4 col-lg-6 col-md-6 col-sm-6" [hidden]="currentUser?.userType === 3">
+    <div class="flex-grow-1">
+      <label for="namea">Filter By</label>
+      <ng-select class="ng-select-small" [disabled]="currentUser.userType === 4" [(ngModel)]="filterPatientDto.filter"
+        (ngModelChange)="filterPatientDto.SearchParam = '';GetPriorAuthsByFacilityId()" [closeOnSelect]="true" [multiple]="false"
+        [searchable]="true" placeholder="Filter By">
+        <ng-option [value]="1">Name, Emr Id </ng-option>
+        <ng-option [value]="2">Date of Birth </ng-option>
+        <ng-option [value]="3">Phone No </ng-option>
+      </ng-select>
+    </div>
+
+  </div> -->
+  <!-- <div class="d-flex align-items-end col-xl-4 col-lg-12 col-md-12 col-sm-12" [hidden]="currentUser?.userType === 3">
+    <div class="flex-grow-1">
+      <label for="namea">Care Provider</label>
+      <ng-select class="ng-select-small" [disabled]="currentUser.userType === 4"
+        [(ngModel)]="filterPatientDto.CareProviderId" (ngModelChange)="GetPriorAuthsByFacilityId()" [closeOnSelect]="true"
+        [multiple]="false" [searchable]="true" placeholder="Care Provider">
+        <ng-option [value]="0">All Care Providers </ng-option>
+        <ng-option *ngFor="let item of CareProvidersList" [value]="item.id">{{item.firstName}} {{item.lastName}}
+        </ng-option>
+      </ng-select>
+    </div>
+
+  </div> -->
+</div>
+
+<div class="search-filter collapseable" mdbCollapse #paFilter="bs-collapse">
+  <div class="panel" style="overflow: visible;">
+    <div class="panel-header d-flex justify-content-between align-items-center">
+      <h3>Search Filter</h3>
+      <div>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="paFilter.toggle()">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-xl-4 col-lg-4 col-sm-4">
+          <div class="form-group">
+            <label for="medNameSearch">Case Status</label>
+            <ng-select [clearable]="false" class="ng-select-small" [(ngModel)]="filterPatientDto.caseStatus"
+              [multiple]="true" [searchable]="true" required>
+              <!-- <ng-option [value]="-1">None</ng-option> -->
+              <ng-option [value]="0">In-Process</ng-option>
+              <ng-option [value]="1">Req Complete</ng-option>
+              <ng-option [value]="2">Closed Success</ng-option>
+              <ng-option [value]="3">Closed Abort</ng-option>
+              <ng-option [value]="4">Closed Error</ng-option>
+            </ng-select>
+          </div>
+        </div>
+
+        <div class="col-xl-4 col-lg-4 col-sm-4">
+          <div class="form-group">
+            <label for="medNameSearch">Req Status </label>
+            <div class="custom-control custom-checkbox custom-control-inline pull-right">
+              <input type="checkbox" class="custom-control-input" id="InstrumentalActive"
+                [(ngModel)]="filterPatientDto.excludeReqStatus"
+                name="InstrumentalActive123">
+              <label class="custom-control-label" for="InstrumentalActive">Exclude Req Status </label>
+            </div>
+            <ng-select [clearable]="false" class="ng-select-small" [(ngModel)]="filterPatientDto.reqStatus"
+              [multiple]="true" [searchable]="true" required>
+              <!-- <ng-option [value]="-1">None</ng-option> -->
+              <ng-option [value]="0">In-Progress</ng-option>
+              <ng-option [value]="1">Received</ng-option>
+              <ng-option [value]="2">Sent</ng-option>
+              <ng-option [value]="3">Approved</ng-option>
+              <ng-option [value]="4">Denied</ng-option>
+              <ng-option [value]="5">Scheduled</ng-option>
+              <ng-option [value]="6">Completed</ng-option>
+            </ng-select>
+          </div>
+        </div>
+        <div class="col-xl-4 col-lg-4 col-sm-4">
+          <div class="form-group">
+            <label for="medNameSearch">Case Type<small class="text-danger">*</small></label>
+            <div class="custom-control custom-checkbox custom-control-inline pull-right">
+              <input type="checkbox" class="custom-control-input" id="InstrumentalActivities4"
+                [(ngModel)]="filterPatientDto.excludeCaseType"
+                name="InstrumentalActivities">
+              <label class="custom-control-label" for="InstrumentalActivities4">Exclude Case Type </label>
+            </div>
+            <ng-select [(ngModel)]="filterPatientDto.caseTypeId" class="ng-select-small" [multiple]="true"
+              [searchable]="true" required>
+              <!-- <ng-option [value]="0">Select Type</ng-option> -->
+              <ng-option [value]="item.id" *ngFor="let item of addEditPriorRef.caseTypesLIst">{{item.title}}</ng-option>
+            </ng-select>
+          </div>
+        </div>
+        <div class="col-xl-4 col-lg-4 col-sm-4">
+          <div class="form-group">
+            <label class="w-100">Requesting Care Physician</label>
+            <ng-select [(ngModel)]="filterPatientDto.RequestingPhysicianId" class="ng-select-small" [multiple]="false"
+              [searchable]="true" required>
+              <ng-option [value]="0">All Physician</ng-option>
+              <ng-option [value]="item.id"
+                *ngFor="let item of (facilityUserList | filterFUsersByRole: 'Billing Provider')">{{item.lastName}},{{item.firstName}}</ng-option>
+            </ng-select>
+          </div>
+        </div>
+        <div class="col-xl-4 col-lg-4 col-sm-4">
+          <div class="form-group">
+            <label for="medNameSearch">Assign To</label>
+
+            <ng-select [(ngModel)]="filterPatientDto.assignedToId" class="ng-select-small" [multiple]="false"
+              [searchable]="true" required>
+              <ng-option [value]="0">All Users</ng-option>
+              <ng-option [value]="item.id" *ngFor="let item of facilityUserList">{{item.lastName}},{{item.firstName}}
+              </ng-option>
+            </ng-select>
+          </div>
+        </div>
+        <div class="col-xl-4 col-lg-4 col-sm-4">
+          <div class="form-group">
+            <label class="w-100">Request Date</label>
+            <input type="text" class="form-control form-control-sm" autocomplete="nope" name="daterangeInput"
+              daterangepicker [(ngModel)]="selectedDateRange" [options]="options"
+              (selected)="selectedDate($event, daterange)" (cancelDaterangepicker)="clearDate()" />
+          </div>
+        </div>
+        <!-- <div class="col-xl-4 col-lg-4 col-sm-4">
+          <div class="form-group">
+            <label class="w-100">Last Log Date</label>
+               <input type="text" class="form-control form-control-sm" name="daterangeInput1" daterangepicker [(ngModel)]="selectedDateRange1"
+               [options]="options" (selected)="selectedDate1($event, daterange)" (cancelDaterangepicker)="clearDate2()"/>
+          </div>
+        </div> -->
+        <!-- <div class="col-xl-6 col-lg-6 col-sm-6">
+          <div class="form-group">
+            <label for="medNameSearch">Case type<small class="text-danger">*</small></label>
+            <ng-select [(ngModel)]="filterPatientDto.paCaseTypeId" class="ng-select-small"  [multiple]="true" [searchable]="true"
+              required >
+              <ng-option [value]="0" >Select Type</ng-option>
+              <ng-option [value]="item.id"  *ngFor="let item of addEditPriorRef.caseTypesLIst">{{item.title}}</ng-option>
+            </ng-select>
+          </div>
+        </div> -->
+      </div>
+      <div class="d-flex justify-content-end mt-2">
+        <div class="btn-group">
+          <button type="button" (click)="GetPriorAuthsByFacilityId();"
+            class="btn btn-dynamic-2c btn-sm mx-0 flex-shrink-0">
+            <i class="fa fa-filter fa-lg"></i> Search
+          </button>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<label>Show <select name="example_length" [(ngModel)]="filterPatientDto.PageSize"
+    (ngModelChange)="GetPriorAuthsByFacilityId();" aria-controls="example" class="">
+    <option value="10">10</option>
+    <option value="25">25</option>
+    <option value="50">50</option>
+    <option value="100">100</option>
+  </select> entries</label>
+<div class="table-responsive">
+  <div *ngIf="isLoading" class="d-flex justify-content-center text-center">
+    <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+  </div>
+  <table class="table table-hover table-sm mb-0 table-nowrap prior-auth-table" id="hoverAble">
+    <thead>
+      <tr>
+        <th colspan="7"></th>
+        <th colspan="9">Request Info</th>
+        <th colspan="6">Referral Info</th>
+        <th colspan="5">Prior Authorization</th>
+      </tr>
+      <tr>
+        <th style="min-width: 140px; max-width: 250px; white-space: pre;" class="cursor-pointer" (click)="sort('patientName')">Patient Name
+          <span *ngIf="filterPatientDto.sortBy !== 'patientName'" class="fa fa-sort ml-2"></span>
+          <span *ngIf="filterPatientDto.sortBy == 'patientName'" class="fa fa-sort ml-2 text-success"></span></th>
+        <th title="PA Handler">PAH</th>
+        <th title="PA Manager">PAM</th>
+        <th title="Assign to">Assign<br /> to</th>
+        <th title="Case Status" class="cursor-pointer" (click)="sort('caseStatus')">Case <br/> Status
+          <span *ngIf="filterPatientDto.sortBy == 'caseStatus'" class="fa fa-sort ml-2 text-success cursor-pointer "></span>
+          <span *ngIf="filterPatientDto.sortBy !== 'caseStatus'" class="fa fa-sort ml-2 cursor-pointer "></span></th>
+        <th title="Request Date" style="min-width:42px;" class="cursor-pointer" (click)="sort('ReqDate')">Req <br/> Date
+          <span *ngIf="filterPatientDto.sortBy == 'ReqDate'" class="fa fa-sort ml-2 text-success"></span>
+          <span *ngIf="filterPatientDto.sortBy !== 'ReqDate'" class="fa fa-sort ml-2 cursor-pointer "></span></th>
+        <th title="Received Date" style="min-width:42px;" class="cursor-pointer" (click)="sort('RecDate')">Rec <br/> Date
+          <span *ngIf="filterPatientDto.sortBy == 'RecDate'" class="fa fa-sort ml-2 text-success"></span>
+          <span *ngIf="filterPatientDto.sortBy !== 'RecDate'" class="fa fa-sort ml-2 cursor-pointer "></span></th>
+        <th title="Insurance">Insurance</th>
+        <th title="Case Type" class="cursor-pointer" (click)="sort('caseType')">Case <br /> Type
+          <span *ngIf="filterPatientDto.sortBy == 'caseType'" class="fa fa-sort ml-2 text-success"></span>
+          <span *ngIf="filterPatientDto.sortBy !== 'caseType'" class="fa fa-sort ml-2 cursor-pointer "></span></th>
+        <th title="Case Steps">Case <br /> Steps</th>
+        <th title="Location">
+          <span class="fa fa-map-marker fa-2x"></span>
+        </th>
+        <th title="Reason">Reason</th>
+        <th title="Requesting Care Physician">RCP</th>
+        <th title="Request Status" class="cursor-pointer" (click)="sort('ReqStatus')">Req <br/> Status
+          <span *ngIf="filterPatientDto.sortBy == 'ReqStatus'" class="fa fa-sort ml-2 text-success"></span>
+          <span *ngIf="filterPatientDto.sortBy !== 'ReqStatus'" class="fa fa-sort ml-2 cursor-pointer "></span></th>
+
+        <th title="Referred to">Ref to </th>
+        <th title="Specialty">Specialty</th>
+        <th title="Sent to">Sent to</th>
+        <th title="Referral Sent Date" style="min-width:42px;">Ref <br/> Sent</th>
+        <th title="Schedule Date">Schedule</th>
+        <th title="Patient Informed">Pat. <br /> Informed</th>
+
+        <th title="Prior Authorization">Prior <br/> Auth</th>
+        <th title="Authorization Sent Date" style="min-width:42px;">Auth <br/> Sent</th>
+        <th title="Authorization Approved Date" style="min-width:42px;">Auth <br/> Aprvd</th>
+        <th title="Authorization No">Auth <br/> No.</th>
+        <th title="Authorization valid thru date">Auth valid <br/> thru</th>
+        <th title="Attachment"><span class="fa fa-paperclip fa-2x"></span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let row of priorAuthList; let i =index">
+        <td style="min-width: 150px;width:150px; max-width: 150px; white-space:line-break;">
+          <div class="d-flex justify-content-between align-items-center">
+            <div class="mb-0 text-uppercase link text-dynamic-2c text-left ml-2"
+              style=" width: 90px;min-width:90px; font-size:10px">
+              {{row.patientName}}</div>
+            <div class="d-flex align-items-center" (appIsOutside)="pop.isOpen=false">
+              <button id="popTemplate{{i}}" class="p-0 border-0 button-bg-trans"  #pop="bs-mdbPopover" triggers="focus" [mdbPopover]="popTemplate" placement="right"><i
+                  class="fa fa-exclamation-circle fa-lg "></i></button>
+              <ng-template #popTemplate>
+                <div class="bg-dark text-white py-1 pl-3 pr-3">
+
+                  <div class="who-covered" style="max-height:300px;">
+                    <div style="max-height: 200px;overflow-y:auto;" malihu-scrollbar
+                      [scrollbarOptions]="scrollbarOptionsTimeline">{{row.notes}}</div>
+                  </div>
+                </div>
+              </ng-template>
+              <a title="Edit" class="text-dynamic-2c mx-1" (click)="OpenEditMOdel(addEditPriorRef, row)"
+                placement="left"><i class="fa fa-pencil"></i> </a>
+              <a (click)="openConfirmModal(row.id)" class="text-danger"><i class="fa fa-trash"></i></a>
+            </div>
+          </div>
+        </td>
+        <td>
+          <div class="user-name-list" *ngIf="row.caseCoordinator && row.caseCoordinator.nameAbbreviation">
+            <div title="{{row.caseCoordinator.fullName}}" class="name-caption">
+              <span>{{row.caseCoordinator.nameAbbreviation}}</span></div>
+          </div>
+        </td>
+        <td>
+          <div class="user-name-list" *ngIf="row.caseManager && row.caseManager.nameAbbreviation">
+            <div title="{{row.caseManager.fullName}}" class="name-caption">
+              <span>{{row.caseManager.nameAbbreviation}}</span></div>
+          </div>
+        </td>
+        <td>
+          <div class="user-name-list" *ngIf="row.assignedTo && row.assignedTo.nameAbbreviation">
+            <div title="{{row.assignedTo.fullName}}" class="name-caption">
+              <span>{{row.assignedTo.nameAbbreviation}}</span></div>
+          </div>
+        </td>
+
+        <td>{{paCaseStatusEnum[row.paCaseStatus]}}</td>
+        <td>{{row.requestDate | dateFormatPipe}}</td>
+        <td>{{row.receivedDate | dateFormatPipe}}</td>
+        <td>{{row.insurancePlanName}}</td>
+        <td>{{row.paCaseTypeName}}</td>
+        <td>{{row.paCaseStepName}}</td>
+        <td title="{{row.location ? row.location: ''}}">
+          <ng-container *ngIf="row.location === 'INOffice'">In</ng-container>
+          <ng-container *ngIf="row.location === 'OUTOffice'">Out</ng-container>
+          <!-- {{row.location}} -->
+        </td>
+        <td title="{{row.reason}}"> <div class="text-ellipsis"> {{row.reason}}</div></td>
+        <td>
+          <div class="user-name-list" *ngIf="row.requestingPhysician && row.requestingPhysician.nameAbbreviation">
+            <div title="{{row.requestingPhysician.fullName}}" class="name-caption">
+              <span>{{row.requestingPhysician.nameAbbreviation}}</span></div>
+          </div>
+        </td>
+        <td>{{paRequestStatusEnum[row.paRequestStatus]}}</td>
+        <td>
+          {{row.referredTo}}
+
+        </td>
+        <td>{{row.speciality}}</td>
+        <td>{{row.sentTo}}</td>
+        <td>{{row.referralSentDate | dateFormatPipe}}</td>
+        <td>{{row.scheduledDate | dateFormatPipe}}</td>
+        <td>{{paPatientInformedStatusEnum[row.paPatientInformedStatus]}}</td>
+        <td>
+          <!-- {{row.applicable}} -->
+          <span *ngIf="row.applicable" title="Applicable"> AP</span>
+          <span *ngIf="!row.applicable" title="Not Applicable">NA</span>
+        </td>
+        <td>{{row.authSentDate | dateFormatPipe}}</td>
+        <td>{{row.authApprovedDate | dateFormatPipe}}</td>
+        <td>{{row.authorizationNumber}}</td>
+        <!-- <td>{{row.requestDate}}</td> -->
+        <td>{{row.validUntil | dateFormatPipe}}</td>
+        <td>
+          <ng-container *ngIf="row.paDocuments && row.paDocuments.length > 0">
+            <div class="user-name-list user-name-list-colorspan">
+              <div title="{{item.title}}" class="name-caption" (click)="viewDoc(item.path)"
+                *ngFor="let item of row.paDocuments">
+                <span>{{item.title[0]}}{{ item.title[1] }}</span>
+              </div>
+            </div>
+          </ng-container>
+        </td>
+
+      </tr>
+      <tr *ngIf="priorAuthList.length == 0">
+        No record Found
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div class="d-flex justify-content-between mt-3">
+  <div *ngIf="pagingData">
+    <p>Number Of Patients : {{pagingData.elementsCount}}</p>
+  </div>
+  <nav aria-label="Page navigation example">
+    <ul class="pagination ">
+      <li class="page-item " [ngClass]="{ disabled : pagingData.pageNumber === 1 }" (click)="PreviousFirst();GetPriorAuthsByFacilityId()"><a class="page-link" >First</a></li>
+      <li class="page-item " [ngClass]="{ disabled : pagingData.pageNumber === 1 }" (click)="Previous();GetPriorAuthsByFacilityId()">
+        <a class="page-link" aria-label="Previous" >
+          <span aria-hidden="true"><</span>
+          <span class="sr-only">Previous</span>
+        </a>
+      </li>
+      <li class="page-item" *ngIf="currentpage > 1 " [class.active]="pagingObj[1].active"  (click)="filterPatientDto.pageNumber=+1;GetPriorAuthsByFacilityId()">
+        <a class="page-link" >{{1}}</a>
+      </li>
+      <li class="page-item" *ngIf="currentpage > 1 "  >
+        <a class="page-link" >...</a>
+      </li>
+      <li class="page-item" *ngFor="let list of pagesArray"  [class.active]="list?.active" (click)="filterPatientDto.pageNumber=+list.display;GetPriorAuthsByFacilityId()">
+        <a class="page-link" >{{list?.display}}</a>
+      </li>
+
+      <li class="page-item" *ngIf="(lastPagePagination - currentpage) > 3 "  >
+        <a class="page-link" >...</a>
+      </li>
+      <li class="page-item" *ngIf="(lastPagePagination - currentpage) > 2 " [class.active]="pagingObj[lastPagePagination-1].active"  (click)="filterPatientDto.pageNumber=+lastPagePagination;GetPriorAuthsByFacilityId()">
+        <a class="page-link" >{{lastPagePagination}}</a>
+      </li>
+      <li class="page-item" [ngClass]="{ disabled : pagingData.pageNumber === lastPagePagination }" (click)="Next();GetPriorAuthsByFacilityId()">
+        <a class="page-link"  aria-label="Next" >
+          <span aria-hidden="true">></span>
+          <span class="sr-only">Next</span>
+        </a>
+      </li>
+      <li class="page-item" [ngClass]="{ disabled : pagingData.pageNumber === lastPagePagination }" (click)="Last();GetPriorAuthsByFacilityId()"><a class="page-link" >Last</a></li>
+    </ul>
+  </nav>
+</div>
+<app-add-prior-auth #addEditPriorRef (addedOrEdited)="GetPriorAuthsByFacilityId()"></app-add-prior-auth>
+<div mdbModal #viewPdfModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" [config]="{backdrop: true, ignoreBackdropClick: true}" aria-hidden="true"
+  (close)="objectURLStrAW=''">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-body" style="height:calc(100vh - 50px); padding: 0px;">
+        <button type="button" class="close pull-right document-close" aria-label="Close" (click)="viewPdfModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <app-pdf-view *ngIf="objectURLStrAW" [documentUrl]="objectURLStrAW"></app-pdf-view>
+      </div>
+    </div>
+  </div>
+</div>

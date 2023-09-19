@@ -1,0 +1,374 @@
+<div class="ccm-body disableDiagnoseView" id="disableDiagnoseView" *ngIf="!hideListView">
+
+  <div class="d-flex align-items-center justify-content-between p-3">
+    <p class="mb-0"><strong *ngIf="!careplanView">Diagnosis Record</strong></p>
+    <ng-container *ngIf="!hideActionButtons">
+      <button [disabled]="awDisable" (click)="resetDiagnoses();addDiagnose.show();selectCronicdieseas1?.reset();"
+        *hasClaim=" ['CanModifyDiagnose']" class="btn btn-dynamic-2c btn-sm m-0" title="Add Diagnose"
+        date-placement="left">Add New</button>
+    </ng-container>
+  </div>
+  <div *ngIf="isLoading" class="d-flex justify-content-center text-center">
+    <!-- <div class="d-flex justify-content-center text-center"> -->
+    <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+  </div>
+  <ngx-datatable class="material z-depth-0" [columnMode]="'force'" [headerHeight]="50" [footerHeight]="50"
+    [rowHeight]="35" [scrollbarV]="false" [scrollbarH]="true" [rows]="rows" [limit]="15"
+    (activate)="onActivate($event)">
+    <ngx-datatable-column name="#" [maxWidth]=50>
+      <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+        {{rowIndex + 1}}
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="ICD Code" prop="icdCode">
+
+      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+        <div class="d-flex  align-items-center">
+          <div class="mr-2">
+            <span style="cursor: pointer;" (click)="getInfo(row.icdCode)" title="Info" class="ccm-active"><i class="fa fa-info-circle fa-lg"></i></span>
+          </div>
+          <div>
+            <p class="mb-0">{{row.icdCode}}</p>
+          </div>
+        </div>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="ICD Description" prop="description">
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Notes" prop="note">
+    </ngx-datatable-column>
+    <ngx-datatable-column name="On CCM" prop="isOnCcm">
+      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+        <div class="on-ccm" *ngIf="value == true">
+          <!-- <span class="ccm-active"><i class="fa fa-check fa-lg"></i></span> -->
+          <p>Yes</p>
+        </div>
+        <div class="on-ccm" *ngIf="value == false ">
+          <!-- <span class="ccm-inactive"><i class="fa fa-close fa-lg"></i></span> -->
+          <p>No</p>
+        </div>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="On RPM" prop="isOnRpm">
+      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+        <div class="on-ccm" *ngIf="value == true">
+          <!-- <span class="ccm-active"><i class="fa fa-check fa-lg"></i></span> -->
+          <p>Yes</p>
+        </div>
+        <div class="on-ccm" *ngIf="value == false ">
+          <!-- <span class="ccm-inactive"><i class="fa fa-close fa-lg"></i></span> -->
+          <p>No</p>
+        </div>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Diagnose Date" prop="diagnosisDate">
+      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+        {{row.diagnosisDate | dateFormatPipe}}
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Active/Resolve" >
+      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+
+        <!-- <a class="" (click)="selectedRow = row;assignedDateModal.show()"><i
+          class="fa fa-calendar text-dynamic-secondary-2c mx-2" style="font-size: 20px;"></i>
+          status
+        </a> -->
+        <div class="d-flex justify-content-start align-items-center" style="width: 100px;">
+          <ng-container *ngIf="row.status !== undefined">
+            <button [disabled]="awDisable" class="btn btn-icon btn-transparent ml-0 mr-0" *ngIf="row.status > 0" (click)="selectedRow = row;assignedDateProp = row.resolvedDate;assignedDateModal.show()">
+              <span
+              class="fa fa-calendar text-dynamic-secondary-2c"></span>
+            </button>
+            <span>{{diagnoseStatusEnum[row.status]}}</span>
+          </ng-container>
+        </div>
+
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Resolve Date" prop="resolvedDate">
+      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+        {{row.resolvedDate | dateFormatPipe}}
+      </ng-template>
+    </ngx-datatable-column>
+    <ng-container *ngIf="!hideActionButtons">
+      <ngx-datatable-column *hasClaim=" ['CanModifyDiagnose']" name="Action" [canAutoResize]=false [frozenRight]=true
+        [width]="100">
+        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+          <ng-container *ngIf="row.icdCode !== 'NA'">
+            <button [disabled]="awDisable" class="btn btn-dynamic-2c btn-icon ml-0 mr-2" title="Edit" placement="left"
+              (click)="selectItem=row;getDiagnoseById(row.id)"><span class="fa fa-pencil"></span>
+            </button>
+            <button [disabled]="awDisable" class="btn btn-danger btn-icon" (click)="openConfirmModal(row)"><span
+                class="fa fa-trash"></span></button>
+          </ng-container>
+        </ng-template>
+      </ngx-datatable-column>
+    </ng-container>
+
+  </ngx-datatable>
+
+</div>
+
+<div mdbModal #assignedDateModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  (opened)="datPickerRef.openBtnClicked()" aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title w-100 text-center" id="myModalLabel">Assign Date
+        </h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="input-group form-group mt-3">
+              <label class="w-100">Patient Resolve Date<small class="text-danger">*</small></label>
+              <mdb-date-picker #datPickerRef class="custom-datepicker" [options]="myDatePickerOptions"
+                [(ngModel)]="assignedDateProp" [outlineInput]="true" [inline]="true" name="mydate"
+                [placeholder]="'Resolve Date'">
+              </mdb-date-picker>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" [disabled]="assigningDate" class="waves-light btn btn-sm btn-dynamic-2c"
+          aria-label="Close" (click)="updateDiagnosisDateById(assignedDateModal);" mdbWavesEffect> <span *ngIf="assigningDate"
+            class="mr-1 spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Save</button>
+        <button type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+          (click)="assignedDateModal.hide()" mdbWavesEffect>Close</button>
+        <!-- <butmdbModalton type="button" mdbBtn color="prmary" (click)="addRequiredData()" class="relative waves-light"
+          mdbWavesEffect>Add Data</button> -->
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div mdbModal #addDiagnose="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myBasicModalLabel"
+  aria-hidden="true" >
+  <div class="modal-dialog modal-lg flat-modal modal-dialo" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="resetDiagnoses();addDiagnose.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 *ngIf="!diagnoseId" class="modal-title w-100" id="myModalLabel">Add Diagnosis</h4>
+        <h4 *ngIf="diagnoseId" class="modal-title w-100" id="myModalLabel">Edit Diagnose</h4>
+      </div>
+      <div class="modal-body">
+        <!-- <app-add-diagnose (closeModal)="addDiagnose.hide();loadDiagnoses();"></app-add-diagnose> -->
+        <form [formGroup]="diagnoseForm">
+          <div class="row">
+            <div class="col-sm-12 mb-2 d-flex justify-content-between">
+              <small class="text-dynamic-2c text-uppercase font-500">Diagnosis Information</small>
+              <ng-container *hasClaim="['ccmService']">
+                <div class="custom-control custom-checkbox">
+                  <mdb-checkbox [disabled]="!diseaseOnServicesDto.isOnCcm" [default]="true" formControlName="isOnCcm"
+                    [checked]="false">Add On CCM</mdb-checkbox>
+                </div>
+              </ng-container>
+
+              <div class="custom-control custom-checkbox" *hasClaim="['rpmService']">
+                <mdb-checkbox [default]="true" formControlName="isOnRpm"
+                  [checked]="false" [disabled]="!diseaseOnServicesDto.isOnRpm" (change)="IsOnRPmChanged($event)">Add On RPM</mdb-checkbox>
+              </div>
+
+              <!-- <div class="custom-control custom-checkbox" *ngIf="(!rows || !rows.length) && !isLoading">
+                <mdb-checkbox [default]="true" [(ngModel)]="isNoAction" (change)="checkNoAction()"
+                  [ngModelOptions]="{standalone: true}" [checked]="false">No Active Diagnosis</mdb-checkbox>
+              </div> -->
+            </div>
+            <!-- <ng-container [class.overlay-Body]="isNoAction === true"> -->
+            <div class="col-sm-12" *ngIf="showRMPCheckedWarning && diagnose.icdCode">
+              <div class="alert alert-warning" role="alert">
+                <i class="fa fa-exclamation-triangle fa-lg"></i> Selected Diagnose is not on RPM
+              </div>
+            </div>
+            <div class="col-sm-12" *ngIf="diagnoseId">
+              <div class="form-group">
+                <label for="icdcodesystem">Chronic Disease</label>
+                <input type="text" [value]="selectItem.icdCode + ' ' +selectItem.description" readonly class="form-control form-control-sm"
+                  id="icdcodesystem" placeholder="Chronic Disease">
+              </div>
+            </div>
+            <div class="col-sm-12" >
+              <div class="row">
+                <div class="col-sm-12" *ngIf="!diagnoseId">
+                  <div class="form-group">
+                    <label for="isChronic234">Select Chronic Disease<small class="text-danger">*</small></label>
+                    <ng-select class="ng-select-small" #selectCronicdieseas1="ngModel"
+                      [(ngModel)]="selectedCronicDisease" [disabled]="diagnoseId" [typeahead]="searchWatch"
+                      (ngModelChange)="diseaseSelected(selectedCronicDisease)" [multiple]="false"
+                      [loading]="LoadingData" [ngModelOptions]="{standalone: true}" placeholder="Select Chronic Disease"
+                      id="isChronic234" required [ngClass]="{ 'is-invalid':(selectCronicdieseas1?.touched ||
+                    selectCronicdieseas1?.dirty) &&
+                    !selectCronicdieseas1?.valid }">
+                      <!-- <ng-option [value]="0">NA</ng-option> -->
+                      <ng-option [value]="item" *ngFor="let item of chronicDiseasesByUrl">{{item.code}} {{item.detail}}
+                      </ng-option>
+                    </ng-select>
+                    <div
+                      *ngIf="selectCronicdieseas1?.invalid && (selectCronicdieseas1?.dirty || selectCronicdieseas1?.touched)"
+                      class="invalid invalid-text">
+                      <div *ngIf="selectCronicdieseas1?.errors['required'] && selectCronicdieseas1?.touched">
+                        <small class="text-danger">Please select chronic disease.</small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="practiceName">Practice Name<small class="text-danger">*</small></label>
+                  <input type="text" formControlName="practiceName" class="form-control form-control-sm" id="practiceName"
+                    placeholder="Practice Name" [ngClass]="{'is-invalid':(diagnoseForm.get('practiceName').touched ||
+                  diagnoseForm.get('practiceName').dirty) &&
+                  !diagnoseForm.get('practiceName').valid }">
+                  <span class="invalid-feedback">
+                    <span *ngIf="!!diagnoseForm.get('practiceName').errors?.required && (diagnoseForm.get('practiceName').touched ||
+                  diagnoseForm.get('practiceName').dirty)">
+                      Please enter practice name.
+                    </span>
+                  </span>
+                </div>
+              </div> -->
+
+                <!-- <div class="col-sm-6">
+                  <div class="form-group">
+                    <label for="isChronic">Is Chronic</label>
+                    <ng-select formControlName="isChronic" class="ng-select-small" [searchable]="false" placeholder="No"
+                      id="isChronic">
+                      <ng-option [value]="true">Yes</ng-option>
+                      <ng-option [value]="false">No</ng-option>
+                    </ng-select>
+                  </div>
+                </div> -->
+
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label class="w-100">Diagnosis Date</label>
+                    <input type="text" formControlName="diagnosisDate" class="form-control form-control-sm"
+                      #dateToDp="dpDayPicker" [dpDayPicker]="datePickerConfig" [displayDate]="DisplayDate"
+                      [theme]="'dp-material ccm-date-picker'" [mode]="'day'" [ngClass]="{ 'is-invalid':(diagnoseForm.get('diagnosisDate').touched ||
+                    diagnoseForm.get('diagnosisDate').dirty) &&
+                    !diagnoseForm.get('diagnosisDate').valid }">
+                    <div class="invalid invalid-text">
+                      <small *ngIf="!diagnoseForm.get('diagnosisDate').valid" class="text-danger">Date must be
+                        valid.</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label class="w-100">Resolved Date</label>
+                    <input type="text" formControlName="resolvedDate" class="form-control form-control-sm"
+                      #dateToDp="dpDayPicker" [dpDayPicker]="datePickerConfig" [displayDate]="DisplayDate"
+                      [theme]="'dp-material ccm-date-picker'" [mode]="'day'" [ngClass]="{ 'is-invalid':(diagnoseForm.get('resolvedDate').touched ||
+                    diagnoseForm.get('resolvedDate').dirty) &&
+                    !diagnoseForm.get('resolvedDate').valid }" />
+                    <div class="invalid invalid-text">
+                      <small *ngIf="!diagnoseForm.get('resolvedDate').valid" class="text-danger">Date must be
+                        valid.</small>
+                    </div>
+                  </div>
+                </div>
+                <!-- <div class="col-sm-12">
+                  <div class="form-group">
+                    <label for="">Select Disease</label>
+                    <ng-select class="ng-select-small" [(ngModel)]="selectedDisease" [ngModelOptions]="{standalone: true}" (ngModelChange)="diseaseSelected()" [multiple]="false" [searchable]="false"
+                      placeholder="Assign Diseases" (click)="$event.stopPropagation();">
+                      <ng-option *ngFor="let item of diseaseList" [value]="item">{{item.icdCode}} {{item.detail}}
+                      </ng-option>
+                    </ng-select>
+                  </div>
+                </div> -->
+
+
+                <!-- <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="isChronic1">Select Chronic Condition<small class="text-danger">*</small></label>
+                  <ng-select class="ng-select-small" #selectedChroniccond="ngModel" [(ngModel)]="selectedChronicCondition"
+                    [ngModelOptions]="{standalone: true}"
+                    [multiple]="false" [searchable]="true" placeholder="Select chronic Condition" id="isChronic1" required
+                    [ngClass]="{ 'is-invalid':(selectedChroniccond.touched ||
+                    selectedChroniccond.dirty) &&
+                    !selectedChroniccond.valid }">
+                    <ng-option [value]="item" *ngFor="let item of cronicDiseaseList">{{item.detail}}</ng-option>
+                  </ng-select>
+                  <div *ngIf="selectedChroniccond.invalid && (selectedChroniccond.dirty || selectedChroniccond.touched)"
+                    class="invalid invalid-text">
+                    <div *ngIf="selectedChroniccond.errors.required && selectedChroniccond.touched">
+                      <small class="text-danger">Please select chronic condition.</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="isChronic23">Select Chronic Disease<small class="text-danger">*</small></label>
+                  <ng-select class="ng-select-small" #selectCronicdieseas="ngModel" [(ngModel)]="selectedCronicDisease"
+                    (ngModelChange)="diseaseSelected()" [multiple]="false" [loading]="LoadingData" [searchable]="true"
+                    [ngModelOptions]="{standalone: true}" placeholder="Select Chronic Disease" id="isChronic23" required
+                    [ngClass]="{ 'is-invalid':(selectCronicdieseas.touched ||
+                    selectCronicdieseas.dirty) &&
+                    !selectCronicdieseas.valid }">
+                    <ng-option [value]="item" *ngFor="let item of chronicDependentDiseases">{{item.detail}}
+                      {{item.detail}}
+                    </ng-option>
+                  </ng-select>
+                  <div *ngIf="selectCronicdieseas.invalid && (selectCronicdieseas.dirty || selectCronicdieseas.touched)"
+                    class="invalid invalid-text">
+                    <div *ngIf="selectCronicdieseas.errors.required && selectCronicdieseas.touched">
+                      <small class="text-danger">Please select chronic disease.</small>
+                    </div>
+                  </div>
+                </div>
+              </div> -->
+                <!-- <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="icdcode">ICD Code</label>
+                  <input type="text" formControlName="icdCode" readonly class="form-control form-control-sm" id="icdcode"
+                    placeholder="ICD Code">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="icdcodesystem">ICD Code System</label>
+                  <input type="text" formControlName="icdCodeSystem" readonly class="form-control form-control-sm"
+                    id="icdcodesystem" placeholder="ICD Code System">
+                </div>
+              </div> -->
+                <div class="col-sm-12">
+                  <div class="form-group">
+                    <label for="note">Note</label>
+                    <textarea formControlName="note" class="md-textarea form-control " rows="3" id="note"
+                      type="text"></textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- </ng-container> -->
+
+          </div>
+          <div class="modal-footer">
+            <!-- <button [disabled]="diagnoseForm.invalid || selectCronicdieseas1?.invalid || selectCronicdieseas1?.invalid"
+              type="submit" class="btn btn-dynamic-2c btn-sm" (click)="adddiagnose();diagnoseForm.reset();selectCronicdieseas1?.reset();diagnosisDate.reset()">Add</button> -->
+            <button type="submit" class="btn btn-dark btn-sm"
+              (click)="resetDiagnoses();addDiagnose.hide()">Close</button>
+            <button *ngIf="!diagnoseId"
+              [disabled]="!selectedCronicDisease || !selectedCronicDisease.code ||diagnoseForm.invalid || selectCronicdieseas1?.invalid || diagnoseForm.get('diagnosisDate').invalid || diagnoseForm.get('resolvedDate').invalid"
+              type="submit" class="btn btn-dynamic-2c btn-sm" (click)="saveAndAdd = 0;adddiagnose();">Add</button>
+            <button *ngIf="!diagnoseId"
+              [disabled]="!selectedCronicDisease || !selectedCronicDisease.code ||diagnoseForm.invalid || selectCronicdieseas1?.invalid || diagnoseForm.get('diagnosisDate').invalid || diagnoseForm.get('resolvedDate').invalid"
+              type="submit" class="btn btn-dynamic-2c btn-sm" (click)="saveAndAdd = 1;adddiagnose()">Save & Add</button>
+            <button *ngIf="diagnoseId"
+              [disabled]="diagnoseForm.invalid || diagnoseForm.get('diagnosisDate').invalid  || diagnoseForm.get('resolvedDate').invalid"
+              type="submit" class="btn btn-dynamic-2c btn-sm" (click)="saveAndAdd = 0;adddiagnose();">Update</button>
+
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

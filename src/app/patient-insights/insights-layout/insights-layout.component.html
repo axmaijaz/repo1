@@ -1,0 +1,75 @@
+<div class="side-bar-ex">
+  <ul >
+    <li *ngIf="addEditInsightsData.isSummaryView && adminInsightsData.isSummaryView" routerLinkActive="active">
+      <a routerLink="summary/{{PatientId}}">
+        Summary
+      </a>
+    </li>
+
+    <li routerLinkActive="active">
+      <a  routerLink="consents/consentdoc/{{PatientId}}" [queryParams]="{hideActionButtons:true}">
+        Consents
+      </a>
+    </li>
+    <li *ngIf="addEditInsightsData.isDiagnosisView && adminInsightsData.isDiagnosisView" routerLinkActive="active">
+      <a  routerLink="diagnoses/{{PatientId}}">
+        Diagnoses
+      </a>
+    </li>
+    <li *ngIf="addEditInsightsData.isMedicationsView && adminInsightsData.isMedicationsView" routerLinkActive="active">
+      <a  routerLink="medications/{{PatientId}}">
+        Medications
+      </a>
+    </li>
+    <li *ngIf="addEditInsightsData.isAllergiesView && adminInsightsData.isAllergiesView" routerLinkActive="active">
+      <a  routerLink="allergies/{{PatientId}}">
+        Allergies
+      </a>
+    </li>
+    <li *ngIf="addEditInsightsData.isCCMLogsView && adminInsightsData.isCCMLogsView" routerLinkActive="active">
+      <a  routerLink="ccmLogs/logsHistory/{{PatientId}}" [queryParams]="{isIframe:true,viewType:'CCM'}">
+        CCM Logs
+      </a>
+    </li>
+    <li *ngIf="addEditInsightsData.isCCMLogsView && adminInsightsData.isCCMLogsView" routerLinkActive="active">
+      <a  routerLink="careplan/{{PatientId}}" [queryParams]="{isIframe:true,viewType:'CCM'}">
+        CCM Care Plan
+      </a>
+    </li>
+    <li *ngIf="addEditInsightsData.isRPMLogsView && adminInsightsData.isRPMLogsView" routerLinkActive="active">
+      <a  routerLink="rpmLogs/logsHistory/{{PatientId}}" [queryParams]="{isIframe:true,viewType:'RPM'}">
+        RPM Logs
+      </a>
+    </li>
+    <!-- <li  routerLinkActive="active">
+      <a  routerLink="mrModal/{{PatientId}}" [queryParams]="{isIframe: true}">
+        Monthly Review
+      </a>
+    </li> -->
+    <!-- <li  routerLinkActive="active">
+      <a  routerLink="rpmModal/PatientRpm/{{PatientId}}" [queryParams]="{isIframe: true}">
+        RPM
+      </a>
+    </li> -->
+    <li *ngIf="addEditInsightsData.isRPMDeviceView && adminInsightsData.isRPMDeviceView" routerLinkActive="active" (click)="hideModalitiesDetail()" >
+      <a  routerLink="modalities/{{PatientId}}">
+      <!-- <a  routerLink="rpm/{{PatientId}}"> -->
+        Modalities
+      </a>
+    </li>
+
+  </ul>
+</div>
+
+<div class="main-layout-in">
+  <div class="main-outlet">
+    <div class="row justify-content-center">
+      <div class="col-12 " *ngIf="!hasSomethingTOShow">
+        <div class="alert alert-warning">No data to show</div>
+      </div>
+      <div class="col-12 " [style.display]="hasSomethingTOShow ? 'block': 'none'">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  </div>
+</div>

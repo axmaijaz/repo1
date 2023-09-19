@@ -1,0 +1,395 @@
+<!-- <ng-container *ngTemplateOutlet="chatViewRef"></ng-container> -->
+<ng-template #chatViewRef>
+
+  <div class="chat-container">
+    <div appCcmLoader *ngIf="LoadingUserList">
+      <div class="loader-wrap">
+        <div class="text-dynamic-2c la-ball-pulse ccm-loader">
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+      </div>
+    </div>
+    <div class="user-list" *ngIf="!LoadingUserList && (ShowChatList)">
+      <div class="header d-flex justify-content-between align-items-center">
+        <!-- <div class="back-to-list">
+          <i class="fa fa-arrow-left text-white" (click)="chatModal.hide();"></i>
+        </div> -->
+        <div class="d-flex align-items-center">
+          <strong class="text-dynamic-2c" style="font-size: 24px;">Chats</strong>
+          <span style="cursor: pointer;" class="unreadMesg-count ml-2" title="Unread Messages" *ngIf="unreadChats && unreadChats.length" (click)="loadUnreadChats()">{{unreadChats.length}}</span>
+        </div>
+        <!-- <strong *ngIf="unreadChats && unreadChats.length" class="text-white ml-2" (click)="loadUnreadChats()">Unread Chats {{unreadChats.length}}</strong> -->
+        <!-- <div>
+          <button type="button" class="close pull-right opacity-100 text-white" aria-label="Close" (click)="chatModal.hide();">
+            <small><i class="fa fa-close small"></i></small>
+          </button>
+        </div> -->
+
+      </div>
+      <div class="d-flex align-items-center py-2 justify-content-between w-100 px-3">
+        <div class="d-inline-flex align-items-center">
+          <div class="border rounded px-2 main-index-box py-1 mr-1 bg-white" (click)="activeGroupTypeCheck='currentFacility'" [class.active]="activeGroupTypeCheck==='currentFacility'">
+            <div class="d-flex justify-content-between align-items-center">
+              <h5 style="font-size: 12px; " class="title mb-0">Current Facility</h5>
+            </div>
+          </div>
+          <div class="border rounded px-2 main-index-box py-1 bg-white" (click)="activeGroupTypeCheck='otherFacility'" [class.active]="activeGroupTypeCheck==='otherFacility'">
+            <div class="d-flex justify-content-between align-items-center">
+              <h5 style="font-size: 12px;" class="title mb-0">Others</h5>
+            </div>
+          </div>
+        </div>
+        <div class="border rounded px-2 main-index-box py-1 bg-white" (click)="test.toggle()">
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 style="font-size: 12px;" class="title mb-0"> <i class="fa fa-plus"></i> Add Group
+            </h5>
+          </div>
+        </div>
+      </div>
+
+      <!-- <button (click)="SelectUserforCallModal.show();">Add Participents</button> -->
+      <div mdbCollapse [isCollapsed]="true" #test="bs-collapse">
+        <div class="border m-3 mt-2 rounded" style="    box-shadow: 3px 4px 7px #eaeaea;background-color:#ededed;">
+          <!-- <button type="button" class="close pull-right mr-2 opacity-100 text-white" aria-label="Close" (click)="test.toggle();">
+            <small><i style="font-size: 14px;" class="fa fa-close small"></i></small>
+          </button> -->
+          <div class="px-3 pt-1 " *hasClaim="['IsFacilityUser','IsPatient']">
+            <!-- Material inline 1 -->
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input" id="materialUnchecked12" name="materialExampleRadios"
+                [(ngModel)]="UserTypeForSearchChat" [value]="1" (ngModelChange)="searchedChatUserList = []">
+              <label class="form-check-label" for="materialUnchecked12">Patients</label>
+            </div>
+
+            <!-- Material inline 2 -->
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input" id="materialUnchecked123" name="materialExampleRadios"
+                [(ngModel)]="UserTypeForSearchChat" [value]="5" (ngModelChange)="searchedChatUserList = []">
+              <label class="form-check-label" for="materialUnchecked123">Facility Users</label>
+            </div>
+          </div>
+          <div class="p-3 header-height position-relative pt-2">
+            <div class="d-flex align-items-center justify-content-start">
+              <input type="text" autocomplete="off" [(ngModel)]="searchParam" (ngModelChange)="changed(searchParam)"
+                #chatUSerSearchInput class="form-control form-control-sm box-shadow w-100" placeholder="Search User" />
+              <span *ngIf="searchingChatUsers" class="spinner-border spinner-border-sm position-absolute"
+                style="right: 1.5rem;"></span>
+            </div>
+
+            <div *ngIf="(searchedChatUserList && searchedChatUserList.length > 0)" (appIsOutside)="searchedChatUserList=[]" class="userList searchable-list"
+              style="height: 300px;" malihu-scrollbar [scrollbarOptions]="scrollbarOptions">
+              <!-- <div appCcmLoader class="loader-wrap" *ngIf="searchingChatUsers">
+                <div class="spinner-border text-dynamic-secondary-2c ccm-loader" role="status">
+                </div>
+              </div> -->
+              <ul *ngIf="!searchingChatUsers">
+                <li *ngFor="let item of searchedChatUserList" (click)="getChatGroup(item.appUserId)">
+                  <p>{{item.fullName}}</p>
+                  <!-- <mdb-checkbox [default]="true"></mdb-checkbox> -->
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="d-flex align-items-center justify-content-start px-3 pb-2 position-relative border-bottom">
+        <input type="text" [(ngModel)]="searchGroupsTitle" class="form-control form-control-sm box-shadow w-100 pl-4" placeholder="Search By Patient Name" />
+        <span class="fa fa-search " style="position: absolute;left: 19px; top: 11px;"></span>
+      </div>
+      <div appCcmLoader>
+        <div class="loader-wrap" *ngIf="LoadingUserList">
+          <div class="text-dynamic-2c la-ball-pulse ccm-loader">
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="list" malihu-scrollbar [scrollbarOptions]="scrollbarOptions">
+          <ng-container *ngFor="let item of (UserList | FilterByprop: 'title' : searchGroupsTitle)">
+            <ng-container *ngIf="(activeGroupTypeCheck === 'currentFacility' && (item.facilityId === facilityId || item.facilityId === 0)) || (activeGroupTypeCheck === 'otherFacility' && item.facilityId !== facilityId && item.facilityId !== 0)">
+              <div class="item" (click)="ActiveChatGroup=item;ShowChatList=false;getuserChatHistory(item.id, 1);">
+                <div class="avatar"><i class="fa fa-user fa-lg"></i></div>
+                <div class="user-info">
+                  <div>
+                    <p class="font-500">{{item.title}}</p>
+                    <p class="w-100"> <span *ngIf="item.lastMessage"
+                        class="text-dynamic-2c small">{{item.lastMessage.substr(0, 15)}}
+                        <span *ngIf="item.lastMessage.length > 15">.....</span></span>
+                    </p>
+                    <p> <small *ngIf="item.lastMessageTime && item.lastMessage">{{item.lastMessageTime}}</small></p>
+                  </div>
+                  <!-- <div class="call-action ml-auto">
+                    <button class="btn btn-icon btn-grey circle my-0"
+                      (click)="selectUserForCall(item);$event.stopPropagation();"><i class="fa fa-video-camera"></i>
+                    </button>
+                  </div> -->
+                  <div>
+                    <span class="mesg-count" *ngIf="item.unreadMsgCount > 0">{{item.unreadMsgCount}}</span>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+          </ng-container>
+
+        </div>
+      </div>
+
+    </div>
+    <div class="chat-area" *ngIf="!ShowChatList">
+      <div class="chat-header">
+        <div class="back-to-list" *ngIf="IsPatientLogin !== 1">
+          <i class="fa fa-arrow-left" (click)="ShowChatList=true;ActiveChatGroup={};getChatList()"></i>
+        </div>
+        <div class="back-to-list" *ngIf="IsPatientLogin === 1" >
+          <i class="fa fa-arrow-left " (click)="chatModal.hide();"></i>
+        </div>
+        <p class="ml-3 mb-1 cursor-pointer" triggers="focus" mdbPopoverHeader="{{ActiveChatGroup.participants.length}} Participants"  [mdbPopover]="popTemplate" id="popTemplate">
+          <ng-template #popTemplate>
+            <div style="height: 220px;">
+              <div style="height: 100%;"  malihu-scrollbar [scrollbarOptions]="scrollbarOptions">
+                <ul class="participants-chat" >
+                  <li *ngFor="let item of ActiveChatGroup.participants">
+                    <span >
+                      <i class="fa fa-user"></i>
+                    </span>
+                    {{item.name}}
+                  </li>
+                </ul>
+              </div>
+          </div>
+          </ng-template>
+          <strong class="d-flex w-100">{{ActiveChatGroup.title}}</strong>
+          <small class="d-flex w-100 align-items-center">Tab here for group info <i class="ml-1 fa fa-info-circle"></i> </small>
+        </p>
+        <div class="ml-auto d-flex align-items-center">
+
+          <div *ngIf="enableSelection" class=" mr-2" title="Copy Selected Messages" (click)="CopySelected()" >
+            <span class=" custom-badge-select">Copy</span>
+          </div>
+          <div class=" mr-2" title="Please Click for Select Messages" (click)="SwitchSelection()" >
+            <span class=" custom-badge-select" [class.bg-dynamic-2c]="enableSelection" [class.text-white]="enableSelection">Selection</span>
+          </div>
+          <!-- <button class="btn btn-icon btn-white circle m-0 mr-4" (click)="selectUserForCall(ActiveChatGroup)">
+            <i class="fa fa-video-camera"></i></button> -->
+          <!-- <button type="button" class="close opacity-100" aria-label="Close" (click)="chatModal.hide();">
+            <small><i class="fa fa-close small"></i></small></button> -->
+
+        </div>
+
+      </div>
+      <ng-container *hasClaim="['TelephonyCommunication']">
+        <div class="telephonic" *ngIf="TelephonyPatinetId">
+          <ul class="nav nav-tabs nav-justified" role="tablist">
+            <!-- <li class="nav-item twoc-nav-item">
+              <a [class.active]="viewMode == ChatViewTypeEnum.Both" (click)="viewMode=ChatViewTypeEnum.Both" class="nav-link" data-toggle="tab" role="tab">Both</a>
+            </li> -->
+            <li class="nav-item twoc-nav-item">
+              <a [class.active]="viewMode == ChatViewTypeEnum.Chat" (click)="viewMode=ChatViewTypeEnum.Chat" class="nav-link" data-toggle="tab" role="tab">Chat</a>
+            </li>
+            <li class="nav-item twoc-nav-item">
+              <a [class.active]="viewMode == ChatViewTypeEnum.Telephony" (click)="viewMode=ChatViewTypeEnum.Telephony" class="nav-link" data-toggle="tab" role="tab">Telephony</a>
+            </li>
+          </ul>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="viewMode == ChatViewTypeEnum.Chat">
+        <div class="chat-body align-items-center justify-content-center"
+          *ngIf="HistoryList.length === 0 && !LoadingchatHistory">
+
+          <ng-container>
+            <app-record-not-found></app-record-not-found>
+          </ng-container>
+
+        </div>
+        <div *ngIf="LoadingchatHistory" class="d-flex justify-content-center text-center" >
+          <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+        </div>
+
+        <div class="chat-body chat-messages" #scrollMe (scroll)="onScroll($event)" style="overflow-y : scroll"
+          *ngIf="HistoryList.length > 0">
+
+          <div class="message position-relative">
+            <div class="select-all-mh" *ngIf="enableSelection">
+              <!-- <mdb-checkbox [default]="true">Select All</mdb-checkbox> -->
+              <div class="" style="cursor: pointer;" (click)="CopySelected()"><i class="fa fa-copy fa-lg text-dynamic-2c"></i> Copy</div>
+            </div>
+            <!-- <div class="spinner-grow text-dynamic-2c" *ngIf="LoadingchatHistory" role="status"></div> -->
+            <ng-container *ngFor="let group of HistoryList | groupByDate: 'timeStamp';">
+              <p class="my-2 text-center">
+                <span  style="background: #1d3d71;padding: 2px 8px;border-radius: 5px;color: #fff;">{{group.date}}</span>
+              </p>
+              <ng-container *ngFor="let chat of group.groupData;" >
+                <div class="message-in d-flex align-items-start" *ngIf="chat.senderUserId !== currentUserAppId" (contextmenu)="onRightClick($event)">
+
+                  <div class=" mr-0" *ngIf="enableSelection">
+                    <mdb-checkbox [(ngModel)]="chat.selected" [default]="true"></mdb-checkbox>
+                  </div>
+                  <div>
+                    <!-- <div class="avatar small"><i class="fa fa-user fa-lg"></i></div> -->
+                    <div class="msg" *ngIf="chat.chatType == ChatTypeEnumObj.Text">
+                      <span style="display: block;font-size: 12px;font-weight: 600; margin-right: 5px;">{{chat.senderName}} </span>
+                      <span style="display: block;font-size: 12px;line-height: 14px;" >{{chat.message}} </span>
+                      <span class="date-time " style="width: 70px;margin-left: auto;display: block;line-height: 12px;font-size: 10px;">{{chat.timeStamp | date:'shortTime'}}</span>
+                    </div>
+                    <div *ngIf="chat.chatType == ChatTypeEnumObj.Audio" style="padding: 2px 0px;">
+                      <span style="display: block;font-size: 12px;font-weight: 600; margin-right: 5px;">{{chat.senderName}} </span>
+                      <span style="display: block;" class="position-relative">
+                        <span *ngIf="chat.timeLine && chat.timeLine['displayTime']" style="position: absolute;left: 42px;top: 17px;z-index: 99;font-weight: 400;    background: #f1f3f4;
+                        padding: 0 5px 0 0;">{{chat.timeLine['displayTime']}}</span>
+                        <audio (play)="OnplayAudio(chat.id)" [id]="chat.id + 'messageaudio'" (timeupdate)="PlayBackTimeUpdated( chat)" preload="metadata" [src]="chat.linkUrl" controls controlsList="nodownload">
+
+                        </audio>
+                      </span>
+                      <span class="date-time " style="width: 70px;margin-left: auto;display: block;line-height: 8px;font-size: 10px;top: -4px;right: 5px;">{{chat.timeStamp | date:'shortTime'}}</span>
+                    </div>
+                    <!-- <p class="mb-0 mt-1"><span class="date-time">{{chat | date:'short'}}</span></p> -->
+                  </div>
+
+                  <div class="btn-group" mdbDropdown *ngIf="enableSelection">
+                    <button
+                      mdbDropdownToggle
+                      type="button"
+                      class=" btn-chat-list-right">
+                      <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="0.28em" height="1em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 384 1408"><path fill="currentColor" d="M384 1120v192q0 40-28 68t-68 28H96q-40 0-68-28t-28-68v-192q0-40 28-68t68-28h192q40 0 68 28t28 68zm0-512v192q0 40-28 68t-68 28H96q-40 0-68-28T0 800V608q0-40 28-68t68-28h192q40 0 68 28t28 68zm0-512v192q0 40-28 68t-68 28H96q-40 0-68-28T0 288V96q0-40 28-68T96 0h192q40 0 68 28t28 68z"/></svg>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-left dropdown-custom-chat-left dropdown-primary">
+                      <a class="dropdown-item" (click)="CopyTOBottom(chat)">Copy to End</a>
+                      <!-- <a *ngIf="selectedPatient?.id" class="dropdown-item"  (click)="addCCmEncounterRef.OpenAddEncounterModal(selectedPatient)">Add CCM Encounter to End</a>
+                      <a *ngIf="selectedPatient?.id" class="dropdown-item"  (click)="addRPmEncounterRef.OpenAddEncounterModal(selectedPatient)">Add RPM Encounter to End</a> -->
+                    </div>
+                  </div>
+                </div>
+                <div class="message-out d-flex justify-content-end" *ngIf="chat.senderUserId === currentUserAppId" (contextmenu)="onRightClick($event)">
+                  <div class="btn-group" mdbDropdown *ngIf="enableSelection">
+                    <button
+                      mdbDropdownToggle
+                      type="button"
+                      class=" btn-chat-list-right">
+                      <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="0.28em" height="1em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 384 1408"><path fill="currentColor" d="M384 1120v192q0 40-28 68t-68 28H96q-40 0-68-28t-28-68v-192q0-40 28-68t68-28h192q40 0 68 28t28 68zm0-512v192q0 40-28 68t-68 28H96q-40 0-68-28T0 800V608q0-40 28-68t68-28h192q40 0 68 28t28 68zm0-512v192q0 40-28 68t-68 28H96q-40 0-68-28T0 288V96q0-40 28-68T96 0h192q40 0 68 28t28 68z"/></svg>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right dropdown-custom-chat-right dropdown-primary">
+                      <a class="dropdown-item"  (click)="CopyTOBottom(chat)">Copy to End</a>
+                      <!-- <a *ngIf="selectedPatient?.id" class="dropdown-item"  (click)="addCCmEncounterRef.OpenAddEncounterModal(selectedPatient)">Add CCM Encounter to End</a>
+                      <a *ngIf="selectedPatient?.id" class="dropdown-item"  (click)="addRPmEncounterRef.OpenAddEncounterModal(patient)">Add RPM Encounter to End</a> -->
+                    </div>
+                  </div>
+                  <div>
+                    <!-- <div class="avatar small"><i class="fa fa-user fa-lg"></i></div> -->
+                    <div *ngIf="chat.chatType == ChatTypeEnumObj.Text" class="msg">
+
+                      <span style="display: block;font-size: 12px;font-weight: 500; margin-right: 5px;">{{chat.senderName}} </span>
+                      <span style="display: block;font-size: 12px;line-height: 14px;">{{chat.message}} </span>
+                      <span style="width: 70px; margin-left: auto;display: block;line-height: 12px;font-size: 10px;" class=" date-time">{{chat.timeStamp | date:'shortTime'}}</span>
+                    </div>
+                    <div *ngIf="chat.chatType == ChatTypeEnumObj.Audio" style="padding: 2px 0px;">
+                      <span style="display: block;font-size: 12px;font-weight: 500; margin-right: 5px;">{{chat.senderName}} </span>
+                      <span style="display: block;" class="position-relative" >
+                        <span *ngIf="chat.timeLine && chat.timeLine['displayTime']" style="position: absolute;left: 42px;top: 17px;z-index: 99;font-weight: 400;    background: #f1f3f4;
+                        padding: 0 5px 0 0;">{{chat.timeLine['displayTime']}}</span>
+                        <audio (play)="OnplayAudio(chat.id)" [id]="chat.id + 'messageaudio'" (timeupdate)="PlayBackTimeUpdated( chat)" preload="metadata" [src]="chat.linkUrl" controls controlsList="nodownload"></audio>
+                      </span>
+                      <span class="date-time " style="width: 70px;margin-left: auto;display: block;line-height: 8px;font-size: 10px;top: -4px;right: 5px;">{{chat.timeStamp | date:'shortTime'}}</span>
+                    </div>
+                  </div>
+                  <div class=" ml-2" *ngIf="enableSelection">
+                    <mdb-checkbox [(ngModel)]="chat.selected" [default]="true"></mdb-checkbox>
+                  </div>
+                </div>
+                <ng-container *ngIf="chat.participients && chat.participients.length">
+                  <div class="view-circle" >
+                    <div>
+                      <span *ngFor="let participient of chat.participients" [title]="participient.fullName">{{participient.shortName}}</span>
+                    </div>
+                  </div>
+                </ng-container>
+              </ng-container>
+
+            </ng-container>
+          </div>
+
+        </div>
+        <div class="chat-footer">
+          <div *ngIf="!audioRecordingObj.isRecording" class="input mr-1 position-relative">
+            <input type="text" [(ngModel)]="messageText" class="form-control pl-3 form-control-sm"
+              (keyup.enter)="sendMessagebefore(messageText);">
+              <span (click)="startRecording()" class="fa fa-microphone style-microphone-real cursor-pointer"></span>
+          </div>
+          <button *ngIf="!audioRecordingObj.isRecording" [disabled]="!messageText || messageText.trim() === ''" class="btn btn-sm p-0 d-flex justify-content-center align-items-center btn-dynamic-2c" (click)="sendMessage();">
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" id="footer-sample-full" width="2em" height="1.4em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 448 384" class="iconify iconify--zmdi"><path _ngcontent-mnc-c209="" d="M0 384V235l320-43L0 149V0l448 192z" fill="currentColor"></path></svg>
+          </button>
+          <div [class.record-audio-box-active]="audioRecordingObj.isRecording" class="input mr-1 record-audio-box position-relative">
+            <div class="style-recording">
+              <span class="span-timer mr-3">{{audioRecordingObj.timer}}</span>
+              <div class="rec-stream">
+                <div  class="marquee" [class.pause]="audioRecordingObj.paused">
+                  <span  [style.height]="item+ 'px'" *ngFor="let item of audioRecordingObj.pitchArr"></span>
+                </div>
+
+              </div>
+            </div>
+            <div class="style-audio">
+              <span class="fa fa-trash-o text-danger span-trash cursor-pointer mr-2" (click)="abortRecording()"></span>
+             <span *ngIf="!audioRecordingObj.paused" class="span-pause fa fa-pause cursor-pointer" (click)="pauseRecording()"></span>  <!--   fa-play -->
+             <span *ngIf="audioRecordingObj.paused" class="span-pause fa fa-play cursor-pointer" (click)="resumeRecording()"></span>  <!--   fa-play -->
+            <span (click)="SendAudioMessage()" class="fa fa-paper-plane-o send-reacording bg-success text-white cursor-pointer">
+            </span>
+
+            </div>
+          </div>
+
+        </div>
+      </ng-container>
+      <ng-container *ngIf="viewMode == ChatViewTypeEnum.Telephony && TelephonyPatinetId">
+        <app-patient-telephony-chat [PatientUserId]="TelephonyPatinetId"></app-patient-telephony-chat>
+      </ng-container>
+      <ng-container *ngIf="viewMode == ChatViewTypeEnum.Both && TelephonyPatinetId">
+        <div class="alert alert-warning m-3 text-center" role="alert">
+          <strong>Coming Soon..</strong>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</ng-template>
+<ng-container *ngTemplateOutlet="chatViewRef"></ng-container>
+<div mdbModal #chatModal="mdbModal" class="modal right fade chatModal" role="dialog" aria-labelledby="mychatModalLabel"
+  aria-hidden="true">
+  <!-- <div class="modal-dialog modal-full-height modal-right mt-0" role="document">
+    <div class="modal-content">
+      <div class="modal-body p-0">
+        <ng-container *ngTemplateOutlet="chatViewRef"></ng-container>
+      </div>
+    </div>
+  </div> -->
+</div>
+
+
+<div mdbModal #SelectUserforCallModal="mdbModal" class="modal  fade chatModal" role="dialog"
+  aria-labelledby="mychatModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="padding:12px 1rem;">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="SelectUserforCallModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100">User List</h4>
+      </div>
+      <div class="modal-body p-0">
+        <div class="userList " style="height: 300px;" malihu-scrollbar [scrollbarOptions]="scrollbarOptions">
+          <ul *ngFor="let item of userListTobSelectForVideo">
+            <li (click)="SelectUserforCallModal.hide();makeCall(item);userListTobSelectForVideo=[];">
+              <strong>{{item.name}}</strong>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-dark btn-sm" (click)="SelectUserforCallModal.hide();">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

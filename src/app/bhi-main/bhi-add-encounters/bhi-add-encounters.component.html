@@ -1,0 +1,718 @@
+<div class="d-flex align-item-center justify-content-start">
+  <h4 class="mr-3 mb-0"><a class="text-dark" (click)="navigateBack()"><i class="fa fa-arrow-left"></i></a></h4>
+  <h1 class="page-title">BHI Encounter</h1>
+</div>
+
+<app-patient-details></app-patient-details>
+
+<div class="ccm-care-plan-body">
+  <div class="ccm-body z-depth-0">
+    <div class="encounter-section">
+       <div class="encounter-body px-3">
+
+        <div class="row">
+
+          <div class="col-lg-12 p-0  ">
+            <div class="row justify-content-between m-0 d-block d-sm-none">
+              <diV class="col-sm-6 mt-2" >
+                <a appDebounceClick (debounceClick)="encounterHistoryTable.toggle()" class="btn btn-dynamic-2c btn-block btn-sm px-3 m-0 mr-2">Encounter History <i [class.fa-angle-down]="encounterHistoryTable.isCollapsed" [class.fa-angle-up]="!encounterHistoryTable.isCollapsed"  class="fa ml-2"></i></a>
+                <a appDebounceClick (debounceClick)="attachmentTable.toggle()" class="btn btn-dynamic-2c btn-block btn-sm px-3 m-0 mr-2"><i class="fa fa-paperclip"></i> Attachments <i [class.fa-angle-down]="attachmentTable.isCollapsed" [class.fa-angle-up]="!attachmentTable.isCollapsed"  class="fa fa-lg ml-2"></i></a>
+              </diV>
+              <diV class="col-sm-6" >
+                <div class="row ">
+                  <diV class="col-sm-6 col-6 mt-2 pr-1" >
+                    <a appDebounceClick (debounceClick)="diagnose.toggle()" class="btn btn-block btn-dynamic-2c btn-sm px-3 m-0 mr-2">Diagnoses  <i [class.fa-angle-down]="diagnose.isCollapsed" [class.fa-angle-up]="!diagnose.isCollapsed"  class="fa ml-2"></i></a>
+                  </diV>
+                  <diV class="col-sm-6 col-6 mt-2 pl-1" >
+                    <a  appDebounceClick (debounceClick)="medication.toggle()" class="btn btn-block btn-dynamic-secondary-2c btn-sm px-3 m-0">Medications <i [class.fa-angle-down]="medication.isCollapsed" [class.fa-angle-up]="!medication.isCollapsed"  class="fa ml-2"></i></a>
+                  </diV>
+                </div>
+              </diV>
+            </div>
+            <div class="px-3 d-none d-sm-block" >
+              <div class="d-flex justify-content-between py-2 border-bottom ">
+                <div class="btn-group">
+                  <a appDebounceClick (debounceClick)="encounterHistoryTable.toggle()" class="btn btn-dynamic-2c btn-sm px-3 m-0 mr-2">Encounter History <i [class.fa-angle-down]="encounterHistoryTable.isCollapsed" [class.fa-angle-up]="!encounterHistoryTable.isCollapsed"  class="fa ml-2"></i></a>
+                  <a appDebounceClick (debounceClick)="attachmentTable.toggle()" class="btn btn-dynamic-2c btn-sm px-3 m-0 mr-2"><i class="fa fa-paperclip"></i> Attachments <i [class.fa-angle-down]="attachmentTable.isCollapsed" [class.fa-angle-up]="!attachmentTable.isCollapsed"  class="fa fa-lg ml-2"></i></a>
+                </div>
+                <div class="btn-group ml-auto mr-0">
+                  <a appDebounceClick (debounceClick)="diagnose.toggle()" class="btn btn-dynamic-2c btn-sm">Diagnoses  <i [class.fa-angle-down]="diagnose.isCollapsed" [class.fa-angle-up]="!diagnose.isCollapsed"  class="fa ml-2"></i></a>
+                  <a  appDebounceClick (debounceClick)="medication.toggle()" class="btn btn-dynamic-secondary-2c btn-sm  m-0">Medications <i [class.fa-angle-down]="medication.isCollapsed" [class.fa-angle-up]="!medication.isCollapsed"  class="fa ml-2"></i></a>
+                </div>
+              </div>
+            </div>
+            <div mdbCollapse [isCollapsed]="true" #encounterHistoryTable="bs-collapse">
+              <div *ngIf="IsEncounterLoading" class="d-flex justify-content-center text-center">
+                <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+              </div>
+             <div class="table-responsive">
+              <table class="table table-striped btn-table table-nowrap">
+                <thead class="bg-dynamic-2c text-white">
+                  <tr>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Duration</th>
+                    <th>BHI Manager</th>
+                    <th>BHI Coordinator</th>
+                    <th>Psychiatrist</th>
+                    <th>Note</th>
+                    <th style="width: 210px;">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of bhiEncountersList">
+                    <td>{{item.encounterDate}}</td>
+                    <td>Start: {{item.startTime}}, End: {{item.endTime}}</td>
+                    <td>{{item.duration}}</td>
+                    <td>{{item.bhiCareManagerName}}</td>
+                    <td>{{item.bhiCareCoordinatorName}}</td>
+                    <td>
+                      <p *ngIf="bhiStatus !== 4">
+                        {{item.psychiatristName}}
+                      </p>
+                      <p *ngIf="bhiStatus == 4">
+                        {{item.gbhiPsychiatrist}}
+                      </p>
+
+                    </td>
+                    <td style="white-space: break-spaces;min-width:250px;">
+                      <div >
+                        {{item.note}}
+                      </div>
+                    </td>
+                    <td style="width: 250px;">
+                    <div class="d-flex justify-content-end" style="width: 175px;">
+                      <button class="btn btn-sm btn-dynamic-2c px-2 my-0" (click)="viewEncunterDetail(item,encounterHistory)">View Detail</button>
+                      <button class="btn btn-icon btn-dynamic-secondary-2c my-0" (click)="OpenEditBhiEncounter(item, editBhiEncounterModal)"><i class="fa fa-pencil"></i></button>
+                      <button [disabled]="deletingBHIEncounter" class="btn btn-icon btn-danger my-0" (click)="openConfirmModal(item.id)"><i class="fa fa-trash"></i></button>
+                    </div>
+                  </td>
+                  </tr>
+                </tbody>
+              </table>
+             </div>
+
+            </div>
+            <div mdbCollapse [isCollapsed]="true" #diagnose="bs-collapse">
+              <fieldset>
+                <app-diagnose [bhiPatientId]="PatientId"></app-diagnose>
+              </fieldset>
+
+            </div>
+            <div mdbCollapse [isCollapsed]="true" #medication="bs-collapse">
+              <fieldset>
+                <app-medication [bhiPatientId]="PatientId"></app-medication>
+              </fieldset>
+            </div>
+            <div mdbCollapse [isCollapsed]="true" #attachmentTable="bs-collapse">
+            <div class="mt-3">
+              <div class="col-sm-12">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <p class="mb-0"><strong>Attachments</strong></p>
+                  <button class="btn btn-dynamic-2c btn-sm m-0" (click)="addAttachment.show()">Add New</button>
+                </div>
+              </div>
+              <div class="col-sm-12 px-0">
+                <div *ngIf="gettingDocs || IsdeletingDoc" class="d-flex justify-content-center text-center ">
+                  <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+                </div>
+                <div class="table-responsive">
+                  <table class="table table-striped btn-table">
+                    <thead class="bg-dynamic-2c text-white">
+                      <tr>
+                        <th>#</th>
+                        <th>Title</th>
+                        <th>Date</th>
+                        <th>Note</th>
+                        <!-- <th>Comment</th> -->
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let item of documentsList; let i = index">
+                        <td>{{i+1}}</td>
+                        <td>{{item.title}}</td>
+                        <td>{{item.dateCreated | date}}</td>
+                        <td>{{item.note}}</td>
+                        <!-- <td>Lorem Ipsum doen dheoc</td> -->
+                        <td>
+                          <div class="d-flex">
+                            <button (click)="getPublicUrl(item.path)" class="btn btn-icon btn-dynamic-2c my-0"><i
+                                class="fa fa-eye"></i></button>
+                            <button class="btn btn-icon btn-danger ml-0 my-0" (click)="DeleteBhiDocument(item.id)"><i class="fa fa-trash"></i></button>
+                          </div>
+                        </td>
+                      </tr>
+
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+
+
+          <div class="enc-time col-xl-6 col-lg-12 col-md-12 col-sm-12 py-3">
+
+            <!-- <ng-select [searchable]="false" [(ngModel)]="currentMonth" class="ng-select-small mb-2" placeholder="Select Previous Encounter"
+            (click)="$event.stopPropagation();" (change)="getBhiEncountersByPatientId()">
+            <ng-option [value]="1">January</ng-option>
+          </ng-select>
+
+            <p class="mb-3"> <strong class="text-dynamic-2c ">Encounter Time</strong></p> -->
+            <!-- <div class="d-flex justify-content-between align-items-center">
+
+                <strong class="text-dynamic-2c mb-3 d-block">Encounter Time</strong>
+                <a mdbDropdownToggle class="btn btn-dynamic-2c btn-icon" (click)="AddNew();resetFields()" placement="left"><i
+                    class="fa fa-plus"></i></a>
+              </div> -->
+    <ng-container *ngTemplateOutlet="bhiAddEditEncounterTemplate"></ng-container>
+
+          </div>
+          <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 py-3">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <p class="mb-0"> <strong class="text-dynamic-2c ">Care Plan</strong></p>
+                <div class="btn-group">
+                  <button class="btn btn-icon btn-dynamic-secondary-2c" (click)="DownLoadPDF()"><i class="fa fa-download"></i></button>
+                  <button class="btn btn-icon btn-dynamic-secondary-2c border-left" (click)="copyCarePlan()"><i class="fa fa-copy"></i></button>
+                </div>
+            </div>
+            <div *ngIf="loadingEditor" class="d-flex justify-content-center text-center">
+              <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+            </div>
+            <editor (onPostRender)="loadingEditor=false" [(ngModel)]="bhiCarePlan" #editor12 appOnDebounce [debounceTime]="2000" (onDebounce)="EditBhiCarePLan()"
+            apiKey="d8t35ignh0gnngobzvmdpf3pnxi74f0gcqhmr0xgu5xt0qr5"
+            [init]="{
+              height: 500,
+              menubar: false,
+              plugins: [
+                'advlist autolink lists link image charmap print preview anchor',
+                'searchreplace visualblocks code fullscreen',
+                'insertdatetime media table paste code help wordcount'
+              ],
+              contextmenu: '',
+              toolbar:
+                'undo redo | formatselect | bold italic backcolor | \
+                alignleft aligncenter alignright alignjustify | \
+                bullist numlist outdent indent | removeformat | help '
+            }"></editor>
+            <!-- <textarea type="text" style="height: calc(100% - 40px);" class="form-control form-control-sm" id="form12"
+              rows="6" [(ngModel)]="bhiCarePlan" appOnDebounce [debounceTime]="2000"
+              (onDebounce)="EditBhiCarePLan()"></textarea> -->
+          </div>
+
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<ng-template #bhiAddEditEncounterTemplate>
+  <div class="row">
+
+    <div class="col-sm-6">
+      <div class="input-group form-group">
+        <label class="w-100">Date <sup class="text-danger">*</sup> </label>
+        <input type="text" class="form-control form-control-sm" #dateDPicker="dpDayPicker"
+          [dpDayPicker]="datePickerConfig" [ngModel]="addBhiEncounterDto.encounterDate | dateFormatPipe"
+          (ngModelChange)="addBhiEncounterDto.encounterDate=$event" [theme]="'dp-material ccm-date-picker'"
+          [mode]="'day'" />
+        <a (click)="dateDPicker.api.open();" class="input-group-append">
+          <span class="input-group-text text-white bg-dynamic-2c"><i class="fa fa-calendar fa-lg"></i></span>
+        </a>
+      </div>
+    </div>
+    <div class="col-lg-3 col-md-6 col-sm-6">
+      <div class="form-group">
+        <label class="w-100">Start Time <sup class="text-danger">*</sup> </label>
+        <input type="text" class="form-control form-control-sm" #dateDpTime="dpDayPicker"
+          [dpDayPicker]="timePickerConfig" [(ngModel)]="addBhiEncounterDto.startTime"
+          [theme]="'dp-material ccm-date-picker'" [mode]="'time'" />
+      </div>
+    </div>
+    <div class="col-lg-3 col-md-6 col-sm-6">
+      <div class="form-group">
+        <label class="w-100">End Time <sup class="text-danger">*</sup> </label>
+        <input type="text" readonly class="form-control form-control-sm"
+          [(ngModel)]="addBhiEncounterDto.endTime">
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <div class="form-group">
+        <label class="w-100">Duration: <small class="text-info">Enter in Minutes</small></label>
+        <input #durationInput [(ngModel)]="durationNO" type="text" [readOnly]="!addBhiEncounterDto.startTime"
+          class="form-control form-control-sm"
+          (input)="stopCounterOnDuration = false;durationChanged($event.target.value)">
+
+      </div>
+    </div>
+
+    <div class="col-sm-6">
+      <div class="form-group" >
+        <label>BHI Manager <sup class="text-danger">*</sup> </label>
+        <ng-select [searchable]="true" [loading]=loadingBhiUsers class="ng-select-small"
+          [(ngModel)]="addBhiEncounterDto.bhiCareManagerId" placeholder="Select Provider"
+          (click)="$event.stopPropagation();">
+          <ng-option [value]="item.id" *ngFor="let item of bhiFacilityUsersList">{{item.lastName}},{{item.firstName}}</ng-option>
+        </ng-select>
+      </div>
+
+    </div>
+    <div class="col-sm-6">
+      <div class="form-group" *ngIf="bhiStatus !== 4">
+        <label>Psychiatrist <sup class="text-danger">*</sup> </label>
+        <ng-select [searchable]="true" [loading]=loadingPsy class="ng-select-small"
+          [(ngModel)]="addBhiEncounterDto.psychiatristId" placeholder="Select Provider"
+          (click)="$event.stopPropagation();">
+          <ng-option [value]="item.id" *ngFor="let item of psyfacilityUserList">{{item.lastName}},{{item.firstName}}</ng-option>
+        </ng-select>
+      </div>
+
+      <div class="form-group" *ngIf="bhiStatus == 4">
+        <label class="w-100">Psychiatrist </label>
+        <input class="form-control form-control-sm" [(ngModel)]="addBhiEncounterDto.gbhiPsychiatrist" type="text">
+
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <div class="form-group">
+        <label>Care Coordinator <sup class="text-danger">*</sup> </label>
+        <ng-select [searchable]="true" [loading]=loadingPsy class="ng-select-small" [multiple]="false"
+          [(ngModel)]="addBhiEncounterDto.bhiCareCoordinatorId" placeholder="Care Coordinator"
+          (click)="$event.stopPropagation();">
+          <ng-option [value]="item.id" *ngFor="let item of (facilityUsersList | filterFUsersByRole: 'Care Coordinator')">{{item.lastName}},{{item.firstName}}</ng-option>
+        </ng-select>
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <div class="form-group">
+        <label>Service Name <sup class="text-danger">*</sup> </label>
+        <ng-select [searchable]="true" class="ng-select-small"
+          [(ngModel)]="addBhiEncounterDto.bhiServiceTypeId" placeholder="Select Service Type"
+          (click)="$event.stopPropagation();">
+          <ng-option [value]="0">Evaluation Counselling </ng-option>
+          <ng-option [value]="1">Initial Assessment </ng-option>
+          <!-- <ng-option [value]="item.id" *ngFor="let item of serviceTypes">{{item.name}}</ng-option> -->
+        </ng-select>
+      </div>
+    </div>
+    <div class="col-sm-12">
+      <div class="form-form form-group">
+        <label for="form12">Notes <sup class="text-danger">*</sup> </label>
+        <!-- <textarea type="text" style="min-height: 200px;" class="form-control form-control-sm" id="form12"
+          rows="6" [(ngModel)]="addBhiEncounterDto.note"></textarea> -->
+          <app-two-c-text-area #myFIeldRefBHI [value]="addBhiEncounterDto.note" [height]="'200px'" [PatientId]="patientId" (valueChanged)="addBhiEncounterDto.note=$event"></app-two-c-text-area>
+        <!-- <div class="invalid invalid-text">
+            <small *ngIf="encounterTimeForm.get('note').invalid && encounterTimeForm.get('note').touched"
+              class="text-danger">Please write some note.</small>
+          </div> -->
+        </div>
+        <div #alert *ngIf=" addBhiEncounterDto.bhiMonthlyStatus === bhiMonthlyStatusEnum['Not Started']"
+        class="alert alert-warning alert-dismissible animated fade show" role="alert">
+        <strong >Acknowledge/update monthly status to save</strong>
+      </div>
+      </div>
+    <div class="col-sm-12 mt-2">
+      <!-- <div class="form-check pl-0 form-check-inline" *ngIf="bhiStatus === bhiStatusEnum['Active CoCM']">
+        <input [(ngModel)]="addBhiEncounterDto.cptCode" name="TakeMedications"
+          [value]="'99492'" type="radio" class="form-check-input" mdbInput id="TakeMedications1">
+        <label class="form-check-label" for="TakeMedications1">Initial (CPT 99492)</label>
+      </div>
+      <div class="form-check pl-0 form-check-inline" *ngIf="bhiStatus === bhiStatusEnum['Active CoCM']">
+        <input [(ngModel)]="addBhiEncounterDto.cptCode" name="TakeMedications"
+          [value]="'99493'" type="radio" class="form-check-input" mdbInput id="TakeMedications2">
+        <label class="form-check-label" for="TakeMedications2">Subsequent (CPT 99493)</label>
+      </div> -->
+      <div class="form-check pl-0 form-check-inline" *ngIf="bhiStatus === bhiStatusEnum['Active G-BHI']">
+        <input [(ngModel)]="addBhiEncounterDto.cptCode" name="TakeMedications"
+          [value]="'99484'" type="radio" class="form-check-input" mdbInput id="TakeMedications3">
+        <label class="form-check-label" for="TakeMedications3">G Bhi (CPT 99484)</label>
+      </div>
+      <!-- <div class="form-check pl-0 form-check-inline" *ngIf="bhiStatus === bhiStatusEnum['Active Pcm']">
+        <label class="form-check-label" for="TakeMedications4">PCM (CPT 99426)</label>
+        <button id="activePcm99426PopOver"  style="background-color: transparent;border: 0;" class="ml-3" container="body" [mdbPopover]="activePcm99426PopOver" placement="bottom"
+      triggers="focus"><i class="fa fa-exclamation-circle text-success fa-lg"></i></button>
+      </div>
+      <div class="form-check pl-0 form-check-inline" *ngIf="bhiStatus === bhiStatusEnum['Active Pcm']">
+        <label class="form-check-label" for="TakeMedications5">PCM (CPT 99427) </label>
+        <button id="activePcm99427PopOver" class="ml-3" style="background-color: transparent;border: 0;" container="body" [mdbPopover]="activePcm99427PopOver" placement="bottom"
+      triggers="focus"><i class="fa fa-exclamation-circle text-success fa-lg"></i></button>
+      </div> -->
+
+      <!-- <a *ngIf="bhiStatus === bhiStatusEnum['Active CoCM'] || bhiStatus === bhiStatusEnum['Active G-BHI']" id="tobaccoCessation" class="ml-3" container="body" [mdbPopover]="tobaccoCessation" placement="bottom"
+      triggers="focus"><i class="fa fa-exclamation-circle text-success fa-lg"></i></a> -->
+      <div class="d-flex justify-content-between align-items-center ml-1 w-100">
+        <div class="form-check pl-0 form-check-inline" >
+          <div class="form-group">
+            <div class="custom-control custom-checkbox w-info-90">
+              <input type="checkbox"
+                [(ngModel)]="addBhiEncounterDto.isProviderEncounter" class="custom-control-input" id="cptcheck">
+              <label class="custom-control-label" for="cptcheck">Provider Encounter</label>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="d-flex align-items-center  p-1">
+            <p class="m-0">Monthly Status:</p>
+            <div style="padding: 2px;" class=" ml-3 border rounded" [class.border-success]=" (addBhiEncounterDto.bhiMonthlyStatus !== bhiMonthlyStatusEnum['Not Started'])"
+            [class.border-warning]="(addBhiEncounterDto.bhiMonthlyStatus === bhiMonthlyStatusEnum['Not Started'])">
+              <div class="btn-group cursor-pointer"  mdbDropdown>
+                <mdb-badge style="line-height: 14px;"  mdbDropdownToggle success="true" >{{PatientEncounterMonthlyStatusTExt}}</mdb-badge>
+
+                <div class="dropdown-menu status-dropdown">
+                  <div>
+                    <!-- <span [ngStyle]="{'backgroupcmMOdelDatand': item.color}"></span> -->
+                    <a [class.active]="1 === value" (click)="addBhiEncounterDto.bhiMonthlyStatus=item.value;PatientEncounterMonthlyStatusTExt=item.name;" *ngFor="let item of bhiMonthlyStatusList" class="dropdown-item">{{item.name}}</a>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+        <ng-template #tobaccoCessation>
+        <div class="bg-dark text-white py-3 pl-3 pr-2">
+          <div class="who-covered" (click)="$event.stopPropagation()" [innerHTML]="bhiINfoHtml"
+            malihu-scrollbar [scrollbarOptions]="scrollbarOptionsTimeline" style="max-height: 300px;"></div>
+        </div>
+      </ng-template>
+        <!-- <ng-template #activePcm99426PopOver>
+        <div class="bg-dark text-white py-3 pl-3 pr-2">
+          <div class="who-covered" (click)="$event.stopPropagation()" [innerHTML]="activePcm99426PopOvers"
+            malihu-scrollbar [scrollbarOptions]="scrollbarOptionsTimeline" style="max-height: 300px;"></div>
+        </div>
+      </ng-template>
+        <ng-template #activePcm99427PopOver>
+        <div class="bg-dark text-white py-3 pl-3 pr-2">
+          <div class="who-covered" (click)="$event.stopPropagation()" [innerHTML]="activePcm99427PopOvers"
+            malihu-scrollbar [scrollbarOptions]="scrollbarOptionsTimeline" style="max-height: 300px;"></div>
+        </div>
+      </ng-template> -->
+    </div>
+    <div class="w-100 px-3 d-flex justify-content-end" *ngIf="!editBhiEncounterModal.isShown">
+      <button *ngIf="addBhiEncounterDto.id === 0" [disabled]="IsaddingEncounterLoading || (addBhiEncounterDto.bhiMonthlyStatus === bhiMonthlyStatusEnum['Not Started']) || !addBhiEncounterDto.bhiCareCoordinatorId || !addBhiEncounterDto.note || !addBhiEncounterDto.startTime || !addBhiEncounterDto.endTime
+           || !addBhiEncounterDto.bhiCareManagerId || (!addBhiEncounterDto.psychiatristId && bhiStatus !== 4)" type="submit" (click)="addBhiEncounter()" mdbBtn
+        class="btn btn-dynamic-2c btn-sm m-o">
+        <span *ngIf="IsaddingEncounterLoading" class="spinner-border spinner-border-sm" role="status"
+          aria-hidden="true"></span>
+        Add Encounter</button>
+    </div>
+  </div>
+</ng-template>
+
+
+<div class="row ">
+  <div class="col-lg-12 px-0 pt-3">
+    <!-- <div class="ccm-header" id="ccm-header">
+      <div class=" ccm-nav"
+        style="min-width: 100%;"> -->
+        <!-- Nav Tabs -->
+        <mdb-tabset #staticTabs [buttonClass]="'md-tabs bg-dynamic-2c tabs-3 m-0'" >
+          <mdb-tab (select)="selectedToolTab=1"  heading="All">
+            <ng-container *ngIf="selectedToolTab===1">
+              <app-all-screening-tools> </app-all-screening-tools>
+            </ng-container>
+
+          </mdb-tab>
+          <mdb-tab (select)="selectedToolTab=2" heading="GAD-7">
+            <ng-container *ngIf="selectedToolTab===2">
+              <app-gad7 ></app-gad7>
+            </ng-container>
+
+          </mdb-tab>
+          <mdb-tab (select)="selectedToolTab=3" heading="DAST 20">
+            <ng-container *ngIf="selectedToolTab===3">
+              <app-dast20 ></app-dast20>
+            </ng-container>
+
+          </mdb-tab>
+          <mdb-tab (select)="selectedToolTab=4" heading="WSAS">
+            <ng-container *ngIf="selectedToolTab===4">
+              <app-wsas ></app-wsas>
+            </ng-container>
+
+          </mdb-tab>
+          <mdb-tab (select)="selectedToolTab=5" heading="PHQ 9">
+            <ng-container *ngIf="selectedToolTab===5">
+              <app-phq9 ></app-phq9>
+            </ng-container>
+
+          </mdb-tab>
+        </mdb-tabset>
+        <!-- <ul class="ccm-navbar">
+          <li routerLinkActive="active"><a title="All Screening Tools" (click)="allScreening" preserveQueryParams="true">All</a></li>
+          <li routerLinkActive="active"><a title="Generalized Anxiety Disorder Scale"  preserveQueryParams="true">GAD-7</a></li>
+          <li routerLinkActive="active"><a title="Drug Abuse Screening Test"  preserveQueryParams="true">DAST 20</a></li>
+          <li routerLinkActive="active"><a title="Work and Social Adjustment Scale"  preserveQueryParams="true">WSAS</a></li>
+          <li routerLinkActive="active"><a  preserveQueryParams="true">PHQ 9</a></li>
+        </ul> -->
+        <div>
+          <!-- <button [disabled]="awStatus !== 1" title="Refresh gaps data" class="btn btn-dynamic-secondary-2c btn-icon mr-3 ml-0"
+            (click)="openConfirmModal()"><i class="fa fa-sync-alt"></i></button> -->
+          <!-- <button title="Copy data" class="btn btn-dynamic-2c btn-icon mr-3 ml-0" (click)="copyText()"><span *ngIf="isCopyAWData"
+          class="mr-1 spinner-border spinner-border-sm " role="status" aria-hidden="true"></span><i class="fa fa-copy fa-lg"></i></button> -->
+          <!-- <button [disabled]="downloadModalRef.isLoadingData" class="btn btn-dynamic-2c btn-icon mr-3 ml-0"
+            title="Download Pdf" appDebounceClick (debounceClick)="downloadModalRef.downloadDocumentsModal.show()"
+            [debounceTime]="200">
+            <span *ngIf="downloadModalRef.isLoadingData" class="spinner-border spinner-border-sm " role="status"
+              aria-hidden="true"></span>
+            <i  *ngIf="!downloadModalRef.isLoadingData" class="fa fa-download"></i></button>
+          <button class="btn btn-dynamic-2c btn-icon mr-3 ml-0" title="Send to patient" appDebounceClick
+            (debounceClick)="sendtoPatientModal.show()" [debounceTime]="200" [disabled]="awStatus !== 1"><i
+              class="fa fa-share"></i></button>
+          <button class="btn btn-dynamic-2c btn-icon mr-3 ml-0" title="Patient Tab" [disabled]="awStatus !== 1"
+            appDebounceClick (debounceClick)="OPenPatientTab()" [debounceTime]="200"><i class="fa fa-user"></i></button> -->
+          <!-- <mdb-checkbox
+        [default]="true" class="mx-3 my-2"
+        [(ngModel)]="isSyncDisabled"
+        (change)="UpdateSyncFromAnnualWellness()"
+        >Disable Auto Update
+      </mdb-checkbox> -->
+        </div>
+      </div>
+
+    </div>
+  <!-- </div>
+</div> -->
+
+<!-- <app-all-screening-tools> </app-all-screening-tools> -->
+<!-- <app-gad7 *ngIf="isGad7"></app-gad7> -->
+<!-- <app-wsas *ngIf="isWsas"></app-wsas>
+<app-dast20 *ngIf="isDast20"></app-dast20>
+<app-phq9 *ngIf="isPhq9"></app-phq9> -->
+
+<div mdbModal #diagnoseMedicationModal="mdbModal" class="modal fade rounded-0" style="margin-top: 60px;"
+  [config]="{ backdrop: false, ignoreBackdropClick: false }" tabindex="-1" role="dialog"
+  aria-labelledby="mytaskModallLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-full-height modal-fluid" role="document">
+    <div class="modal-content  rounded-0">
+      <div class="modal-body" *ngIf="diagnoseMedicationModal.isShown">
+        <div class="d-flex justify-content-between">
+          <div class="mb-3">
+            <!-- <mdb-checkbox [default]="true" [(ngModel)]="showAll" (change)="getPatientTasksList()">Show All</mdb-checkbox> -->
+          </div>
+          <button type="button" class="close pull-right" aria-label="Close" (click)="diagnoseMedicationModal.hide()">
+            <span aria-hidden="true"><i class="fa fa-angle-up" style="font-size: 1.3rem;"></i></span>
+          </button>
+        </div>
+        <!-- <div *ngIf="taskIsLoading" class="d-flex justify-content-center text-center loadingrow">
+          <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+        </div> -->
+        <ng-container>
+          <div [ngSwitch]="switchModalComponent">
+            <fieldset>
+              <div *ngSwitchCase="1">
+                <app-diagnose></app-diagnose>
+              </div>
+              <div *ngSwitchCase="2">
+                <app-medication></app-medication>
+              </div>
+            </fieldset>
+          </div>
+        </ng-container>
+      </div>
+      <!-- <div class="modal-footer rounded-0">
+        <button type="button" mdbBtn color="secndary" class="waves-light" aria-label="Close" (click)="taskModal.hide()"
+          mdbWavesEffect>Close</button>
+        <button type="button" mdbBtn class="btn btn-dynamic-2c btn-sm relative waves-light" mdbWavesEffect>Save changes</button>
+      </div> -->
+    </div>
+  </div>
+</div>
+
+<div mdbModal #bhiMonthStatusModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true" mdbTableScroll>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="bhiMonthStatusModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">BHI Month Status</h4>
+      </div>
+      <div class="modal-body">
+        <!-- <p class="text-center"><i class="fa fa-exclamation-triangle text-danger" style="font-size: 3rem;"></i> </p> -->
+        <div class="text-center" style="font-size: 20px;">Please select BHI encounter month ?</div>
+        <div class="align-content-center d-flex justify-content-center">
+          <ul class="status-list">
+            <li > <a class="link" (click)="bhiMonthStatus = 1;SetBhiCocmMonth()">First Month </a>
+            <li > <a class="link" (click)="bhiMonthStatus = 2;SetBhiCocmMonth()">Subsequent Month </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="modal-footer">
+
+        <button type="button" (click)="bhiMonthStatusModal.hide()" class="waves-light btn btn-sm btn-dynamic-secondary-2c"
+          aria-label="Close" mdbWavesEffect>Cancel</button>
+        <!-- <button type="button" mdbBtn color="priary" (click)="addRequiredData()" class="relative waves-light"
+          mdbWavesEffect>Add Data</button> -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<div mdbModal #addAttachment="mdbModal" (open)="file={};bhiUploadDocObj={};fillDate()" class="modal fade" tabindex="-1"
+  role="dialog" aria-labelledby="myBasicModalLabel" aria-hidden="true" mdbTableScroll>
+  <div class="modal-dialog modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="addAttachment.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100">BHI Attachment</h4>
+      </div>
+      <div class="modal-body">
+        <div class="border p-3 mb-3">
+          <!-- <p class="mb-3"><label> Reference Link: </label> <a>Demo Link</a></p> -->
+          <div class="input-group form-group">
+            <label style="width: 70px;" class="flex-shrink-0">Date</label>
+            <input type="text" [(ngModel)]="bhiUploadDocObj.dateCreated" class="form-control form-control-sm ml-3" #date="dpDayPicker"
+              [dpDayPicker]="datePickerConfig" [theme]="'dp-material ccm-date-picker'" [mode]="'day'" />
+            <a (click)="date.api.open();" class="input-group-append">
+              <span class="input-group-text text-white bg-dynamic-2c" id="category1"><i
+                  class="fa fa-calendar fa-lg"></i></span> </a>
+          </div>
+          <div class="d-flex">
+            <label style="width: 70px;" class="flex-shrink-0" for="result">Name</label>
+            <div class="form-group flex-1 ml-3">
+              <input type="text" [(ngModel)]="bhiUploadDocObj.title" class="form-control" id="result"
+                placeholder="Name">
+            </div>
+          </div>
+          <div class="form-form form-group d-flex mb-0">
+            <label style="width: 70px;" class="flex-shrink-0" for="note">Comment</label>
+            <textarea type="text" [(ngModel)]="bhiUploadDocObj.note" id="note" style="height:100px" rows="6"
+              class="form-control ml-3"></textarea>
+          </div>
+        </div>
+
+        <div class="d-flex align-items-start">
+          <label for="file" class="flex-shrink-0" style="width: 70px;">Attachment</label>
+          <div class="file-field flex-wrap align-items-center w-100 ml-3">
+            <div class="btn btn-success btn-sm mx-0 mt-0">
+
+              <span class="w-100"><i class="fa fa-paperclip fa-lg"></i> Attach File
+                <!-- <span  *ngIf="uploadImg" class="mr-1 spinner-border spinner-border-sm" role="status"
+                  aria-hidden="true"></span> -->
+
+              </span>
+              <input type="file" mdbFileSelect accept=".pdf, .xlsx,.docx, .doc, .odt , .txt, .ppt, .pptx"
+                (change)="onUploadOutput($event);" #select>
+            </div>
+            <span class="text-info" *ngIf="file">{{file.name}}</span>
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" [disabled]="!bhiUploadDocObj.title || !file || !file.name || uploadingDoc"
+          (click)="AddBhiDocument()" class="btn btn-dynamic-2c btn-sm" mdbWavesEffect>
+          <span *ngIf="uploadingDoc" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          Submit</button>
+        <button type="button" (click)="addAttachment.hide()" class="btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+          mdbWavesEffect>Cancel</button>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div mdbModal #encounterHistory="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myencounterHistoryLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="encounterHistory.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">Encounter History</h4>
+      </div>
+      <div class="modal-body">
+
+          <div class="task-patient-info mb-1">
+            <div class="row">
+              <div class="col-sm-6">
+                <p><strong>BHI Manager: </strong>{{viewEncounterObj.bhiCareManagerName}}</p>
+                <p><strong>Psychiatrist: </strong>
+                  <span *ngIf="bhiStatus !== 4">
+                    {{viewEncounterObj.psychiatristName}}
+                  </span>
+                  <span *ngIf="bhiStatus === 4">
+                    {{viewEncounterObj.gbhiPsychiatrist}}
+                  </span>
+                </p>
+                <p><strong>      Date: </strong>{{viewEncounterObj.encounterDate}}</p>
+                <!-- <p><strong>Care Facilitator: </strong>{{patientData.careFacilitatorName}}</p> -->
+              </div>
+
+              <div class="col-sm-6">
+                <p><strong>Start Time: </strong>{{viewEncounterObj.startTime}}</p>
+                <p><strong>  End Time: </strong>{{viewEncounterObj.endTime}}</p>
+                <p><strong>  Duration: </strong>{{viewEncounterObj.duration}}</p>
+
+              </div>
+            </div>
+          </div>
+
+            <div class="task-form mt-3">
+              <p><strong>Care Plan Note:</strong></p>
+              <div>
+                {{viewEncounterObj.note}}
+              </div>
+            </div>
+
+
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+          (click)="encounterHistory.hide()" mdbWavesEffect>Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div mdbModal #editBhiEncounterModal="mdbModal" (close)="OnCloseEditEncounter()" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myeditBhiEncounterModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="editBhiEncounterModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">Edit Bhi Encounter</h4>
+      </div>
+      <div class="modal-body" *ngIf="editBhiEncounterModal.isShown">
+        <ng-container *ngTemplateOutlet="bhiAddEditEncounterTemplate"></ng-container>
+      </div>
+
+      <div class="modal-footer">
+        <button *ngIf="addBhiEncounterDto.id > 0" [disabled]="IsaddingEncounterLoading || !addBhiEncounterDto.cptCode || !addBhiEncounterDto.note || !addBhiEncounterDto.startTime || !addBhiEncounterDto.endTime
+          || !addBhiEncounterDto.bhiCareManagerId || !addBhiEncounterDto.bhiCareCoordinatorId || (!addBhiEncounterDto.psychiatristId && bhiStatus !== 4)" (click)="editBhiEncounter(editBhiEncounterModal)" type="button" mdbBtn class="btn btn-dynamic-2c btn-sm m-o">
+          <span *ngIf="isEditingBhiEncounter"  class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          Edit Encounter</button>
+        <button type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+          (click)="editBhiEncounterModal.hide()" mdbWavesEffect>Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div mdbModal #viewPdfModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" [config]="{backdrop: true, ignoreBackdropClick: true}" aria-hidden="true"
+  (close)="objectURLStrAW=''">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-body" style="height:calc(100vh - 50px); padding: 0px;">
+        <button type="button" class="close pull-right document-close" aria-label="Close" (click)="viewPdfModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <app-pdf-view *ngIf="objectURLStrAW" [documentUrl]="objectURLStrAW"></app-pdf-view>
+      </div>
+    </div>
+  </div>
+</div>

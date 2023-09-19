@@ -1,0 +1,174 @@
+<div class="d-flex justify-content-between">
+  <h1 class="page-title mb-3 flex-sm-grow-1">Manage Templates</h1>
+  <!-- <button type="button" class="btn btn-dynamic-2c btn-sm" (click)="addeditTagModal.show()">Add Tag</button> -->
+</div>
+<!-- <div class="row">
+  <div class="d-flex align-items-end col-lg-12 col-sm-12 mb-4">
+    <span class="selected-title-name">Tags</span>
+    <span class="custom-badge ml-2" *ngFor="let item of TagsList">
+      <svg class="mr-1" xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 11 11" fill="none">
+        <path d="M5.77016 10.4364C5.17263 9.82141 4.83887 8.99744 4.84 8.14C4.84 7.39728 5.08552 6.71132 5.5 6.16H1.32C0.969914 6.16 0.634167 6.29907 0.386619 6.54662C0.139071 6.79417 0 7.12991 0 7.48V7.7946C0 9.43052 1.8524 10.56 4.4 10.56C4.85957 10.5614 5.31827 10.5201 5.77016 10.4364ZM7.04 2.64C7.04 1.93983 6.76186 1.26833 6.26676 0.773238C5.77167 0.278142 5.10017 0 4.4 0C3.69983 0 3.02833 0.278142 2.53324 0.773238C2.03814 1.26833 1.76 1.93983 1.76 2.64C1.76 3.34017 2.03814 4.01167 2.53324 4.50676C3.02833 5.00186 3.69983 5.28 4.4 5.28C5.10017 5.28 5.77167 5.00186 6.26676 4.50676C6.76186 4.01167 7.04 3.34017 7.04 2.64ZM8.14 11C8.89852 11 9.62597 10.6987 10.1623 10.1623C10.6987 9.62597 11 8.89852 11 8.14C11 7.38148 10.6987 6.65403 10.1623 6.11767C9.62597 5.58132 8.89852 5.28 8.14 5.28C7.38148 5.28 6.65403 5.58132 6.11767 6.11767C5.58132 6.65403 5.28 7.38148 5.28 8.14C5.28 8.89852 5.58132 9.62597 6.11767 10.1623C6.65403 10.6987 7.38148 11 8.14 11ZM8.14 6.16C8.19835 6.16 8.25431 6.18318 8.29556 6.22444C8.33682 6.26569 8.36 6.32165 8.36 6.38V7.92H9.9C9.95835 7.92 10.0143 7.94318 10.0556 7.98444C10.0968 8.02569 10.12 8.08165 10.12 8.14C10.12 8.19835 10.0968 8.25431 10.0556 8.29556C10.0143 8.33682 9.95835 8.36 9.9 8.36H8.36V9.9C8.36 9.95835 8.33682 10.0143 8.29556 10.0556C8.25431 10.0968 8.19835 10.12 8.14 10.12C8.08165 10.12 8.02569 10.0968 7.98444 10.0556C7.94318 10.0143 7.92 9.95835 7.92 9.9V8.36H6.38C6.32165 8.36 6.26569 8.33682 6.22444 8.29556C6.18318 8.25431 6.16 8.19835 6.16 8.14C6.16 8.08165 6.18318 8.02569 6.22444 7.98444C6.26569 7.94318 6.32165 7.92 6.38 7.92H7.92V6.38C7.92 6.32165 7.94318 6.26569 7.98444 6.22444C8.02569 6.18318 8.08165 6.16 8.14 6.16Z" fill="white"/>
+      </svg>
+      {{item.name}}
+    </span>
+  </div>
+</div> -->
+<!-- <div class="row">
+  <div class="d-flex align-items-end col-lg-12 col-sm-12 mb-4">
+    <div class="flex-grow-1">
+      <label for="searchBy">Search Templates</label>
+      <div class="d-flex align-items-center justify-content-start">
+        <input [(ngModel)]="searchTemplateText" type="text" autocomplete="off" id="searchBy" placeholder="Search Templates" class="form-control form-control-sm box-shadow w-100" >
+      </div>
+    </div>
+  </div>
+</div> -->
+<div class="row">
+  <div class="col-md-3">
+    <div class="card">
+      <!-- <div class="left-side-chat-search">
+        <input type="text" placeholder="Search Patient">
+        <span class="fa fa-search"></span>
+      </div> -->
+      <div class="main-page-height">
+        <div class="scroll-page">
+          <mdb-accordion [multiple]="false">
+            <ng-container *ngFor="let group of bulkTemplateGroups">
+              <mdb-accordion-item class="my-custom-according-left">
+                <mdb-accordion-item-head>{{group.Key}}</mdb-accordion-item-head>
+                <mdb-accordion-item-body>
+                  <div class="accordion-list-custom">
+                    <ng-container *ngFor="let item of group.values">
+                      <div class="tiles d-flex justify-content-between align-items-center">
+                        <h6 title="{{item.title}}" style="width: 150px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{item.title}}</h6>
+                        <div class="d-inline-flex ">
+                          <button class="btn btn-icon btn-dynamic-2c m-0" (click)="openConfirmModal(item)">
+                            <span class="fa fa-pencil fa-lg" ></span>
+                          </button>
+                          <button class="btn btn-icon btn-danger m-0 ml-1" (click)="openDeleteConfirmModal(item)">
+                            <span class="fa fa-trash fa-lg" ></span>
+                          </button>
+                        </div>
+                      </div>
+                    </ng-container>
+                  </div>
+                  <div *ngIf="(!bulkTemplateGroups || !bulkTemplateGroups.length) && !gettingTemplates" class="d-flex justify-content-between align-items-center mb-2">
+                    <div class="alert alert-warning alert-dismissible animated fade show col-sm-12" role="alert">
+                      <strong>No Record</strong>
+                    </div>
+                  </div>
+                </mdb-accordion-item-body>
+              </mdb-accordion-item>
+            </ng-container>
+          </mdb-accordion>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="row">
+      <div class="col-12">
+        <div class="form-group text-right mb-2">
+          <!-- <label>Title</label> -->
+          <textarea 
+          [(ngModel)]="AddEditTemplateDto.title" class="form-control h-100" placeholder="Label" rows="2"></textarea>
+        </div>
+        <div class="form-group text-right mb-2">
+          <ng-select class="ng-select-small" appendTo="body"  [(ngModel)]="AddEditTemplateDto.templateGroup" [searchable]="true" placeholder="Template Group">
+          <ng-option [value]="item.value" *ngFor="let item of templateGroupEnumList">{{ item.name }}</ng-option>
+        </ng-select>
+      </div>
+      <div class="form-group text-right mb-0">
+        <!-- <label>Title</label> -->
+        <textarea  id="TemplateTextEle" [(ngModel)]="AddEditTemplateDto.text" class="form-control h-100" placeholder="Create Template" rows="20"></textarea>
+        <button [disabled]="editingTemplate || !AddEditTemplateDto.title || !AddEditTemplateDto.text" type="button" (click)="AddEditTemplate()" class="btn btn-dynamic-2c mr-2 btn-sm mb-0 mr-0 flex-shrink-0  ml-auto">
+          Save</button>
+        <button type="button" (click)="NewTemplateWarningCheck()" class="btn btn-dynamic-secondary-2c btn-sm mb-0 mr-0 flex-shrink-0  ml-auto">
+          Reset</button>
+      </div>
+    </div>
+
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card">
+      <!-- <div class="left-side-chat-search">
+        <input type="text" placeholder="Search Patient">
+        <span class="fa fa-search"></span>
+      </div> -->
+      <div class="main-page-height">
+        <div class="scroll-page">
+          <mdb-accordion [multiple]="false">
+            <ng-container >
+              <mdb-accordion-item class="my-custom-according-left" [collapsed]="false">
+                <mdb-accordion-item-head>Systems Variables</mdb-accordion-item-head>
+                <mdb-accordion-item-body>
+                  <div class="accordion-list-custom">
+                    <ng-container *ngFor="let item of smartVariablesList">
+                      <div class="tiles d-flex justify-content-between align-items-center" (click)="FillSystemVariablesInTextArea(item)">
+                        <h6>{{item.title}}</h6>
+                      </div>
+                    </ng-container>
+                    <div *ngIf="(!smartVariablesList || !smartVariablesList.length) && !gettingVariables" class="d-flex justify-content-between align-items-center mb-2">
+                      <div class="alert alert-warning alert-dismissible animated fade show col-sm-12" role="alert">
+                        <!-- <button type="button" class="close" aria-label="Close" >
+                          <span aria-hidden="true">&times;</span>
+                        </button> -->
+                        <strong>No Record</strong>
+                      </div>
+                    </div>
+                  </div>
+                </mdb-accordion-item-body>
+              </mdb-accordion-item>
+            </ng-container>
+          </mdb-accordion>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div mdbModal #addeditTagModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true" [config]="{backdrop: true, ignoreBackdropClick: true}">
+  <div class="modal-dialog modal-dialog-centered modal-md flat-modal modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="addeditTagModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" >Add Tag</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <!-- <div class="col-sm-12 mb-2">
+            <small class="text-dynamic-2c text-uppercase font-500">User Information</small>
+          </div> -->
+          <div class="col-sm-12">
+
+            <div class="form-group">
+              <label for="reasondafdskjb">Name<small class="text-danger">*</small></label>
+              <textarea type="text" id="reasondafdskjb" rows="2"
+                placeholder="Tag Name" [(ngModel)]="tagName" class="form-control"></textarea>
+            </div>
+            <!-- <div class="form-group">
+              <label for="reasondafdskjb">EMR List<small class="text-danger">*</small></label>
+              <ng-select class="ng-select-small" appendTo="body"  [(ngModel)]="addEditExtDto.emrId" [searchable]="true" placeholder="Emr List">
+              <ng-option [value]="item.id" *ngFor="let item of emrList">{{ item.name }}</ng-option>
+            </ng-select> -->
+
+            </div>
+            <!-- <div class="form-group">
+              <label for="reason">Script</label>
+              <textarea type="text" id="reason" rows="15"
+                placeholder="Description" [(ngModel)]="addEditExtDto.contentScript" class="form-control" style="height: 150px;"></textarea>
+            </div> -->
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-dark btn-sm" (click)="addeditTagModal.hide()">Close</button>
+          <button [disabled]="!tagName" type="submit" class="btn btn-dynamic-2c btn-sm" (click)="AddPatientTags(addeditTagModal)">Add</button>
+        </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,125 @@
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <div class="d-flex justify-content-start align-items-center">
+    <!-- <h4 class="mr-3 mb-0"><a class="text-dark" (click)="navigateBack()">
+        <i class="fa fa-arrow-left"></i></a></h4> -->
+    <h4 class="mr-3 mb-0"><a class="text-dark" [routerLink]="['/admin/patient/' + PatientId + '/summary']">
+        <i class="fa fa-arrow-left"></i></a></h4>
+        <h1 class="page-title mb-0">TCM Information</h1>
+  </div>
+
+  <div>
+    <button type="button" [disabled]="gettingCopyData" (click)="getCOpyData();" class="btn btn-dynamic-2c btn-sm mr-0" title="Copy TCm Data"
+      placement="left"><i class="fa fa-copy fa-lg"></i> Copy</button>
+  </div>
+
+</div>
+<app-patient-details></app-patient-details>
+<div class="row mt-2">
+  <div class="col-lg-4 col-md-6 mb-4 ">
+
+    <div class="tcm-panel">
+      <div class="head">
+        <p class="m-0"><strong>Discharge Overview</strong></p>
+      </div>
+      <div class="body" *ngIf="!tcmStore.gettingTcmData;else loadingSklton">
+        <div>
+          <p>Discharge:</p>
+          <p *ngIf="tcmStore.tcmData.dischargeDate && tcmStore.tcmData.dischargeDate !== '0001-01-01T00:00:00' ">{{tcmStore.tcmData.dischargeDate | dateFormatPipe}}</p>
+        </div>
+        <div>
+          <p>From:</p>
+          <p>{{tcmStore.tcmData.dischargedFrom}}</p>
+        </div>
+        <div>
+          <p>To:</p>
+          <p>{{dischargeToEnum[tcmStore.tcmData.dischargedTo]}}</p>
+        </div>
+        <div>
+          <p>Reason:</p>
+          <p>{{tcmStore.tcmData.reason}}</p>
+        </div>
+        <div>
+          <p>Complexity:</p>
+          <p>{{tcmStore.tcmData.complexity}}</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4 col-md-6 mb-4">
+    <div class="tcm-panel">
+      <div class="head">
+        <p class="m-0"><strong>Communication</strong></p>
+      </div>
+      <div class="body" *ngIf="!tcmStore.gettingTcmData;else loadingSklton">
+        <div>
+          <p>Initiat Comm:</p>
+          <p>{{tcmStore.tcmData.initCommDate | date}}</p>
+        </div>
+        <div>
+          <p>#Attempts:</p>
+          <p><span>{{tcmStore.tcmData.commAttempts}}</span></p>
+        </div>
+
+        <div class="mt-5">
+          <p>Face to Face Visit:</p>
+          <p>{{tcmStore.tcmData.faceToFaceScheduledDate | date}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4 col-md-6 mb-4">
+    <div class="tcm-panel">
+      <div class="head d-flex justify-content-between">
+        <p class="m-0"><strong>Requirement</strong></p>
+        <p class="m-0"><strong>Progress</strong></p>
+      </div>
+      <div class="body" *ngIf="!tcmStore.gettingTcmData;else loadingSklton">
+        <div>
+          <p>Initiat Comm:</p>
+          <p><mdb-badge [color]="tcmStore.tcmData.initialCommStatus === 2 ? 'bg-dynamic-2c' : 'bg-dynamic-secondary-2c'">{{tcmRequirementsStatusEnum[tcmStore.tcmData.initialCommStatus]}}</mdb-badge></p>
+        </div>
+        <div>
+          <p>Discharge Form:</p>
+          <p><mdb-badge [color]="tcmStore.tcmData.patientDischargeStatus === 2 ? 'bg-dynamic-2c' : 'bg-dynamic-secondary-2c'">{{tcmRequirementsStatusEnum[tcmStore.tcmData.patientDischargeStatus]}}</mdb-badge></p>
+        </div>
+        <div>
+          <p>Non Face-to-face:</p>
+          <p><mdb-badge [color]="tcmStore.tcmData.nonFaceToFaceStatus === 2 ? 'bg-dynamic-2c' : 'bg-dynamic-secondary-2c'">{{tcmRequirementsStatusEnum[tcmStore.tcmData.nonFaceToFaceStatus]}}</mdb-badge></p>
+        </div>
+        <div>
+          <p>Face-to-face:</p>
+          <p><mdb-badge [color]="tcmStore.tcmData.faceToFaceStatus === 2 ? 'bg-dynamic-2c' : 'bg-dynamic-secondary-2c'">{{tcmRequirementsStatusEnum[tcmStore.tcmData.faceToFaceStatus]}}</mdb-badge></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #loadingSklton>
+  <skltn-root duration="2000"  [rectRadius]="0" flareWidth="50%" bgFill="#f2f3f8" flareFill="rgba(255,255,255, 0.5)">
+    <!-- Card with Avatar -->
+    <div class="p-3">
+      <div class="skltn-card">
+        <div class="skltn-card__body">
+          <div skltn-bone class="skltn-card__line"></div>
+          <div skltn-bone class="skltn-card__line"></div>
+          <div skltn-bone class="skltn-card__line"></div>
+          <div skltn-bone class="skltn-card__line"></div>
+        </div>
+      </div>
+    </div>
+  </skltn-root>
+</ng-template>
+<div class="ccm-header mb-0">
+  <div class="ccm-nav">
+    <ul class="ccm-navbar">
+      <li routerLinkActive="active"><a  [routerLink]="['dischargeInformation']">Discharge Information</a></li>
+      <li routerLinkActive="active"><a  [routerLink]="['nftf']">Non Face To Face</a></li>
+      <li routerLinkActive="active"><a  [routerLink]="['ftf']">Face To Face</a></li>
+    </ul>
+  </div>
+</div>
+<div class="box-shadow">
+  <router-outlet></router-outlet>
+</div>

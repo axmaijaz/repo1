@@ -1,0 +1,92 @@
+<ng-container *ngIf="showEmrActionWidget">
+  <app-emr-actions [patientId]="PatientId"></app-emr-actions>
+</ng-container>
+
+<div class="col-sm-12 border-bottom bg-white py-2 profile-block" *ngIf='PatientData'>
+  <div class="d-flex align-items-center mb-1" >
+    <div >
+      <div class="d-flex align-items-end flex-wrap">
+        <h3 class="text-dynamic-secondary-2c mb-0 mr-3" style="font-size: 1.5rem;">
+          {{PatientData.lastName | titlecase}}, {{PatientData.firstName | titlecase}}<span *ngIf="PatientData.middleName" >,</span> {{PatientData.middleName | titlecase}}
+        </h3>
+        <span title="PatientData.lastAppLaunchDate" *ngIf="PatientData.lastAppLaunchDate && PatientData.isActiveMobileUser" class="fa-mobile-custom-active" >
+          <svg xmlns="http://www.w3.org/2000/svg" fill="#ffffff" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 72.93 122.88" style="enable-background:new 0 0 72.93 122.88" xml:space="preserve"><style type="text/css">.st23{fill-rule:evenodd;clip-rule:evenodd;}</style><g><path class="st23" d="M10.94,0h51.04C68,0,72.93,4.93,72.93,10.94v100.99c0,6.02-4.93,10.94-10.94,10.94l-51.04,0 C4.93,122.88,0,117.95,0,111.94V10.95C0,4.93,4.93,0,10.94,0L10.94,0z M36.46,100.1c3.91,0,7.09,3.17,7.09,7.09 c0,3.91-3.18,7.09-7.09,7.09c-3.92,0-7.09-3.17-7.09-7.09C29.37,103.28,32.55,100.1,36.46,100.1L36.46,100.1z M25.17,8.86h22.59 c0.16,0,0.3,0.14,0.3,0.3v3.3c0,0.16-0.14,0.3-0.3,0.3H25.17c0,0,0,0,0,0c-0.16,0-0.3-0.13-0.3-0.3v0l0-3.3c0,0,0,0,0,0 C24.87,8.99,25,8.86,25.17,8.86L25.17,8.86L25.17,8.86L25.17,8.86z M9.65,21.53h53.63c0.98,0,1.78,0.81,1.78,1.78v70.01 c0,0.97-0.81,1.78-1.78,1.78H9.65c-0.97,0-1.78-0.8-1.78-1.78V23.3C7.87,22.33,8.67,21.53,9.65,21.53L9.65,21.53z"/></g></svg>
+        </span>
+        <span title="PatientData.lastAppLaunchDate" *ngIf="PatientData.lastAppLaunchDate && !PatientData.isActiveMobileUser" class=" fa-mobile-custom-inactive" >
+          <svg xmlns="http://www.w3.org/2000/svg" fill="#ffffff" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 72.93 122.88" style="enable-background:new 0 0 72.93 122.88" xml:space="preserve"><style type="text/css">.st23{fill-rule:evenodd;clip-rule:evenodd;}</style><g><path class="st23" d="M10.94,0h51.04C68,0,72.93,4.93,72.93,10.94v100.99c0,6.02-4.93,10.94-10.94,10.94l-51.04,0 C4.93,122.88,0,117.95,0,111.94V10.95C0,4.93,4.93,0,10.94,0L10.94,0z M36.46,100.1c3.91,0,7.09,3.17,7.09,7.09 c0,3.91-3.18,7.09-7.09,7.09c-3.92,0-7.09-3.17-7.09-7.09C29.37,103.28,32.55,100.1,36.46,100.1L36.46,100.1z M25.17,8.86h22.59 c0.16,0,0.3,0.14,0.3,0.3v3.3c0,0.16-0.14,0.3-0.3,0.3H25.17c0,0,0,0,0,0c-0.16,0-0.3-0.13-0.3-0.3v0l0-3.3c0,0,0,0,0,0 C24.87,8.99,25,8.86,25.17,8.86L25.17,8.86L25.17,8.86L25.17,8.86z M9.65,21.53h53.63c0.98,0,1.78,0.81,1.78,1.78v70.01 c0,0.97-0.81,1.78-1.78,1.78H9.65c-0.97,0-1.78-0.8-1.78-1.78V23.3C7.87,22.33,8.67,21.53,9.65,21.53L9.65,21.53z"/></g></svg>
+        </span>
+        <p class="mb-0"><strong class="text-dynamic-2c">{{PatientData.sex | titlecase}}, {{PatientAge}}</strong>
+          years</p>
+      </div>
+      <p class="mb-0 mt-1" style="font-size: 12px;"><strong style="font-size: 11px;">UserName:</strong> {{PatientData.userName}}</p>
+    </div>
+
+    <button *ngIf="!hideChatBtn" (click)="getChatGroup()" [disabled]="gettingChatGroup"
+      class="btn btn-dynamic-2c btn-sm btn-rounded ml-auto mr-0">
+      <span *ngIf="gettingChatGroup" class="spinner-border spinner-border-sm" role="status"
+        aria-hidden="true"></span> Message
+    </button>
+  </div>
+  <div   class="row">
+    <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12 px-2">
+      <div class="pb-info pb-info-a w-100">
+        <p title="EMR ID: {{ PatientData.patientEmrId}}"><strong>EMR ID:</strong> {{PatientData.patientEmrId}}</p>
+        <p title="Date of Birth: {{ PatientData.dateOfBirth | dateFormatPipe}}"><strong>Date of Birth:</strong> {{PatientData.dateOfBirth | dateFormatPipe}}</p>
+        <p title="Primary Phone No: {{ PatientData.homePhone}}"><strong>Primary Phone:</strong> {{PatientData.homePhone}}<span  *ngIf="PatientData.phoneNumberConfirmed" title="Phone No. Verified" class="text-dynamic-2c ml-1" ><i class="fa fa-check-circle fa-lg" style="font-weight: 900;"></i></span><span title="Phone No. Not verified" *ngIf="!PatientData.phoneNumberConfirmed" class="text-danger ml-1"><i class="fa fa-exclamation-circle fa-lg" style="font-weight: 900;"></i></span></p>
+        <p title="Secondary Phone No: {{PatientData.personNumber}}"><strong>Secondary Phone:</strong> {{PatientData.personNumber}}</p>
+
+      </div>
+    </div>
+    <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12 px-2">
+      <div class="pb-info pb-info-b w-100">
+        <p title="Emergency Contact Name: {{PatientData.emergencyContactName}}"><strong>Contact Name:</strong> {{PatientData.emergencyContactName}}</p>
+        <p title="Emergency Contact Relationship: {{PatientData.emergencyContactRelationship}}"><strong>Contact Relationship:</strong> {{PatientData.emergencyContactRelationship}}</p>
+
+        <p title="Emergency Primary Contact No: {{PatientData.emergencyContactPrimaryPhoneNo}}"><strong>Primary Contact:</strong> {{PatientData.emergencyContactPrimaryPhoneNo}}</p>
+        <p title="Emergency Secondary Contact No: {{PatientData.emergencyContactSecondaryPhoneNo}}"><strong>Secondary Contact:</strong> {{PatientData.emergencyContactSecondaryPhoneNo}}</p>
+      </div>
+
+    </div>
+    <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12 px-2">
+      <div class="pb-info pb-info-c w-100">
+        <p title="Billing Provider: {{PatientData.billingProviderName}}"><strong>Billing Provider:</strong> {{PatientData.billingProviderName}}</p>
+        <p title="Care Provider:"><strong>Care Provider:</strong> <span >
+          <div  class="user-name-list">
+          <div  class="name-caption" title="{{careProvider.fullName}}" *ngFor="let careProvider of PatientData.careProviders">
+            <span >{{careProvider['nameAbbreviation']}}</span>
+          </div><!--bindings={
+          "ng-reflect-ng-for-of": "[object Object]"
+        }--></div></span></p>
+        <p title="Insurance Plan: {{PatientData.insurancePlanName}}"><strong>Insurance Plan:</strong> {{PatientData.insurancePlanName}}</p>
+        <p title="UserName: {{PatientData.userName}}"><strong>UserName:</strong><span class="text-overflow-user">{{PatientData.userName}}</span></p>
+      </div>
+
+    </div>
+    <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12 px-2">
+      <div class="pb-info pb-info-d w-100">
+        <p title="Last CCM: {{PatientData.lastCCMDate | dateFormatPipe}}"><strong>Last CCM:</strong> {{PatientData.lastCCMDate | dateFormatPipe}} </p>
+        <p title="Recent PCP Appointment: {{PatientData.recentPCPAppointment | dateFormatPipe}}"><strong>PCP Appointment:</strong> {{PatientData.recentPCPAppointment | dateFormatPipe}}</p>
+        <p title="Hospitalization Date: {{PatientData.hospitalizationDate | dateFormatPipe}}"><strong>Hospitalization Date:</strong> {{PatientData.hospitalizationDate | dateFormatPipe}}</p>
+        <p title="CCM Started Date:  {{PatientData.ccmStartedDate | dateFormatPipe}}"><strong>CCM Started Date:</strong> {{PatientData.ccmStartedDate | dateFormatPipe}}</p>
+      </div>
+
+    </div>
+  </div>
+</div>
+<div class="col-sm-12 border-bottom bg-white py-2 profile-block"  *ngIf="!PatientData">
+<div  class="mt-2" >
+  <skltn-root duration="1000" [rectRadius]="0" flareWidth="50%" bgFill="#f2f3f8"
+    flareFill="rgba(255,255,255, 0.5)">
+    <!-- Card with Avatar -->
+    <div class="skltn-card">
+      <div class="skltn-card__body">
+        <div skltn-bone class="skltn-card__title"></div>
+        <div skltn-bone class="skltn-card__line"></div>
+        <div skltn-bone class="skltn-card__line"></div>
+        <div skltn-bone class="skltn-card__line"></div>
+        <div skltn-bone class="skltn-card__line"></div>
+      </div>
+    </div>
+  </skltn-root>
+</div>
+</div>

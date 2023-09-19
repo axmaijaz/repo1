@@ -1,0 +1,377 @@
+<!-- *********************
+        Dexcom Story
+  ************************ -->
+
+<div class="row device--dexcom">
+
+  <div class="col-xl-6 d-flex">
+
+
+    <div class="panel flex-1">
+      <div class="panel-header py-1 px-0">
+        <div class="d-flex justify-content-between pr-2 align-items-center w-100">
+          <div class="d-inline-flex align-items-center ">
+            <span class="fa fa-mobile fa-3x text-dynamic-2c"></span>
+            <h5 class="mb-0 font-weight-bolder">Dexcom G6 Mobile App</h5>
+          </div>
+          <div class="d-flex align-items-center">
+           <div class="weekly-data btn-group mr-2">
+             <button [class.btn-dynamic-2c]="filterType === '7Days'" [class.btn-outline-primary]="filterType !== '7Days'"
+             class="btn btn-sm px-2" (click)="filterType='7Days';selecDateFilters(7)">Weekly</button>
+             <button [class.btn-dynamic-2c]="filterType === '14Days'" [class.btn-outline-primary]="filterType !== '14Days'"
+             class="btn btn-sm px-2" style="white-space: pre;" (click)="filterType='14Days';selecDateFilters(14)">14 Days</button>
+           </div>
+            <div class="form-group input-group mb-0">
+             <input type="text" class="form-control form-control-sm" autocomplete="nope" name="daterangeInput" daterangepicker [(ngModel)]="selectedDateRange"
+                 [options]="options" (selected)="selectedDate($event, daterange)" placeholder="Select Date Range" (applyDaterangepicker)="filterType='custom';loadDexcomData()" (cancelDaterangepicker)="clearDate($event, daterange)" />
+                 <div class="input-group-append custom-append">
+                  <span class="input-group-text text-white bg-dynamic-2c"><i class="fa fa-calendar"></i></span>
+                 </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+      <div class="panel-body p-0">
+        <div *ngIf="isLoadingDevices">
+          <div class="d-flex justify-content-center text-center">
+            <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+          </div>
+        </div>
+
+        <div class="p-3" *ngFor="let device of dexcomDevicesDataResultDto">
+
+          <div class="row">
+            <div class="col-md-6">
+              <h5 class="font-weight-bolder">CGMID</h5>
+              <div class="row">
+                <div class="col-6">
+                  <h6 class="font-weight-bolder">Serial Number</h6>
+                </div>
+                <div class="col-6">
+                  <h6 class="font-weight-bolder">{{device.displayDevice}}</h6>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-6">
+                  <h6 class="font-weight-bolder">Uploaded on</h6>
+                </div>
+                <div class="col-6">
+                  <h6 class="font-weight-bolder">{{device.lastUploadDate | date}}</h6>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-6">
+                  <h6 class="font-weight-bolder">Model</h6>
+                </div>
+                <div class="col-6">
+                  <h6 class="font-weight-bolder">{{device.transmitterGeneration}}</h6>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <h4 class="font-weight-bolder">Alert Setting For Device</h4>
+              <h5 class="font-weight-bolder">General</h5>
+              <div class="row" *ngFor="let setting of device.alertSchedules[0].alertSettings">
+                <div class="col-6">
+                  <h6 class="font-weight-bolder">{{setting.alertName}}</h6>
+                </div>
+                <div class="col-6">
+                  <div class="mb-1 d-flex justify-content-between align-items-center">
+                    <span *ngIf="!setting.enabled" class="badge badge-warning">Off</span>
+                    <span *ngIf="setting.enabled" class="badge badge-success">On</span>
+                    <h6 class="font-weight-bolder mb-0" style="min-width: 70px;">{{setting.value}} <small>{{setting.unit}}</small></h6>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <div class="d-flex justify-content-end px-2 pb-2" *ngIf="!isLoadingDevices">
+          <div>
+            <p style="font-size:10px;margin-bottom: 0;color: #9ea1a1;">CGM DATA BY</p>
+            <img src="../../../assets/img/dexcom-logo.jpg" class="img-fluid" width="80">
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+
+  <div class="col-xl-6 d-flex">
+    <!-- <div class="col-sm-12" *ngIf="isLoadingStats">
+        <div class="d-flex justify-content-center text-center">
+          <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+        </div>
+      </div> -->
+
+      <div class="panel flex-1">
+        <div class="panel-header px-2 d-flex align-items-center justify-content-between">
+          <h3>Glucose Overview</h3>
+          <h6 *ngIf="startDate && endDate">From: {{startDate | date}} - To: {{endDate | date}}</h6>
+        </div>
+        <div class="panel-body pb-0 pr-2">
+          <div class="row">
+            <div class="col-md-4">
+              <h5>Average Glucose</h5>
+              <h1 class="hight-font">{{dexcomStatisticsDataResultDto.mean | number:'1.1-1'}} <small>mg/dL</small></h1>
+              <div class="mt-4">
+                <h6>Standard Deviation</h6>
+                <h2 class="deviation">{{dexcomStatisticsDataResultDto.stdDev | number:'1.1-1'}} <small>mg/dL</small></h2>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <h5>Time in Range</h5>
+              <div class="d-flex justify-content-start">
+                <div class="-time-in-range- mr-2">
+                  <div class="-high-" [style.height]="dexcomStatisticsDataResultDto.percentAboveRange + '%'"></div>
+                  <div class="-inrange-" [style.height]="dexcomStatisticsDataResultDto.percentWithinRange + '%'"></div>
+                  <div class="-low-" [style.height]="dexcomStatisticsDataResultDto.percentBelowRange + '%'"></div>
+                  <div class="-verylow-" [style.height]="dexcomStatisticsDataResultDto.percentUrgentLow + '%'"></div>
+                </div>
+                <div>
+                  <h6 class="text-danger mb-3">{{dexcomStatisticsDataResultDto.percentAboveRange | number:'1.1-1'}}% High</h6>
+                  <h6 class="text-success mb-3">{{dexcomStatisticsDataResultDto.percentWithinRange | number:'1.1-1'}}% In Range
+                  </h6>
+                  <h6 class="text-warning mb-3">{{dexcomStatisticsDataResultDto.percentBelowRange | number:'1.1-1'}}% Low</h6>
+                  <h6 class="text-info">{{dexcomStatisticsDataResultDto.percentUrgentLow | number:'1.1-1'}}% Very Low</h6>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <h5>Sensor Usage</h5>
+              <h6>Day with CGM data</h6>
+              <h2 class="deviation">{{dexcomStatisticsDataResultDto.utilizationPercent | number:'1.1-1'}} <small>%</small>
+              </h2>
+              <h6>{{dexcomStatisticsDataResultDto.nDays}} / {{noOfDays}} days</h6>
+              <h6 class="mt-4">Avg. calibrations per day</h6>
+              <h2 class="deviation">{{dexcomStatisticsDataResultDto.meanDailyCalibrations}} <small></small></h2>
+            </div>
+          </div>
+          <div class="d-flex justify-content-end px-0 pb-2">
+            <div>
+              <p style="font-size:10px;margin-bottom: 0;color: #9ea1a1;">CGM DATA BY</p>
+              <img src="../../../assets/img/dexcom-logo.jpg" class="img-fluid" width="80">
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+  </div>
+
+</div>
+<div class="row device--dexcom">
+  <div class="col-xl-6 d-flex">
+    <div class="panel flex-1">
+      <div class="panel-header">
+        <h6 *ngIf="startDate && endDate">From: {{startDate | date}} - To: {{endDate | date}}</h6>
+      </div>
+      <div class="panel-body p-0" style="display: block">
+        <div *ngIf="isLoadingEgvs">
+          <div class="d-flex justify-content-center text-center">
+            <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+          </div>
+        </div>
+        <div class="px-3 pt-3 pb-0">
+          <canvas mdbChart [chartType]="chartType" [datasets]="longRangeChartDataSet" [labels]="longRangeChartLabels"
+          [colors]="longRangeChartColors" [options]="longRangeChartOptions" [legend]="true">
+        </canvas>
+        </div>
+        <div class="d-flex justify-content-end px-2 pb-2" *ngIf="!isLoadingEgvs">
+          <div>
+            <p style="font-size:10px;margin-bottom: 0;color: #9ea1a1;">CGM DATA BY</p>
+            <img src="../../../assets/img/dexcom-logo.jpg" class="img-fluid" width="80">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-6 d-flex">
+    <div class="panel flex-1 w-100">
+      <div class="panel-header d-flex align-items-center justify-content-between">
+        <h6><span *ngIf="selectedPerDayFilterDate">{{selectedPerDayFilterDate | date}}</span></h6>
+        <div class="d-flex align-items-center justify-content-end">
+          <h4 class="mr-3 mb-0"><a class="text-dark" (click)="changeCurrentfilterDate(1)"><i
+                class="fa fa-arrow-left"></i></a></h4>
+          <h4 class="mb-0"><a class="text-dark" (click)="changeCurrentfilterDate(2)"><i
+                class="fa fa-arrow-right"></i></a></h4>
+        </div>
+      </div>
+
+      <div class="panel-body p-0" style="display: block">
+        <div class="px-3 pt-3 pb-0">
+          <canvas mdbChart [chartType]="chartType" [datasets]="perDayChartDataSet" [labels]="perDayChartLabels"
+          [colors]="perDayChartColors" [options]="perDayChartOptions" [legend]="true">
+        </canvas>
+        </div>
+        <div class="d-flex justify-content-end px-2 pb-2">
+          <div>
+            <p style="font-size:10px;margin-bottom: 0;color: #9ea1a1;">CGM DATA BY</p>
+            <img src="../../../assets/img/dexcom-logo.jpg" class="img-fluid" width="80">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xl-6">
+
+    <div class="panel">
+      <div class="panel-body">
+<div class="table-responsive">
+  <table class="table  table-bordered table-hover mb-0">
+    <thead class="bg-dynamic-2c text-white">
+      <tr>
+      <th title="BMI ">BMI</th>
+      <th title="HBA1c ">A1C</th>
+      <th title="Nephropathy value ">DN</th>
+      <th title="LDL Value ">LD</th>
+      <th title="Retinopathy status ">DE</th>
+      </tr>
+    </thead>
+    <tbody class="bg-white" >
+      <tr>
+        <!-- <td>{{witem.measurementDate | dateFormatPipe: 'time'}}</td>
+        <td>Wt: {{witem.weightValue}}</td> -->
+        <td>
+          <div class="d-flex align-items-center">
+            <p class="mb-0 text-center mr-1" *ngIf="careGapsReadingsForRPMDto.bmi && careGapsReadingsForRPMDto.bmi.value">
+              <span class="badge badge-success"
+                *ngIf="careGapsReadingsForRPMDto.bmi.valueInNumber > 16 && careGapsReadingsForRPMDto.bmi.valueInNumber <= 25">{{ careGapsReadingsForRPMDto.bmi.valueInNumber
+                }}</span>
+              <span class="badge badge-warning"
+                *ngIf="careGapsReadingsForRPMDto.bmi.valueInNumber	> 25 && careGapsReadingsForRPMDto.bmi.valueInNumber <= 30">{{ careGapsReadingsForRPMDto.bmi.valueInNumber
+                }}</span>
+              <span class="badge badge-danger"
+                *ngIf=" careGapsReadingsForRPMDto.bmi.valueInNumber <= 16 || (careGapsReadingsForRPMDto.bmi.valueInNumber	> 30 && careGapsReadingsForRPMDto.bmi.valueInNumber <= 40) || careGapsReadingsForRPMDto.bmi.valueInNumber	> 40">{{
+                careGapsReadingsForRPMDto.bmi.valueInNumber }}</span>
+            </p>
+            <p class="mb-0 text-center" *ngIf="careGapsReadingsForRPMDto.bmi && careGapsReadingsForRPMDto.bmi.lastReadingDate">
+              <!-- <span >{{ careGapsReadingsForRPMDto.bmi.lastReadingDate | dateFormatPipe: 'time' }} </span> -->
+              <span *ngIf="careGapsReadingsForRPMDto.bmi.NoOfMonth > 6" class="badge badge-danger">{{ careGapsReadingsForRPMDto.bmi.lastReadingDate | dateFormatPipe }} </span>
+              <span *ngIf="careGapsReadingsForRPMDto.bmi.NoOfMonth <= 6" class="badge badge-success">{{ careGapsReadingsForRPMDto.bmi.lastReadingDate | dateFormatPipe }} </span>
+              <!-- <span class="badge badge-danger">{{ careGapsReadingsForRPMDto.bmi.lastReadingDate | dateFormatPipe }} </span>  -->
+            </p>
+          </div>
+
+        </td>
+        <td>
+          <div class="d-flex align-items-center">
+            <p class="mb-0 text-center mr-1" *ngIf="careGapsReadingsForRPMDto.a1C && careGapsReadingsForRPMDto.a1C.value">
+              <span class="badge badge-success" *ngIf="careGapsReadingsForRPMDto.a1C.valueInNumber <= 7">{{ careGapsReadingsForRPMDto.a1C.valueInNumber
+                }}</span>
+              <span class="badge badge-warning"
+                *ngIf="careGapsReadingsForRPMDto.a1C.valueInNumber > 7 && careGapsReadingsForRPMDto.a1C.valueInNumber <= 8 ">{{ careGapsReadingsForRPMDto.a1C.valueInNumber
+                }}</span>
+              <span class="badge badge-danger"
+                *ngIf="(careGapsReadingsForRPMDto.a1C.valueInNumber > 8 && careGapsReadingsForRPMDto.a1C.valueInNumber <= 9) || careGapsReadingsForRPMDto.a1C.valueInNumber > 9">{{
+                careGapsReadingsForRPMDto.a1C.valueInNumber }}</span>
+            </p>
+            <p class="mb-0 text-center " *ngIf="careGapsReadingsForRPMDto.a1C && careGapsReadingsForRPMDto.a1C.lastReadingDate">
+              <span *ngIf="careGapsReadingsForRPMDto.a1C.NoOfMonth > 6" class="badge badge-danger">{{ careGapsReadingsForRPMDto.a1C.lastReadingDate | dateFormatPipe }} </span>
+              <span *ngIf="careGapsReadingsForRPMDto.a1C.NoOfMonth <= 6" class="badge badge-success">{{ careGapsReadingsForRPMDto.a1C.lastReadingDate | dateFormatPipe }} </span>
+            </p>
+          </div>
+
+          <!-- <span [ngClass]="{'badge badge-danger' : careGapsReadingsForRPMDto.a1C.NoOfMonth > 6}">{{ careGapsReadingsForRPMDto.a1C.lastReadingDate | dateFormatPipe }} </span> </p> -->
+        </td>
+        <td>
+          <div class="d-flex align-items-center">
+            <p class="mb-0 text-center mr-1" *ngIf="careGapsReadingsForRPMDto.dn && careGapsReadingsForRPMDto.dn.value">
+              <span class="badge badge-success" *ngIf="careGapsReadingsForRPMDto.dn.valueInNumber <= 30 ">{{ careGapsReadingsForRPMDto.dn.valueInNumber
+                }}</span>
+              <span class="badge badge-warning"
+                *ngIf="careGapsReadingsForRPMDto.dn.valueInNumber > 30 && careGapsReadingsForRPMDto.dn.valueInNumber <= 300 ">{{ careGapsReadingsForRPMDto.dn.valueInNumber
+                }}</span>
+              <span class="badge badge-danger" *ngIf="careGapsReadingsForRPMDto.dn.valueInNumber > 300">{{ careGapsReadingsForRPMDto.dn.valueInNumber
+                }}</span>
+            </p>
+            <p class="mb-0 text-center" *ngIf="careGapsReadingsForRPMDto.dn && careGapsReadingsForRPMDto.dn.lastReadingDate">
+              <span *ngIf="careGapsReadingsForRPMDto.dn.NoOfMonth > 6" class="badge badge-danger">{{ careGapsReadingsForRPMDto.dn.lastReadingDate | dateFormatPipe }} </span>
+              <span *ngIf="careGapsReadingsForRPMDto.dn.NoOfMonth <= 6" class="badge badge-success">{{ careGapsReadingsForRPMDto.dn.lastReadingDate | dateFormatPipe }} </span>
+            </p>
+          </div>
+
+        </td>
+        <td>
+          <div class="d-flex align-items-center">
+            <p class="mb-0 text-center mr-1" *ngIf="careGapsReadingsForRPMDto.ld && careGapsReadingsForRPMDto.ld.value">
+              <span class="badge badge-success" *ngIf="careGapsReadingsForRPMDto.ld.valueInNumber <= 100">{{ careGapsReadingsForRPMDto.ld.valueInNumber
+                }}</span>
+              <span class="badge badge-danger" *ngIf="careGapsReadingsForRPMDto.ld.valueInNumber > 100">{{ careGapsReadingsForRPMDto.ld.valueInNumber
+                }}</span>
+            </p>
+            <p class="mb-0 text-center" *ngIf="careGapsReadingsForRPMDto.ld && careGapsReadingsForRPMDto.ld.lastReadingDate">
+              <span *ngIf="careGapsReadingsForRPMDto.ld.NoOfMonth > 6" class="badge badge-danger">{{ careGapsReadingsForRPMDto.ld.lastReadingDate | dateFormatPipe }} </span>
+              <span *ngIf="careGapsReadingsForRPMDto.ld.NoOfMonth <= 6" class="badge badge-success">{{ careGapsReadingsForRPMDto.ld.lastReadingDate | dateFormatPipe }} </span>
+              <!-- <span [ngClass]="{'badge badge-danger' : careGapsReadingsForRPMDto.ld.NoOfMonth > 6}">{{ careGapsReadingsForRPMDto.ld.lastReadingDate | dateFormatPipe }} </span> -->
+            </p>
+          </div>
+
+        </td>
+        <td>
+          <div class="d-flex align-items-center">
+
+            <p class="mb-0 text-center mr-1" *ngIf="careGapsReadingsForRPMDto.de && careGapsReadingsForRPMDto.de.value">
+              <span class="badge badge-warning" *ngIf="careGapsReadingsForRPMDto.de.value == 'Mild Retinopathy'">{{ careGapsReadingsForRPMDto.de.value
+                }}</span>
+              <span class="badge badge-danger" *ngIf="careGapsReadingsForRPMDto.de.value == 'Severe Retinopathy '">{{ careGapsReadingsForRPMDto.de.value
+                }}</span>
+              <span class="badge badge-light-red" *ngIf="careGapsReadingsForRPMDto.de.value == 'Moderate Retinopathy '">{{ careGapsReadingsForRPMDto.de.value
+                }}</span>
+            </p>
+
+            <!-- <p class="mb-0 text-center mr-1" *ngIf="careGapsReadingsForRPMDto.de && careGapsReadingsForRPMDto.de.value"><span class="badge badge-primary">{{ careGapsReadingsForRPMDto.de.value }}</span></p> -->
+            <p class="mb-0 text-center" *ngIf="careGapsReadingsForRPMDto.de && careGapsReadingsForRPMDto.de.lastReadingDate">
+              <!-- <span [ngClass]="{'badge badge-danger' : careGapsReadingsForRPMDto.dn.NoOfMonth > 12}">{{ careGapsReadingsForRPMDto.de.lastReadingDate | dateFormatPipe}} </span> -->
+              <span *ngIf="careGapsReadingsForRPMDto.de.NoOfMonth > 12" class="badge badge-danger">{{ careGapsReadingsForRPMDto.de.lastReadingDate | dateFormatPipe }} </span>
+              <span *ngIf="careGapsReadingsForRPMDto.de.NoOfMonth <= 12" class="badge badge-success">{{ careGapsReadingsForRPMDto.de.lastReadingDate | dateFormatPipe }} </span>
+            </p>
+          </div>
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+      </div>
+    </div>
+
+  </div>
+  <div class="col-xl-6">
+    <div class="panel">
+      <div class="panel-body">
+        <table class="table table-bordered table-hover mb-0">
+          <colgroup>
+            <col width="50%">
+            <col width="50%">
+          </colgroup>
+          <thead class="bg-dynamic-2c text-white">
+            <tr>
+              <th>Date</th>
+              <th>Reading</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white" >
+            <tr *ngIf="!dexcomTableData || !dexcomTableData.length">
+              <td colspan="2">No Record Found</td>
+            </tr>
+            <tr *ngFor="let witem of dexcomTableData">
+              <td>{{witem.date}}</td>
+              <td>{{witem.ave | number}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

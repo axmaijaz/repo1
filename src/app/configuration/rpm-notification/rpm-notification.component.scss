@@ -1,0 +1,12 @@
+@import "theme";
+
+.btn-select-dynamic-2c {
+  border: 1px solid $dynamic-colour;
+  background-color: transparent;
+  color: $dynamic-colour;
+  height: 31.88px;
+  &.active {
+    background-color: $dynamic-colour;
+    color: #fff;
+  }
+}

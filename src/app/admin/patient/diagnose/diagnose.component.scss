@@ -1,0 +1,22 @@
+@import "theme";
+
+span.ccm-inactive::before,
+span.ccm-active::before  {
+
+}
+span.ccm-active{
+  color: $success;
+  &::before{
+    background: $success;
+  }
+}
+span.ccm-inactive{
+  color: $danger;
+  &::before{
+    background: $danger;
+  }
+}
+.on-ccm{
+  width: 168.625px;
+  height: 12px;
+}

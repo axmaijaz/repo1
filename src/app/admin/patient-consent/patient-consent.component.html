@@ -1,0 +1,245 @@
+<div class="d-flex align-item-center justify-conten-start">
+  <h4 class="mr-3 mb-0"><a class="text-dark" [routerLink]="['/home/patients']"><i
+        class="fa fa-arrow-left fa-lg"></i></a></h4>
+  <h1 class="page-title">Patient Consent</h1>
+</div>
+
+<!-- <div class="row" *ngIf="PatientData?.chronicDiseasesIds.length < 2">
+  <div class="panel">
+    <div class="panel-header primary">
+      <h3>Patient cronic Diseases<small> Please select at least 2 Diseases</small></h3>
+    </div>
+    <div class="panel-body">
+      <div class="row">
+        <div *ngFor="let item of cronicDiseaseList" class="col-sm-6">
+          <mdb-checkbox [default]="true" (change)="cronicDiseaseChanged($event.checked , item)">{{item.icdCode}}
+            {{item.detail}}</mdb-checkbox>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="d-flex justify-content-end">
+    <button [disabled]="selectedCronicDiseases.length < 2" (click)="updatePatientData()"
+      class="btn btn-dynamic-2c btn-sm">save <i class="fa fa-file"></i></button>
+  </div>
+</div> -->
+
+<!-- <div class="row" *ngIf="PatientData?.chronicDiseasesIds.length >= 2"> -->
+<div class="row">
+  <div class="w-100 ccm-tabs">
+    <mdb-tabset #ccmConsent [buttonClass]="'classic-tabs tabs-outline-primary'" [contentClass]="'p-0'"
+      class="classic-tabs tabs-outline-primary">
+      <!--Panel 1-->
+      <mdb-tab heading="">
+        <div class="panel">
+          <div class="panel-header primary">
+            <h3>Patient Conset</h3>
+          </div>
+          <div class="panel-body">
+            <p>Hi <strong class="text-dynamic-2c">{{PatientData?.lastName}},{{PatientData?.firstName}} </strong> , My Name
+              is<strong class="text-dynamic-2c"> {{currentUser.fullName}}</strong> </p>
+            <p>I am calling from <strong class="text-dynamic-2c"> {{currentUser?.fullName}}</strong> Office </p>
+            <p><strong class="text-dynamic-2c"> {{currentUser?.fullName}}</strong> would like me to call you on a monthly
+              basis and make sure you are feeling alright, have all
+              your</p>
+            <p>medications, assist you in making appointments, and help you in any way we can. Is this some thing You
+              Would Like to Learn More About?</p>
+          </div>
+        </div>
+        <div class="d-flex justify-content-end">
+          <a (click)="ccmConsent.setActiveTab(2)" class="btn btn-dynamic-2c btn-sm">Next <i
+              class="fa fa-angle-right"></i></a>
+        </div>
+      </mdb-tab>
+      <!--Panel 2-->
+      <mdb-tab heading="">
+        <div class="panel">
+          <div class="panel-header primary">
+            <h3>That is GREAT to hear. Here are a few facts you may find useful.</h3>
+          </div>
+          <div class="panel-body">
+            <strong>Access to care & care Continuity</strong>
+            <p>Provide 24-hour-a-day, 7-day-a-week (24/7) access to physicians or other qualified health care
+              professionals or clinical staff, including providing patients (and caregivers as appropriate) with a means
+              to make contact with
+              health care professionals in the practice to address urgent needs regardless of the time of day or day of
+              week. Ensure continuity </p>
+            <p>of care with a designated member of the care team with whom the patient is able to schedule successive
+              routine appointments. Provide enhanced opportunities for the patient and any caregivers to communicate
+              with the </p>
+            <p>practitioner regarding the patient's care by telephone and also through secure messaging, secure
+              internet, or other asynchronous non-face-to-face consultation methods (for example, email or secure
+              electronic patient portal)</p>
+          </div>
+        </div>
+        <div class="d-flex justify-content-end">
+          <a (click)="ccmConsent.setActiveTab(1)" class="btn btn-dark btn-sm"><i class="fa fa-angle-left"></i> Back</a>
+          <a (click)="ccmConsent.setActiveTab(3)" class="btn btn-dynamic-2c btn-sm">Next <i
+              class="fa fa-angle-right"></i></a>
+        </div>
+      </mdb-tab>
+      <!--Panel 3-->
+      <mdb-tab heading="">
+        <div class="panel">
+          <div class="panel-header primary">
+            <h3>Patient Conset</h3>
+          </div>
+          <div class="panel-body p-4">
+            <p>Okay, I know that was a lot of great information, here are the last four points. you are free to stop
+              these calls at any time.
+              We can share your Care Plan with your other doctors. Only one doctor can perform these calls. Your
+              insurance covers this program with your usual
+              plan and copay structure.</p>
+          </div>
+        </div>
+        <div class="d-flex justify-content-end">
+          <a (click)="ccmConsent.setActiveTab(2)" class="btn btn-dark btn-sm"><i class="fa fa-angle-left"></i> Back</a>
+          <a (click)="ccmConsent.setActiveTab(4)" class="btn btn-dynamic-2c btn-sm">Next <i
+              class="fa fa-angle-right"></i></a>
+        </div>
+      </mdb-tab>
+      <mdb-tab heading="">
+        <div class="panel">
+          <div class="panel-header primary">
+            <h3>Patient Conset</h3>
+          </div>
+          <div class="panel-body p-4">
+            <strong class="uppercase">Physical Evaluation</strong>
+
+            <div class="row mt-4 flex-nowrap">
+              <div class="px-3 flex-grow-1">
+                <p>We will manage your care as you move between and among health care providers and settings, including
+                  the following: Referrals to other health care providers. Follow-up after emergency department visit.
+                  Follow-up after you are discharged from
+                  the hospital or other facility. (e.g., skilled nursing facility) Coordination with home and
+                  community-based providers of clinical services.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="d-flex justify-content-end">
+          <a (click)="ccmConsent.setActiveTab(2)" class="btn btn-dark btn-sm"><i class="fa fa-angle-left"></i> Back</a>
+          <a (click)="ccmConsent.setActiveTab(5)" class="btn btn-dynamic-2c btn-sm">Next <i
+              class="fa fa-angle-right"></i></a>
+        </div>
+      </mdb-tab>
+      <mdb-tab heading="">
+        <div class="panel">
+          <div class="panel-header primary">
+            <h3>Patient Conset</h3>
+          </div>
+          <div class="panel-body p-4">
+            <p class="mb-3"> <strong class="uppercase">Patient Preferences</strong></p>
+            <form action="">
+              <div class="row">
+                <div class="col-sm-6">
+
+                  <div class="form-group">
+                    <label for="">What is the best time to call?</label>
+                    <ng-select [(ngModel)]="PatientPreferences.bestTimeToCall" appendTo="body"
+                      [ngModelOptions]="{standalone: true}" class="ng-select-small" [multiple]="false"
+                      [searchable]="false" placeholder="best time to call">
+                      <ng-option [value]="'Morning'">Morning</ng-option>
+                      <ng-option [value]="'Afternoon'">Afternoon</ng-option>
+                      <ng-option [value]="'Evening'">Evening</ng-option>
+                    </ng-select>
+                  </div>
+                </div>
+
+                <div class="col-sm-6">
+
+                  <p class="mb-0">Preferred Language?</p>
+
+                  <div class="flex-sm-shrink-0 form-group">
+                    <!-- Material inline 1 -->
+                    <div class="form-check form-check-inline">
+                      <input type="radio" class="form-check-input" id="materialInline1"
+                        name="inlineMaterialRadiosExample" [(ngModel)]="PatientPreferences.preferredLanguage"
+                        [value]="'English'" [ngModelOptions]="{standalone: true}" mdbInput>
+                      <label class="form-check-label" for="materialInline1">English</label>
+                    </div>
+
+                    <!-- Material inline 2 -->
+                    <div class="form-check form-check-inline">
+                      <input type="radio" class="form-check-input" id="materialInline2"
+                        name="inlineMaterialRadiosExample" [(ngModel)]="PatientPreferences.preferredLanguage"
+                        [value]="'Spanish'" [ngModelOptions]="{standalone: true}" mdbInput>
+                      <label class="form-check-label" for="materialInline2">French</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                         <button (click)="selectLanguageModal.show()" class="btn btn-outline-light btn-sm"><i class="fa fa-angle-left"></i> more</button>
+                    </div>
+
+                    <!-- Material inline 3 -->
+                    <!-- <div class="form-check form-check-inline">
+                      <input type="radio" class="form-check-input" id="materialInline3"
+                        name="inlineMaterialRadiosExample" [(ngModel)]="PatientPreferences.preferredLanguage"
+                        [value]="'German'" [ngModelOptions]="{standalone: true}" mdbInput>
+                      <label class="form-check-label" for="materialInline3">German</label>
+                    </div> -->
+                  </div>
+                </div>
+              </div>
+              <!-- <div class="row">
+                <div class="form-group col-md-4">
+                  <label for="mobilePhone">Mobile Phone</label>
+                  <input type="text" class="form-control" id="mobilePhone" placeholder="Mobile Phone">
+                </div>
+                <div class="form-group col-md-4">
+                  <label for="emailAddress">Email</label>
+                  <input type="email" class="form-control" id="emailAddress" placeholder="Email">
+                </div>
+                <div class="form-group col-md-4">
+                  <label for="mobilePhone">Mobile Phone</label>
+                  <input type="text" class="form-control" id="mobilePhone" placeholder="Mobile Phone">
+                </div>
+              </div> -->
+            </form>
+
+          </div>
+        </div>
+        <div class="d-flex justify-content-end">
+          <button (click)="ccmConsent.setActiveTab(4)" class="btn btn-dark btn-sm"><i class="fa fa-angle-left"></i> Back</button>
+          <button [disabled]="!PatientPreferences.preferredLanguage || !PatientPreferences.bestTimeToCall" (click)="submitPatientData()" class="btn btn-dynamic-2c btn-sm">Finish <i class="fa fa-angle-right"></i></button>
+        </div>
+      </mdb-tab>
+    </mdb-tabset>
+  </div>
+
+  <ngx-spinner name="mySpinner" bdColor="#ffffffff" size="medium" color="#f4511e" type="ball-clip-rotate"
+    [fullScreen]="false">
+    <!-- <p style="color: white"> Loading... </p> -->
+  </ngx-spinner>
+
+</div>
+
+<div mdbModal #selectLanguageModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"  [config]="{backdrop: true, ignoreBackdropClick: true}" aria-labelledby="myselectLanguageModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <!-- <button type="button" class="close pull-right" aria-label="Close" (click)="selectLanguageModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button> -->
+        <h4 class="modal-title w-100" id="myModalLabel">Select Language</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="form-group">
+              <label for="namea">Language List</label>
+              <ng-select class="ng-select-small" [(ngModel)]="PatientPreferences.preferredLanguage"  [multiple]="false"
+                [searchable]="true" placeholder="Select Language">
+                <ng-option *ngFor="let item of languageList" [value]="item.name">{{item.name}}
+                </ng-option>
+              </ng-select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close" (click)="selectLanguageModal.hide()" mdbWavesEffect>Close</button>
+        <button type="button" (click)="selectLanguageModal.hide()" class="relative waves-light btn btn-sm btn-dynamic-2c" mdbWavesEffect>Save</button>
+      </div>
+    </div>
+  </div>
+</div>

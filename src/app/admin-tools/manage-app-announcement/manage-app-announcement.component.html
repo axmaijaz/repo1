@@ -1,0 +1,100 @@
+<div class="d-flex flex-row align-items-center justify-content-between mb-3">
+    <div class="d-flex justify-content-start align-items-center">
+        <!-- <h4 class="mr-3 mb-0"><a class="text-dark" (click)="goBack()">
+          <i class="fa fa-arrow-left"></i></a></h4> -->
+        <h1 class="page-title mb-0">App Announcements</h1>
+    </div>
+    <div>
+        <button type="button" class="btn btn-dynamic-2c btn-sm mr-0"
+            (click)="resetAnnouncementModalForm();addAnnouncementModal.show()" title="Add New Announcement"
+            placement="left"><i class="fa fa-plus fa-lg"></i> Add
+            Announcement</button>
+    </div>
+</div>
+
+<div *ngIf="isLoading" class="d-flex justify-content-center text-center">
+    <!-- <div class="d-flex justify-content-center text-center"> -->
+    <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+</div>
+<ngx-datatable #table class="material" [columnMode]="'force'" [headerHeight]="50" [footerHeight]="50" [rowHeight]="40"
+    [scrollbarV]="false" [scrollbarH]="true" [rows]="announcementsList" [offset]="0">
+    <ngx-datatable-column name="#" [maxWidth]=50>
+        <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+            <!-- <small class="mr-3"></small> -->
+            {{rowIndex + 1}}
+        </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Announcement" prop="announcement"> </ngx-datatable-column>
+
+    <ngx-datatable-column [width]="150" [maxWidth]="150" name="Action">
+        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+            <div class="d-flex align-items-center">
+                <button type="button" class="btn btn-icon btn-dynamic-2c mx-0 mr-2" [disabled]="isLoading"
+                    (click)="openEditModal(row)"><i
+                    class="fa fa-pencil"></i>
+                </button>
+                <button type="button" class="btn btn-icon btn-danger mx-0  mr-2"
+                (click)="selectedAnnouncement=row;openConfirmModal()"><i
+                    class="fa fa-trash"></i>
+                </button>
+                <div class="custom-control custom-switch">
+                    <input type="checkbox" class="custom-control-input" [(ngModel)]="row.isActiveState" [name]="'customSwitches'+ row.id" [id]="'customSwitches'+ row.id"   (change)="changeActiveStatusOfAnnouncement(row, index)" >
+                    <label class="custom-control-label" [for]="'customSwitches'+ row.id"></label>
+                </div>
+            </div>
+
+        </ng-template>
+
+    </ngx-datatable-column>
+    <!-- <ngx-datatable-column name="action" prop="Notes"> </ngx-datatable-column> -->
+</ngx-datatable>
+
+
+
+
+<div mdbModal #addAnnouncementModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="myBasicModalLabel" aria-hidden="true" [config]="{backdrop: true, ignoreBackdropClick: true}">
+    <div class="modal-dialog modal-dialog-centered modal-md flat-modal modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close pull-right" aria-label="Close" (click)="addAnnouncementModal.hide()">
+                    <span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title w-100" *ngIf="addEditAnnouncement.id === 0">Add Announcement</h4>
+                <h4 class="modal-title w-100" *ngIf="addEditAnnouncement.id > 0">Edit Announcement</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label for="Description">Message</label>
+                            <textarea [(ngModel)]="addEditAnnouncement.announcement" class="md-textarea form-control "
+                                rows="3" id="Description" type="text"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label for="Description">URL</label>
+                                <input class="form-control"  [(ngModel)]="addEditAnnouncement.url" type="text">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-dark btn-sm" (click)="addAnnouncementModal.hide()">Close</button>
+                <button type="submit" class="btn btn-dynamic-2c btn-sm"
+                    [disabled]="isAddingAnnouncement ||!addEditAnnouncement.announcement"
+                    *ngIf="addEditAnnouncement.id === 0" [disabled]="isLoading" (click)="addAnnouncement()">Save <span
+                        *ngIf="isAddingAnnouncement" class="spinner-border spinner-border-sm" role="status"
+                        aria-hidden="true"></span>
+                </button>
+                <button type="submit" class="btn btn-dynamic-2c btn-sm"
+                    [disabled]="isUpdatingAnnouncement ||!addEditAnnouncement.announcement"
+                    *ngIf="addEditAnnouncement.id > 0" [disabled]="isLoading" (click)="editAnnouncement()">Update <span
+                        *ngIf="isUpdatingAnnouncement" class="spinner-border spinner-border-sm" role="status"
+                        aria-hidden="true"></span>
+                </button>
+            </div>
+
+        </div>
+    </div>

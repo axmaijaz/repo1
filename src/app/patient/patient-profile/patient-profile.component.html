@@ -1,0 +1,709 @@
+<h1 class="page-title">Profile</h1>
+<div class="row">
+
+
+  <div class="col-lg-4 col-sm-12">
+    <div class="card testimonial-card mb-3 overflow-hidden">
+      <div class="card-up bg-dynamic-2c"></div>
+      <div class="avatar mx-auto bg-dynamic-secondary-2c d-flex align-items-center justify-content-center w-100" style="height: 120px;">
+        <strong class="text-white">{{nameCaption}}</strong>
+      </div>
+      <div class="card-body">
+        <h4 class="card-title">{{patientData.lastName}},{{patientData.firstName}}</h4>
+        <h6>User Id:{{patientData.userName}}</h6>
+        <p class="mb-0 hoverss"><a><small class="font-600 text-dynamic-2c" (click)="changePasswordModal.show();">Change
+              Password</small></a>
+            <button class="btn" mdbBtn [disabled]="enalblingTwoFA" *ngIf="twoFactorEnabled==='No'"><small class="font-600 text-info ml-3" (click)="EnableTwoFactorAuthentication()">
+                Enable Two Factor Authentication</small></button>
+            <button class="btn" mdbBtn [disabled]="disablingTwoFA" (click)="DisbleTwoFactorAuthentication()" *ngIf="twoFactorEnabled==='Yes'"><small class="font-600 text-info ml-3">
+              Disable Two Factor Authentication</small></button>
+        </p>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-header">
+        <div class="col-sm-12">
+          <strong class="text-dynamic-secondary-2c">Care Providers Information</strong>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="row text-left">
+
+          <ng-container *ngFor="let item of CareProviderInfo">
+            <div class="col-sm-12">
+              <p class="mb-0"><small class="font-600 text-dynamic-2c">Name</small></p>
+              <p>{{item.name}}</p>
+            </div>
+            <div class="col-sm-12">
+              <p class="mb-0"><small class="font-600 text-dynamic-2c">Email</small></p>
+              <p>{{item.email}}</p>
+            </div>
+            <div class="col-sm-12">
+              <p class="mb-0"><small class="font-600 text-dynamic-2c">Country Calling Code</small></p>
+              <p>{{item.countryCallingCode}}</p>
+            </div>
+            <div class="col-sm-12">
+              <p class="mb-0"><small class="font-600 text-dynamic-2c">Contact No</small></p>
+              <p>{{item.contactNo  | mask: '(000)000-0000'}}</p>
+              <hr>
+            </div>
+
+          </ng-container>
+        </div>
+      </div>
+    </div>
+    <div class="panel" *ngIf="twoFactorEnabled==='Yes'">
+      <div class="panel-header">
+        <div class="row">
+          <div class="col-sm-12">
+            <strong class="text-dynamic-secondary-2c">2 Factor Authentication </strong>
+          </div>
+        </div>
+      </div>
+      <div class="panel-body">
+        <!-- <div class="row text-left" *ngIf="!patientData.hasAuthenticator"> -->
+        <div class="row text-left" *ngIf="!patientData.twoFactorEnabled">
+          <div class="col-sm-12 mb-3">
+            <p class="mb-3">Scan the QR code with your authenticator app to received verification code</p>
+            <button class="btn btn-dynamic-2c px-3 py-2 m-0"
+              (click)="GetAuthenticatorKey(twoFactorConfModal)" > Setup Now</button>
+          </div>
+          <div class="col-sm-12">
+            <div class="col-sm-12">
+              <ul class="smartApplication text-right" style="display: flex;
+              align-items: center;
+              justify-content: end;">
+                <li class="mr-3" title="Play Store"><a (click)="navigateOnPlaystore()"><img src="assets/img/playstore.png" width="35"></a></li>
+                <li  class="mr-3" title="App Store"><a (click)="navigateOnIStore()"><img src="assets/img/App-store-icon.png" width="35"></a></li>
+                <li class="mr-4" title="Scan QR Code"><a (click)="scanDownload.show()"><span class="fa fa-qrcode" style="font-size:35px ;"></span></a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <!-- <div class="row text-left" *ngIf="patientData.hasAuthenticator"> -->
+        <div class="row text-left" *ngIf="patientData.twoFactorEnabled">
+          <div class="col-sm-12">
+            <p class="mb-3 font-600 text-center">Authentication app is already configured</p>
+          </div>
+          <div class="col-sm-12">
+            <ul class="smartApplication">
+              <li> <span class="fa fa-check auth-circle-check"></span></li>
+            </ul>
+            <p class="my-3 text-center">Do you want to configure it again? <a class="setup-link" (click)="GetAuthenticatorKey(twoFactorConfModal)">Setup Now</a></p>
+          </div>
+          <div class="col-sm-12">
+            <div class="col-sm-12">
+              <ul class="smartApplication text-right" style="display: flex;
+              align-items: center;
+              justify-content: end;">
+                <li class="mr-3" title="Play Store"><a (click)="navigateOnPlaystore()"><img src="assets/img/playstore.png" width="35"></a></li>
+                <li  class="mr-3" title="App Store"><a (click)="navigateOnIStore()"><img src="assets/img/App-store-icon.png" width="35"></a></li>
+                <li class="mr-4" title="Scan QR Code"><a (click)="scanDownload.show()"><span class="fa fa-qrcode" style="font-size:35px ;"></span></a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-8 col-sm-12">
+    <div class="panel">
+      <div class="panel-body">
+        <div class="row text-left">
+          <div class="col-sm-12">
+            <strong class="text-dynamic-secondary-2c">Personal Information</strong>
+          </div>
+          <div class="col-sm-6">
+            <p class="mb-0"><small class="font-600 text-dynamic-2c">Name</small></p>
+            <p>{{patientData.lastName}},{{patientData.firstName}}</p>
+          </div>
+          <div class="col-sm-6">
+            <p class="mb-0"><small class="font-600 text-dynamic-2c">EMR Id</small></p>
+            <p>{{patientData.patientEmrId}}</p>
+          </div>
+          <div class="col-sm-6">
+            <p class="mb-0"><small class="font-600 text-dynamic-2c">Gender</small></p>
+            <p>{{patientData.sex}}</p>
+          </div>
+          <div class="col-sm-6">
+            <p class="mb-0"><small class="font-600 text-dynamic-2c">Date of Birth</small></p>
+            <p>{{patientData.dateOfBirth | date}}</p>
+          </div>
+        </div>
+        <hr>
+        <div class="row text-left">
+          <div class="col-sm-12 d-flex justify-content-between mb-3">
+            <strong class="text-dynamic-secondary-2c">Contact Information</strong><a class="text-dynamic-2c ml-2 "
+              (click)="editOption = 'CInfo';editContactInformation.show();"><i class="fa fa-pencil"></i> Edit</a>
+          </div>
+
+          <div class="col-sm-6">
+            <p class="mb-0"><small class="font-600 text-dynamic-2c">Primary Phone No.</small></p>
+            <p>{{patientData.maskedHomePhone}}</p>
+            <a class="link text-danger" *ngIf="patientData.homePhone && patientData.phoneNumberConfirmed === false;"
+            (click)="verificationModal.show();sendPhoneNoVerificationToken(patientData);">verify phone</a>
+            <!-- <a *ngIf="patientData.email && patientData.isEmailVerified === false" class=" ml-3 link text-danger" (click)="sendVerifyEmail()">verify email</a> -->
+          <strong class=" text-dynamic-2c" *ngIf="patientData.homePhone && patientData.phoneNumberConfirmed === true;">(Verified)</strong>
+          </div>
+          <div class="col-sm-6">
+            <p class="mb-0"><small class="font-600 text-dynamic-2c">Secondary Contact No.</small></p>
+            <p>{{patientData.personNumber}}</p>
+            <!-- <a class="link text-danger" *ngIf="patientData.personNumber && patientData.isPhoneNumberVerified === false;"
+            (click)="verificationModal.show();sendPhoneNoVerificationToken(patientData);">verify phone</a>
+          <strong class=" text-dynamic-2c" *ngIf="patientData.personNumber && patientData.isPhoneNumberVerified === true;">(Verified)</strong> -->
+          </div>
+          <div class="col-sm-6">
+            <p class="mb-0"><small class="font-600 text-dynamic-2c">Email</small></p>
+            <p>{{patientData.email}}</p>
+            <a *ngIf="patientData.email && patientData.isEmailVerified === false" class=" link text-danger" (click)="sendVerifyEmail()">verify email</a>
+          <strong class=" text-dynamic-2c" *ngIf="patientData.isEmailVerified=== true;">(Verified)</strong>
+          </div>
+          
+        </div>
+        <hr>
+        <div class="row text-left">
+          <div class="col-sm-12 d-flex justify-content-between mb-3">
+            <strong class="text-dynamic-secondary-2c">Current Address</strong>
+          </div>
+
+          <div class="col-sm-6">
+            <p class="mb-0"><small class="font-600 text-dynamic-2c">Current Address</small></p>
+            <p>{{patientData.currentAddress}}</p>
+          </div>
+
+          <div class="col-sm-6">
+            <p class="mb-0"><small class="font-600 text-dynamic-2c">City</small></p>
+            <p>{{patientData.city}}</p>
+          </div>
+          <div class="col-sm-6">
+            <p class="mb-0"><small class="font-600 text-dynamic-2c">State</small></p>
+            <p>{{patientData.state}}</p>
+          </div>
+          <div class="col-sm-6">
+            <p class="mb-0"><small class="font-600 text-dynamic-2c">Zip Code</small></p>
+            <p>{{patientData.zip}}</p>
+          </div>
+        </div>
+        <hr>
+        <div class="row text-left">
+          <div class="col-sm-12 d-flex justify-content-between mb-3">
+            <strong class="text-dynamic-secondary-2c">Mailling Address</strong>
+          </div>
+
+          <div class="col-sm-6">
+            <p class="mb-0"><small class="font-600 text-dynamic-2c">Mailing Address</small></p>
+            <p>{{patientData.mailingAddress}}</p>
+          </div>
+          <div class="col-sm-6">
+            <p class="mb-0"><small class="font-600 text-dynamic-2c">City</small></p>
+            <p>{{patientData.maillingAddressCity}}</p>
+          </div>
+          <div class="col-sm-6">
+            <p class="mb-0"><small class="font-600 text-dynamic-2c">State</small></p>
+            <p>{{patientData.maillingAddressState}}</p>
+          </div>
+          <div class="col-sm-6">
+            <p class="mb-0"><small class="font-600 text-dynamic-2c">Zip Code</small></p>
+            <p>{{patientData.maillingAddressZipCode}}</p>
+          </div>
+        </div>
+        <hr>
+        <div class="row text-left">
+          <div class="col-sm-12">
+            <strong class="text-dynamic-secondary-2c">Preferences</strong>
+          </div>
+
+          <div class="col-sm-6">
+            <p class="mb-0"><small class="font-600 text-dynamic-2c">Best time to call </small></p>
+            <p>{{patientData.bestTimeToCall}}</p>
+          </div>
+          <div class="col-sm-6">
+            <p class="mb-0"><small class="font-600 text-dynamic-2c">Preferred Language </small></p>
+            <p>{{patientData.preferredLanguage}}</p>
+          </div>
+        </div>
+        <hr>
+        <div class="row text-left">
+          <div class="col-sm-12 d-flex justify-content-between mb-3">
+            <strong class="text-dynamic-secondary-2c">Emergency Contact</strong><a class="text-dynamic-2c ml-2"
+              (click)="editOption = 'EInfo';editContactInformation.show()"><i class="fa fa-pencil"></i> Edit</a>
+          </div>
+
+          <div class="col-sm-6">
+            <p class="mb-0"><small class="font-600 text-dynamic-2c">Name </small></p>
+            <p>{{patientData.emergencyContactName}}</p>
+          </div>
+          <div class="col-sm-6">
+            <p class="mb-0"><small class="font-600 text-dynamic-2c">Relationship </small></p>
+            <p>{{patientData.emergencyContactRelationship}}</p>
+          </div>
+          <div class="col-sm-6">
+            <p class="mb-0"><small class="font-600 text-dynamic-2c">Primary Phone </small></p>
+            <p>{{patientData.emergencyContactPrimaryPhoneNo}}</p>
+          </div>
+          <div class="col-sm-6">
+            <p class="mb-0"><small class="font-600 text-dynamic-2c">Secondary Phone </small></p>
+            <p>{{patientData.emergencyContactSecondaryPhoneNo}}</p>
+          </div>
+        </div>
+        <hr>
+        <div class="row text-left">
+          <div class="col-sm-12">
+            <p><strong class="text-dynamic-secondary-2c">Chronic Diseases</strong></p>
+          </div>
+          <div class="col-sm-12">
+            <div class="border border-grey p-3 mb-3">
+              <div class="tags">
+                <!-- <strong class="tags-title">Is Chronic</strong> -->
+                <ul class="tag-list">
+                  <li class="tag" *ngFor="let item of (selectedCronicDiseases | distinct:'chronicConditionId')">
+                    {{item.algorithm}}</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- <div class="row" >
+    <div class="col-sm-6">
+    <input  #searchMaillingAddress autocomplete="nope" class="md-textarea form-control "
+    id="mailingAddress" type="text">
+  </div>
+    <div class="col-sm-6">
+    <input #search autocomplete="nope" class="form-control" id="address12312"
+    name="currentAddress" type="text"></div>
+  </div> -->
+</div>
+
+<div mdbModal #changePasswordModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  [config]="{ignoreBackdropClick: true}" aria-labelledby="mychangePasswordModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <!-- <button type="button" class="close pull-right" aria-label="Close" (click)="changePasswordModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button> -->
+        <h4 class="modal-title w-100 text-center" id="myModalLabel">Change Password</h4>
+      </div>
+      <div class="modal-body">
+        <!-- <div class="alert alert-info p-2 pb-3">
+          <a class="close font-weight-normal initialism" data-dismiss="alert" href="#"><samp>&times;</samp></a>
+          CVC code is required.
+        </div> -->
+        <form class="form" role="form" autocomplete="off" [formGroup]="changePasswordForm">
+          <div class="form-group">
+            <label for="inputPasswordOld">Current Password</label>
+            <input type="password" class="form-control" formControlName="oldPassword" id="inputPasswordOld" required="">
+          </div>
+          <div class="form-group">
+            <label for="inputPasswordNew">New Password</label>
+            <input type="password" class="form-control" formControlName="newPassword" id="inputPasswordNew" required="">
+            <span class="form-text small text-muted">
+              The password must be 8-20 characters, and must <em>not</em> contain spaces.
+            </span>
+            <div *ngIf="changePasswordForm.get('newPassword').invalid && 
+            changePasswordForm.get('newPassword').errors && 
+            (changePasswordForm.get('newPassword').dirty || changePasswordForm.get('newPassword').touched)">
+            <small  *ngIf="changePasswordForm.get('newPassword').hasError('minlength')" class="text-danger">
+              The minimum length for this field is 8 characters.
+            </small>
+            <small  *ngIf="changePasswordForm.get('newPassword').hasError('maxlength')" class="text-danger">
+              The maximum length for this field is 20 characters.
+            </small>
+            <small  *ngIf="changePasswordForm.get('newPassword').hasError('cannotContainSpace')"class="text-danger">
+              Password can not contain space.
+            </small>
+          </div>
+          </div>
+          <div class="form-group">
+            <label for="inputPasswordNewVerify">Verify</label>
+            <input type="password" class="form-control" formControlName="verifyPassword" id="inputPasswordNewVerify"
+              required="">
+            <span class="form-text small text-muted">
+              To confirm, type the new password again.
+            </span>
+            <small *ngIf="changePasswordForm.get('newPassword').value && changePasswordForm.get('verifyPassword').value &&
+            changePasswordForm.get('newPassword').value !== changePasswordForm.get('verifyPassword').value &&
+            changePasswordForm.get('verifyPassword').touched" class="text-danger">
+              password mismatch
+            </small>
+          </div>
+          <!-- <div class="form-group">
+                  <button type="submit" class="btn btn-success btn-lg float-right">Save</button>
+              </div> -->
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+          (click)="changePasswordModal.hide()" mdbWavesEffect>Close</button>
+        <button
+          [disabled]="!changePasswordForm.get('newPassword').value || !changePasswordForm.get('verifyPassword').value ||
+        changePasswordForm.get('newPassword').value !== changePasswordForm.get('verifyPassword').value || !changePasswordForm.get('oldPassword').value || changePasswordForm.invalid"
+          type="button" class="relative waves-light btn btn-sm btn-dynamic-secondary-2c" mdbWavesEffect
+          (click)="changePasswordModal.hide();changePassword()">Update</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="overflow-y: auto" (open)="google()" mdbModal #editContactInformation="mdbModal" class="modal fade " tabindex="-1"
+  role="dialog" [config]="{backdrop: true, ignoreBackdropClick: true}" aria-labelledby="myeditContactInformationLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="editContactInformation.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title" id="myModalLabel">Update Contact Information</h4>
+      </div>
+      <div class="modal-body" [formGroup]="PatientForm">
+
+        <div *ngIf="editOption === 'CInfo'">
+          <p><small class="text-dynamic-2c text-uppercase font-500">Contact Information</small></p>
+          <div class="row">
+            <!-- <div class="col-lg-3 col-sm-12">
+              <div class="form-group">
+                <label for="countryCallingCode">Country Calling Code<small class="text-danger">*</small></label>
+                <ng-select [(ngModel)]="selectedCountry" [ngModelOptions]="{standalone: true}" id="countryCallingCode" class="ng-select-small" [multiple]="false" [searchable]="true"
+                placeholder="Select Country Calling Code">
+                <ng-option *ngFor="let item of countriesList" [value]="item">{{item.callingCode}} {{item.name}}
+                </ng-option>
+        </ng-select>
+              </div>
+            </div> -->
+            <div class="col-lg-6 col-sm-12">
+              <div class="form-group">
+                <label for="primaryPhoneNo">Primary Phone<small class="text-danger">*</small></label>
+                <input type="text" formControlName="primaryPhoneNo" mask="(000)000-0000" class="form-control"
+                  id="primaryPhoneNo" placeholder="Primary Phone" [ngClass]="{'is-invalid':(PatientForm.get('primaryPhoneNo').touched ||
+                    PatientForm.get('primaryPhoneNo').dirty) &&
+                    !PatientForm.get('primaryPhoneNo').valid }">
+                <span class="invalid-feedback">
+                  <span *ngIf="!!PatientForm.get('primaryPhoneNo').errors && (PatientForm.get('primaryPhoneNo').touched ||
+                       PatientForm.get('primaryPhoneNo').dirty)">
+                    Please enter your primary phone.
+                  </span>
+                </span>
+              </div>
+            </div>
+            <div class="col-lg-6 col-sm-12">
+              <div class="form-group">
+                <label for="personalPhone">Secondary Phone</label>
+                <input type="text" formControlName="secondaryContactNo" mask="(000)000-0000" class="form-control"
+                  id="personalPhone" placeholder="Secondary Phone" [ngClass]="{'is-invalid':(PatientForm.get('secondaryContactNo').touched ||
+                    PatientForm.get('secondaryContactNo').dirty) &&
+                    !PatientForm.get('secondaryContactNo').valid }">
+              </div>
+            </div>
+
+            <div class="col-lg-6 col-sm-12">
+              <div class="border p-3 form-group">
+                <div class="form-group">
+                  <div class="d-flex justify-content-between">
+                    <label for="currentAddress">Current Address<small class="text-danger">*</small></label>
+                    <mdb-checkbox [default]="true" [checked]="true"
+                      (change)="AssignCurrentAdrValue(IsSameCurrentAddress)">Mailing
+                      address is same
+                    </mdb-checkbox>
+                  </div>
+                  <input #search (click)="selectAddress = 'currentAddress'" formControlName="currentAddress" autocomplete="nope" class="form-control" id="address12312"
+                    name="currentAddress" type="text" [ngClass]="{'is-invalid':(PatientForm.get('currentAddress').touched ||
+                    PatientForm.get('currentAddress').dirty) &&
+                    !PatientForm.get('currentAddress').valid }">
+
+                  <span class="invalid-feedback">
+                    <span *ngIf="!!PatientForm.get('currentAddress').errors && (PatientForm.get('currentAddress').touched ||
+                         PatientForm.get('currentAddress').dirty)">
+                      Please enter your current address.
+                    </span>
+                  </span>
+                </div>
+
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="zipCode">ZIP Code<small class="text-danger">*</small></label>
+                      <input type="text" (change)="getCityAndState()" required maxlength="5" formControlName="zip" #zipCode
+                        OnlyNumbers class="form-control" id="zipCode" placeholder="Zip Code" [ngClass]="{'is-invalid':(PatientForm.get('zip').touched ||
+                                          PatientForm.get('zip').dirty) &&
+                                          !PatientForm.get('zip').valid }">
+                      <span class="invalid-feedback">
+                        <span *ngIf="!!PatientForm.get('zip').errors && (PatientForm.get('zip').touched)">
+                          Please enter zip code.
+                        </span>
+                      </span>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="city">City</label>
+                      <input type="text" formControlName="city" class="form-control" id="city" placeholder="city">
+                    </div>
+                  </div>
+                  <div class="col-sm-12">
+                    <div class="form-group">
+                      <label for="state">State</label>
+                      <ng-select class="ng-select-small" id="state" formControlName="state" [multiple]="false"
+                        [searchable]="true" placeholder="Select State">
+                        <ng-option *ngFor="let item of States" [value]="item.code">{{item.code}} {{item.name}}
+                        </ng-option>
+                      </ng-select>
+                      <!-- <input type="text" formControlName="state" class="form-control" id="state" placeholder="State"> -->
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+
+            <div class="col-lg-6 col-sm-12" [ngClass]="{disabledDiv: IsSameCurrentAddress}">
+              <div class="border p-3 form-group">
+                <div class="form-group">
+                  <label for="mailingAddress">Malling Address</label>
+                  <input  #searchMaillingAddress (click)="selectAddress = 'mailingAddress'" formControlName="mailingAddress" autocomplete="nope" class="md-textarea form-control "
+                    id="mailingAddress" type="text">
+                </div>
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="mallingzipCode">ZIP Code</label>
+                      <input type="text" (change)="getMaillingCityAndState()" required maxlength="5"
+                        formControlName="maillingAddressZipCode" OnlyNumbers class="form-control" id="mallingzipCode"
+                        placeholder="Zip Code">
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="mallingcity">City</label>
+                      <input type="text" formControlName="maillingAddressCity" class="form-control" id="mallingcity"
+                        placeholder="city">
+                    </div>
+                  </div>
+                  <div class="col-sm-12">
+                    <div class="form-group">
+                      <label for="mallingstate">State</label>
+                      <ng-select class="ng-select-small" formControlName="maillingAddressState" id="mallingstate"
+                        [multiple]="false" [searchable]="true" placeholder="Select State">
+                        <ng-option *ngFor="let item of States" [value]="item.code">{{item.code}} {{item.name}}
+                        </ng-option>
+                      </ng-select>
+                      <!-- <input type="text" formControlName="state" class="form-control" id="state" placeholder="State"> -->
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <div *ngIf="editOption === 'EInfo'">
+
+          <p><small class="text-dynamic-2c text-uppercase font-500">Emergency Contact</small></p>
+
+          <div class="row">
+            <div class="col-lg-6 col-sm-12">
+              <div class="form-group">
+                <label for="emergencyContactName">Name</label>
+                <input type="text" formControlName="emergencyContactName" class="form-control" id="emergencyContactName"
+                  placeholder="First Name">
+              </div>
+            </div>
+            <div class="col-lg-6 col-sm-12">
+              <div class="form-group">
+                <label for="emergencyContactRelationship">Relationship</label>
+                <!-- <input type="text" formControlName="emergencyContactRelationship" class="form-control"
+                    id="emergencyContactRelationship" placeholder="Relationship"> -->
+                <ng-select class="ng-select-small" formControlName="emergencyContactRelationship" [multiple]="false"
+                  [searchable]="true" placeholder="Select RelationShip">
+                  <ng-option [value]="'Spouse'">Spouse</ng-option>
+                  <ng-option [value]="'Husband'">Husband</ng-option>
+                  <ng-option [value]="'Wife'">Wife</ng-option>
+                  <ng-option [value]="'Son'">Son</ng-option>
+                  <ng-option [value]="'Daughter'">Daughter</ng-option>
+                  <ng-option [value]="'Step-Son'">Step-Son</ng-option>
+                  <ng-option [value]="'Step-Daughter'">Step-Daughter</ng-option>
+                  <ng-option [value]="'Grand Father'">Grand Father</ng-option>
+                  <ng-option [value]="'Grand Mother'">Grand Mother</ng-option>
+                  <ng-option [value]="'Grand Son'">Grand Son</ng-option>
+                  <ng-option [value]="'Grand Daughter'">Grand Daughter</ng-option>
+                  <ng-option [value]="'Cousin'">Cousin</ng-option>
+                  <ng-option [value]="'Niece'">Niece</ng-option>
+                  <ng-option [value]="'Nephew'">Nephew</ng-option>
+                  <ng-option [value]="'Neighbor/Friend'">Neighbor/Friend</ng-option>
+                  <ng-option [value]="'Other'">Other</ng-option>
+                </ng-select>
+              </div>
+            </div>
+            <div class="col-lg-6 col-sm-12">
+              <div class="form-group">
+                <label for="emergencyContactPrimaryPhoneNo">Primary Phone</label>
+                <input type="text" formControlName="emergencyContactPrimaryPhoneNo" mask="(000)000-0000"
+                  class="form-control" id="emergencyContactPrimaryPhoneNo" placeholder="Primary PhoneNo">
+              </div>
+            </div>
+            <div class="col-lg-6 col-sm-12">
+              <div class="form-group">
+                <label for="emergencyContactSecondaryPhoneNo">Secondary Phone</label>
+                <input type="text" formControlName="emergencyContactSecondaryPhoneNo" mask="(000)000-0000"
+                  class="form-control" id="emergencyContactSecondaryPhoneNo" placeholder="Secondary PhoneNo">
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+          (click)="editContactInformation.hide()">Close</button>
+        <button type="button" *ngIf="editOption === 'EInfo'"
+          (click)="editContactInformation.hide();editCotactInformation()" class="relative waves-light btn btn-sm btn-dynamic-2c"
+          mdbWavesEffect>Update</button>
+        <button type="button" *ngIf="editOption === 'CInfo'"
+          [disabled]="PatientForm.get('primaryPhoneNo').invalid ||
+                  PatientForm.get('secondaryContactNo').invalid || PatientForm.get('currentAddress').invalid || PatientForm.get('zip').invalid || !selectedCountry"
+          (click)="editContactInformation.hide();editCotactInformation()" class="relative waves-light btn btn-sm btn-dynamic-2c"
+          mdbWavesEffect>Update</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div mdbModal #verificationModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="myBasicModalLabel" [config]="{ignoreBackdropClick: true}" aria-hidden="true">
+    <div class="modal-dialog modal-md" role="document">
+      <div class="modal-content">
+        <button type="button" class="close pull-right mt-2" style="z-index: 1" aria-label="Close"
+          (click)="verificationModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <div class="modal-body p-4">
+          <div class="text-center">
+            <h3 class="mb-3">SMS Verification</h3>
+            <p>An OTP (One Time Password) has been sent to the following number. Please enter the OTP in the field below to verify. </p>
+            <div class="mf-info">
+              <p><span>Name:</span> {{verificationUserName}}</p>
+              <p><span>Calling Code:</span> {{sendPhoneNoVerifictionDto.countryCallingCode}}</p>
+              <p><span>Mobile:</span> {{sendPhoneNoVerifictionDto.maskPhoneNumber}}</p>
+            </div>
+
+            <div class="verification-code">
+              <input type="text" [(ngModel)]="verifyPhoneNoDto.code" [minLength]="0" mask="000000"
+                placeholder="Enter Code" [maxLength]="6">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <button [disabled]="!verifyPhoneNoDto.code" class="btn btn-dynamic-2c btn-sm" (click)="verifyPhoneNumber()">Verify</button>
+          </div>
+        </div>
+        <!-- <div class="modal-footer">
+        <button type="button" mdbBtn color="seconary" class="waves-light" aria-label="Close"
+          (click)="verificationModal.hide()" mdbWavesEffect>Close</button>
+        <button type="button" mdbBtn color="priary" class="relative waves-light" mdbWavesEffect>Save!</button>
+      </div> -->
+      </div>
+    </div>
+  </div>
+  <div mdbModal #twoFactorConfModal="mdbModal" (close)="qrCOdeString='';codeString='';isAuthenticationSuccess= false;showQRCode = true" class="modal fade" tabindex="-1"
+  role="dialog" [config]="{ignoreBackdropClick: true}" aria-labelledby="mytwoFactorConfModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <!-- <button type="button" class="close pull-right" aria-label="Close" (click)="twoFactorConfModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button> -->
+        <h4 class="modal-title w-100 text-center" id="myModalLabel">Configuration</h4>
+      </div>
+      <form (ngSubmit)="RegisterAuthenticator(twoFactorConfModal)">
+        <div class="modal-body" *ngIf="twoFactorConfModal.isShown">
+          <!-- <div class="alert alert-info p-2 pb-3">
+          <a class="close font-weight-normal initialism" data-dismiss="alert" href="#"><samp>&times;</samp></a>
+          CVC code is required.
+        </div> -->
+          <div *ngIf="gettingKey" class="d-flex justify-content-center text-center">
+            <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+          </div>
+          <div class="form">
+            <ng-container *ngIf="!isAuthenticationSuccess">
+              <ng-container *ngIf="!showQRCode">
+                <label>Enter the verification code generated by your authentication app. </label>
+                <div class="form-group">
+                  <label for="twofacCOdeid">Enter Code:</label>
+                  <input type="text" class="form-control" name="code" [(ngModel)]="codeString" id="twofacCOdeid" required="">
+                </div>
+              </ng-container>
+              <ng-container *ngIf="showQRCode">
+                <div class="row" *ngIf="qrCOdeString">
+                  <div class="col-12">
+                    <label for="twofacCOdeid98">Scan the QR code with your authenticator app to receive codes. </label>
+                    <div class="text-center">
+                      <qrcode [qrdata]="qrCOdeString" [width]="256" [errorCorrectionLevel]="'M'"></qrcode>
+                      <button type="button" (click)="showQRCode = false"  class="waves-light btn btn-dynamic-2c btn-sm" aria-label="next"
+                       mdbWavesEffect>Next</button>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+            </ng-container>
+            <ng-container *ngIf="isAuthenticationSuccess">
+              <div class="row text-left">
+                <div class="col-sm-12">
+                  <ul class="smartApplication">
+                    <li><a> <span class="fa fa-check auth-circle-check"></span> </a></li>
+                  </ul>
+                  <p class="mt-3 mb-2 font-600 text-center text-success">SUCCESS !!</p>
+                  <p class="mb-3 font-600 text-center">Authentication app is configured. Thank you</p>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+            (click)="twoFactorConfModal.hide()" mdbWavesEffect>Close</button>
+          <button type="submit" *ngIf="!showQRCode && !isAuthenticationSuccess" [disabled]="gettingKey" mdbBtn class="btn btn-dynamic-2c btn-sm relative waves-light btn-sm"
+            mdbWavesEffect>
+            <span *ngIf="gettingKey" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            Proceed</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<div mdbModal #scanDownload="mdbModal" class="modal fade" tabindex="-1"
+  role="dialog" [config]="{ignoreBackdropClick: true}" aria-labelledby="scanDownloadLabel" aria-hidden="true">
+  <div class="modal-dialog modal-md modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title w-100" id="myModalLabel">QR Code</h4>
+      </div>
+      <div class="modal-body" >
+        <div class="row">
+          <div class="col-md-12">
+            <p>Scan for Download "Authentication Mobile App".</p>
+          </div>
+          <div class="col-md-6 text-center">
+            <h6 style="font-weight:600 ;">QR Code Google Store</h6>
+            <img class="img-fluid" width="150px" src="../../../assets/img/qr-playstore.svg">
+          </div>
+          <div class="col-md-6 text-center">
+            <h6 style="font-weight:600 ;">QR Code Apple Store</h6>
+            <img class="img-fluid" width="150px" src="../../../assets/img/qr-appstore.svg">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+          (click)="scanDownload.hide()" mdbWavesEffect>Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

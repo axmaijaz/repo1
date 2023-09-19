@@ -1,0 +1,466 @@
+<div class="body">
+  <div *ngIf="tmViewState === tmViewStateEnum.error" class="ask-primission">
+    <div class="card rounded">
+      <h4 class="mb-4">{{ errorMessage }}</h4>
+      <div
+        class="d-flex align-items-center justify-content-between border-bottom mb-3"
+      >
+        <div class="alert alert-danger" role="alert">
+          <p class="mb-0" style="font-size: 14px;">
+            It appears that your Camera or Microphone are not accessible. In
+            order to start video conference please make sure you have given
+            permissions to access Camera, Microphone and Sound.
+          </p>
+        </div>
+      </div>
+      <div
+        class="d-flex align-items-center justify-content-between border-bottom mb-3"
+      >
+        <div>
+          <p class="mb-0"><strong>Has Camera</strong></p>
+          <!-- <p>Lorem Ipsum</p> -->
+        </div>
+        <mdb-badge primary="true" *ngIf="mediaInfo.hasWebcam">Yes</mdb-badge>
+        <mdb-badge danger="true" *ngIf="!mediaInfo.hasWebcam">No</mdb-badge>
+      </div>
+      <div
+        class="d-flex align-items-center justify-content-between border-bottom mb-3"
+      >
+        <div>
+          <p class="mb-0"><strong>Has Microphone</strong></p>
+          <!-- <p>Lorem Ipsum</p> -->
+        </div>
+        <mdb-badge primary="true" *ngIf="mediaInfo.hasMicrophone"
+          >Yes</mdb-badge
+        >
+        <mdb-badge danger="true" *ngIf="!mediaInfo.hasMicrophone">No</mdb-badge>
+      </div>
+      <div
+        class="d-flex align-items-center justify-content-between border-bottom mb-3"
+      >
+        <div>
+          <p class="mb-0"><strong>Camera Permission</strong></p>
+          <!-- <p>Lorem Ipsum</p> -->
+        </div>
+        <mdb-badge
+          primary="true"
+          *ngIf="mediaInfo.isWebsiteHasWebcamPermissions"
+          >Enabled</mdb-badge
+        >
+        <mdb-badge
+          danger="true"
+          *ngIf="!mediaInfo.isWebsiteHasWebcamPermissions"
+          >Disable</mdb-badge
+        >
+      </div>
+      <div class="d-flex align-items-center justify-content-between">
+        <div>
+          <p class="mb-0"><strong>Speaker / microphone </strong></p>
+          <!-- <p>Lorem Ipsum</p> -->
+        </div>
+        <mdb-badge
+          primary="true"
+          *ngIf="mediaInfo.isWebsiteHasMicrophonePermissions"
+          >Enabled</mdb-badge
+        >
+        <mdb-badge
+          danger="true"
+          *ngIf="!mediaInfo.isWebsiteHasMicrophonePermissions"
+          >Disable</mdb-badge
+        >
+      </div>
+      <div class="d-flex">
+        <button
+          type="button"
+          class="btn btn-success btn-sm my-0 ml-0 flex-grow-1"
+          (click)="retryConnection()"
+        >
+          Retry
+        </button>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="tmViewState === tmViewStateEnum.loading" class="v-laoding loader">
+    <div
+      class="spinner-border"
+      style="width: 3rem; height: 3rem;"
+      role="status"
+    >
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+
+  <div id="vCall" *ngIf="tmViewState === tmViewStateEnum.success">
+    <div class="userlist">
+      <div class="vchatheader">
+        <h3>Participants List</h3>
+      </div>
+      <ul class="userlistbody">
+        <!-- <li *ngFor="let item of activeUserList">{{ item }}</li> -->
+        <li *ngIf="roomDetail">{{ roomDetail.patientName }}</li>
+        <li *ngIf="roomDetail">{{ roomDetail.providerName }}</li>
+      </ul>
+      <div class="patient-note" *ngIf="!isCaller">
+        <div class="form-group">
+          <label for="note1">Note </label>
+          <textarea
+            type="text"
+            id="note1"
+            [(ngModel)]="note"
+            rows="5"
+            style="height: 100px;"
+            placeholder="Daily Note."
+            class="form-control"
+          ></textarea>
+        </div>
+        <div class="d-flex">
+          <button
+            type="button"
+            class="btn btn-success btn-sm my-0 ml-0 flex-grow-1"
+            (click)="editEncounterNote()"
+          >
+            add
+          </button>
+          <button
+            type="button"
+            class="btn btn-dynamic-secondary-2c btn-sm my-0 mr-0 flex-grow-1"
+            (click)="note = ''"
+          >
+            clear
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="chatarea" #moveableDiv>
+      <div
+        *ngIf="otherVideoObjects.length < 1"
+        class="spinner-border"
+        style="width: 3rem; height: 3rem;"
+        role="status"
+      >
+        <span class="sr-only">Loading...</span>
+      </div>
+
+      <div class="vchatheader secondary">
+        <h3 *ngIf="!isCaller">{{ roomDetail.patientName }}</h3>
+        <h3 *ngIf="isCaller">{{ roomDetail.providerName }}</h3>
+      </div>
+      <div class="caller-video">
+        <video
+          #myStram
+          *ngIf="localmainObject"
+          class="main-video"
+          id="{{ localmainObject.streamId }}"
+          [muted]="true"
+          volume="0"
+          [srcObject]="localmainObject.srcObject"
+          [controls]="false"
+          playsinline
+          autoplay
+        ></video>
+      </div>
+      <div
+        class="othervideo"
+        *ngIf="
+          otherVideoObjects.length < 1 ||
+          (otherVideoObjects[0] &&
+            !otherVideoObjects[0].srcObject.getVideoTracks()[0].enabled)
+        "
+      >
+        <div class="noVideo">
+          <i class="fa fa-user"></i>
+        </div>
+      </div>
+      <div class="othervideo" *ngIf="otherVideoObjects.length > 0">
+        <video
+          #otherStreams
+          id="{{ otherVideoObjects[0].streamId }}"
+          [srcObject]="otherVideoObjects[0].srcObject"
+          [muted]="!otherVideoObjects[0].isAudio"
+          style="
+            -moz-transform: scale(-1, 1);
+            -webkit-transform: scale(-1, 1);
+            -o-transform: scale(-1, 1);
+            transform: scale(-1, 1);
+            filter: FlipH;
+          "
+          [controls]="false"
+          playsinline
+          autoplay
+        ></video>
+      </div>
+      <div *ngIf="isCounter" class="count-down">
+        <p>
+          This window will be closed in
+          <span>
+            <app-animated [digit]="5" [duration]="5000"></app-animated>
+          </span>
+          seconds
+        </p>
+      </div>
+      <!-- <span *ngFor="let other of otherVideoObjects">
+        <video id="{{other.streamId}}" [srcObject]="other.srcObject" [muted]="!other.isAudio"
+          style="-moz-transform: scale(-1, 1); -webkit-transform: scale(-1, 1); -o-transform: scale(-1, 1); transform: scale(-1, 1); filter: FlipH;"
+          [controls]="false" playsinline autoplay></video>
+      </span> -->
+      <div class="video-chat-footer">
+        <button
+          class="microphone bg-dynamic-2c text-white"
+          *ngIf="localmainObject"
+          (click)="
+            muteOrUnmuteMainDivVoice(
+              localmainObject.userId,
+              localmainObject.isAudio
+            )
+          "
+        >
+          <i
+            class="fa"
+            [ngClass]="{
+              'fa-microphone': localmainObject.isAudio === true,
+              'fa-microphone-slash': localmainObject.isAudio === false
+            }"
+          ></i>
+        </button>
+        <button
+          class="call-end bg-danger text-white"
+          (click)="endOngoingCall()"
+        >
+          <i class="fa fa-phone"></i>
+        </button>
+        <button
+          class="camera-action bg-dark text-white"
+          *ngIf="localmainObject"
+          (click)="
+            muteOrUnmuteMainDivVideo(
+              localmainObject.userId,
+              localmainObject.isVideo
+            )
+          "
+        >
+          <i class="fa" [ngClass]="{
+            'fa-video-camera': localmainObject.isVideo === true,
+            'fa-pause': localmainObject.isVideo === false
+          }"></i>
+        </button>
+        <button
+          *ngIf="!isCaller"
+          class="call-end bg-dynamic-2c text-white"
+          (click)="
+            checkDuration = true; endTmEncounter(); submitEncounterModal.show()
+          "
+          title="Add Encounter"
+        >
+          <i class="fas fa-plus-circle"></i>
+        </button>
+        <!-- <button class="full-screen" (click)="toggleFullScreen(moveableDiv)"><i class="fa fa-expand"></i></button> -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  mdbModal
+  #submitEncounterModal="mdbModal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="myBasicModalLabel"
+  aria-hidden="true"
+  [config]="{ backdrop: true, ignoreBackdropClick: true }"
+>
+  <div class="modal-dialog modal-lg flat-modal" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button
+          type="button"
+          class="close pull-right"
+          aria-label="Close"
+          (click)="submitEncounterModal.hide()"
+        >
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100">Submit Encounter</h4>
+      </div>
+      <div class="modal-body">
+        <form name="form" #f="ngForm" novalidate>
+          <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+              <div class="pb-info w-100">
+                <p>
+                  <strong> Patient Name: </strong>
+                  {{ encounterData["patientFullName"] }}
+                </p>
+                <p><strong> Note: </strong> {{ getNoteText }}</p>
+              </div>
+            </div>
+
+            <div class="col-lg-6 col-sm-12">
+              <div class="form-group">
+                <label class="w-100"
+                  >Start Time:<small class="text-danger">*</small></label
+                >
+                <input
+                  type="text"
+                  [(ngModel)]="encounterData.startedTime"
+                  disabled
+                  class="form-control form-control-sm"
+                  #dateToDp="dpDayPicker"
+                  name="startedTime"
+                  #startedTime="ngModel"
+                  [dpDayPicker]="datePickerConfig"
+                  [theme]="'dp-material ccm-date-picker'"
+                  [mode]="'daytime'"
+                  required
+                  [ngClass]="{
+                    'is-invalid': startedTime.touched && startedTime.invalid
+                  }"
+                />
+
+                <div
+                  *ngIf="startedTime.touched && startedTime.invalid"
+                  class="invalid-feedback"
+                >
+                  <div *ngIf="startedTime.errors.required">
+                    Start Time is required
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6 col-sm-12">
+              <div class="form-group">
+                <label class="w-100"
+                  >End Time:<small class="text-danger">*</small></label
+                >
+                <input
+                  type="text"
+                  [(ngModel)]="encounterData.completedTime"
+                  class="form-control form-control-sm"
+                  #dateToDp="dpDayPicker"
+                  name="completedTime"
+                  #completedTime="ngModel"
+                  [dpDayPicker]="datePickerConfig"
+                  (ngModelChange)="calculateDuration()"
+                  [theme]="'dp-material ccm-date-picker'"
+                  [mode]="'daytime'"
+                  required
+                  [ngClass]="{
+                    'is-invalid': completedTime.touched && completedTime.invalid
+                  }"
+                />
+
+                <div
+                  *ngIf="completedTime.touched && completedTime.invalid"
+                  class="invalid-feedback"
+                >
+                  <div *ngIf="completedTime.errors.required">
+                    End Time is required
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6 col-sm-12">
+              <div class="form-group">
+                <label for="encounterDuration"
+                  >Total Call Duration:<small class="text-danger">*</small>
+                </label>
+                <input
+                  type="text"
+                  [(ngModel)]="encounterData.encounterDuration"
+                  class="form-control form-control-sm"
+                  name="encounterDuration"
+                  #encounterDuration="ngModel"
+                  placeholder="encounterDuration"
+                  required
+                  [ngClass]="{
+                    'is-invalid':
+                      encounterDuration.touched && encounterDuration.invalid
+                  }"
+                />
+
+                <div
+                  *ngIf="encounterDuration.touched && encounterDuration.invalid"
+                  class="invalid-feedback"
+                >
+                  <div *ngIf="encounterDuration.errors.required">
+                    Duration is required
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-6 col-sm-12">
+              <div class="form-group">
+                <label for="namee"
+                  >Select Billing Provider<small class="text-danger"
+                    >*</small
+                  ></label
+                >
+                <ng-select
+                  class="ng-select-small"
+                  [(ngModel)]="encounterData.billingProviderId"
+                  appendTo="body"
+                  [closeOnSelect]="true"
+                  [multiple]="false"
+                  name="billingProvider1"
+                  [searchable]="true"
+                  #billingProvider1="ngModel"
+                  [ngClass]="{
+                    'is-invalid':
+                      billingProvider1.touched && billingProvider1.invalid
+                  }"
+                  placeholder="Billing Provider"
+                >
+                  <ng-option
+                    *ngFor="let item of billingProviderList"
+                    [value]="item.id"
+                    >{{item.lastName}},{{item.firstName}}
+                  </ng-option>
+                </ng-select>
+                <div
+                  *ngIf="billingProvider1.touched && billingProvider1.invalid"
+                  class="invalid-feedback"
+                >
+                  <div *ngIf="billingProvider1.errors.required">
+                    Billing Provider is required
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-12 col-sm-12">
+              <div class="form-group">
+                <label for="note">Note </label>
+                <textarea
+                  type="text"
+                  id="note"
+                  [(ngModel)]="note"
+                  rows="5"
+                  name="note"
+                  style="height: 100px;"
+                  placeholder="Daily Note."
+                  class="form-control"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button [disabled]="!encounterData || !encounterData.billingProviderId"
+          type="button"
+          class="btn btn-dynamic-2c btn-sm"
+          (click)="editEncounterNote(); submitTMEncounter()"
+        >
+          Submit Encounter
+        </button>
+        <button
+          type="button"
+          class="btn btn-dynamic-secondary-2c btn-sm"
+          (click)="submitEncounterModal.hide()"
+        >
+          close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,137 @@
+                <div class="row">
+                  <div class="col-12">
+                    <div class="type-list">
+                      <ul class="list-inline d-flex ml-2">
+                        <li *ngFor="let item of mrTypeList" (click)="selectedmrType=item.id;assignProblemsByTypeId(item.id)">
+                          <a
+                            [class]="item.id === selectedmrType ? 'btn btn-sm ml-0 btn-dynamic-2c px-2' : 'btn btn-sm ml-0 btn-outline-primary px-2'">{{item.name}}</a>
+                        </li>
+                      </ul>
+                    </div>
+
+
+
+                    <div class="d-flex justify-content-center py-5"
+                      *ngIf="!isLoadingProblems && mrProblemsList?.length === 0">
+                      <app-record-not-found></app-record-not-found>
+                    </div>
+                    <div class="row" *ngIf="!isLoadingProblems && mrProblemsList.length > 0">
+                      <div class="col-lg-3">
+                        <div class="panel border z-depth-0">
+                          <div class="panel-header grey lighten-4">
+                            <h3>Problems</h3>
+                          </div>
+                          <div class="panel-body p-2">
+
+                            <div class="horizontal-scroll">
+                            <button class="hs-btn pre" (click)="scrollLeft()"> <i class="fa fa-angle-left"></i> </button>
+
+                            <div class="horizontal-scroll-body">
+                            <ul class="problem-list" #listItems >
+                              <li>
+                                <mdb-checkbox  class="text-checkable" [default]="true" [(ngModel)]="problem['active']"
+                                  (change)="filterDisplayGoals(problem, $event.checked)"
+                                  *ngFor="let problem of mrProblemsList">{{problem.description | ellipsis: 30}}
+                                </mdb-checkbox>
+                              </li>
+                            </ul>
+                          </div>
+                            <button class="hs-btn next" (click)="scrollRight()"><i class="fa fa-angle-right"></i></button>
+
+
+                          </div>
+                          </div>
+
+                        </div>
+
+                      </div>
+                      <div class="col-lg-9">
+                        <div class="d-flex justify-content-center align-items-center h-100"
+                          *ngIf="displayGoalsList.length === 0">
+                          <app-record-not-found></app-record-not-found>
+                        </div>
+
+                        <div class="row">
+                          <div class="col-sm-12" *ngFor="let goal of displayGoalsList; index as gIndex; trackBy: gIndex">
+                            <div class="panel border z-depth-0">
+                              <div class="panel-header row">
+                                <div class="col-md-6">
+                                  <h3 class="mb-2">{{goal.description}}</h3>
+                                </div>
+                                <div class="col-md-6">
+                                  <div class="mb-2">
+                                    <ng-select [(ngModel)]="goal.status" (change)="editGoal(goal)" class="ng-select-small"
+                                      appendTo="body" [multiple]="false" placeholder="Status" style="min-width:150px">
+                                      <ng-option [value]="gEnum.value" *ngFor="let gEnum of mRGoalStatusList">{{gEnum.name}}
+                                      </ng-option>
+                                    </ng-select>
+                                  </div>
+
+                                  <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <input [ngModel]="goal.goalDate | dateFormatPipe"
+                                      (ngModelChange)="goal.goalDate=$event"  (close)="editGoal(goal)" type="text"
+                                      placeholder="Target Date" class="form-control form-control-sm " #dateToDp="dpDayPicker"
+                                      [dpDayPicker]="datePickerConfig" [theme]="'dp-material ccm-date-picker'" [mode]="'day'">
+                                  </div>
+
+                                </div>
+
+                              </div>
+                              <div class="panel-body p-0">
+                                <div>
+                                  <ng-container *ngFor="let interv of goal.rpmMRInterventions">
+                                    <div
+                                    [class.bg-dynamic-2c]="interv.status === mRInterventionStatusEnum.Completed"
+                                    [class.orange]="interv.status === mRInterventionStatusEnum.Active"
+                                    [class.grey]="interv.status === mRInterventionStatusEnum['Not Started'] || interv.status === mRInterventionStatusEnum['Not Applicable']"
+                                      class="px-3 py-2  lighten-4 d-flex justify-content-lg-between align-items-center">
+                                      <p class="mb-0"><strong>Intervention </strong> <small *ngIf="interv.shortDescription"> ({{interv.shortDescription}})</small></p>
+
+                                      <div class="ml-auto mr-2">
+                                        <ng-select [(ngModel)]="interv.status" appendTo="body" (change)="editIntervention(interv, gIndex);"
+                                          class="ng-select-small"  dropdownPosition="auto" [virtualScroll]="false" [multiple]="false" placeholder="Status"
+                                          style="min-width:150px">
+                                          <ng-option [value]="intervEnum.value"
+                                            *ngFor="let intervEnum of mRInterventionStatusList">{{intervEnum.name}}
+                                          </ng-option>
+
+                                        </ng-select>
+                                      </div>
+
+                                      <div>
+                                        <input type="text" [ngModel]="interv.interventionDate | dateFormatPipe"
+                                          (ngModelChange)="interv.interventionDate=$event"
+                                          (close)="editIntervention(interv, gIndex)" placeholder="Date"
+                                          class="form-control form-control-sm" #dateToDp="dpDayPicker"
+                                          [dpDayPicker]="datePickerConfig" [theme]="'dp-material ccm-date-picker'"
+                                          [mode]="'day'" style="width:120px">
+                                      </div>
+                                      <button class="btn btn-dynamic-2c btn-icon my-0 mr-0 flex-shrink-0" appDebounceClick
+                                        (debounceClick)="showIntervention.toggle()">
+                                        <i *ngIf="showIntervention.isCollapsed" class="fa fa-angle-double-down"></i>
+                                        <i *ngIf="!showIntervention.isCollapsed" class="fa fa-angle-double-up"></i>
+                                      </button>
+                                    </div>
+                                    <div  mdbCollapse #showIntervention="bs-collapse" [isCollapsed]="true" (shownBsCollapse)="InterventionStatusCHanged(interv, gIndex)">
+                                      <div class="p-3">
+                                        <p><span class="text-dynamic-2c">Description:</span> {{interv.description}}
+                                        </p>
+                                        <p><span class="text-dynamic-2c">Instruction:</span> {{interv.patientInstruction}}
+                                        </p>
+                                        <div class="form-form form-group mb-0" *ngIf="interv.status === mRInterventionStatusEnum.Active">
+                                          <label style="width: 70px;" class="flex-shrink-0" for="sajas84787">Notes</label>
+                                          <textarea [(ngModel)]="interv.note" (blur)="editIntervention(interv, gIndex);InterventionNoteCHanged(interv, gIndex)" type="text" id="sajas84787" style="height:50px" rows="6"
+                                            class="form-control"></textarea>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </ng-container>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>

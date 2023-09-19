@@ -1,0 +1,403 @@
+<div mdbModal #addEditPriorAuth="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-fluid flat-modal modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header py-1">
+        <button (click)="addEditPriorAuth.hide();" type="button" class="close pull-right" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" *ngIf="!priorAuthAddEditDto.id" id="myModalLabel">Add Prior Authorization </h4>
+        <h4 class="modal-title w-100" *ngIf="priorAuthAddEditDto.id" id="myModalLabel">Edit Prior Authorization </h4>
+      </div>
+      <div class="modal-body py-1" *ngIf="addEditPriorAuth.isShown">
+
+
+
+
+        <div class="prior-form border border-success mb-2">
+
+         <div class="vertical-text-heading border-success bg-success text-white">
+            <h3>Request Info</h3>
+          </div>
+          <div class="panel mb-0" style="overflow:visible">
+            <div class="panel-body py-1 ">
+              <div class="inline-form-field">
+                <div class="row">
+                  <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="form-group mb-1">
+                      <label class="">Patient Name<small class="text-danger">*</small></label>
+                      <ng-select (ngModelChange)="patientSelected()" [clearable]="false"
+                        [class.is-invalid]="!priorAuthAddEditDto.patientId && patientID.touched" #patientID="ngModel"
+                        [(ngModel)]="priorAuthAddEditDto.patientId" aria-placeholder="Search by name or Emr Id"
+                        [typeahead]="searchWatch" [loading]="LoadingData" class="ng-select-small" [multiple]="false"
+                        [searchable]="true" required>
+                        <ng-option [value]="item.id" *ngFor="let item of patientList">{{item.fullName}}
+                          ({{item.patientEmrId}})</ng-option>
+                      </ng-select>
+                    </div>
+                  </div>
+                  <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="form-group mb-1">
+                      <label class="">Insurance </label>
+                      <ng-select [(ngModel)]="priorAuthAddEditDto.insurancePlanId" id="insurancePLan"
+                        class="ng-select-small" [multiple]="false" [searchable]="true" placeholder="Insurance Plan">
+                        <ng-option *ngFor="let item of insurancePLanList" [value]="item.id">
+                          {{item.name}}-{{item.payerName}}
+                        </ng-option>
+                      </ng-select>
+                    </div>
+                  </div>
+                  <div class="col-lg-3 col-md-6 col-sm-12">
+                    <div class="form-group mb-1">
+                      <label class="">Req date<small class="text-danger">*</small></label>
+                      <input type="text" [class.is-invalid]="!priorAuthAddEditDto.requestDate && reqDate.touched"
+                        #reqDate="ngModel" (ngModelChange)="priorAuthAddEditDto.requestDate=$event;"
+                        [ngModel]="priorAuthAddEditDto.requestDate | dateFormatPipe" class="form-control"
+                        #dateDPicker="dpDayPicker" [dpDayPicker]="datePickerConfig" placeholder="MM-DD-YYYY"
+                        [theme]="'dp-material ccm-date-picker'" [mode]="'day'" />
+                    </div>
+                  </div>
+                  <div class="col-lg-3 col-md-6 col-sm-12">
+                    <div class="form-group mb-1">
+                      <label class="">Rec Date<small class="text-danger">*</small></label>
+                      <input type="text" [class.is-invalid]="!priorAuthAddEditDto.receivedDate && recDate.touched"
+                        #recDate="ngModel" (ngModelChange)="priorAuthAddEditDto.receivedDate=$event;"
+                        [ngModel]="priorAuthAddEditDto.receivedDate | dateFormatPipe" class="form-control"
+                        #dateDPicker="dpDayPicker" [dpDayPicker]="datePickerConfig" placeholder="MM-DD-YYYY"
+                        [theme]="'dp-material ccm-date-picker'" [mode]="'day'" />
+                    </div>
+                  </div>
+
+
+
+                  <div class="col-lg-3 col-md-6 col-sm-12">
+                    <div class="form-group mb-1">
+                      <label for="medNameSearch">Case type<small class="text-danger">*</small></label>
+                      <ng-select [class.is-invalid]="!priorAuthAddEditDto.paCaseTypeId && caseTypeRef.touched"
+                        #caseTypeRef="ngModel" [(ngModel)]="priorAuthAddEditDto.paCaseTypeId"
+                        (ngModelChange)="FillSteps()" class="ng-select-small" [multiple]="false" [searchable]="true"
+                        required>
+                        <ng-option [value]="0">Select Type</ng-option>
+                        <ng-option [value]="item.id" *ngFor="let item of caseTypesLIst">{{item.title}}</ng-option>
+                      </ng-select>
+                    </div>
+                  </div>
+                  <div class="col-lg-3 col-md-6 col-sm-12">
+                    <div class="form-group mb-1">
+                      <label class="">Case Steps<small class="text-danger">*</small></label>
+                      <ng-select [clearable]="false"
+                        [class.is-invalid]="!priorAuthAddEditDto.paCaseStepId && caseStepRef.touched"
+                        #caseStepRef="ngModel" [(ngModel)]="priorAuthAddEditDto.paCaseStepId" class="ng-select-small"
+                        [multiple]="false" [searchable]="true" required>
+                        <ng-option [value]="-1">N/A</ng-option>
+                        <ng-option [value]="item.id" *ngFor="let item of caseStepArr">{{item.title}}</ng-option>
+                      </ng-select>
+                    </div>
+                  </div>
+                  <div class="col-lg-3 col-md-6 col-sm-12">
+                    <div class="form-group mb-1">
+                      <label for="medNameSearch">Location </label>
+                      <ng-select [(ngModel)]="priorAuthAddEditDto.location" class="ng-select-small" [multiple]="false"
+                        [searchable]="true" required>
+                        <ng-option [value]="'INOffice'">In Office </ng-option>
+                        <ng-option [value]="'OUTOffice'">Out Source </ng-option>
+                      </ng-select>
+                    </div>
+                  </div>
+                  <div class="col-lg-3 col-md-6 col-sm-12">
+                    <div class="form-group mb-1">
+                      <label class="">Reason </label>
+                      <input type="text" [(ngModel)]="priorAuthAddEditDto.reason"
+                        class="form-control form-control-sm" />
+                    </div>
+                  </div>
+                  <div class="col-lg-3 col-md-6 col-sm-12">
+                    <div class="form-group mb-1">
+                      <label class="">Req Care Phy</label>
+                      <ng-select [(ngModel)]="priorAuthAddEditDto.requestingPhysicianId" class="ng-select-small"
+                        [multiple]="false" [searchable]="true" required>
+                        <ng-option [value]="item.id"
+                          *ngFor="let item of (facilityUserList | filterFUsersByRole: 'Billing Provider')">
+                          {{item.lastName}},{{item.firstName}}</ng-option>
+                      </ng-select>
+                    </div>
+                  </div>
+                  <div class="col-lg-3 col-md-6 col-sm-12">
+                    <div class="form-group mb-1">
+                      <label for="medNameSearch">Req Status </label>
+                      <ng-select [clearable]="false" class="ng-select-small"
+                        [(ngModel)]="priorAuthAddEditDto.paRequestStatus" [multiple]="false" [searchable]="true"
+                        required>
+                        <ng-option [value]="0">In-progress</ng-option>
+                        <ng-option [value]="1">Received</ng-option>
+                        <ng-option [value]="2">Sent</ng-option>
+                        <ng-option [value]="3">Approved</ng-option>
+                        <ng-option [value]="4">Denied</ng-option>
+                        <ng-option [value]="5">Scheduled</ng-option>
+                        <ng-option [value]="6">Completed</ng-option>
+                      </ng-select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="prior-form border border-warning mb-2">
+
+          <div class="vertical-text-heading border-warning bg-warning text-white">
+             <h3>Referral Info</h3>
+           </div>
+
+        <div class="panel mb-0" style="overflow:visible">
+          <div class="panel-body  p-0">
+            <div class="px-3 py-1">
+              <div class="inline-form-field">
+
+                <div class="row">
+                  <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="form-group mb-1">
+                      <label class="w-100">Referred To</label>
+                      <input type="text" [(ngModel)]="priorAuthAddEditDto.referredTo"
+                        class="form-control form-control-sm" />
+                    </div>
+                  </div>
+                  <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="form-group mb-1">
+                      <label class="w-100">Specialty</label>
+                      <ng-select class="ng-select-small" [(ngModel)]="priorAuthAddEditDto.speciality" [multiple]="false"
+                        [searchable]="true" required>
+                        <ng-option [value]="item.name" *ngFor="let item of specialities">{{item.name}}</ng-option>
+                      </ng-select>
+                    </div>
+                  </div>
+                  <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="form-group mb-1">
+                      <label class="w-100">Sent To</label>
+                      <input type="text" [(ngModel)]="priorAuthAddEditDto.sentTo"
+                        class="form-control form-control-sm" />
+                    </div>
+                  </div>
+
+                  <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="form-group mb-1">
+                      <label class="w-100">Ref sent date</label>
+                      <input type="text" (ngModelChange)="priorAuthAddEditDto.referralSentDate=$event;"
+                        [ngModel]="priorAuthAddEditDto.referralSentDate | dateFormatPipe" class="form-control"
+                        #dateDPicker="dpDayPicker" [dpDayPicker]="datePickerConfig" placeholder="MM-DD-YYYY"
+                        [theme]="'dp-material ccm-date-picker'" [mode]="'day'" />
+                    </div>
+                  </div>
+                  <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="form-group mb-1">
+                      <label class="w-100">Sch date</label>
+                      <input type="text" (ngModelChange)="priorAuthAddEditDto.scheduledDate=$event;"
+                        [ngModel]="priorAuthAddEditDto.scheduledDate | dateFormatPipe" class="form-control"
+                        #dateDPicker="dpDayPicker" [dpDayPicker]="datePickerConfig" placeholder="MM-DD-YYYY"
+                        [theme]="'dp-material ccm-date-picker'" [mode]="'day'" />
+                    </div>
+                  </div>
+                  <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="form-group mb-1">
+                      <label for="medNameSearch">Pat. Informed</label>
+                      <ng-select class="ng-select-small" [(ngModel)]="priorAuthAddEditDto.paPatientInformedStatus"
+                        [multiple]="false" [searchable]="true" required>
+                        <ng-option [value]="0">Not Informed </ng-option>
+                        <ng-option [value]="1">In-progress</ng-option>
+                        <ng-option [value]="2">Closed</ng-option>
+                        <ng-option [value]="3">Aborted</ng-option>
+                        <ng-option [value]="4">Other</ng-option>
+                      </ng-select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- <i [class.fa-angle-down]="prior.isCollapsed" [class.fa-angle-up]="!prior.isCollapsed" appDebounceClick
+        (debounceClick)="prior.toggle()" [debounceTime]="200" class="fa"></i> -->
+
+        <div class="prior-form border border-danger mb-2">
+
+          <div class="vertical-text-heading border-danger bg-danger text-white">
+             <h3>Prior Auth</h3>
+           </div>
+
+        <div class="panel mb-0" style="overflow:visible">
+          <div class="panel-body py-0 p-0" mdbCollapse [isCollapsed]="false" #prior="bs-collapse">
+            <div class="px-3 py-1">
+              <div class="inline-form-field">
+                <div class="row">
+                  <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="form-group mb-1">
+                      <label for="medNameSearch">Prior Auth </label>
+                      <ng-select class="ng-select-small" [(ngModel)]="priorAuthAddEditDto.applicable"
+                        (ngModelChange)="priorAuthAddEditDto.applicable ? '' : prior.toggle()" [multiple]="false"
+                        [searchable]="true" required>
+                        <ng-option [value]="true">Applicable</ng-option>
+                        <ng-option [value]="false">Not Applicable</ng-option>
+                      </ng-select>
+                    </div>
+                  </div>
+                  <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="form-group mb-1">
+                      <label class="">Auth Sent</label>
+                      <input type="text" (ngModelChange)="priorAuthAddEditDto.authSentDate=$event;"
+                        [ngModel]="priorAuthAddEditDto.authSentDate | dateFormatPipe" class="form-control"
+                        #dateDPicker="dpDayPicker" [dpDayPicker]="datePickerConfig" placeholder="MM-DD-YYYY"
+                        [theme]="'dp-material ccm-date-picker'" [mode]="'day'" />
+                    </div>
+                  </div>
+                  <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="form-group mb-1">
+                      <label class="">Auth Approved</label>
+                      <input type="text" (ngModelChange)="priorAuthAddEditDto.authApprovedDate=$event;"
+                        [ngModel]="priorAuthAddEditDto.authApprovedDate | dateFormatPipe" class="form-control"
+                        #dateDPicker="dpDayPicker" [dpDayPicker]="datePickerConfig" placeholder="MM-DD-YYYY"
+                        [theme]="'dp-material ccm-date-picker'" [mode]="'day'" />
+                    </div>
+                  </div>
+
+
+                  <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="form-group mb-1">
+                      <label class="">Auth No</label>
+                      <input type="text" [(ngModel)]="priorAuthAddEditDto.authorizationNumber"
+                        class="form-control form-control-sm" />
+                    </div>
+                  </div>
+                  <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="form-group mb-1">
+                      <label class="">Auth Valid thru</label>
+                      <input type="text" (ngModelChange)="priorAuthAddEditDto.validUntil=$event;"
+                        [ngModel]="priorAuthAddEditDto.validUntil | dateFormatPipe" class="form-control"
+                        #dateDPicker="dpDayPicker" [dpDayPicker]="datePickerConfig" placeholder="MM-DD-YYYY"
+                        [theme]="'dp-material ccm-date-picker'" [mode]="'day'" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-4">
+            <div class="form-group mb-1">
+              <label class="w-100">Note</label>
+              <textarea type="text" [(ngModel)]="priorAuthAddEditDto.notes" [maxlength]="150"
+                class="form-control form-control-sm " style="height: 93px;"></textarea>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="form-group mb-1">
+              <label for="medNameSearch">Case Status</label>
+              <ng-select [clearable]="false" class="ng-select-small" [(ngModel)]="priorAuthAddEditDto.paCaseStatus"
+                [multiple]="false" [searchable]="true" required>
+                <ng-option [value]="0">In-Process</ng-option>
+                <ng-option [value]="1">Req complete</ng-option>
+                <ng-option [value]="2">Closed Success</ng-option>
+                <ng-option [value]="3">Closed Abort</ng-option>
+                <ng-option [value]="4">Closed Error</ng-option>
+              </ng-select>
+            </div>
+            <div class="form-group mb-1">
+              <label for="medNameSearch">Assign To</label>
+              <ng-select [(ngModel)]="priorAuthAddEditDto.assignedToId" class="ng-select-small" [multiple]="false"
+                [searchable]="true" required>
+                <ng-option [value]="item.id" *ngFor="let item of facilityUserList">{{item.lastName}},{{item.firstName}}
+                </ng-option>
+              </ng-select>
+            </div>
+          </div>
+
+          <div class="col-sm-4">
+            <div class="form-group mb-1">
+              <label for="medNameSearch">Case Coordinator </label>
+              <ng-select [(ngModel)]="priorAuthAddEditDto.caseCoordinatorId" class="ng-select-small" [multiple]="false"
+                [searchable]="true" required>
+                <ng-option [value]="item.id" *ngFor="let item of (facilityUserList)">{{item.lastName}},{{item.firstName}}</ng-option>
+              </ng-select>
+            </div>
+            <div class="form-group mb-1">
+              <label for="medNameSearch">Case Manager </label>
+              <ng-select [(ngModel)]="priorAuthAddEditDto.caseManagerId" class="ng-select-small" [multiple]="false"
+                [searchable]="true" required>
+                <ng-option [value]="item.id" *ngFor="let item of (facilityUserList)">{{item.lastName}},{{item.firstName}}</ng-option>
+              </ng-select>
+            </div>
+          </div>
+        </div>
+        <div class="row" *ngIf="priorAuthAddEditDto.id">
+          <div class="col-sm-12 ">
+            <div class="d-flex justify-content-between flex-wrap">
+              <div class="file-field flex-wrap align-items-center">
+                <div class="file-item mr-3" *ngFor="let item of priorAuthAddEditDto.paDocuments">
+                  <small class="mb-0"><a (click)="viewDoc(item.path)">{{item.title}}</a>
+                    <span *ngIf="item['processingDoc']" class="spinner-border spinner-border-sm" role="status"
+                      aria-hidden="true"></span>
+                    <a><i (click)="DeletePADocument(item)" class="ml-2 fa fa-times fa-lg text-danger"></i></a>
+                  </small>
+                </div>
+              </div>
+              <div class="file-field">
+                <div class="btn btn-success btn-sm m-0 mt-0">
+                  <span class="w-100"><i class="fa fa-paperclip fa-lg"></i> Attach File
+                    <span *ngIf="uploadingPriorDoc" class="spinner-border spinner-border-sm" role="status"
+                      aria-hidden="true"></span>
+                  </span>
+                  <input type="file" (change)="onUploadOutput($event);" mdbFileSelect
+                    accept=".pdf, .xlsx,.docx, .doc, .odt , .txt, .ppt, .pptx" #select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer py-1">
+        <button type="button" class="btn btn-dark btn-sm" aria-label="Close" (click)="addEditPriorAuth.hide();"
+          mdbWavesEffect>Close</button>
+        <button *ngIf="!priorAuthAddEditDto.id"
+          [disabled]="savingPriorAuth || !priorAuthAddEditDto.requestDate || !priorAuthAddEditDto.receivedDate|| !priorAuthAddEditDto.patientId|| !priorAuthAddEditDto.paCaseTypeId || !priorAuthAddEditDto.paCaseStepId"
+          (click)="AddPriorAuth(addEditPriorAuth)" type="button" class="btn btn-dynamic-2c btn-sm">
+          <span *ngIf="savingPriorAuth" class="mr-1 spinner-border spinner-border-sm" role="status"
+            aria-hidden="true"></span>
+          Add</button>
+        <button *ngIf="priorAuthAddEditDto.id"
+          [disabled]="savingPriorAuth || !priorAuthAddEditDto.requestDate || !priorAuthAddEditDto.receivedDate|| !priorAuthAddEditDto.patientId|| !priorAuthAddEditDto.paCaseTypeId || !priorAuthAddEditDto.paCaseStepId"
+          (click)="EditPriorAuth(addEditPriorAuth)" type="button" class="btn btn-dynamic-2c btn-sm">
+          <span *ngIf="savingPriorAuth" class="mr-1 spinner-border spinner-border-sm" role="status"
+            aria-hidden="true"></span>
+          Update</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div mdbModal #viewPdfModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" [config]="{backdrop: true, ignoreBackdropClick: true}" aria-hidden="true"
+  (close)="objectURLStrAW=''">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-body" style="height:calc(100vh - 50px); padding: 0px;">
+        <button type="button" class="close pull-right document-close" aria-label="Close" (click)="viewPdfModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <app-pdf-view *ngIf="objectURLStrAW" [documentUrl]="objectURLStrAW"></app-pdf-view>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- <div class="col-sm-4">
+            <div class="form-group mb-1">
+              <label for="medNameSearch">Vaccination Code</label>
+              <ng-select [(ngModel)]="priorAuthAddEditDto" class="ng-select-small"  [multiple]="false" [searchable]="true"
+                required >
+                <ng-option >Abcd</ng-option>
+              </ng-select>
+            </div>
+          </div> -->

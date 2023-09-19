@@ -1,0 +1,14 @@
+table{
+  tr{
+    td{
+      border: 1px solid blue;
+      p{
+        margin: 0px;
+        padding: .2rem;
+        &.bold{
+          font-weight: 500;
+        }
+      }
+    }
+  }
+}

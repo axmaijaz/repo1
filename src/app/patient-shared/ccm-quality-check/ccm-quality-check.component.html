@@ -1,0 +1,201 @@
+<div mdbModal #monthlyReview="mdbModal"  [config]="{backdrop: false, ignoreBackdropClick: true}" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="mymonthlyReviewLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-xl" role="document">
+    <div class="modal-content ">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="monthlyReview.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">Monthly Review</h4>
+      </div>
+      <div class="modal-body" *ngIf="monthlyReview.isShown" #mrHtmlCOntent>
+
+        <div appCcmLoader>
+          <div class="loader-wrap" *ngIf="GettingMRData">
+            <div class="text-dynamic-2c la-ball-pulse ccm-loader">
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+          </div>
+        </div>
+
+        <ng-container *ngIf="GettingMRData;then loadingSkelton"></ng-container>
+        <ng-container *ngIf="!GettingMRData">
+          <p>Total Time: <mdb-badge success="true">{{mrReviewData.ccmTimeCompleted}}</mdb-badge>
+          </p>
+          <div class="panel z-depth-0 border">
+            <div class="panel-header border-bottom">
+              <h3>Notes</h3>
+            </div>
+            <div class="panel-body">
+
+
+
+              <ng-container *ngFor="let item of mrReviewData.ccmEncounters">
+                <div class="border p-2 mb-2">
+                  <p class="mb-3"><strong class="d-inline-block" style="width: 100px;">Service Type:</strong>
+                    {{item.bhiServiceType}}</p>
+
+                  <div class="d-flex justify-content-between align-items-center">
+                    <!-- <small class="font-400 mr-2">
+                      <span class="text-unique-color"> Created By :</span> {{item.careProviderName}}
+                      <span class="text-unique-color"> &nbsp;&nbsp; Date:</span> {{item.encounterDate| dateFormatPipe}}
+                      <span class="text-unique-color"> &nbsp;&nbsp; Start Time:</span> {{'6/14/19 ' + item.startTime | date: 'shortTime' }}
+                      <span class="text-unique-color"> &nbsp;&nbsp; End Time:</span> {{'6/14/19 ' + item.endTime | date: 'shortTime' }}
+                    </small> -->
+                    <p class="mr-2 mb-1"><span class="text-unique-color">Created By :</span> <strong
+                        class="text-dynamic-2c">
+                        {{item.careProviderName}}</strong></p>
+
+                    <p class="font-400 mb-1"><span class="text-unique-color"><strong>Date:</strong></span>
+                      {{item.encounterDate| dateFormatPipe: 'time'}}</p>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                    <p class="text-unique-color mb-1"><strong>Start Time:</strong>
+                      {{'6/14/19 ' + item.startTime | date: 'shortTime' }}</p>
+                    <p class="text-unique-color mb-1 "><strong>End Time:</strong>
+                      {{'6/14/19 ' + item.endTime | date: 'shortTime' }}</p>
+                    <p class="text-unique-color mb-1"><strong>Duration:</strong> {{item.duration}}</p>
+                  </div>
+                  
+                  <p class="mb-1"><strong class="d-inline-block" style="width: 100px;">Note: </strong> {{item.note}}</p>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-inline-flex">
+                      <p class="mb-0 " *ngIf="item.qualityCheckedByName"><strong>Quality Checked By:</strong> {{item.qualityCheckedByName}}
+                      </p>
+                      <p class="mb-0 ml-3" *ngIf="item.qualityCheckedDate"><strong>Checked Date:</strong>{{item?.qualityCheckedDate | dateFormatPipe}}</p>
+                    </div>
+                    <ng-container  *ngIf="!this.isPrDashboardQC" >
+                      <button  type="button" *ngIf="!item.qualityChecked" title="Quality Check"
+                      [disabled]="SetQualityCheckForMR || item.encounterClaimId" size="sm" mdbBtn color="danger" class="waves-light " aria-label="Close"
+                      (click)="setEncounterQualityCheck(item.id, true)" mdbWavesEffect> <i class="fa fa-times fa-lg"></i> Quality Checked</button>
+                    <button type="button" *ngIf="item.qualityChecked" title="Quality Check"
+                    disabled  class="waves-light btn btn-sm btn-dynamic-2c" aria-label="Close"
+                      mdbWavesEffect> <i class="fa fa-check fa-lg"></i> Quality Checked</button>
+                    </ng-container>
+                  </div>
+                  
+                </div>
+
+
+
+                <!-- <p class="text-dynamic-2c"><strong>{{item.encounterDate}}-{{item.ccmServiceType}}</strong></p>
+                <p class="mb-2"><span class="text-info">Start Time: </span>{{item.startTime}}</p>
+                <p class="mb-2"><span class="text-info"> End Time: </span>{{item.endTime}}</p>
+                <p class="mb-2"><span class="text-info"> Duration: </span>{{item.duration}}</p>
+                <p class="mb-2"><span class="text-info"> Note: </span>{{item.note}}</p> -->
+                <!-- <p class="mb-2">{{item.note}}</p> -->
+                <!-- <p class="mb-2">{{item.note}}</p> -->
+
+                <!-- <p><span class="text-primar"></span> Created By: <mdb-badge success="true">{{item.careProviderName}}
+                  </mdb-badge>
+                </p> -->
+              </ng-container>
+              <!-- <p class="text-dynamic-2c"><strong>2/12/2020 - Log Title</strong></p>
+              <p class="mb-2">Lorem ipsum dolor sit amet consectetur adipisicing elit. Minima, eius placeat recusandae,
+                maiores
+                mollitia dignissimos voluptates assumenda ad molestiae cupiditate dolores quam. Amet est quod autem
+                dolorum reprehenderit enim repellat!</p>
+
+              <p><span class="text-primar"></span> Created By: <mdb-badge success="true">John Deo</mdb-badge></p> -->
+
+            </div>
+          </div>
+          <div class="panel z-depth-0 border" *ngFor="let item of mrReviewData.assessments">
+            <div class="panel-header border-bottom">
+              <h3>Assessment - {{item.name}}</h3>
+            </div>
+            <div class="panel-body">
+              <div *ngFor="let problem of item.assessmentPatientProblems">
+                <div class="d-flex justify-content-start mb-2">
+                  <p class="mb-0"><strong>{{problem.description}}</strong></p>
+                  <!-- <p class="mb-0">Status: <mdb-badge success="true">{{AssessmentProblemStatusEnum[problem.status]}}
+                    </mdb-badge>
+                  </p> -->
+                </div>
+
+                <ng-container *ngFor="let question of problem.assessmentPatientQuestions">
+                  <div class="border p-2 mb-2">
+                    <p class="mb-0"><strong class="text-dynamic-2c">Question:</strong> {{question.question}}</p>
+                    <p class="mb-0"><strong class="text-dynamic-2c">Answer:</strong> {{question.answer}}</p>
+                    <p class="mb-0" *ngIf="question.comment"><strong class="text-dynamic-2c">Comment:</strong>
+                      {{question.comment}}</p>
+                    <!-- <p class="mb-0 text-right"><small> Date: {{question.lastAssessmentDate | dateFormatPipe }}</small></p> -->
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel z-depth-0 border" *ngFor="let item of mrReviewData.interventions">
+            <ng-container *ngIf="item.mrPatientProblems && item.mrPatientProblems.length > 0">
+              <div class="panel-header border-bottom">
+                <h3>Intervention-{{item.name}}</h3>
+              </div>
+              <div class="panel-body">
+                <div *ngFor="let interv of item.mrPatientProblems">
+                  <!-- <div class="d-flex justify-content-between mb-2">
+                    <p class="mb-0"><strong>Type: </strong>{{interv.description}} </p>
+                    <p class="mb-0">Status: <mdb-badge success="true">{{MRProblemStatusEnum[interv.status]}}</mdb-badge>
+                    </p>
+                  </div> -->
+                  
+                  <h4 *ngIf="interv.mrPatientGoals.length" >{{interv.description}}</h4>
+                  <ng-container *ngFor="let goal of interv.mrPatientGoals">
+                    <div class="mb-3">
+                      <div class="mb-2">
+                        <!-- <div class="d-flex justify-content-between border px-2 border-bottom-0">
+                          <p class="mb-0"><small>Date:</small> {{goal.goalDate | dateFormatPipe}}</p>
+                          <p class="mb-0"><strong> Status:</strong> {{mrGoalStatusEnum[goal.status]}} </p>
+                        </div> -->
+                        <div class="border p-2">
+                          <p class="mb-2"><strong>Goal:</strong> {{goal.description}}</p>
+                          <div *ngFor="let pInterv of goal.mrPatientInterventions">
+                            <p><strong>Intervention:</strong> {{pInterv.description}}</p>
+                            <div class="d-flex justify-content-end">
+                              <p class="mb-0 mr-3"><small> Status: {{MRInterventionStatusENum[pInterv.status]}} </small>
+                              </p>
+                              <p *ngIf="pInterv.interventionDate" class="mb-0"><small>Date:
+                                  {{pInterv.interventionDate | dateFormatPipe}} </small></p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </ng-container>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </ng-container>
+
+      </div>
+      <div class="modal-footer d-flex justify-content-between align-items-center">
+        <div class="d-flex">
+          <!-- <p class="mb-0 mr-2" *ngIf="selectedPatient.msQualityCheckedByName">{{selectedPatient.msQualityCheckedByName}}
+          </p>
+          <p class="mb-0" *ngIf="selectedPatient.msQualityCheckedDate">{{selectedPatient?.msQualityCheckedDate | dateFormatPipe}}</p> -->
+        </div>
+        <div>
+          <!-- <ng-container *ngIf="!this.isPrDashboardQC" >
+            <button type="button" *ngIf="!selectedPatient.msQualityChecked" title="Quality Check"
+              [disabled]="SetQualityCheckForMR" size="sm" mdbBtn color="danger" class="waves-light " aria-label="Close"
+              (click)="SetMsQualityChecked()" mdbWavesEffect> <i class="fa fa-times fa-lg"></i> Quality Checked</button>
+            <button type="button" *ngIf="selectedPatient.msQualityChecked" title="Quality Check"
+              [disabled]="SetQualityCheckForMR"  class="waves-light btn btn-sm btn-dynamic-2c" aria-label="Close"
+              mdbWavesEffect> <i class="fa fa-check fa-lg"></i> Quality Checked</button>
+          </ng-container> -->
+          
+          <button type="button" title="copy" #copyDataBtn [disabled]="GettingMRData"
+            class="waves-light btn btn-dynamic-2c btn-sm" aria-label="Close" (click)="CopyMRData1()" mdbWavesEffect> <i
+              class="fa fa-copy fa-lg"></i> </button>
+          <button type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+            (click)="monthlyReview.hide()" mdbWavesEffect>Close</button>
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+</div>

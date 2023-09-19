@@ -1,0 +1,74 @@
+<!-- <button type="button" mdbBtn color="prmary" routerLink="/setupMr/Problems" class="btn btn-dynamic-2c btn-sm m-0 mb-3 mr-1">MR Problems</button>
+<button type="button" mdbBtn color="prmary" routerLink="/setupMr/Goals" class="btn btn-dynamic-2c btn-sm m-0 mb-3 mr-1">MR Goals</button>
+<button type="button" mdbBtn color="prmary" routerLink="/setupMr/Interventions" class="btn btn-dynamic-2c btn-sm m-0 mb-3 mr-1">MR Interventions</button>
+<button type="button" mdbBtn color="prmary" routerLink="/setupMr/AssessmentProblems" class="btn btn-dynamic-2c btn-sm m-0 mb-3 mr-1">Assessment Problems</button>
+<button type="button" mdbBtn color="prmary" routerLink="/setupMr/AssessmentQuestions" class="btn btn-dynamic-2c btn-sm m-0 mb-3 mr-1">Assessment Questions</button>
+<button type="button" mdbBtn color="prmary" (click)="IncrementMRVersion()" class="btn btn-dynamic-2c btn-sm m-0 mb-3 mr-1">Increment MR Version</button> -->
+<div class="position-relative h-100">
+  <div class="side-bar-ex">
+    <h5>Interventions</h5>
+    <div class="d-flex align-content-center justify-content-center px-2 w-100">
+      <div class="d-inline-flex align-items-center w-100">
+        <div [class.serviceactive]="mrService.selectedMRType === 'ccm'" (click)="mrService.selectedMRType = 'ccm';mrTypeChange()" class="border w-100 rounded px-2 main-index-box py-1 mr-1 text-center cursor-pointer">
+            <h5 class="title mb-0" style="font-size: 12px;">CCM</h5>
+        </div>
+        <div [class.serviceactive]="mrService.selectedMRType === 'rpm'" (click)="mrService.selectedMRType = 'rpm';mrTypeChange()" class="border w-100 rounded px-2 main-index-box py-1 text-center cursor-pointer">
+            <h5 class="title mb-0" style="font-size: 12px;">RPM</h5>
+        </div>
+      </div>
+    </div>
+    <ul>
+      <li routerLinkActive="active">
+        <a  routerLink="Problems">
+          MR Problems
+        </a>
+      </li>
+      <li routerLinkActive="active">
+        <a routerLink="Goals">
+          MR Goals
+        </a>
+      </li>
+      <li routerLinkActive="active">
+        <a routerLink="Interventions">
+          MR Interventions
+        </a>
+      </li>
+    </ul>
+    <h5>Assessment</h5>
+    <div class="user-roles-height" >
+      <div class="h-100">
+        <ul>
+          <li routerLinkActive="active">
+            <a routerLink="AssessmentProblems">
+              Assessment Problems
+            </a>
+          </li>
+          <li routerLinkActive="active">
+            <a routerLink="AssessmentQuestions">
+              Assessment Questions
+            </a>
+          </li>
+          <li>
+            <a (click)="IncrementMRVersion()">
+              Increment MR Version
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="main-layout-in">
+    <div class="main-outlet">
+      <div class="row justify-content-center">
+        <div class="col-12 ">
+          <div class="row">
+              <div class="col-12">
+                <router-outlet></router-outlet>
+                <!-- <app-setup-mr-problems></app-setup-mr-problems> -->
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

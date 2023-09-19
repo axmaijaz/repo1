@@ -1,0 +1,55 @@
+@import "theme";
+
+.view .mask {
+  position: relative !important;
+}
+.searchable-list {
+  z-index: 1;
+  border-radius: 5px;
+  background: white;
+  box-shadow: 2px 2px 10px #dedbdb;
+  margin-top: 0.6rem;
+  position: relative;
+}
+
+.userList ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 0.7rem 0.5rem 1.2rem;
+    border-bottom: 1px solid #ced4da;
+    cursor: pointer;
+    &:hover {
+      background: lighten($grey, 13%);
+    }
+    p {
+      margin-bottom: 0;
+    }
+  }
+}
+table.table th, table.table td {
+  padding: 0.4rem;
+  vertical-align: middle;
+  border-width: 1px;
+}
+tbody.rpm-table td{
+  vertical-align: top;
+}
+.video-delete {
+  position: absolute;
+  right: 0;
+  top: 0;
+  background-color: transparent;
+  border: 0;
+  color: #000;
+  z-index: 999;
+  font-weight: 700;
+  font-size: 20px;
+  right: 2px;
+  top: -8px;
+  padding: 0;
+}

@@ -1,0 +1,288 @@
+<div class="ccm-body p-3">
+  <ng-container *ngIf="!hideBillingProviderView">
+    <div class="d-flex align-items-center justify-content-between py-3">
+      <p class="mb-0"><strong >Billing Provider</strong></p>
+      <a *ngIf="provider && provider.id > 0" class="btn btn-dynamic-2c btn-sm m-0" title="Add Provider"
+        date-placement="left" (click)="addBillingProvider.show()">Edit</a>
+      <a *ngIf="provider && provider.id === 0" class="btn btn-dynamic-2c btn-icon m-0" title="Add Provider"
+        placement="left" (click)="addBillingProvider.show()"><i class="fa fa-plus"></i></a>
+    </div>
+    <div class="ccm-header z-depth-0 border-bottom-0" *ngIf="provider && provider.id > 0">
+      <div class="patient-profile px-0 py-3">
+        <div class="d-flex align-items-center">
+          <div class="profile-img">
+            <i class="fa fa-user"></i>
+            <!-- <img class="circle" src="https://mdbootstrap.com/img/Photos/Avatars/avatar-2.jpg" alt=""> -->
+          </div>
+          <div>
+            <strong class="text-dynamic-2c mb-2">{{provider.lastName}},{{provider.firstName}}</strong>
+            <p>{{provider.email}}</p>
+            <!-- <p><span>Date of Birth:</span> 1994</p> -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+
+  <div class="d-flex align-items-center justify-content-between px-0 py-3">
+    <p class="mb-0"><strong *ngIf="!careplanView">Other Providers</strong></p>
+    <a class="btn btn-dynamic-2c btn-sm m-0" title="Add Provider" placement="left"
+      (click)="resetProviderValues();assignSpecialist.show();firstName.reset();lastName.reset();specialty.reset();">Add
+      Provider</a>
+  </div>
+
+  <ngx-datatable style="width: 100%;" [columnMode]="'force'" class="material z-depth-0" [headerHeight]="50"
+    [footerHeight]="50" [rowHeight]="35" [scrollbarV]="false" [scrollbarH]="true" [rows]="ListofPatientSpecialist"
+    [limit]="15">
+    <ngx-datatable-column name="#" [maxWidth]=50>
+      <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+        {{rowIndex + 1}}
+      </ng-template>
+    </ngx-datatable-column>
+
+    <ngx-datatable-column name="Name" prop="firstName">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        <div class="d-flex justify-content-between align-items-center">
+          <p class="m-0">{{row.lastName}},{{row.firstName}}</p>
+          <a class="btn btn-dynamic-2c btn-icon" title="Edit" placement="left"
+          (click)="editSpecialist(row);assignSpecialist.show()"><i class="fa fa-pencil"></i>
+          </a>
+        </div>
+       
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Speciality" prop="specialty">
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Previous Appointment" prop="prevAppointment">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        {{row.prevAppointment | dateFormatPipe}}
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Next Appointment" prop="nextAppointment">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        {{row.nextAppointment | dateFormatPipe}}
+      </ng-template>
+    </ngx-datatable-column>
+
+    <ngx-datatable-column name="Action" [canAutoResize]=false [frozenRight]=true [width]="60">
+      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+
+        <!-- <a class="btn btn-danger btn-icon" (click)="assignSpecialist.show()"><i class="fa fa-eye"></i></a> -->
+      </ng-template>
+    </ngx-datatable-column>
+  </ngx-datatable>
+
+  <!--
+
+  <div class="provider-grid">
+    <div class="row">
+      <div class="col-lg-3 col-md-6 col-sm-6" *ngFor="let item of ListofPatientSpecialist">
+        <div class="provider-info">
+          <div class="body">
+            <i class="fa fa-pencil pull-right edit-other-provider"
+              (click)="editSpecialist(item);assignSpecialist.show()"></i>
+            <p><i class="fa fa-user"></i></p>
+            <strong class="text-dynamic-2c">{{item.specialty}}</strong>
+            <p class="mt-2">{{item.firstName}} {{item.lastName}}</p>
+          </div>
+          <div class="provider-appointment">
+            <div class="pre-appointment">
+              <small>Previous Appointment</small>
+              <p>{{item.prevAppointment | date}}</p>
+            </div>
+            <div class="next-appointment">
+              <small>Next Appointment</small>
+              <p>{{item.nextAppointment | date}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> -->
+
+
+  <div style="overflow-y: auto" mdbModal #assignSpecialist="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="myBasicModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg flat-modal" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close pull-right" aria-label="Close" (click)="assignSpecialist.hide()">
+            <span aria-hidden="true">×</span>
+          </button>
+          <h4 class="modal-title w-100" *ngIf="addPatientSpecialist.id === 0" id="myModalLabel">Add Provider</h4>
+          <h4 class="modal-title w-100" *ngIf="addPatientSpecialist.id > 0" id="myModalLabel">Edit Provider</h4>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="row">
+              <!-- <div class="col-sm-12 mb-2">
+              <small class="text-dynamic-2c text-uppercase font-500">Provider Information</small>
+            </div> -->
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="practiceName">First Name<small class="text-danger">*</small></label>
+                  <input type="text" #firstName="ngModel" [(ngModel)]="addPatientSpecialist.firstName"
+                    [ngModelOptions]="{standalone: true}" class="form-control form-control-sm" id="practiceName"
+                    placeholder="First Name" required [ngClass]="{ 'is-invalid':(firstName.touched ||
+                firstName.dirty) &&
+              !firstName.valid }">
+                  <div *ngIf="firstName.invalid && (firstName.dirty || firstName.touched)" class="invalid invalid-text">
+                    <div *ngIf="firstName.errors.required && firstName.touched">
+                      <small class="text-danger">First name must be filled out.</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="Speciality">Last Name<small class="text-danger">*</small></label>
+                  <input type="text" #lastName="ngModel" [(ngModel)]="addPatientSpecialist.lastName"
+                    [ngModelOptions]="{standalone: true}" class="form-control form-control-sm" id="Speciality"
+                    placeholder="Last Name" required [ngClass]="{ 'is-invalid':(lastName.touched ||
+                lastName.dirty) &&
+              !lastName.valid }">
+                  <div *ngIf="lastName.invalid && (lastName.dirty || lastName.touched)" class="invalid invalid-text">
+                    <div *ngIf="lastName.errors.required && lastName.touched">
+                      <small class="text-danger">First name must be filled out.</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <div class="d-flex justify-content-between">
+                    <label for="Speciality">Speciality<small class="text-danger">*</small>
+                    </label>
+                    <!-- <mdb-checkbox [default]="true" (change)="otherSpeciality = !otherSpeciality;addPatientSpecialist.degree = '';" [checked]="false">Others
+                  </mdb-checkbox> -->
+                  </div>
+
+                  <ng-select class="ng-select-small" #specialty="ngModel" [(ngModel)]="addPatientSpecialist.specialty"
+                    [ngModelOptions]="{standalone: true}" [multiple]="false" [searchable]="true"
+                    placeholder="Add Speciality" required [ngClass]="{ 'is-invalid':(specialty.touched ||
+                  specialty.dirty) &&
+                !specialty.valid }">
+                    <ng-option *ngFor="let item of specialities" [value]="item.name">{{item.name}}
+                    </ng-option>
+                    <ng-option value="others">Others</ng-option>
+                  </ng-select>
+                  <div *ngIf="specialty.invalid && (specialty.dirty || specialty.touched)" class="invalid invalid-text">
+                    <div *ngIf="specialty.errors.required && specialty.touched">
+                      <small class="text-danger">Speciality must be filled out.</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <!-- <label for="Degree">Degree</label> -->
+                  <label for="Degree">Other Specialty</label>
+                  <input type="text" [disabled]="addPatientSpecialist.specialty !== 'others'"
+                    [(ngModel)]="addPatientSpecialist.degree" [ngModelOptions]="{standalone: true}"
+                    class="form-control form-control-sm" id="Degree" placeholder="">
+                </div>
+              </div>
+
+              <!-- <div class="col-sm-6">
+              <div class="form-group">
+                <label for="isChronic">Is Chronic</label>
+                <ng-select  class="ng-select-small" [searchable]="false"  placeholder="No" id="isChronic">
+                  <ng-option [value]="true">Yes</ng-option>
+                  <ng-option [value]="false">No</ng-option>
+                </ng-select>
+              </div>
+            </div> -->
+
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label class="w-100">Last Checkup Date</label>
+                  <input type="text" #prevAppointment="ngModel" [(ngModel)]="addPatientSpecialist.prevAppointment"
+                    [ngModelOptions]="{standalone: true}" class="form-control form-control-sm" #dateToDp="dpDayPicker"
+                    [dpDayPicker]="datePickerConfig" [displayDate]="DisplayDate" [theme]="'dp-material ccm-date-picker'"
+                    [mode]="'day'" [ngClass]="{ 'is-invalid':(prevAppointment.touched ||
+                  prevAppointment.dirty) &&
+                !prevAppointment.valid }" />
+                  <div class="invalid invalid-text">
+                    <small *ngIf="!prevAppointment.valid" class="text-danger">Date must be
+                      valid.</small>
+                  </div>
+
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label class="w-100">Next Checkup Date</label>
+                  <input type="text" [(ngModel)]="addPatientSpecialist.nextAppointment"
+                    [ngModelOptions]="{standalone: true}" #nextAppointment="ngModel"
+                    class="form-control form-control-sm" #dateToDp="dpDayPicker" [dpDayPicker]="datePickerConfig"
+                    [displayDate]="DisplayDate" [theme]="'dp-material ccm-date-picker'" [mode]="'day'" [ngClass]="{ 'is-invalid':(nextAppointment.touched ||
+                  nextAppointment.dirty) &&
+                !nextAppointment.valid }" />
+                  <div class="invalid invalid-text">
+                    <small *ngIf="!nextAppointment.valid" class="text-danger">Date must be
+                      valid.</small>
+                  </div>
+
+                </div>
+              </div>
+              <!-- <div class="col-sm-12">
+                <div class="form-group">
+                  <label for="">Select Disease</label>
+                  <ng-select [ngModelOptions]="{standalone: true}" (ngModelChange)="diseaseSelected()" [multiple]="false" [searchable]="true"
+                    placeholder="Assign Diseases" (click)="$event.stopPropagation();">
+                    <ng-option *ngFor="let item of diseaseList" [value]="item">{{item.icdCode}} {{item.description}}
+                    </ng-option>
+                  </ng-select>
+                </div>
+            </div> -->
+            </div>
+          </form>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-dark btn-sm" aria-label="Close" (click)="assignSpecialist.hide();"
+            mdbWavesEffect>Close</button>
+          <button *ngIf="addPatientSpecialist.id > 0" type="button"
+            [disabled]="specialty.invalid || firstName.invalid || lastName.invalid || nextAppointment.invalid || prevAppointment.invalid"
+            class="btn btn-dynamic-2c btn-sm" (click)="assignSpecialist.hide();addSpecialistMethod()">Update</button>
+          <button *ngIf="addPatientSpecialist.id === 0" type="button" class="btn btn-dynamic-2c btn-sm"
+            (click)="assignSpecialist.hide();addSpecialistMethod()"
+            [disabled]="specialty.invalid || firstName.invalid || lastName.invalid || nextAppointment.invalid  || prevAppointment.invalid">Add</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="overflow-y: auto" mdbModal #addBillingProvider="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="myBasicModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg flat-modal" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close pull-right" aria-label="Close" (click)="addBillingProvider.hide()">
+            <span aria-hidden="true">×</span>
+          </button>
+          <h4 class="modal-title w-100" id="myModalLabel">Billing Provider</h4>
+        </div>
+        <div class="modal-body">
+
+          <div class="col-sm-12">
+            <div class="form-group">
+              <label for="practiceName">Select Provider<small class="text-danger">*</small></label>
+              <ng-select [(ngModel)]="providerId" [ngModelOptions]="{standalone: true}" [closeOnSelect]="true"
+                [multiple]="false" [searchable]="true" placeholder="Select Provider">
+                <ng-option *ngFor="let item of providerList" [value]="item.id">{{item.lastName}},{{item.firstName}} 
+                </ng-option>
+              </ng-select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-dark btn-sm" aria-label="Close" (click)="addBillingProvider.hide();"
+            mdbWavesEffect>Close</button>
+          <button type="button" [disabled]="!providerId" class="btn btn-dynamic-2c btn-sm"
+            (click)="addBillingProvider.hide();addEditBillingProvider()">Add</button>
+        </div>
+      </div>
+    </div>
+  </div>

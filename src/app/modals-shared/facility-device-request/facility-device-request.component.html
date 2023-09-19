@@ -1,0 +1,400 @@
+<div mdbModal #facilityDeviceRequestModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="myBasicModalLabel" aria-hidden="true" (open)="SelectFacility()" [config]="{backdrop: false, ignoreBackdropClick: true}">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="d-flex align-items-center justify-content-between mb-0">
+                    <div class="d-flex align-items-center justify-content-start">
+                        <h4 class="page-title mb-0 text-dynamic-2c"><strong>Device Request</strong></h4>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="card-body p-0">
+                    <!-- <div class="card mb-3" style="box-shadow: none;">
+                        <div class="d-flex align-items-center justify-content-between  px-3 py-2 w-100">
+                        <h6 class="m-0"><strong>Recipient Type</strong></h6>
+                        <div class="form-group mb-0">
+                            <ul class="status-list custom-column-list">
+                            <li [class.active]="createDeviceRequestObj.customer_type===CustomerType.Facility"
+                            (click)="CustomerTypeChanged(1)"> <a class="link">Facility</a> </li>
+                            <li [class.active]="createDeviceRequestObj.customer_type===CustomerType.Patient"
+                            (click)="CustomerTypeChanged(2)"> <a class="link">Patient</a> </li>
+                            </ul>
+                        </div>
+                        </div>
+                    </div> -->
+                    <fieldset>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label >Select Modality<sup class="text-danger">*</sup> </label>
+                                    <ng-select [searchable]="false" (change)="checkPatientDeviceExists();ApplyDefaultPricing();"  [(ngModel)]="selectedDeviceType" class=" ng-select-small" [clearable]="false"
+                                      placeholder="Select Modality" >
+                                        <ng-option [value]="item" *ngFor="let item of rpmModalitEnumList">{{item.modalityName}}
+                                        </ng-option>
+                                    </ng-select>
+                                    <span *ngIf="patientHaveAlreadyModality" class="invalid-feedback d-block">
+                                        <span>
+                                          Patient already have a device.
+                                        </span>
+                                    </span>
+                                </div>
+                                <div class="form-group  w-100">
+                                    <label>Shipping Method<sup class="text-danger">*</sup> </label>
+                                    <ng-select class="ng-select-small" [multiple]="false" [(ngModel)]="shipping_method"
+                                    [searchable]="true" placeholder="Select Shipping Method" [clearable]=false>
+                                    <ng-option [value]="'MAIL - First class and Priority level service'">MAIL - First class and Priority level service</ng-option>
+                                    <ng-option [value]="'Express Delivery'">Express Delivery</ng-option>
+                                    <!-- <ng-option [value]="'UPN - Next Day Air'">UPN - Next Day Air</ng-option>
+                                    <ng-option [value]="'UP2 - 2nd Day Air'">UP2 - 2nd Day Air</ng-option>
+                                    <ng-option [value]="'UP3 - 3 Day Select'">UP3 - 3 Day Select</ng-option>
+                                    <ng-option [value]="'UNS - Next Day Air Saver'">UNS - Next Day Air Saver</ng-option>
+                                    <ng-option [value]="'UNA - Next Day Air AM'">UNA - Next Day Air AM</ng-option> -->
+                                    </ng-select>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="form-group" style="width: 90px;">
+                                        <label>Quantity<sup class="text-danger">*</sup> </label>
+                                        <input min="1" [readOnly]="createDeviceRequestObj.patientId" type="number" [(ngModel)]="createDeviceRequestObj.quantity" (ngModelChange)="ApplyDefaultPricing()"
+                                            class="form-control form-control-sm box-shadow " id="searchBy"
+                                            placeholder="Devices Count"/>
+                                    </div>
+                                    <div class="w-100 ml-3 mt-3">
+                                      <div class="form-check pl-0 form-check-inline">
+                                        <input type="radio" class="form-check-input" id="Controlled"
+                                          (change)="ApplyDefaultPricing()" name="878787887"
+                                          [value]="1" [(ngModel)]="createDeviceRequestObj.saleType" mdbInput>
+                                        <label class="form-check-label" for="Controlled">Sale </label>
+                                      </div>
+                                      <div class="form-check pl-0 form-check-inline">
+                                        <input type="radio" class="form-check-input" id="Uncontrolled"
+                                          (change)="ApplyDefaultPricing()" name="878787887"
+                                          [value]="2" [(ngModel)]="createDeviceRequestObj.saleType" mdbInput>
+                                        <label class="form-check-label" for="Uncontrolled">Lease </label>
+                                      </div>
+
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                  <div class="w-100 px-0 position-relative">
+                                    <label for="searchBy">Search Patient</label>
+                                    <div class="d-flex align-items-center justify-content-start">
+                                        <input type="text" autocomplete="off" [(ngModel)]="searchParam"
+                                            appOnDebounce [debounceTime]="1500"
+                                            (onDebounce)="getFilterPatientsList2()" #chatUSerSearchInput
+                                            class="form-control form-control-sm box-shadow w-100"
+                                            placeholder="Search by Name" />
+                                        <span *ngIf="searchingChatUsers"
+                                            class="spinner-border spinner-border-sm position-absolute"
+                                            style="right: 1.7rem;"></span>
+                                            <i style="right: 0.5rem;" *ngIf="CurrentPatient?.id" (click)="SelectFacility()"
+                                            class="fa fa-times fa-lg position-absolute cursor-pointer"></i>
+                                    </div>
+
+                                    <div *ngIf="(searchedChatUserList && searchedChatUserList.length > 0)"
+                                        (appIsOutside)="searchedChatUserList=[]" class="userList searchable-list"
+                                        style="height: 240px;position: absolute;width: 100%;z-index: 9999;overflow-y: auto;">
+                                        <ul *ngIf="!searchingChatUsers">
+                                            <li *ngFor="let item of searchedChatUserList"
+                                                (click)="SelectPatient(item)">
+                                                <p>{{item.fullName}} ({{item['patientEmrId']}})</p>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="card" style="height: 100%;">
+                                            <div class="card-header">
+                                                <div class="row justify-content-between">
+                                                    <h4  style="margin: 0;font-size: 20px;font-weight: 500;">Ship To</h4>
+                                                </div>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="row">
+                                                  <div class="col-12">
+                                                    <div class="d-flex align-items-center justify-content-start">
+                                                        <div class="form-group w-100 d-flex ">
+                                                            <label style="min-width: 80px;">Name<sup class="text-danger">*</sup> </label>
+                                                            <input type="text" [(ngModel)]="customerName"
+                                                                class="form-control form-control-sm box-shadow " id="searchBy"
+                                                                placeholder="Name" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                    <div class="col-12">
+                                                        <div class="d-flex align-items-center justify-content-start">
+                                                            <div class="form-group w-100 d-flex ">
+                                                                <label style="min-width: 80px;">Address 1<sup class="text-danger">*</sup> </label>
+                                                                <input type="text" [(ngModel)]="createDeviceRequestObj.address1"
+                                                                    class="form-control form-control-sm box-shadow " id="searchBy"
+                                                                    placeholder="Address 1" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12">
+                                                        <div class="d-flex align-items-center justify-content-start">
+                                                            <div class="form-group  w-100 d-flex">
+                                                                <label style="min-width: 80px;">Address 2</label>
+                                                                <input type="text" [(ngModel)]="createDeviceRequestObj.address2"
+                                                                    class="form-control form-control-sm box-shadow w-100" id="searchBy"
+                                                                    placeholder="Address 2" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-6 pr-2">
+                                                        <div class="d-flex align-items-center justify-content-start">
+                                                            <div class="form-group w-100 d-flex">
+                                                                <label style="min-width: 80px;">State<sup class="text-danger">*</sup> </label>
+                                                                <input type="text" [(ngModel)]="createDeviceRequestObj.state"
+                                                                    class="form-control form-control-sm box-shadow " id="searchBy"
+                                                                    placeholder="State" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-6 pl-0">
+                                                        <div class="d-flex align-items-center justify-content-start">
+                                                            <div class="form-group  w-100 d-flex">
+                                                                <label style="min-width: 50px;">City<sup class="text-danger">*</sup> </label>
+                                                                <input type="text" [(ngModel)]="createDeviceRequestObj.city"
+                                                                    class="form-control form-control-sm box-shadow w-100" id="searchBy"
+                                                                    placeholder="Name" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12">
+                                                        <div class="d-flex align-items-center justify-content-start">
+                                                            <div class="form-group w-100 d-flex">
+                                                                <label style="min-width: 80px;">Zip Code<sup class="text-danger">*</sup> </label>
+                                                                <input type="text" [(ngModel)]="createDeviceRequestObj.zipCode"
+                                                                    class="form-control form-control-sm box-shadow " id="searchBy"
+                                                                    placeholder="Zip Code" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="card" style="height: 100%;">
+                                            <div class="card-header">
+                                                <h4 style="margin: 0;font-size: 20px;font-weight: 500;">Estimate</h4>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <div class="pb-info ">
+                                                          <p ><strong>Price Per Unit:</strong> {{createDeviceRequestObj.salePrice}} </p>
+                                                          <!-- <p  *ngIf="createDeviceRequestObj.saleType === 1"><strong>Sale Price $:</strong> {{createDeviceRequestObj.salePrice}} </p> -->
+                                                          <!-- <p *ngIf="createDeviceRequestObj.saleType === 2"><strong>Installment Price $:</strong>{{createDeviceRequestObj.salePrice}}  </p> -->
+                                                          <p *ngIf="createDeviceRequestObj.saleType === 2" title="Installment Count"><strong>Installment Count:</strong> {{createDeviceRequestObj.installmentCount}} </p>
+                                                            <!-- <p *ngIf="createDeviceRequestObj.saleType === 2"><strong>Installments Count</strong>{{createDeviceRequestObj.installmentCount}}  </p> -->
+                                                            <p><strong>Quantity:</strong> {{createDeviceRequestObj.quantity}} </p>
+                                                            <p><strong>Est. Shipping</strong> {{createDeviceRequestObj.shipping}} </p>
+                                                            <p><strong>Total Price:</strong>{{createDeviceRequestObj.totalPrice}}  </p>
+                                                          </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-group mb-3 mt-3">
+                                          <label>Note</label>
+                                          <textarea type="text" rows="3" class="form-control" [(ngModel)]="createDeviceRequestObj.note" placeholder="Note"></textarea>
+                                        </div>
+                                      </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- <div class="row">
+
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label>Sale Type<sup class="text-danger">*</sup> </label>
+                                    <ng-select (change)="calculateDevicesPrice()" class="ng-select-small" [multiple]="false" [(ngModel)]="createDeviceRequestObj.saleType" [searchable]="true" placeholder="Sale Type" [clearable]=false>
+                                      <ng-option [value]="1">Sale</ng-option>
+                                      <ng-option [value]="2">Lease</ng-option>
+                                    </ng-select>
+                                  </div>
+                            </div>
+                        </div> -->
+                        <!-- <div class="row">
+
+
+                            <div *ngIf="selectedDeviceType && selectedDeviceType.modalityCode" class="col-12">
+                                <table class="table table-bordered my-table-cutom-under mb-0">
+                                    <thead class="bg-white">
+                                      <tr class="bg-white">
+                                        <th  *ngIf="createDeviceRequestObj.saleType === 1" title="Sale Price">Sale Price $</th>
+                                        <th *ngIf="createDeviceRequestObj.saleType === 2" title="Sale Price">Lease Price $</th>
+                                        <th title="Quantity">Quantity</th>
+                                        <th title="Total Price">Total $</th>
+                                        <th *ngIf="createDeviceRequestObj.saleType === 2" title="Installment Count">Installment</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody >
+                                      <tr class="bg-white">
+                                        <td  *ngIf="createDeviceRequestObj.saleType === 1" >{{createDeviceRequestObj.salePrice}}</td>
+                                        <td *ngIf="createDeviceRequestObj.saleType === 2" >{{createDeviceRequestObj.leasePrice}}</td>
+                                        <td>{{deviceCount}}</td>
+                                        <td>{{createDeviceRequestObj.totalPrice}}</td>
+                                        <td *ngIf="createDeviceRequestObj.saleType === 2" >{{createDeviceRequestObj.installmentCount}}</td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                              </div>
+                        </div> -->
+                    </fieldset>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="waves-light my-0 btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+                    (click)="facilityDeviceRequestModal.hide();" mdbWavesEffect>Close</button>
+                <button type="button" [disabled]="(createDeviceRequestObj.patientId && patientHaveAlreadyModality) || addingComplaint || (!createDeviceRequestObj.facilityId && !createDeviceRequestObj.patientId) || !selectedDeviceType || !shipping_method || !createDeviceRequestObj.saleType || !createDeviceRequestObj.address1 ||  !createDeviceRequestObj.zipCode || !createDeviceRequestObj.city || !createDeviceRequestObj.state "
+                    class="relative waves-light btn btn-sm btn-dynamic-2c my-0" (click)="facilityDeviceRequestModalPreview.show();" mdbWavesEffect>
+                    <span *ngIf="addingComplaint" class="spinner-border spinner-border-sm" role="status"
+                        aria-hidden="true"></span>
+                    Submit
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+    <div mdbModal #facilityDeviceRequestModalPreview="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="myBasicModalLabel" aria-hidden="true" [config]="{backdrop: false, ignoreBackdropClick: true}">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="d-flex align-items-center justify-content-between mb-0">
+                    <div class="d-flex align-items-center justify-content-start">
+                        <h4 class="page-title mb-0"><strong>Recipient Detail Preview</strong></h4>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="card-body px-0">
+                    <div class="card mb-3" style="box-shadow: none;">
+                        <div class="d-flex align-items-center justify-content-between  px-3 py-2 w-100">
+                            <h6 class="m-0"><strong>Recipient Type</strong></h6>
+                            <div class="form-group mb-0">
+                                <ul class="status-list custom-column-list">
+                                    <li *ngIf="createDeviceRequestObj.patientId" class="active"> <a class="link">Patient</a> </li>
+                                    <li *ngIf="!createDeviceRequestObj.patientId" class="active"> <a class="link">Facility</a> </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <fieldset class="profile-block">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="pb-info pb-info-a w-100">
+                                    <p title="Facility"><strong>Recipient:</strong> {{customerName}}</p>
+                                </div>
+                            </div>
+                            <!-- <div class="col-12" *ngIf="createDeviceRequestObj.customer_type===CustomerType.Patient">
+                                <div class="pb-info pb-info-a w-100">
+                                    <p title="Patient Name"><strong>Patient Name:</strong>{{createDeviceRequestObj.customer_name}}</p>
+                                </div>
+                            </div> -->
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="pb-info pb-info-a w-100">
+                                    <p title="Address 1"><strong>Address 1:</strong>{{createDeviceRequestObj.address1}}</p>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="pb-info pb-info-a w-100">
+                                    <p title="Address 2"><strong>Address 2:</strong>{{createDeviceRequestObj.address2}}</p>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="pb-info pb-info-a w-100">
+                                    <p title="City"><strong>City:</strong>{{createDeviceRequestObj.city}}</p>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="pb-info pb-info-a w-100">
+                                    <p title="State"><strong>State:</strong>{{createDeviceRequestObj.state}}</p>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="pb-info pb-info-a w-100">
+                                    <p title="Zip Code"><strong>Zip Code:</strong>{{createDeviceRequestObj.zipCode}}</p>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="pb-info pb-info-a w-100">
+                                    <p title="Select Modality"><strong>Modality:</strong>{{selectedDeviceType?.modalityName}}</p>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="pb-info pb-info-a w-100">
+                                    <p title="Quantity"><strong>Quantity:</strong>{{createDeviceRequestObj.quantity}}</p>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="pb-info pb-info-a w-100">
+                                    <p title="Sale Type"><strong>Sale Type:</strong>{{saleTypeEnum[createDeviceRequestObj.saleType]}}</p>
+                                </div>
+                            </div>
+                            <div *ngIf="createDeviceRequestObj.saleType === 2" class="col-12">
+                                <div class="pb-info pb-info-a w-100">
+                                    <p title="Sale Type"><strong>Installment Count:</strong>{{createDeviceRequestObj.installmentCount}}</p>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="pb-info pb-info-a w-100">
+                                    <p title="Note"><strong>Note:</strong>{{createDeviceRequestObj.note}}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="pb-info pb-info-a w-100">
+                                    <p title="Shipping Method"><strong>Shipping Method:</strong>{{shipping_method}}</p>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="pb-info pb-info-a w-100">
+                                    <p title="Shipping Method"><strong>Sale Price:</strong>${{createDeviceRequestObj.salePrice}}</p>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="pb-info pb-info-a w-100">
+                                    <p title="Shipping Method"><strong>Total Price:</strong>${{createDeviceRequestObj.totalPrice}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+            <div class="modal-footer d-flex justify-content-between align-items-center">
+                <p class="mb-0 text-warning">Are you sure you want to Order?</p>
+                <div>
+                    <button type="button" class="waves-light btn-sm btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+                        (click)="facilityDeviceRequestModalPreview.hide();" mdbWavesEffect>No
+                    </button>
+                    <button [disabled]="addingRequest" type="button" (click)="SubmitDeviceRequest();"
+                        class="relative waves-light btn btn-sm btn-dynamic-2c" mdbWavesEffect>
+                        <span *ngIf="addingRequest" class="spinner-border spinner-border-sm" role="status"
+                            aria-hidden="true"></span>
+                        Yes
+                    </button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,508 @@
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <h1 class="page-title mb-0">Organizations</h1>
+  <div>
+    <!-- <button type="button" class="btn btn-dynamic-2c btn-sm" (click)="addFacilityModal.show()">Add
+      New Facility</button> -->
+    <button type="button" class="btn btn-dynamic-2c btn-sm text-capitalize"
+      (click)="name.reset();contactEmail.reset();contactNumber.reset();resetModalData();addOrganization.show();">Add
+      Organization</button>
+  </div>
+</div>
+<!-- <div *ngIf="!isLoading" class="d-flex justify-content-center text-center"> -->
+
+<div class="panel">
+  <div>
+    <div class="position-relative">
+      <div class="side-bar-ex">
+        <div *ngIf="IsLoading" class="d-flex justify-content-center text-center">
+          <mdb-progress-bar * class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+        </div>
+        <div class="p-3 pb-0">
+          <div class="d-flex align-content-center justify-content-between w-100">
+            <h6 class="mb-0">Search</h6>
+            <div class="d-inline-flex align-items-center mb-2">
+              <div [class.active]="searchByOrgName==true" (click)="searchByOrgName=true" class="border rounded px-2 main-index-box py-1 mr-1 ">
+                <div class="d-flex justify-content-between align-items-center">
+                  <h5 class="title mb-0" style="font-size: 12px;">Organization</h5>
+                </div>
+              </div>
+              <div [class.active]="searchByOrgName==false" (click)="searchByOrgName=false" class="border rounded px-2 main-index-box py-1 active">
+                <div class="d-flex justify-content-between align-items-center">
+                  <h5 class="title mb-0" style="font-size: 12px;">Facility</h5>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- <div class="form-group">
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input" [value]="true" [(ngModel)]="searchByOrgName"
+                (ngModelChange)="filterOrg()" id="internetAccess" name="internetAccess" mdbInput>
+              <label class="form-check-label" for="internetAccess">Organization</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input" [value]="false" [(ngModel)]="searchByOrgName"
+                (ngModelChange)="filterOrg()" id="internetAccess1" name="internetAccess1" mdbInput>
+              <label class="form-check-label" for="internetAccess1">Facility</label>
+            </div>
+          </div> -->
+          <form class="form-group mb-0">
+            <div class="d-flex align-items-center justify-content-start">
+              <input type="text" (keyup)="searchParam= $event;filterOrg()" autocomplete="off"
+                class="form-control form-control-sm box-shadow w-100" placeholder="Search by Name" />
+            </div>
+          </form>
+
+            <div class="d-flex align-items-center mt-2">
+              <ng-select [(ngModel)]="orgType" (add)="checkFilter($event)" (ngModelChange)="changeOrganizationType($event)" [clearable]="false" [multiple]=true appendTo="body" [searchable]="false"
+                      class="ng-select-small flex-grow-1" placeholder="Organization Type" [closeOnSelect]="true">
+                      <ng-option [value]="''">All</ng-option>
+                      <ng-option [value]="item.value" *ngFor="let item of orgTypeEnumList">{{item.name}}</ng-option>
+                    </ng-select>
+            </div>
+  
+        </div>
+
+        <ul>
+          <li [class.active]="selectedOrgId==item.id" (click)="loadFacilities(item)" *ngFor="let item of organizationList; let i= index;">
+              <a class="p-2" >
+                <div class="d-flex justify-content-between align-items-center">
+                  <p class="mb-1"><strong class="text-dynamic-2c">Name: </strong>{{item.name}}</p>
+                  <div>
+                    <span class="cursor-pointer mr-2"
+                    (click)="assignData(item);isEditOrganization=true;addOrganization.show()"><i
+                      class="fa fa-pencil" style="font-size:1.5rem ;"></i></span>
+                      <!-- <span class="cursor-pointer" title="View Facilities"
+                    routerLink="/org/organizations/Facilities/{{item.id}}" placement="left"><i class="fa fa-eye fa-lg"></i>
+                    </span> -->
+                  </div>
+                </div>
+                <p class="mb-1"><strong class="text-dynamic-2c">Email: </strong>{{item.contactEmail}}</p>
+                <p class="mb-1"><strong class="text-dynamic-2c">Phone No: </strong>{{item.contactNumber  | mask: '(000)000-0000'}}</p>
+                <p class="mb-1"><strong class="text-dynamic-2c">Address: </strong>{{item.website}}</p>
+              </a>
+          </li>
+        </ul>
+      </div>
+      <div class="main-layout-in">
+        <div class="main-outlet">
+            <div class="row justify-content-center">
+                <div class="col-12 ">
+                    <!-- <router-outlet></router-outlet> -->
+                    <app-facility #facilityCompRef [insideOrg]="true"></app-facility>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <!-- <div class="table-responsive">
+      <table class="table table-striped btn-table table-sm text-nowrap">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone No</th>
+            <th>Address</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let item of organizationList; let i= index;">
+            <th scope="row">{{ i + 1}}</th>
+            <td>{{item.name}}</td>
+            <td>{{item.contactEmail}}</td>
+            <td>{{item.contactNumber}}</td>
+            <td>{{item.website}}</td>
+            <td>
+              <div class="action-button">
+                <a class="btn btn-icon btn-dynamic-2c"
+                  (click)="assignData(item);isEditOrganization=true;addOrganization.show()"><i
+                    class="fa fa-pencil"></i></a>
+                <a class="btn btn-dynamic-2c btn-icon" title="View Facilities"
+                  routerLink="/org/Facilities/{{item.id}}" placement="left"><i class="fa fa-eye"></i></a>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div> -->
+  </div>
+</div>
+<!--START NOT USEFULL SOHAIB BHAI PLEASE CHECK-->
+  <div style="overflow-y: auto" mdbModal #addFacilityModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="myBasicModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg flat-modal" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close pull-right" aria-label="Close" (click)="addFacilityModal.hide()">
+            <span aria-hidden="true">×</span>
+          </button>
+          <h4 class="modal-title w-100" id="myModalLabel" *ngIf="facilityDto.id === 0">Add Facility</h4>
+          <h4 class="modal-title w-100" id="myModalLabel" *ngIf="facilityDto.id > 0">Edit Facility</h4>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <!-- <div class="col-sm-12 mb-2">
+            <small class="text-dynamic-2c text-uppercase font-500">User Information</small>
+          </div> -->
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label for="State">Select EMR</label>
+                <ng-select class="ng-select-small" [(ngModel)]="facilityDto.emrId" [ngModelOptions]="{standalone: true}"
+                  [multiple]="false" [searchable]="true" placeholder="Select EMR">
+                  <ng-option *ngFor="let item of emrList" [value]="item.id">{{item.name}}</ng-option>
+                  <!-- <ng-option [value]="1">NextGen Office</ng-option>
+                  <ng-option [value]="2">E-Clinical Works</ng-option>
+                  <ng-option [value]="3">Practice Fusion</ng-option> -->
+                </ng-select>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label for="facilityName">Facility Name<small class="text-danger">*</small></label>
+                <input [(ngModel)]="facilityDto.facilityName" class="form-control form-control-sm" placeholder="Name"
+                  id="facilityName" type="text">
+              </div>
+            </div>
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label for="Website">Website</label>
+                <input [(ngModel)]="facilityDto.website" type="text" class="form-control form-control-sm" id="Website"
+                  placeholder="Website">
+              </div>
+            </div>
+
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label for="Address">Address</label>
+                <input [(ngModel)]="facilityDto.address" type="text" class="form-control form-control-sm" id="Address"
+                  placeholder="Address">
+              </div>
+            </div>
+
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label for="isChronic1">Facility Description</label>
+                <input [(ngModel)]="facilityDto.facilityDescription" type="text" class="form-control form-control-sm"
+                  id="isChronic1" placeholder="Description">
+              </div>
+            </div>
+
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label for="icdcodesystem">Contact Email<small class="text-danger">*</small></label>
+                <input [(ngModel)]="facilityDto.contactEmail" type="text" email class="form-control form-control-sm"
+                  id="icdcodesystem" placeholder="Email">
+              </div>
+            </div>
+
+
+
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label for="City">City</label>
+                <input [(ngModel)]="facilityDto.city" type="text" class="form-control form-control-sm" id="City"
+                  placeholder="City">
+              </div>
+            </div>
+
+            <div class="col-sm-4">
+              <!-- <div class="form-group">
+              <label for="state">State</label>
+              <input [(ngModel)]="facilityDto.state" type="text" class="form-control form-control-sm" id="state"
+                placeholder="State">
+            </div> -->
+              <div class="form-group">
+                <label for="State">Select State</label>
+                <ng-select class="ng-select-small" [(ngModel)]="facilityDto.stateName"
+                  [ngModelOptions]="{standalone: true}" [multiple]="false" [searchable]="true"
+                  placeholder="Select State">
+                  <!-- <ng-template ng-header-tmp>
+                  <input style="width: 100%; line-height: 24px" type="text" [(ngModel)]="searchDisease" [ngModelOptions]="{standalone: true}" (ngModelChange)="getFilterDisease(searchDisease)" />
+                </ng-template> -->
+                  <ng-option *ngFor="let item of States" [value]="item.code">{{item.code}} {{item.name}}
+                  </ng-option>
+                </ng-select>
+              </div>
+            </div>
+
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label for="ZipCode">ZipCode</label>
+                <input [(ngModel)]="facilityDto.zipCode" type="text" class="form-control form-control-sm" id="ZipCode"
+                  placeholder="ZipCode">
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label for="password">Phone No</label>
+                <input type="text" mask="(000)000-0000" [(ngModel)]="facilityDto.phoneNumber"
+                  class="form-control form-control-sm" id="phoneNumb" placeholder="Phone No">
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label for="fax">Fax</label>
+                <input [(ngModel)]="facilityDto.faxNumber" class="form-control form-control-sm" rows="3" id="fax"
+                  placeholder="fax" type="text">
+              </div>
+            </div>
+            <ng-container *ngIf="facilityDto.id === 0">
+
+              <div class="col-sm-12 mb-2">
+                <small class="text-dynamic-2c text-uppercase font-500">Site Admin</small>
+              </div>
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <label for="Title">Title</label>
+                  <ng-select class="ng-select-small" [(ngModel)]="facilityDto.siteManager.title"
+                    [ngModelOptions]="{standalone: true}" [multiple]="false" [searchable]="true"
+                    placeholder="Select Title">
+                    <ng-option [value]="'Billing Provider'">Billing Provider</ng-option>
+                    <ng-option [value]="'Care Coordinator'">Care Coordinator</ng-option>
+                    <ng-option [value]="'Biller'">Biller</ng-option>
+                  </ng-select>
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="form-group">
+                  <label for="practiceName">First Name<small class="text-danger">*</small></label>
+                  <input type="text" [(ngModel)]="facilityDto.siteManager.firstName" ng
+                    class="form-control form-control-sm" id="practiceName" placeholder="First Name">
+                </div>
+              </div>
+
+              <div class="col-sm-4">
+                <div class="form-group">
+                  <label for="isChronic">Middle Name</label>
+                  <input type="text" [(ngModel)]="facilityDto.siteManager.middleName"
+                    class="form-control form-control-sm" id="isChronic" placeholder="Middle Name">
+                </div>
+              </div>
+
+              <div class="col-sm-4">
+                <div class="form-group">
+                  <label for="icdcode">Last Name<small class="text-danger">*</small></label>
+                  <input type="text" [(ngModel)]="facilityDto.siteManager.lastName" class="form-control form-control-sm"
+                    id="icdcode" placeholder="Last Name">
+                </div>
+              </div>
+
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <label for="icdcodesystem1">Email<small class="text-danger">*</small></label>
+                  <input type="text" [(ngModel)]="facilityDto.siteManager.email" class="form-control form-control-sm"
+                    id="icdcodesystem1" placeholder="Email">
+                </div>
+              </div>
+
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="password">Password<small class="text-danger">*</small></label>
+                  <input [(ngModel)]="facilityDto.siteManager.password" type="password"
+                    class="form-control form-control-sm" id="password" placeholder="Password">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="ConfirmPass">Confirm Password</label>
+                  <input [(ngModel)]="facilityDto.siteManager.confirmPassword" class="form-control form-control-sm"
+                    rows="3" id="ConfirmPass" placeholder="Confirm Password" type="password">
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button [disabled]="!facilityDto.emrId || !facilityDto.facilityName || !facilityDto.contactEmail || !facilityDto.siteManager.firstName ||!facilityDto.siteManager.lastName ||
+        !facilityDto.siteManager.password || !facilityDto.siteManager.confirmPassword" type="submit"
+            class="btn btn-dynamic-2c btn-sm" *ngIf="facilityDto.id === 0"
+            (click)="addFacilityModal.hide();registerNewFacility()">Add</button>
+          <button [disabled]="!facilityDto.emrId || !facilityDto.facilityName || !facilityDto.contactEmail "
+            type="submit" class="btn btn-dynamic-2c btn-sm" *ngIf="facilityDto.id > 0"
+            (click)="addFacilityModal.hide();UpdateFacility()">Update</button>
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- END NOT USEFULL -->
+  <div style="overflow-y: auto" mdbModal #addOrganization="mdbModal"
+    [config]="{backdrop: true, ignoreBackdropClick: true}" class="modal fade" tabindex="-1" role="dialog"
+    (closed)="onCloseOrganizationModal();name.reset();contactEmail.reset();contactNumber.reset();" aria-labelledby="myBasicModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg flat-modal" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close pull-right" aria-label="Close" (click)="addOrganization.hide()">
+            <span aria-hidden="true">×</span>
+          </button>
+          <h4 *ngIf="!isEditOrganization" class="modal-title w-100" id="myModalLabel">Add Organization</h4>
+          <h4 *ngIf="isEditOrganization" class="modal-title w-100" id="myModalLabel">Edit Organization</h4>
+        </div>
+        <div class="modal-body">
+          <!-- <div class="custom-control custom-checkbox custom-control-inline">
+            <input type="checkbox" class="custom-control-input"
+            [(ngModel)]="organizationDto.isWhiteLabelled" (change)="openConfirmationModal()" id="isWhiteLabelled" name="isWhiteLabelled">
+            <label class="custom-control-label" for="isWhiteLabelled">Private</label>
+          </div>
+          <div class="custom-control custom-checkbox custom-control-inline">
+            <input [disabled]="organizationDto.isSubVendor" type="checkbox" class="custom-control-input"
+            [(ngModel)]="organizationDto.isSubVendor" id="isSubVendor" name="isSubVendor">
+            <label class="custom-control-label" for="isSubVendor">Contractor</label>
+          </div> -->
+          <div class="row">
+            <!-- <div class="col-sm-12 mb-2">
+            <small class="text-dynamic-2c text-uppercase font-500">User Information</small>
+          </div> -->
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label for="name">Organization Name<small class="text-danger">*</small></label>
+                <input [(ngModel)]="organizationDto.name" class="form-control form-control-sm"
+                  placeholder="Organization Name" id="name" type="text" #name="ngModel" required [ngClass]="{ 'is-invalid':(name.touched ||
+                name.dirty) &&
+                !name.valid }">
+                <div *ngIf="name.invalid && (name.dirty || name.touched)" class="invalid invalid-text">
+                  <div *ngIf="name.errors.required">
+                    <small class="text-danger">Name must be filled out.</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label for="name">Organization Type</label>
+                <ng-select class="ng-select-small" [clearable]="true"
+                [closeOnSelect]="true" [multiple]="false" (ngModelChange)="checkEligibilityForConfirmation($event)" [(ngModel)]="organizationDto.organizationType"
+                [searchable]="false" placeholder="Organization Type">
+                <ng-option [value]="item.value" *ngFor="let item of orgTypeEnumList" >{{item.name}}</ng-option>
+              </ng-select>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group ">
+                <label for="shortName">Short Name<small class="text-danger">*</small></label>
+                <div class="position-relative">
+                  <input [(ngModel)]="organizationDto.shortName" [maxlength]="10" class="form-control form-control-sm" placeholder="Name"
+                  type="text" #shortName="ngModel" required name="shortName" appOnDebounce [debounceTime]="500"
+                  (onDebounce)="CheckShortNameAvailable()"
+                  [ngClass]="{ 'is-invalid': (shortName.touched && shortName.invalid) || !shortNameValid }">
+                  <div class="input-spinner" *ngIf="checkingShortName">
+                    <div class="spinner-border text-dynamic-2c" role="status">
+                      <span class="sr-only">Loading...</span>
+                    </div>
+                  </div>
+                </div>
+                <div *ngIf="(shortName.touched && shortName.invalid) || !shortNameValid" class="invalid-feedback">
+                  <div *ngIf="shortName.errors.required">Facility short name is required</div>
+                  <div *ngIf="!shortNameValid">This short name is not available</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label for="Website1">Website</label>
+                <input [(ngModel)]="organizationDto.website" type="text" class="form-control form-control-sm"
+                  id="Website1" placeholder="Website">
+              </div>
+            </div>
+          </div>
+
+          <div class="">
+            <div class="form-group">
+              <label for="isChronic12">Contact Email<small class="text-danger">*</small></label>
+              <input [(ngModel)]="organizationDto.contactEmail" type="email" class="form-control form-control-sm"
+                name="email" id="isChronic12" placeholder="Contact Email" #contactEmail="ngModel" [email]="true"
+                required [ngClass]="{ 'is-invalid':(contactEmail.touched ||
+                contactEmail.dirty) &&
+                !contactEmail.valid }">
+              <div *ngIf="contactEmail.invalid && (contactEmail.dirty || contactEmail.touched)"
+                class="invalid invalid-text">
+                <div *ngIf="contactEmail.errors.required">
+                  <small class="text-danger">Contact email must be filled out.</small>
+                </div>
+                <div *ngIf="!contactEmail.errors.required && contactEmail.invalid">
+                  <small class="text-danger">Enter a valid email.</small>
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="">
+            <div class="form-group">
+              <label for="Address1">Contact Number<small class="text-danger">*</small></label>
+              <input [(ngModel)]="organizationDto.contactNumber" mask="(000)000-0000" type="text"
+                class="form-control form-control-sm" id="Address1" placeholder="Contact Number" #contactNumber="ngModel"
+                required [ngClass]="{ 'is-invalid':(contactNumber.touched ||
+                contactNumber.dirty) &&
+                !contactNumber.valid }">
+              <div *ngIf="contactNumber.invalid && (contactNumber.dirty || contactNumber.touched)"
+                class="invalid invalid-text">
+                <div *ngIf="contactNumber.errors.required">
+                  <small class="text-danger">Contact number must be filled out.</small>
+                </div>
+                <div *ngIf="!contactNumber.errors.required && contactNumber.invalid">
+                  <small class="text-danger">Enter a valid phone no.</small>
+                </div>
+              </div>
+            </div>
+          </div>
+            <div *ngIf="organizationDto.organizationType == organizationTypeEnum.SAAS" class="row">
+              <div class="col-sm-4">
+                <div class="form-group">
+                  <label for="sideNavBarColor-2">SideNavBar Color</label>
+                  <div class="d-flex">
+                    <input [(ngModel)]="organizationDto.sideNavBarColor" class="form-control form-control-sm"
+                    placeholder="Sidenav Color" id="sideNavBarColor-2" name="sideNavBarColor-2" type="text" required>
+                    <input type="color" style="width: 100px;cursor: pointer;" class="form-control form-control-sm ml-2 form-control-color" [(ngModel)]="organizationDto.sideNavBarColor" value="{{organizationDto.sideNavBarColor}}">
+                  </div>
+                </div>
+              </div>
+
+                <div class="col-sm-4">
+
+                  <div class="form-group">
+                    <label for="prColor12121">Primary Color</label>
+                    <div class="d-flex">
+                      <input [(ngModel)]="organizationDto.primaryColor" class="form-control form-control-sm"
+                      placeholder="Primary Color" id="prColor12121" name="prColor12121" type="text" required>
+                      <input type="color" style="width: 100px;cursor: pointer;" class="form-control form-control-sm ml-2 form-control-color" [(ngModel)]="organizationDto.primaryColor" value="{{organizationDto.primaryColor}}">
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="follow-date">
+                    <label for="secColor8564">Secondary Color</label>
+                    <div class="d-flex">
+                      <input [(ngModel)]="organizationDto.secondaryColor" class="form-control form-control-sm"
+                      placeholder="secondary Color" id="secColor8564" name="secColor8564" type="text" required>
+                      <input type="color" style="width: 100px;cursor: pointer;" class="form-control form-control-sm ml-2 form-control-color" [(ngModel)]="organizationDto.secondaryColor" value="{{organizationDto.secondaryColor}}">
+                      <a title="Save"  [class.disabled]="!organizationDto.primaryColor || !organizationDto.secondaryColor || !organizationDto.sideNavBarColor" (click)="SetOrganizationTheme();" class="btn btn-dynamic-2c btn-icon ml-2 mt-0">
+                        <i class="fa fa-save"></i>
+                      </a>
+                      <button (click)="openDefualtConfirmModal()" title="Reset Theme"  class="btn btn-dynamic-secondary-2c btn-icon ml-0 mr-0 mt-0">
+                        <i class="fa fa-refresh"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+            </div>
+          <div  class="w-100 py-3" *ngIf="organizationDto?.id && organizationDto.isWhiteLabelled">
+            <app-branding [orgId]="organizationDto?.id" [logoPath]="organizationDto?.logosPath"></app-branding>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button *ngIf="!isEditOrganization" type="submit" class="btn btn-dynamic-2c btn-sm"
+            [disabled]="contactNumber.invalid || contactEmail.invalid || !organizationDto.contactEmail || !organizationDto.name || !organizationDto.contactNumber"
+            (click)="addOrganization.hide();registerOrganization()">Add</button>
+          <button *ngIf="isEditOrganization" [disabled]="isEditingOrganization" type="submit"
+            class="btn btn-dynamic-2c btn-sm"
+            [disabled]="contactNumber.invalid || contactEmail.invalid || !organizationDto.contactEmail || !organizationDto.name || !organizationDto.contactNumber"
+            (click)="editOrganizations()"> <span *ngIf="isEditingOrganization" class="spinner-border spinner-border-sm"
+              role="status" aria-hidden="true"></span> Update</button>
+          <!-- <button [disabled]="!facilityDto.emrId || !facilityDto.facilityName || !facilityDto.email " type="submit" class="btn btn-dynamic-2c btn-sm" *ngIf="facilityDto.id > 0"
+          (click)="addOrganization.hide();UpdateFacility()">Update</button> -->
+        </div>
+      </div>
+    </div>
+  </div>

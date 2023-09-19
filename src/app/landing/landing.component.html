@@ -1,0 +1,662 @@
+<div class="d-flex align-items-center justify-content-between flex-wrap mb-3">
+    <h1 class="page-title mb-0 flex-sm-grow-1 mb-3">Home</h1>
+    <div class="d-flex align-items-center flex-wrap mb-3">
+      <div (hidden)="clearServiceNamesDto()" [isDisabled]="!selected || selected.length < 1" class="nav-item avatar dropdown userInfo" dropdown>
+        <button mdbDropdownToggle mdbBtn class=" btn btn-dynamic-2c btn-sm my-0 flex-shrink-0 mr-0">
+          <span class="mr-3">
+            <i class="fa fa-plus fa-lg mr-1" style="vertical-align: -8%;"></i>Add Services</span><i
+            class="fa fa-angle-down ml-1"></i>
+        </button>
+        <div *dropdownMenu class="dropdown-menu dropdown-menu-right dropdown" role="menu">
+          <mdb-checkbox [checked]="true"[(ngModel)]="serviceNamesDto.ccm"  [default]="true">CCM</mdb-checkbox>
+          <mdb-checkbox [checked]="true"[(ngModel)]="serviceNamesDto.bhi"  [default]="true">BHI</mdb-checkbox>
+          <mdb-checkbox [checked]="true"[(ngModel)]="serviceNamesDto.pcm"  [default]="true">PCM</mdb-checkbox>
+          <mdb-checkbox [checked]="true"[(ngModel)]="serviceNamesDto.rpm"  [default]="true">RPM</mdb-checkbox>
+          <div  class="text-right">
+            <button class="btn btn-dynamic-2c btn-sm m-0 mt-2" [disabled]="!serviceNamesDto.rpm && !serviceNamesDto.ccm && !serviceNamesDto.bhi && !serviceNamesDto.pcm" (click)="SetPatientServices()">Save</button>
+          </div>
+        </div>
+      </div>
+      <button type="button" class="btn btn-dynamic-2c btn-sm my-0 flex-shrink-0 mr-0" [routerLink]="['/admin/addPatient']" routerLinkActive="router-link-active"  >
+        <i class="fa fa-plus fa-lg" style="vertical-align: -8%;"></i>
+          Add New
+      </button>
+    </div>
+</div>
+
+
+<div class="row d-flex">
+    <div class="d-flex align-items-end col-lg-12 col-sm-12">
+        <!-- <div class="flex-grow-1">
+            <label for="searchBy">Search Patient</label>
+            <div class="d-flex align-items-center justify-content-start">
+              <input type="text" #searchPatient [(ngModel)]="filterPatientDto.searchParam" autocomplete="off"
+              class="form-control form-control-sm box-shadow w-100" id="searchBy" placeholder="Name / EMR ID" />
+            </div>
+        </div> -->
+        <div class="flex-1">
+          <label for="searchBy">Search Patient</label>
+          <div class="d-flex align-items-center justify-content-start">
+            <input [hidden]="filterPatientDto.filterBy === 2" type="text" #searchPatient
+              [(ngModel)]="filterPatientDto.searchParam" autocomplete="off"
+              class="form-control form-control-sm box-shadow w-100" id="searchBy"
+              placeholder="{{ filterPatientDto.filterBy === 1 ? 'Name / EMR ID' : filterPatientDto.filterBy === 2 ? 'Date of Birth e.g yyyy-MM-dd': 'Phone No'}}" />
+            <input [hidden]="filterPatientDto.filterBy !== 2" id="searchBy" type="text"
+              class="bg-white form-control form-control-sm box-shadow w-100" #dateDPicker="dpDayPicker" autocomplete="off"
+              [dpDayPicker]="datePickerConfig2" placeholder="MM-DD-YYYY" [(ngModel)]="filterPatientDto.searchParam"
+              (ngModelChange)="filterPatientDto.searchParam.length == 10 ? filterPatients(): ''"
+              [theme]="'dp-material ccm-date-picker'" [mode]="'day'" [appendTo]="'body'" />
+          </div>
+        </div>
+        <div class="flex-1 ml-1">
+          <div>
+            <label for="namea">Filter By</label>
+            <ng-select class="ng-select-small" [(ngModel)]="filterPatientDto.filterBy"
+              (ngModelChange)="filterPatientDto.searchParam = '';filterPatients()" [closeOnSelect]="true" [multiple]="false"
+              [searchable]="true" placeholder="Filter By">
+              <ng-option [value]="1">Name, EMR ID </ng-option>
+              <ng-option [value]="2">Date of Birth </ng-option>
+              <ng-option [value]="3">Phone No </ng-option>
+            </ng-select>
+          </div>
+        </div>
+        <div>
+          <button type="button" class="btn btn-dynamic-2c btn-sm my-0 flex-shrink-0 mr-0" appDebounceClick (debounceClick)="home.toggle()"
+          ><i class="fa fa-filter fa-lg"></i>
+              Filter</button>
+              <button type="button" class="btn btn-dynamic-secondary-2c btn-sm my-0 flex-shrink-0"
+              (click)="resetFilter(); filterPatients()"><i class="fa fa-refresh fa-lg"></i> Reset</button>
+        </div>
+
+          </div>
+        </div>
+        <div class="search-filter collapseable" mdbCollapse #home="bs-collapse">
+          <div class="panel mt-3" style="overflow: visible;">
+            <div class="panel-header d-flex justify-content-between align-items-center">
+              <h3>Search Filter</h3>
+              <div>
+                <button type="button" class="close pull-right" aria-label="Close" (click)="home.hide()">
+                  <span aria-hidden="true">×</span>
+                </button>
+              </div>
+            </div>
+            <div class="panel-body">
+              <div class="row justify-content-between">
+                <div class="col-xl-6 col-lg-6 col-sm-6">
+                  <div class="form-group">
+                    <label for="namee">Insurance</label>
+                    <ng-select class="ng-select-small" id="measure" [searchable]="false"
+                      [(ngModel)]="filterPatientDto.payerIds" [multiple]="false" placeholder="Select Measure"
+                      [closeOnSelect]="false" [multiple]="true">
+                      <ng-option [value]="0">None</ng-option>
+                      <ng-option [value]="item.payerId" *ngFor="let item of insurancePLanList">{{item.payerName}}
+                      </ng-option>
+                    </ng-select>
+                  </div>
+                </div>
+                <div class="col-xl-3 col-lg-6 col-sm-6">
+                  <div class="form-group">
+                    <label for="PatientS">Patient Status</label>
+                    <ng-select [(ngModel)]="filterPatientDto.patientStatus" (ngModelChange)="FilterSelect()" [multiple]=true appendTo="body" [searchable]="false"
+                      class="ng-select-small" placeholder="Patient Status" [closeOnSelect]="true">
+                      <ng-option [value]="0">All</ng-option>
+                      <ng-container *ngFor="let item of patientStatusArr" >
+                        <ng-option *ngIf="item.name!=='Not Set'" [value]="item.value" >{{item.name}}</ng-option>
+                      </ng-container>
+
+                    </ng-select>
+                  </div>
+                </div>
+
+                <div class="col-xl-3 col-lg-6 col-sm-6 text-right">
+                  <div class="btn-group" style="    padding-top: 1.85rem;">
+                    <button type="button" class="btn btn-dynamic-2c btn-sm my-0 flex-shrink-0"
+                      (click)="filterPatients(); scrollToTable();"><i class="fa fa-filter fa-lg"></i> Search</button>
+
+                    <!-- <button type="button"  class="btn btn-dynamic-secondary-2c btn-sm my-0 flex-shrink-0 float-right"
+                      (click)="getPatientListExcelFile()"> Download</button> -->
+
+                  </div>
+                </div>
+                <!-- <div class="col ml-auto align-self-end">
+                  <button class="d-flex ml-auto btn btn-dynamic-2c btn-sm mx-0" title="{{'abcd'}} Patients"
+                    >Download</button>
+                </div> -->
+
+              </div>
+            </div>
+
+
+          </div>
+        </div>
+
+
+<div class="position-relative patients-list">
+
+    <!-- <div appCcmLoader>
+        <div class="loader-wrap" >
+          <div class="text-dynamic-2c la-ball-pulse ccm-loader">
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+      </div> -->
+
+    <div class="d-flex justify-content-center text-center loadingrow" *ngIf="isLoading">
+        <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+    </div>
+
+    <table datatable [dtOptions]="dtOptions" id="landingTable" [dtTrigger]="dtTrigger" class="cell-border hover text-nowrap ccm-datatable">
+        <thead>
+            <tr>
+                <th class="text-center" width="30">
+                  <div class="custom-control custom-checkbox  d-inline-block">
+                    <input class="custom-control-input" type="checkbox" id="selectAll" [(ngModel)]="gridCheckAll"
+                      (change)="gridAllRowsCheckBoxChecked($event)">
+                    <label class="custom-control-label" for="selectAll"></label>
+                  </div>
+                </th>
+                <th width="30">No.</th>
+                <th><span style="white-space: nowrap; display: block;width:120px">Patient</span></th>
+                <th>Status</th>
+                <th *ngIf="serviceSettingObj.ccmService">CCM</th>
+                <th *ngIf="serviceSettingObj.rpmService">RPM</th>
+                <th *ngIf="serviceSettingObj.pcmService">PCM</th>
+                <th *ngIf="serviceSettingObj.tcmService">TCM</th>
+                <th *ngIf="serviceSettingObj.bhiService">BHI</th>
+                <th>AWV</th>
+                <th *ngIf="serviceSettingObj.prcmService">ENDO</th>
+                <!-- <th></th> -->
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let row of rows; let i = index" >
+              <!-- (click)="row.checked = !row.checked; selectRow(row)" -->
+              <td class="text-center" width="30">
+                  <div class="custom-control custom-checkbox">
+                    <input [disabled]="row.patientStatus === 3 || row.patientStatus === 7 || row.patientStatus === 8" class="custom-control-input" type="checkbox" id="{{(i + 1) + rowIndex}}" [(ngModel)]="row.checked"
+                      (click)="rowCheckBoxChecked($event, row)">
+                    <label class="custom-control-label" for="{{(i + 1) + rowIndex}}"></label>
+                  </div>
+              </td>
+              <td class="text-center" width="30">
+                <small class="mr-3">{{ i + 1 + rowIndex }}</small>
+              </td>
+                <td [ngClass]="{disabledDiv: row.isDeletedState}">
+                    <!-- <a class="mb-0 text-capitalize link text-dynamic-2c text-left ml-2"
+                        style="white-space: nowrap; width: 250px;">
+                        {{row.fullName}} </a> -->
+                  <div class="d-flex align-items-center justify-content-between">
+                    <div class="d-inline-flex align-items-center ">
+                      <div>
+                        <span [class.disabled]="row.patientStatus === 3 || row.patientStatus === 7 || row.patientStatus === 8  || row.patientStatus === 9 " *ngIf="row.profileStatus" (click)="OpenEncounterLogsModal(row,openEncounterLogsModal)" class="status-bullet bg-success" title="Profile Complete &#013;Click to see Logs History"></span>
+                        <span [class.disabled]="row.patientStatus === 3 || row.patientStatus === 7 || row.patientStatus === 8  || row.patientStatus === 9 " *ngIf="!row.profileStatus" (click)="OpenEncounterLogsModal(row,openEncounterLogsModal)" class="status-bullet bg-danger" title="Profile Incomplete &#013;Click to see Logs History"></span>
+                      </div>
+                      <button class="mb-0 text-capitalize btn btn-sm btn-transparent-btn text-dynamic-2c text-left ml-2" placement="right" container="body" [disabled]="row.patientStatus === 3 || row.patientStatus === 7 || row.patientStatus === 8  || row.patientStatus === 9 "
+                        [mdbTooltip]="popTemplate" (mouseover)='delayForMouseOver(row.id)' (mouseleave)="clearMouseInterval(row.id)"
+                          (click)="onClickRow(row, $event)" [ngClass]="{rowBackgroundColorDiv: row.isDeletedState}"
+                          style="white-space: nowrap; height: 36px; display: inline-flex;margin-right:10px;
+                        align-items: center;width: 100px;overflow: hidden;text-overflow: ellipsis;display: block;" >
+                        {{row.fullName}}
+                      </button>
+                    </div>
+                    <div  class="d-inline-flex align-items-center">
+                      <span [class.disabled]="row.patientStatus === 3 || row.patientStatus === 7 || row.patientStatus === 8  || row.patientStatus === 9 "  title="{{row.lastAppLaunchDate}}" (click)="getChatGroup(row)" *ngIf="row.lastAppLaunchDate && row.isActiveMobileUser" class=" fa-mobile-custom-active" >
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="#ffffff" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 72.93 122.88" style="enable-background:new 0 0 72.93 122.88" xml:space="preserve"><style type="text/css">.st023{fill-rule:evenodd;clip-rule:evenodd;}</style><g><path class="st023" d="M10.94,0h51.04C68,0,72.93,4.93,72.93,10.94v100.99c0,6.02-4.93,10.94-10.94,10.94l-51.04,0 C4.93,122.88,0,117.95,0,111.94V10.95C0,4.93,4.93,0,10.94,0L10.94,0z M36.46,100.1c3.91,0,7.09,3.17,7.09,7.09 c0,3.91-3.18,7.09-7.09,7.09c-3.92,0-7.09-3.17-7.09-7.09C29.37,103.28,32.55,100.1,36.46,100.1L36.46,100.1z M25.17,8.86h22.59 c0.16,0,0.3,0.14,0.3,0.3v3.3c0,0.16-0.14,0.3-0.3,0.3H25.17c0,0,0,0,0,0c-0.16,0-0.3-0.13-0.3-0.3v0l0-3.3c0,0,0,0,0,0 C24.87,8.99,25,8.86,25.17,8.86L25.17,8.86L25.17,8.86L25.17,8.86z M9.65,21.53h53.63c0.98,0,1.78,0.81,1.78,1.78v70.01 c0,0.97-0.81,1.78-1.78,1.78H9.65c-0.97,0-1.78-0.8-1.78-1.78V23.3C7.87,22.33,8.67,21.53,9.65,21.53L9.65,21.53z"/></g></svg>
+                      </span>
+                      <span [class.disabled]="row.patientStatus === 3 || row.patientStatus === 7 || row.patientStatus === 8  || row.patientStatus === 9 " title="{{row.lastAppLaunchDate}}" (click)="getChatGroup(row)" *ngIf="row.lastAppLaunchDate && !row.isActiveMobileUser" class="fa-mobile-custom-inactive" >
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="#ffffff" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 72.93 122.88" style="enable-background:new 0 0 72.93 122.88" xml:space="preserve"><style type="text/css">.st023{fill-rule:evenodd;clip-rule:evenodd;}</style><g><path class="st023" d="M10.94,0h51.04C68,0,72.93,4.93,72.93,10.94v100.99c0,6.02-4.93,10.94-10.94,10.94l-51.04,0 C4.93,122.88,0,117.95,0,111.94V10.95C0,4.93,4.93,0,10.94,0L10.94,0z M36.46,100.1c3.91,0,7.09,3.17,7.09,7.09 c0,3.91-3.18,7.09-7.09,7.09c-3.92,0-7.09-3.17-7.09-7.09C29.37,103.28,32.55,100.1,36.46,100.1L36.46,100.1z M25.17,8.86h22.59 c0.16,0,0.3,0.14,0.3,0.3v3.3c0,0.16-0.14,0.3-0.3,0.3H25.17c0,0,0,0,0,0c-0.16,0-0.3-0.13-0.3-0.3v0l0-3.3c0,0,0,0,0,0 C24.87,8.99,25,8.86,25.17,8.86L25.17,8.86L25.17,8.86L25.17,8.86z M9.65,21.53h53.63c0.98,0,1.78,0.81,1.78,1.78v70.01 c0,0.97-0.81,1.78-1.78,1.78H9.65c-0.97,0-1.78-0.8-1.78-1.78V23.3C7.87,22.33,8.67,21.53,9.65,21.53L9.65,21.53z"/></g></svg>
+                      </span>
+                      <ng-container *hasClaim="['ChatService','TelephonyCommunication']">
+                        <button *ngIf="row.telephonyCommunication" type="button" (click)="getChatGroup(row, 2)" class="btn btn-dynamic-2c btn-icon my-1 ml-0 position-relative">
+                          <i class="fa fa-comments"></i>
+                          <div class="comments-counts" *ngIf="row.unAssociatedCommunication > 0">{{row.unAssociatedCommunication}}</div>
+                        </button>
+                        <!-- <button *ngIf="!row.telephonyCommunication" type="button" (click)="OpenPatientSetting(row)" class="btn btn-danger btn-icon my-1 ml-0"> -->
+                        <button *ngIf="!row.telephonyCommunication" type="button" (click)="getChatGroup(row, 2)" class="btn btn-danger btn-icon my-1 ml-0 position-relative">
+                          <i class="fa fa-comments"></i>
+                          <div class="comments-counts" *ngIf="row.unAssociatedCommunication > 0">{{row.unAssociatedCommunication}}</div>
+                        </button>
+                      </ng-container>
+                      <!-- <button type="button" (click)="OpenPatientSetting(row)" class="btn btn-dynamic-2c btn-icon my-1 ml-0">
+                        <i class="fa fa-comments"></i>
+                      </button> -->
+                      <button [disabled]="row.patientStatus === 3 || row.patientStatus === 7 || row.patientStatus === 8  || row.patientStatus === 9 "  (click)="OpenQuickViewModal(row)" title="Patient Insights"
+                      class="btn btn-dynamic-2c btn-icon my-1 mr-0 ml-0" >
+                      <i class="fa fa-exclamation-circle"></i>
+                      </button>
+                      <button [disabled]="row.patientStatus === 3 || row.patientStatus === 7 || row.patientStatus === 8  || row.patientStatus === 9 " class="btn btn-icon btn-dynamic-2c mr-0" [ngClass]="{disabledDiv: row.isDeletedState}" [routerLink]="['/admin/addPatient/' + row.id]" title="Edit Patient"><i class="fa fa-edit"></i></button>
+                      <ng-conatiner>
+                        <button class="btn btn-icon btn-danger mr-0"  *hasClaim="['CanDeletePatient']" (click)="selectedPatient=row;deletePatientDto.patientId=row.id;CheckPatientHasEncounters();deletePatientModal.show();" title="Delete Patient"><i class="fa fa-trash"></i></button>
+                      </ng-conatiner>
+                      <ng-conatiner *ngIf="row.patientStatus !== 3 && row.patientStatus !== 7 && row.patientStatus !== 8">
+                        <button [disabled]="row.ccmStatus == 7 || row.rpmStatus == 0 || row.pcmStatus == 1 ||row.bhiStatus == 4 ||row.bhiStatus == 6 || row.tcmStatus == 1 || row.tcmStatus == 2 || row.prCMStatus == 1" class="btn btn-icon btn-success mr-0"  (click)="selectedPatient=row;CheckPatientHasEncounters();patientStatusCHangeModal.show();" ><i class="fa fa-user-times"></i></button>
+                      </ng-conatiner>
+                      <ng-conatiner *ngIf="row.patientStatus === 3 || row.patientStatus === 7 || row.patientStatus === 8  || row.patientStatus === 9 ">
+                        <button [title]="'Current Status: ' + patientStatus[row.patientStatus]" class="btn mr-0 btn-icon btn-info"
+                        (click)="ConfirmReActive(row)" ><i class="fa fa-repeat"></i></button>
+                      </ng-conatiner>
+                      <button [disabled]="row.patientStatus === 3 || row.patientStatus === 7 || row.patientStatus === 8  || row.patientStatus === 9 ||row.isDeletedState" title="Complaint Dialog" (click)="openComplaintsModal(row)" class="btn btn-dynamic-2c btn-icon">
+                        <i class="fa fa-bug"></i>
+                      </button>
+                    </div>
+
+                  </div>
+
+                          <ng-template #popTemplate>
+                            <div class="p-2" >
+                              <p class="mb-0  text-left"><strong>DOB:</strong> {{row.dateOfBirth | dateFormatPipe}} </p>
+                              <p class="mb-1  text-left"><strong>EMR ID:</strong> {{row.patientEmrId}} </p>
+                              <div *ngFor="let item of patientActieServicesDto.activeServices">
+                                <div class="mb-1" *ngIf="!isServiceLoad">
+                                  <p class="mb-0 text-left" style="font-size: 13px;"><strong>{{item.serviceName}}</strong></p>
+                                  <p class="mb-0 pl-1 text-left" style="font-size: 12px;" *ngIf="item.serviceName !== 'BHI' && item.serviceName !== 'RPM' && item.assignedDate"><strong>Assigned Date:</strong> {{item.assignedDate | dateFormatPipe}} </p>
+                                  <p class="mb-0 pl-1 text-left" style="font-size: 12px;" *ngIf="item.lastEncounterDate"><strong>Last Encounter date:</strong> {{item.lastEncounterDate | dateFormatPipe}} </p>
+                                  <p class="mb-0 pl-1 text-left" style="font-size: 12px;" *ngIf="item.updatedDate"><strong>Last Updated date:</strong> {{item.updatedDate | dateFormatPipe}} </p>
+                                </div>
+                              </div>
+                            </div>
+
+
+                          </ng-template>
+
+                        <!-- <ng-template #popTemplate>
+                          <div class="p-2">
+                            <p class="mb-0"><strong>DOB</strong> {{row.dateOfBirth | dateFormatPipe}} </p>
+                            <p class="mb-0"><strong>EMR ID:</strong> {{row.patientEmrId}} </p>
+                          </div>
+
+                        </ng-template> -->
+
+                </td>
+
+                <!-- <td class="text-center">
+                    <div class="custom-control custom-checkbox">
+                      <input [disabled]="row.patientStatus === 3 || row.patientStatus === 7 || row.patientStatus === 8  || row.patientStatus === 9 " class="custom-control-input" type="checkbox" id="{{(i + 1) + rowIndex}}" [(ngModel)]="row.checked"
+                        (click)="rowCheckBoxChecked($event, row)">
+                      <label class="custom-control-label" for="{{(i + 1) + rowIndex}}"></label>
+                    </div>
+                </td> -->
+                <td class="">
+                  <!-- <span id="popTemplate" (click)="tempSelectedPatient = row;tempCcmStatusVal = row.ccmStatus" #pop="bs-mdbPopover" mdbPopoverHeader="Change CCM Status" [mdbPopover]="popTemplate">{{ccmStatus[row.ccmStatus]}}</span>  -->
+                  <a class="">{{patientStatus[row.patientStatus]}}</a>
+                </td>
+                <td *ngIf="serviceSettingObj.ccmService" class="status-popover" [ngClass]="{disabledDiv: row.isDeletedState}">
+                  <!-- <span id="popTemplate" (click)="tempSelectedPatient = row;tempCcmStatusVal = row.ccmStatus" #pop="bs-mdbPopover" mdbPopoverHeader="Change CCM Status" [mdbPopover]="popTemplate">{{ccmStatus[row.ccmStatus]}}</span>  -->
+                  <button  [title]="row.ccmLastStatusChangedByNameAndDate" [disabled]="row.patientStatus === 3 || row.patientStatus === 7 || row.patientStatus === 8  || row.patientStatus === 9 " class="btn btn-sm btn-transparent-btn text-dynamic-2c {{row.hhcEndDateClass}}"
+                  (click)="tempCcmStatusVal=row.ccmStatus;tempSelectedPatient=row;selectModalList = 'ccmStatus';changeStatus(row); ccmStatusModal.show();">{{ccmStatus[row.ccmStatus]}}</button>
+                </td>
+                <td *ngIf="serviceSettingObj.rpmService" [ngClass]="{disabledDiv: row.isDeletedState}">
+                  <button [title]="row.rpmLastStatusChangedByNameAndDate" class="btn btn-sm btn-transparent-btn text-dynamic-2c" [disabled]="row.patientStatus === 3 || row.patientStatus === 7 || row.patientStatus === 8  || row.patientStatus === 9 "
+                  (click)="tempSelectedPatient = row; selectModalList = 'rpmStatus'; ccmStatusModal.show();">{{rpmStatus[row.rpmStatus]}}</button></td>
+                <td *ngIf="serviceSettingObj.pcmService" [ngClass]="{disabledDiv: row.isDeletedState}">
+                  <button class="btn btn-sm btn-transparent-btn text-dynamic-2c" [disabled]="row.patientStatus === 3 || row.patientStatus === 7 || row.patientStatus === 8  || row.patientStatus === 9 "
+                  (click)="tempSelectedPatient = row; selectModalList = 'pcmStatus'; ccmStatusModal.show();">{{pcmStatus[row.pcmStatus]}}</button></td>
+                <td *ngIf="serviceSettingObj.tcmService">{{tcmStatus[row.tcmStatus]}}</td>
+                <td *ngIf="serviceSettingObj.bhiService" [ngClass]="{disabledDiv: row.isDeletedState}">
+                  <button [title]="row.bhiLastStatusChangedByNameAndDate" class="btn btn-sm btn-transparent-btn text-dynamic-2c" [disabled]="row.patientStatus === 3 || row.patientStatus === 7 || row.patientStatus === 8  || row.patientStatus === 9 "
+                  (click)="tempSelectedPatient = row; selectModalList = 'bhiStatus'; ccmStatusModal.show();">{{bhiStatus[row.bhiStatus]}}</button></td>
+                  <td [ngClass]="{disabledDiv: row.isDeletedState}">
+                    <button [title]="row.rpmLastStatusChangedByNameAndDate" class="btn btn-sm btn-transparent-btn text-dynamic-2c" [disabled]="row.patientStatus === 3 || row.patientStatus === 7 || row.patientStatus === 8  || row.patientStatus === 9 "
+                  (click)="tempSelectedPatient = row; selectModalList = 'awsServiceStatus'; ccmStatusModal.show();">{{awServiceStatus[row.awServiceStatus]}}</button>
+                  </td>
+                <td *ngIf="serviceSettingObj.prcmService" [ngClass]="{disabledDiv: row.isDeletedState}">
+                  <button class="btn btn-sm btn-transparent-btn text-dynamic-2c" [disabled]="row.patientStatus === 3 || row.patientStatus === 7 || row.patientStatus === 8  || row.patientStatus === 9 "
+                  (click)="tempSelectedPatient = row; selectModalList = 'prcmStatus'; ccmStatusModal.show();">{{prCMStatus[row.prCMStatus]}}</button></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+
+<ng-template #popTemplate>
+
+    <ul class="drop-list">
+        <li *ngFor="let Status of ccmStatusEnumList" >
+            <div class="custom-control custom-radio" >
+                <input type="radio" [value]="Status.number" class="custom-control-input" [(ngModel)]="tempCcmStatusVal" name="ccmStatus" id="ccm-status-{{Status.number}}"
+                (change)="AssignCcmStatus(selectedPatient.id)">
+                <label class="custom-control-label" for="ccm-status-{{Status.number}}">{{Status.word}}</label>
+            </div>
+        </li>
+    </ul>
+
+</ng-template>
+
+<div mdbModal #deletePatientModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-md flat-modal modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="deletePatientModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100">Delete Patient</h4>
+      </div>
+      <div class="modal-body">
+
+        <div class="row text-center" *ngIf="checkingHasEncounter">
+          <div class="col-sm-12">
+            <span class="mr-1 p-3 spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          </div>
+        </div>
+        <div class="row" *ngIf="hasPreviousEncounters">
+          <div class="col-sm-12">
+
+            <div class="alert alert-danger" role="alert">
+
+              <p class="mb-0" style="font-size: 14px;">Unable to delete Patient, this patient has active encounters!
+              </p>
+            </div>
+
+          </div>
+        </div>
+        <div class="row" *ngIf="!checkingHasEncounter && !hasPreviousEncounters">
+          <div class="col-sm-12">
+
+            <div class="alert alert-danger" role="alert">
+
+              <p class="mb-0" style="font-size: 14px;">Only delete the patient in case the patient was added erroneously or there is a duplicate record.<br>
+                For any other reason please use Patient InActive button or Contact IT Support.
+              </p>
+              <!-- <p class="mb-0" style="font-size: 14px;">Only delete the patient in case the patient was added
+                erroneously
+                or there is a duplicate record.<br>
+                For any other reason please change the CCM status of the patient.
+                Deleted patients will be erased from the database along with their previous records. In most cases
+                changing status is
+                more appropriate. Never delete the patient with current month activity else it will affect the
+                invoice,
+                please contact
+                support for appropriate action.
+              </p> -->
+            </div>
+
+          </div>
+          <!-- <div class="col-sm-12 mb-2">
+            <small class="text-dynamic-2c text-uppercase font-500">User Information</small>
+          </div> -->
+          <div class="col-sm-12">
+            <div class="form-group">
+              <label for="practiceName">Delete Status <sup class="text-danger">*</sup></label>
+              <ng-select class="ng-select-small" [clearable]="false" [(ngModel)]="deletePatientDto.reasonDeleted" [multiple]="false"
+                [searchable]="true" placeholder="Status">
+                <!-- <ng-option [value]="0">None</ng-option> -->
+                <ng-option [value]="2">Duplicate Entry </ng-option>
+                <ng-option [value]="3">Added Erronously </ng-option>
+              </ng-select>
+            </div>
+
+            <div class="form-group">
+              <label for="reason">Reason <sup class="text-danger">*</sup></label>
+              <textarea type="text" id="reason" rows="15" [(ngModel)]="deletePatientDto.reasonDeleteDetails"
+                placeholder="Reason" class="form-control" style="height: 150px;"></textarea>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-dark btn-sm" (click)="deletePatientModal.hide()">Close</button>
+        <!-- <button *ngIf="hasPreviousEncounters" type="button" class="btn btn-success btn-sm" (click)="hasPreviousEncounters=false">Confirm</button> -->
+        <button *ngIf="!checkingHasEncounter && !hasPreviousEncounters" type="submit" class="btn btn-dynamic-2c btn-sm" (click)="deletePatientModal.hide();deletePatient()"
+          [disabled]="!deletePatientDto.reasonDeleted || !deletePatientDto.reasonDeleteDetails">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div mdbModal #patientStatusCHangeModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true" (open)="deactivateReason=''">
+  <div class="modal-dialog modal-dialog-centered modal-md flat-modal modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="patientStatusCHangeModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100">Deactivate Patient</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row text-center" *ngIf="checkingHasEncounter">
+          <div class="col-sm-12">
+            <span class="mr-1 p-3 spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          </div>
+        </div>
+        <div class="row" *ngIf="hasPreviousEncounters">
+          <div class="col-sm-12">
+
+            <div class="alert alert-danger" role="alert">
+
+              <p class="mb-0" style="font-size: 14px;">This user has active encounters, please confirm?
+              </p>
+            </div>
+
+          </div>
+        </div>
+        <div class="row" *ngIf="!checkingHasEncounter && !hasPreviousEncounters">
+          <div class="col-sm-12">
+
+            <div class="alert alert-danger" role="alert">
+
+              <p class="mb-0" style="font-size: 14px;">
+                Deactivate patient will remove its name from all services list. Deactivation status is defined in drop down below, for any other status please Contact IT Support.
+              </p>
+              <!-- <p class="mb-0" style="font-size: 14px;">Only delete the patient in case the patient was added
+                erroneously
+                or there is a duplicate record.<br>
+                For any other reason please change the CCM status of the patient.
+                Deleted patients will be erased from the database along with their previous records. In most cases
+                changing status is
+                more appropriate. Never delete the patient with current month activity else it will affect the
+                invoice,
+                please contact
+                support for appropriate action.
+              </p> -->
+            </div>
+
+          </div>
+          <div class="col-sm-12">
+            <div class="form-group">
+              <label for="practiceName">Deactivate Status <sup class="text-danger">*</sup></label>
+              <ng-select class="ng-select-small" [clearable]="false" [(ngModel)]="deactivateStatus" [multiple]="false"
+                [searchable]="true" placeholder="Status">
+                <!-- <ng-option [value]="0">None</ng-option> -->
+                <ng-option [value]="3">Deceased </ng-option>
+                <ng-option [value]="7">Unable To Contact </ng-option>
+                <ng-option [value]="8">Change Provider </ng-option>
+                <ng-option [value]="9">Other </ng-option>
+              </ng-select>
+            </div>
+          </div>
+          <!-- <div class="col-sm-12 mb-2">
+            <small class="text-dynamic-2c text-uppercase font-500">User Information</small>
+          </div> -->
+          <div class="col-sm-12">
+
+            <div class="form-group">
+              <label for="deactivateReason">Reason <sup class="text-danger">*</sup></label>
+              <textarea type="text" id="deactivateReason" rows="15" [(ngModel)]="deactivateReason"
+                placeholder="Reason" class="form-control" style="height: 150px;"></textarea>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-dark btn-sm" (click)="patientStatusCHangeModal.hide()">Close</button>
+        <button *ngIf="hasPreviousEncounters" type="button" class="btn btn-success btn-sm" (click)="hasPreviousEncounters=false">Confirm</button>
+        <button *ngIf="!checkingHasEncounter && !hasPreviousEncounters" type="submit" class="btn btn-dynamic-2c btn-sm" (click)="patientStatusCHangeModal.hide();MarkPatientInActive()"
+          [disabled]="!selectedPatient || !selectedPatient.id || !deactivateReason">Proceed</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div mdbModal #ccmStatusModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true" mdbTableScroll (close)="clearCCMStatusChangeDtoValues()">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="ccmStatusModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" *ngIf="selectModalList === 'ccmStatus'" id="myModalLabel">CCM Status</h4>
+        <h4 class="modal-title w-100" *ngIf="selectModalList === 'bhiStatus'" id="myModalLabel">BHI Status</h4>
+        <h4 class="modal-title w-100" *ngIf="selectModalList === 'rpmStatus'" id="myModalLabel">RPM Status</h4>
+        <h4 class="modal-title w-100" *ngIf="selectModalList === 'pcmStatus'" id="myModalLabel">PCM Status</h4>
+        <h4 class="modal-title w-100" *ngIf="selectModalList === 'prcmStatus'" id="myModalLabel">PrCM Status</h4>
+        <h4 class="modal-title w-100" *ngIf="selectModalList === 'awsServiceStatus'" id="myModalLabel">AWV Service Status</h4>
+      </div>
+      <div class="modal-body">
+        <div *ngIf="selectModalList === 'ccmStatus'">
+          <ul class="status-list">
+            <li *ngFor="let item of ccmStatusEnumList" [class.active]="tempCcmStatusVal=== item.number"> <a
+                class="link"
+                (click)="ccmStatusChangeDto.newStatusValue = item.number;tempCcmStatusVal= item.number">{{item.word}}
+              </a>
+            </li>
+          </ul>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="ml-1 form-group">
+              <!-- <label for="medName">Reason</label> -->
+                <textarea name="status" id="" cols="30" rows="10" class="form-control form-control-sm"
+                  [(ngModel)]="ccmStatusChangeDto.reason" id="medName" placeholder="Reason"></textarea>
+              </div>
+            </div>
+            <div class="col-md-12" *ngIf="tempCcmStatusVal==25">
+              <div class="form-group ml-1 ">
+                <div class="d-flex justify-content-between align-items-center">
+                  <label class="mb-0"><strong>Duration</strong></label>
+                  <div class="ml-1">
+                    <div class="custom-control custom-checkbox">
+                      <input class="custom-control-input" [checked]="!ccmStatusChangeDto.hhcEndDate" (change)="ccmStatusChangeDto.hhcEndDate=''" type="checkbox" id="selectd" >
+                      <label class="custom-control-label" for="selectd">Not Known</label>
+                    </div>
+                  </div>
+                </div>
+                <input type="text" class="form-control form-control-sm" [(ngModel)]="ccmStatusChangeDto.hhcEndDate"
+                #dateDPicker="dpDayPicker" [dpDayPicker]="assignedDatePickerConfig" placeholder="YYYY-MM-DD"
+                [theme]="'dp-material ccm-date-picker'" [mode]="'day'" />
+              </div>
+            </div>
+          </div>
+          <!-- <ul class="link-list" *ngFor="let item of ccmStatusEnumList">
+            <li [class.active]="tempSelectedPatient.ccmStatus === item.number" (click)="AssignCcmStatus(item)"> <a
+                class="link">{{item.word}}
+              </a>
+            </li>
+
+          </ul> -->
+        </div>
+        <div *ngIf="selectModalList === 'awsServiceStatus'">
+          <ul class="status-list">
+            <li *ngFor="let item of awvServiceStatusEnumList" [class.active]="tempSelectedPatient.awServiceStatus== item.value"> <a
+                class="link"
+                (click)="tempSelectedPatient.awServiceStatus= item.value;rpmStatusChangeDto.newStatusValue = item.value;assignAwServiceStatus(item.value) ">{{item.name}}
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div *ngIf="selectModalList === 'rpmStatus'">
+          <ul class="status-list">
+            <li *ngFor="let item of rpmStatusEnumList" [class.active]="tempSelectedPatient.rpmStatus=== item.number"> <a
+                class="link"
+                (click)="tempSelectedPatient.rpmStatus= item.number;rpmStatusChangeDto.newStatusValue = item.number;AssignRPMStatus() ">{{item.word}}
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div *ngIf="selectModalList === 'bhiStatus'">
+          <ul class="status-list">
+            <li *ngFor="let item of bhiStatusEnumList" [class.active]="tempSelectedPatient.bhiStatus=== item.number"> <a
+                class="link"
+                (click)="tempSelectedPatient.bhiStatus= item.number;bhiStatusChangeDto.bhiStatus = item.number;AssignBHIStatus() ">{{item.word}}
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div *ngIf="selectModalList === 'pcmStatus'">
+          <ul class="status-list">
+            <li *ngFor="let item of pcmStatusEnumList" [class.active]="tempSelectedPatient.pcmStatus=== item.number"> <a
+                class="link"
+                (click)="tempSelectedPatient.pcmStatus= item.number;pcmStatusChangeDto.pcmStatus = item.number;AssignPCMStatus() ">{{item.word}}
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div *ngIf="selectModalList === 'prcmStatus'">
+          <ul class="status-list">
+            <li *ngFor="let item of prcmStatusEnumList" [class.active]="tempSelectedPatient.prCMStatus=== item.number"> <a
+                class="link"
+                (click)="tempSelectedPatient.prCMStatus= item.number;prcmStatusChangeDto.prCMStatus = item.number;AssignPrCMStatus() ">{{item.word}}
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+
+        <button  [disabled]="isChangingCCMStatus" *ngIf="selectModalList === 'ccmStatus'" [disabled]="!ccmStatusChangeDto.reason" type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c"
+          aria-label="save" mdbWavesEffect (click)="AssignCcmStatus()"> <span *ngIf="isChangingCCMStatus" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Save</button>
+        <button type="button" (click)="ccmStatusModal.hide()" class="waves-light btn btn-sm btn-dynamic-2c"
+          aria-label="Close" mdbWavesEffect>Cancel</button>
+        <!-- <button type="button" mdbBtn color="primry" (click)="addRequiredData()" class="relative waves-light"
+          mdbWavesEffect>Add Data</button> -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<div mdbModal #clickOnRow="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myBasicModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog flat-modal" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+
+        <h4 class="modal-title w-100 text-center" id="myModalLabel">Incomplete
+          Profile
+        </h4>
+      </div>
+      <div class="modal-body">
+        <p class="text-center">
+          <i class="fa fa-exclamation-triangle text-danger" style="font-size: 3rem;"></i>
+        </p>
+
+        <p class="text-center">
+          Patient profile looks incomplete. <br> Would you like to edit patient profile?
+        </p>
+
+        <!-- Some required fields are missing.Please enter that data first. -->
+        <div class="d-flex justify-content-center mt-3">
+          <button type="button"  (click)="addRequiredData()" class="relative btn btn-sm btn-dynamic-2c"
+            mdbWavesEffect>YES</button>
+          <button type="button" aria-label="Close"
+            (click)="clickOnRow.hide()" class="btn btn-sm btn-dynamic-secondary-2c">NO</button>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<div mdbModal #openEncounterLogsModal="mdbModal" class="modal fade" id="frameModalTop" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-xl mt-2" role="document">
+
+      <!--Content-->
+      <div class="modal-content">
+
+        <!--Body-->
+        <div class="modal-body mb-0 p-0" *ngIf="openEncounterLogsModal.isShown">
+          <div class="embed-responsive embed-responsive-16by9 z-depth-1-half" style="height: calc(100vh - 20px);">
+            <iframe class="embed-responsive-item" [src]="ccmLogsModalLink" allowfullscreen></iframe>
+          </div>
+        </div>
+
+      </div>
+      <!--/.Content-->
+
+    </div>
+  </div>

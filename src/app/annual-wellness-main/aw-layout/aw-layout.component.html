@@ -1,0 +1,194 @@
+<div class="d-flex flex-wrap align-items-center justify-content-between mb-3">
+  <div class="d-flex align-items-center justify-content-start">
+    <h4 class="mr-3 mb-0"><a class="text-dark" (click)="navigateBack()">
+        <i class="fa fa-arrow-left"></i></a></h4>
+    <h1 class="page-title mb-0">Annual Wellness </h1>
+  </div>
+  <!-- <button type="button" mdbBtn color="prmary" size="sm" [disabled]="isLoadingZip"
+              (click)="DownLoadPdf()" class="relative">
+    <span *ngIf="isLoadingZip" class="mr-1 spinner-border spinner-border-sm " role="status" aria-hidden="true"></span>
+    <span class="fa fa-download"></span>
+    Download
+  </button> -->
+  <app-patient-gap-detail></app-patient-gap-detail>
+</div>
+
+<app-patient-details></app-patient-details>
+
+<div class="row mt-3">
+  <div class="col-lg-{{(activeTabId !== 1) ? '12' : '12'}}">
+    <!-- "sticky-header-topnote" Add class when top notification header appear  -->
+    <div [class.sticky-header-topnote]="!appUi?.appAnnouncementsList?.length" class="ccm-header" id="ccm-header" (scroll)="onWindowScroll($event);">
+      <div class="d-flex justify-content-between align-items-center flex-wrap flex-sm-wrap ccm-nav"
+        style="min-width: 100%;">
+        <div>
+          <ul class="ccm-navbar">
+            <li (click)="activeTabId=1" routerLinkActive="active"><a [routerLink]="['awPatient']">Patient</a></li>
+            <li (click)="activeTabId=2" routerLinkActive="active"><a [routerLink]="['awProvider']">Staff</a> </li>
+            <li (click)="activeTabId=3" routerLinkActive="active"><a [routerLink]="['awPhysician']">Physician</a></li>
+            <li *ngIf="facilityFormsDto.hasSuperBill && patientFormsDto.hasSuperBill"
+            class="d-flex align-items-center" (click)="activeTabId=4" routerLinkActive="active"><a
+                [routerLink]="['awSupplement']">Super Bill</a><a *ngIf="awStatus !== 2" (click)="openConfirmModal2(2)" title="Remove Form" class="close-aw"><i class="fa fa-times"></i></a></li>
+            <li *ngIf="facilityFormsDto.hasHumana && patientFormsDto.hasHumana"
+            class="d-flex align-items-center" (click)="activeTabId=5" routerLinkActive="active"><a
+                [routerLink]="['awForm/humana']">Humana</a><a *ngIf="awStatus !== 2" (click)="openConfirmModal2(1)" title="Remove Form" class="close-aw"><i class="fa fa-times"></i></a></li>
+            <li *ngIf="facilityFormsDto.hasPWReport && patientFormsDto.hasPWReport"
+            class="d-flex align-items-center" (click)="activeTabId=6" routerLinkActive="active"><a
+                [routerLink]="['awForm/primeWest']">Prime West</a><a *ngIf="awStatus !== 2" (click)="openConfirmModal2(3)" title="Remove Form" class="close-aw"><i class="fa fa-times"></i></a></li>
+            <li *ngIf="facilityFormsDto.hasAWReport && patientFormsDto.hasAWReport"
+            class="d-flex align-items-center" (click)="activeTabId=7" routerLinkActive="active"><a
+                [routerLink]="['awForm/awvReport']">AWV Report</a><a *ngIf="awStatus !== 2" (click)="openConfirmModal2(4)" title="Remove Form" class="close-aw"><i class="fa fa-times"></i></a></li>
+          </ul>
+          <ng-container *ngIf="awStatus !== 2">
+
+            <div *ngIf="!patientFormsDto.hasHumana || !patientFormsDto.hasSuperBill || !patientFormsDto.hasPWReport || !patientFormsDto.hasAWReport" class="dropdown btn-group flex-1" mdbDropdown style="position: absolute; top: 8px;">
+              <button  mdbDropdownToggle class="btn btn-transparent btn-icon mr-3 ml-0 z-depth-0"><i class="fa fa-plus"></i></button>
+              <div class="dropdown-menu dropdown dropdown-menu-right">
+                <a class="dropdown-item" *ngIf="facilityFormsDto.hasHumana && !patientFormsDto.hasHumana" (click)="createForm(1)">Add Humana Form</a>
+                <a class="dropdown-item" *ngIf="facilityFormsDto.hasSuperBill && !patientFormsDto.hasSuperBill" (click)="createForm(2)">Add Super Bill</a>
+                <a class="dropdown-item" *ngIf="facilityFormsDto.hasPWReport && !patientFormsDto.hasPWReport" (click)="createForm(3)">Add Prime West</a>
+                <a class="dropdown-item" *ngIf="facilityFormsDto.hasAWReport && !patientFormsDto.hasAWReport" (click)="createForm(4)">Add AWV Report</a>
+                <!-- <a class="dropdown-item" *ngIf="facilityFormsDto.hasAWReport && !patientFormsDto.hasAWReport" (click)="createForm(3)">Add AWV Report</a> -->
+                <!-- <a class="dropdown-item">Something else here</a>
+                <div class="divider dropdown-divider"></div>
+                <a class="dropdown-item">Separated link</a> -->
+              </div>
+            </div>
+          </ng-container>
+
+        </div>
+
+        <div class="d-flex align-items-center justify-content-start">
+          <label for="staff" class="mb-0 mr-2 text-grey">AWV Staff</label>
+        <div style="min-width: 180px;">
+          <ng-select class="ng-select-small mr-2"  appendTo="body" [clearable]="false" [loading]="isLoadingPayersList" [(ngModel)]="careCoordinator"
+          (ngModelChange)="UpdateStaffCareCoordinator()" [disabled]="awStatus == 2"
+            [closeOnSelect]="true" [multiple]="false" [searchable]="true" placeholder="Care Coordinator">
+            <!-- <ng-option [value]="0">All</ng-option> -->
+            <ng-option [value]="item.id" *ngFor="let item of (facilityUsersList | filterFUsersByRole: 'Care Cordinator')">{{item.lastName}},{{item.firstName}} </ng-option>
+          </ng-select>
+        </div>
+          <div>
+
+
+          <button [disabled]="awStatus !== 1" title="Refresh gaps data" class="btn btn-dynamic-secondary-2c btn-icon mr-2 ml-0"
+            (click)="openConfirmModal()"><i class="fa fa-sync-alt"></i></button>
+          <button title="Copy data" class="btn btn-dynamic-2c btn-icon mr-2 ml-0" (click)="copyText()"><span *ngIf="isCopyAWData"
+          class="mr-1 spinner-border spinner-border-sm " role="status" aria-hidden="true"></span><i class="fa fa-copy fa-lg"></i></button>
+          <button [disabled]="downloadModalRef.isLoadingData" class="btn btn-dynamic-2c btn-icon mr-2 ml-0"
+            title="Download Pdf" appDebounceClick (debounceClick)="downloadModalRef.downloadDocumentsModal.show()"
+            [debounceTime]="200">
+            <span *ngIf="downloadModalRef.isLoadingData" class="spinner-border spinner-border-sm " role="status"
+              aria-hidden="true"></span>
+            <i *ngIf="!downloadModalRef.isLoadingData" class="fa fa-download"></i></button>
+          <button class="btn btn-dynamic-2c btn-icon mr-2 ml-0" title="Send to patient" appDebounceClick
+            (debounceClick)="sendtoPatientModal.show()" [debounceTime]="200" [disabled]="awStatus !== 1"><i
+              class="fa fa-share"></i></button>
+          <button class="btn btn-dynamic-2c btn-icon mr-2 ml-0" title="Patient Tab" [disabled]="awStatus !== 1"
+            appDebounceClick (debounceClick)="OPenPatientTab()" [debounceTime]="200"><i class="fa fa-user"></i></button>
+          </div>
+          <!-- <mdb-checkbox
+        [default]="true" class="mx-3 my-2"
+        [(ngModel)]="isSyncDisabled"
+        (change)="UpdateSyncFromAnnualWellness()"
+        >Disable Auto Update
+      </mdb-checkbox> -->
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<router-outlet></router-outlet>
+
+<div mdbModal #sendtoPatientModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="sendtoPatientModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <!-- <h4 class="modal-title w-100" id="myModalLabel"><i class="fa fa-exclamation-triangle yellow-text"></i>{{modalObj.Title}}
+        </h4> -->
+        <h4 class="modal-title w-100" id="myModalLabel">Send to Patient
+        </h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-sm-12">
+            <div class="form-group">
+              <label for="defaultLoginFormsignature">Email</label>
+              <div class="d-flex">
+                <input type="email" [(ngModel)]="sendToPatienTDto.email" name="email" autocomplete="new-email"
+                  id="defaultLoginFormemail" class="form-control form-control-sm" placeholder="Email">
+              </div>
+            </div>
+          </div>
+          <!-- <div class="col-lg-12 col-md-12 col-sm-12">
+            <div class="form-group">
+              <label for="defaultLoginFormsignature">Country Calling Code</label>
+              <div class="w-100">
+                <ng-select [(ngModel)]="countryCallingCode" [ngModelOptions]="{standalone: true}" id="countryCallingCode" class="ng-select-small" [multiple]="false" [searchable]="true"
+                placeholder="Select Country Calling Code">
+                <ng-option *ngFor="let item of countriesList" [value]="item">{{item.callingCode}} {{item.name}}
+                </ng-option>
+        </ng-select>
+              </div>
+            </div>
+          </div> -->
+          <div class="col-lg-12 col-md-12 col-sm-12">
+            <div class="form-group">
+              <label for="defaultLoginFormsignature">Phone</label>
+              <div class="d-flex">
+                <input type="Phone" mask="(000)000-0000" [(ngModel)]="sendToPatienTDto.phoneNo" name="Phone" autocomplete="new-Phone"
+                  id="defaultLoginFormPhone" class="form-control form-control-sm" placeholder="Phone">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+          (click)="sendtoPatientModal.hide()" mdbWavesEffect>Close</button>
+        <button [disabled]="sendingToPatient || (!sendToPatienTDto.email && !sendToPatienTDto.phoneNo)"
+          (click)="SendToPatient(sendtoPatientModal)" type="button"
+          class="relative waves-light btn btn-sm btn-dynamic-2c" mdbWavesEffect>
+          <span *ngIf="sendingToPatient" class="spinner-border spinner-border-sm" role="status"
+            aria-hidden="true"></span>
+          Send</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div mdbModal #viewPdfModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" [config]="{backdrop: true, ignoreBackdropClick: true}" aria-hidden="true"
+  (close)="objectURLStrAW=''">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <!-- <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="viewPdfModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">Pdf Document</h4>
+      </div> -->
+      <div class="modal-body" style="height:calc(100vh - 50px); padding: 0px;">
+        <button type="button" class="close pull-right document-close" aria-label="Close" (click)="viewPdfModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <app-pdf-view *ngIf="objectURLStrAW" [documentUrl]="objectURLStrAW"></app-pdf-view>
+        <!-- <mdb-tabset #ccmConsent [buttonClass]="'classic-tabs tabs-outline-primary'" [contentClass]="'p-0'"
+      class="classic-tabs tabs-outline-primary">
+        <mdb-tab *ngIf="objectURLStrAW && activeTabId===2">
+
+        </mdb-tab>
+        <mdb-tab *ngIf="objectURLStr && activeTabId===1">
+          <app-pdf-view [documentUrl]="objectURLStr"></app-pdf-view>
+        </mdb-tab>
+      </mdb-tabset> -->
+      </div>
+    </div>
+  </div>
+</div>
+<app-downloadaw-doc-conf #downloadModalRef [facilityFormsDto]="facilityFormsDto" [patientFormsDto]="patientFormsDto"
+  (proceedDownLoad)="DownLoadMergedPdf($event, downloadModalRef, viewPdfModal )"></app-downloadaw-doc-conf>

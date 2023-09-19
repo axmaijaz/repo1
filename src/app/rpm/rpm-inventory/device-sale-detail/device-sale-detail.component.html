@@ -1,0 +1,97 @@
+<div *ngIf="saleDetailHistory" class="d-flex justify-content-center text-center">
+  <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+</div>
+<ng-container *ngIf="!saleDetailHistory && !deviceSaleDetails?.length">
+    <div class="alert alert-info"> No sale info found</div>
+</ng-container>
+<ng-container *ngFor="let item of deviceSaleDetails">
+    <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-6 col-12">
+          <div class="pb-info pb-info-a mb-3 w-100">
+            <p title="Type"  >
+              <strong >Type</strong>
+              {{SaleTypeEnumObj[item.saleType]}}
+            </p>
+            <p  title="Date"  >
+              <strong >Date</strong>
+              {{item.saleDate | date}}
+            </p>
+            <p title="Sale Price"  >
+              <strong >Sale Price</strong>
+              {{item.salePrice}}
+            </p>
+            <p title="Shipping"  >
+              <strong >Shipping</strong>
+              {{item.shipping}}
+            </p>
+
+            <div class="d-flex align-items-center  ml-2" *hasClaim="['IsAppAdmin']" >
+              <label class="mb-0"  style="font-size: 16px;flex: 0 0 48%;
+              font-weight: 500;">Tracking Id</label>
+              <div class="input-group ">
+                <input [readOnly]="alreadyHasTrackingId || lastSaleId != item.id" type="text" class="form-control form-control-sm " [(ngModel)]="item.trackingId" aria-label="Amount (to the nearest dollar)">
+                <div [class.disabled]="alreadyHasTrackingId || lastSaleId != item.id" class="input-group-append">
+                  <span [ariaDisabled]="savingTrackingInfo" class="input-group-text bg-dynamic-2c text-white cursor-pointer" (click)="SaveTrackingId(item)">
+                    <i class="fa fa-save"></i>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-6 col-12">
+          <div class="pb-info pb-info-a mb-3 w-100">
+            <p title="Discount" >
+              <strong >Discount</strong>
+              {{item.discount}}
+            </p>
+            <p  title="Total Price" >
+              <strong >Total Price</strong>
+              {{item.totalPrice}}
+            </p>
+            <p title="Installments"  >
+              <strong >Installments</strong>
+              {{item.installmentCount}}
+            </p>
+            <p title="Waived Off"  >
+              <strong >Waived Off</strong>
+              {{item.waivedOffAmount}}
+            </p>
+            <!-- <p title="Transmission Charges" >
+              <strong >Transmission</strong>
+              {{item.transmissionCharges}}
+            </p> -->
+          </div>
+        </div>
+      </div>
+    <h5 style="font-weight: 600;">Installments</h5>
+    <table class="table table-hover my-table-cutom-under mb-0">
+        <thead class="bg-white">
+          <tr class="bg-white">
+            <th title="Sale Price">Period</th>
+            <th title="Sale Price">Amount</th>
+            <th title="Is Waived Off">Waived Off</th>
+            <th title="Invoice Billed">Billed</th>
+          </tr>
+        </thead>
+        <tbody >
+          <tr *ngFor="let Installment of item.phDeviceInstallments" class="bg-white">
+            <td>{{Installment.month}}-{{Installment.year}}</td>
+            <td>{{Installment.installmentAmount}}</td>
+            <td>
+                <div class="custom-control custom-checkbox custom-control-inline">
+                    <input [disabled]="!isAppAdmin || Installment.invoiceId || item.saleType === SaleTypeEnumObj.Sale" type="checkbox" [(ngModel)]="Installment.isWaivedOff" (ngModelChange)="ConfirmWaveOff(Installment)" class="custom-control-input" id="Controlled232{{Installment.id}}"
+                      name="Controlleds">
+                    <label class="custom-control-label" for="Controlled232{{Installment.id}}"></label>
+                  </div>
+            </td>
+            <td>
+                <span *ngIf="Installment.invoiceId" class="badge bg-dynamic-2c">Yes</span>
+                <span *ngIf="!Installment.invoiceId" class="badge badge-bg-info">No</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    <hr>
+</ng-container>

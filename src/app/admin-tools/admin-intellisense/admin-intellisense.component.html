@@ -1,0 +1,131 @@
+<div class="d-flex justify-content-between">
+  <h1 class="page-title mb-3 flex-sm-grow-1">Intellisense Editor</h1>
+  <button type="button" class="btn btn-dynamic-2c btn-sm" (click)="NewPhraseWarningCheck()">New Phrase</button>
+</div>
+<div class="row">
+  <div class="d-flex align-items-end col-lg-12 col-sm-12 mb-4">
+    <div class="flex-grow-1">
+      <label for="searchBy">Search Phrases</label>
+      <div class="d-flex align-items-center justify-content-start">
+        <input [(ngModel)]="searchPhraseText" type="text" autocomplete="off" id="searchBy" placeholder="Search Phrases" class="form-control form-control-sm box-shadow w-100" >
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-3">
+    <div class="tool-box">
+      <div class="card">
+        <div class="card-header">
+          <h5>Systems Tools</h5>
+        </div>
+        <div class="card-body">
+          <mdb-accordion [multiple]="false">
+            <ng-container *hasClaim="'IsFacilityUser'" >
+              <mdb-accordion-item class="my-custom-according-left" [collapsed]="false" >
+                <mdb-accordion-item-head>Facility Phrases</mdb-accordion-item-head>
+                <mdb-accordion-item-body>
+                  <div class="accordion-list-custom" *ngIf="true">
+                    <ng-container *ngFor="let item of (smartPhrasesList | FilterByprop: 'title' : searchPhraseText)">
+                      <div *ngIf="item.userId !=0" class="tiles d-flex justify-content-between align-items-center">
+                        <h6 title="{{item.title}}" style="width: 150px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{item.title}}</h6>
+                        <div class="d-inline-flex ">
+                          <span class="fa fa-pencil fa-lg mr-1" (click)="openConfirmModal(item)"></span>
+                          <span class="fa fa-trash fa-lg bg-danger border-0" (click)="openDeleteConfirmModal(item)"></span>
+                        </div>
+                      </div>
+                    </ng-container>
+                  </div>
+                </mdb-accordion-item-body>
+              </mdb-accordion-item>
+            </ng-container>
+            <ng-container >
+              <mdb-accordion-item class="my-custom-according-left" [collapsed]="false" >
+                <mdb-accordion-item-head>Admin Phrases</mdb-accordion-item-head>
+                <mdb-accordion-item-body>
+                  <div class="accordion-list-custom" *ngIf="true">
+                    <ng-container *ngFor="let item of (smartPhrasesList | FilterByprop: 'title' : searchPhraseText)">
+                      <div *ngIf="item.userId ==0" class="tiles d-flex justify-content-between align-items-center">
+                        <h6 title="{{item.title}}" style="width: 150px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{item.title}}</h6>
+                        <div class="d-inline-flex ">
+                          <span *hasClaim="'IsAppAdmin'" class="fa fa-pencil fa-lg mr-1" (click)="openConfirmModal(item)"></span>
+                          <span *hasClaim="'IsFacilityUser'" class="fa fa-eye fa-lg mr-1" (click)="AssignEditDetails(item)"></span>
+                          <span *hasClaim="'IsAppAdmin'" class="fa fa-trash fa-lg bg-danger border-0" (click)="openDeleteConfirmModal(item)"></span>
+                        </div>
+                      </div>
+                    </ng-container>
+                  </div>
+                </mdb-accordion-item-body>
+              </mdb-accordion-item>
+            </ng-container>
+          </mdb-accordion>
+          <!-- <ng-container *ngFor="let item of (smartPhrasesList | FilterByprop: 'title' : searchPhraseText)">
+            <div class="tiles d-flex justify-content-between align-items-center">
+              <h6 title="{{item.title}}" style="width: 150px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{item.title}}</h6>
+              <div class="d-inline-flex ">
+                <span class="fa fa-pencil fa-lg mr-1" (click)="openConfirmModal(item)"></span>
+                <span class="fa fa-trash fa-lg bg-danger border-0" (click)="openDeleteConfirmModal(item)"></span>
+              </div>
+            </div>
+          </ng-container> -->
+          <div *ngIf="(!smartPhrasesList || !smartPhrasesList.length) && !gettingPhrases" class="d-flex justify-content-between align-items-center mb-2">
+            <div class="alert alert-warning alert-dismissible animated fade show col-sm-12" role="alert">
+              <!-- <button type="button" class="close" aria-label="Close" >
+                <span aria-hidden="true">&times;</span>
+              </button> -->
+              <strong>No Record</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- <div class="d-flex justify-content-between align-items-center mb-2">
+        <h6>BG 16 Days Data</h6>
+        <span class="fa fa-pencil"></span>
+      </div> -->
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="row">
+      <div class="col-12">
+        <div class="form-group text-right mb-2">
+          <!-- <label>Title</label> -->
+          <textarea [disabled]="addEditSmartPhraseDto.id && addEditSmartPhraseDto.userId !== facilityUserId"
+          [(ngModel)]="addEditSmartPhraseDto.title" class="form-control h-100" placeholder="Label" rows="2"></textarea>
+        </div>
+        <div class="form-group text-right mb-0">
+          <!-- <label>Title</label> -->
+          <textarea [disabled]="addEditSmartPhraseDto.id && addEditSmartPhraseDto.userId !== facilityUserId" id="phraseTextEle" [(ngModel)]="addEditSmartPhraseDto.text" class="form-control h-100" placeholder="Create Phrase" rows="20"></textarea>
+          <button [disabled]="(addEditSmartPhraseDto.id && addEditSmartPhraseDto.userId !== facilityUserId) || addingPhrases || !addEditSmartPhraseDto.title || !addEditSmartPhraseDto.text" type="button" (click)="AddEditSmartPhrase()" class="btn btn-dynamic-2c btn-sm mb-0 mr-0 flex-shrink-0  ml-auto">
+            Save</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="col-md-3">
+    <div class="Intellisense-box">
+      <div class="card">
+        <div class="card-header">
+          <h5>Systems Variables</h5>
+        </div>
+        <div class="card-body">
+          <ng-container *ngFor="let item of smartVariablesList">
+            <div class="tiles d-flex justify-content-between align-items-center" (click)="FillSystemVariablesInTextArea(item)">
+              <h6>{{item.title}}</h6>
+            </div>
+          </ng-container>
+          <div *ngIf="(!smartVariablesList || !smartVariablesList.length) && !gettingVariables" class="d-flex justify-content-between align-items-center mb-2">
+            <div class="alert alert-warning alert-dismissible animated fade show col-sm-12" role="alert">
+              <!-- <button type="button" class="close" aria-label="Close" >
+                <span aria-hidden="true">&times;</span>
+              </button> -->
+              <strong>No Record</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

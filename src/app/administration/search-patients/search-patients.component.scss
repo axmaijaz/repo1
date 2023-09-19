@@ -1,0 +1,180 @@
+@import 'theme';
+h4 {
+    font-size: 18px;
+    margin: 0;
+    font-weight: 600;
+}
+.name-title {
+    font-size: 26px;
+    margin: 0;
+    font-weight: 500;
+}
+.custom-card-search {
+    border-radius: 10px;
+    .statistics-type {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        .icon {
+        }
+        .text {
+            margin-left: 10px;
+            h4 {
+                font-size: 22px;
+                margin: 0;
+                font-weight: 600;
+            }
+            p {
+                margin: 0;
+            }
+        }
+    }
+}
+.custom-group-search {
+    position: relative;
+    .ng-select-small {
+        border-radius: 8px;
+    }
+    .input-group-search {
+        position: absolute;
+        right: 10px;
+        top: 12px;
+        svg {
+            width: 20px;
+            height: 20px;
+            stroke: #868686;
+            background-color: #fff;
+        }
+    }
+}
+.patients-details {
+    p {
+        display: flex;
+        border-radius: 10px;
+        align-items: center;
+        color: #fff;
+        margin: 0;
+        box-shadow: 0 5px 7px 0 #e9ecee;
+        strong {
+            padding: 10px;
+            width: 120px;
+            border-radius:10px 10px 0 10px;
+            text-align: center;
+            margin-right: 10px;
+        }
+    }
+}
+.meter-deatils {
+    margin-bottom: 0.5rem;
+    padding: 0.5rem 1rem;
+    background-color: #fff;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    .meter-box {
+        width: 35px;
+        height: 35px;
+        background-color: #fff;
+        border-radius: 8px;
+        padding: 10px;
+        box-shadow: 0 5px 7px 0 #e9ecee;
+        border: 1px solid #ddd;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .last-reading {
+        font-size: 12px;
+        color: $dynamic-colour;
+        margin: 0;
+    }
+    .last-reading ~ p {
+        font-size: 16px;
+        color: #777777;
+    }
+    .m-title {
+        font-size: 12px;
+        text-align: right;
+        width: 30px;
+        display: inline-block;
+    }
+}
+.service {
+    text-align: center;
+    margin: 0 10px;
+    .service-box {
+        width: 71px;
+        height: 71px;
+        margin: auto;
+        background-color: #D9D9D9;
+        border-radius:22px;
+        box-shadow: 0 5px 7px 0 #e9ecee;
+        border: 1px solid #ddd;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.5rem;
+        position: relative;
+        .warning-dot {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 20px;
+            background-color: red;
+            color: #fff;
+            top: -5px;
+            right: -5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px;
+        }
+        svg {
+            fill: #868686;
+            path {
+                box-shadow: 0 5px 7px 0 #e9ecee;
+            }
+            .st0 {
+                stroke: #868686;
+            }
+        }   
+    }
+    h5 {
+        font-size: 16px;
+        font-weight: 800;
+        margin: 0.2rem 0;
+        color: #868686;
+    }
+    span.badge.badge-light {
+        background-color: #D9D9D9!important;
+        color: #868686 !important;
+        font-weight: 400 !important;
+    }
+}
+.service.active {
+    .service-box {
+        background-color: $dynamic-colour;
+        svg {
+            fill: #fff;
+            .st0 {
+                stroke: #fff;
+            }
+        }
+    }
+    h5 {
+        color: $dynamic-colour;
+    }
+    .badge.badge-light {
+        background-color: $primary !important;
+        color: #fff !important;
+    }
+}
+.bg-primary-gradient{
+    background:$dynamic-colour;
+}
+.bg-dynamic-secondary-2c-gradient{
+    background: $dynamic-secondary-colour;
+}
+.text-gradient{
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+

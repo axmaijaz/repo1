@@ -1,0 +1,28 @@
+.border-question {
+    border-radius: 16px;
+    border: 1px solid #ADADAD;
+    background: #FFF;
+    padding: 1rem;
+    margin: 10px 0;
+    position: relative;
+}
+.cross-option {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    cursor: pointer;
+    &:hover {
+        color: #000;
+    }
+}
+.addoption {
+    cursor: pointer;
+    background-color: transparent;
+    border: 0;
+    padding: 0;
+    margin: 5px 0;
+    color: #606060;
+    &:hover {
+        color: #000;
+    }
+}

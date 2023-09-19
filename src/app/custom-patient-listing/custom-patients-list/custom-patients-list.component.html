@@ -1,0 +1,213 @@
+<div class="d-flex align-items-center flex-wrap justify-content-between mb-3">
+  <h4 class="mr-3 mb-0"><a class="text-dark" (click)="navigateBack()"><i class="fa fa-arrow-left"></i></a></h4>
+  <h1 class="page-title mb-0 flex-sm-grow-1">{{name}}</h1>
+  <div class="d-flex">
+      <button [disabled]="(!selected || !selected.length)" mdbBtn (click)="openConfirmModal()"
+        class="btn btn-danger btn-sm mr-0" placement="right">Remove {{selected.length}} selected Patients</button>
+
+  </div>
+</div>
+
+<div *ngIf="isLoading" class="d-flex justify-content-center text-center">
+  <!-- <div class="d-flex justify-content-center text-center"> -->
+  <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+</div>
+<ngx-datatable class="material z-depth-0" [columnMode]="'force'" [headerHeight]="50" [footerHeight]="50"
+  [rowHeight]="35" [scrollbarV]="false" [scrollbarH]="true" [rows]="rows" [limit]="15" [selected]="selected" (activate)="onActivate($event)"
+  [selectionType]="SelectionType.checkbox">
+  <ngx-datatable-column name="#" [maxWidth]=50 cellClass="w-100">
+    <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+      {{rowIndex + 1}}
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="Patient Name" prop="fullName" [maxWidth]="300" [width]="300">
+    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+      <div class="d-flex justify-content-between align-items-center" style="width: 296px">
+        <div class="d-flex align-items-center py-2">
+          <span *ngIf="row.profileStatus" class="status-bullet bg-success" title="Profile Complete"></span>
+          <span *ngIf="!row.profileStatus" class="status-bullet bg-danger" title="Profile Incomplete"></span>
+          <a class="mb-0 text-capitalize link text-dynamic-2c text-left ml-2" placement="right" container="body" style="white-space: nowrap; height: 36px; display: inline-flex;margin-right:10px;
+            align-items: center" [mdbTooltip]="popTemplate" (click)="onClickRow(row)">
+            {{row.fullName}} </a>
+            <ng-template #popTemplate>
+              <div class="p-2">
+                <p class="mb-0"><strong>DOB</strong> {{row.dateOfBirth | dateFormatPipe}} </p>
+                <p class="mb-0"><strong>EMR ID:</strong> {{row.patientEmrId}} </p>
+              </div>
+
+            </ng-template>
+          <!-- {{row.fullName}} -->
+        </div>
+        <div class="d-flex align-items-center py-2">
+
+          <i class="fa fa-pencil text-dynamic-2c ml-2" *ngIf="showNotes" style="font-size: 20px; cursor: pointer;"
+            (click)="openPatientNote(row)"></i>
+
+          <button type="button" style="background-color: transparent;" *ngIf="showTasks"
+            class="btn btn-icon btn-transparent z-depth-0 flex-shrink-0  mr-0 my-1" title="Add Task" placement="right"
+            (click)="addPTaskRef.CareProvidersList=CareProvidersList;addPTaskRef.OpenTaskViewModal(row)">
+            <i class="fa fa-plus-circle"></i>
+          </button>
+        </div>
+
+      </div>
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column [width]="50" [sortable]="false" [canAutoResize]="false" [draggable]="false"
+    [resizeable]="false">
+    <ng-template ngx-datatable-header-template let-value="value" let-allRowsSelected="allRowsSelected"
+      let-selectFn="selectFn">
+      <div class="text-center">
+        <div class="custom-control custom-checkbox">
+          <input class="custom-control-input" type="checkbox" id="selectAll" [(ngModel)]="gridCheckAll"
+            (click)="gridAllRowsCheckBoxChecked($event)">
+          <label class="custom-control-label" for="selectAll"></label>
+        </div>
+      </div>
+    </ng-template>
+
+    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+      <div class="text-center" style="width: 35px;">
+        <div class="custom-control custom-checkbox">
+          <input class="custom-control-input" type="checkbox" id="{{(row.id)}}cl" [(ngModel)]="row.checked"
+            (click)="rowCheckBoxChecked($event, row)">
+          <label class="custom-control-label" for="{{(row.id)}}cl"></label>
+        </div>
+      </div>
+    </ng-template>
+
+  </ngx-datatable-column>
+  <!-- <ngx-datatable-column *ngIf="headersDto.emrId" name="Emr Id" prop="patientEmrId">
+  </ngx-datatable-column> -->
+  <ngx-datatable-column *ngIf="headersDto.ccmStatus" name="CCM Status" prop="ccmStatus">
+  </ngx-datatable-column>
+  <ngx-datatable-column *ngIf="headersDto.bhiStatus" name="BHI Status" prop="bhiStatus">
+  </ngx-datatable-column>
+  <ngx-datatable-column *ngIf="headersDto.rpmStatus" name="RPM Status" prop="rpmStatus">
+  </ngx-datatable-column>
+  <ngx-datatable-column *ngIf="headersDto.awvStatus" name="AW Status" prop="awvStatus">
+    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+      {{pcmEncounterStatus[row.awvStatus] }}
+    </ng-template>
+
+  </ngx-datatable-column>
+  <ngx-datatable-column *ngIf="headersDto.tcmStatus" name="TCM Status" prop="tcmStatus">
+
+    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+      {{tcmStatusEnum[row.tcmStatus] }}
+    </ng-template>
+  </ngx-datatable-column>
+
+  <!-- <ngx-datatable-column *ngIf="headersDto.dob" name="Date of Birth" prop="dateOfBirth">
+    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+      {{row.dateOfBirth | dateFormatPipe}}
+    </ng-template>
+  </ngx-datatable-column> -->
+  <ngx-datatable-column *ngIf="headersDto.assignedDate" name="Assigned Date" prop="assignedDate">
+    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+      {{row.assignedDate | dateFormatPipe}}
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column *ngIf="headersDto.rpmManager" name="RPM Manager" prop="rpmManagerName">
+    <!-- <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+      <div class="user-name-list">
+        <div title="{{item.fullName}}" class="name-caption" *ngFor="let item of row.careProviders">
+          <span>{{item['nameAbbreviation']}}</span></div>
+      </div>
+    </ng-template> -->
+  </ngx-datatable-column>
+  <ngx-datatable-column *ngIf="headersDto.careProviders" name="Care Providers" prop="careProviders">
+    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+      <div class="user-name-list">
+        <div title="{{item.fullName}}" class="name-caption" *ngFor="let item of row.careProviders">
+          <span>{{item['nameAbbreviation']}}</span></div>
+      </div>
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column *ngIf="headersDto.psychiatrist" name="Psychiatrist" prop="psychiatrist">
+    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+      <div class="user-name-list" *ngIf="row.psychiatristNameAbbreviation">
+        <div title="{{row.psychiatrist }}" class="name-caption">
+          <span>{{row.psychiatristNameAbbreviation }}</span></div>
+      </div>
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column *ngIf="headersDto.ccmMS" name="CCM MS" prop="ccmMS">
+    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+      {{ccmMonthlyStatusEnum[row.ccmMS] }}
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column *ngIf="headersDto.careFacilitator" name="Care Facilitator" prop="careFacilitatorName">
+    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+      <div class="user-name-list" *ngIf="row.careFacilitatorNameAbbreviation">
+        <div title="{{row.careFacilitatorName}}" class="name-caption">
+          <span>{{row.careFacilitatorNameAbbreviation}}</span></div>
+      </div>
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column *ngIf="headersDto.careManager" name="Care Manager" prop="careManager">
+    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+      <div class="user-name-list" *ngIf="row.careManagerNameAbbreviation">
+        <div title="{{row.careManager}}" class="name-caption">
+          <span>{{row.careManagerNameAbbreviation}}</span></div>
+      </div>
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column *ngIf="headersDto.billingProvider" name="BillingProvider" prop="billingProviderName">
+    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+      <div class="user-name-list" *ngIf="row.billingProviderNameAbbreviation">
+        <div title="{{row.billingProviderName}}" class="name-caption">
+          <span>{{row.billingProviderNameAbbreviation}}</span></div>
+      </div>
+    </ng-template>
+  </ngx-datatable-column>
+  <!-- <ngx-datatable-column name="Resolve Date" prop="resolvedDate">
+    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+      {{row.resolvedDate | dateFormatPipe}}
+    </ng-template>
+  </ngx-datatable-column> -->
+  <!-- <ngx-datatable-column *hasClaim=" ['CanModifyDiagnose']" name="Action" [canAutoResize]=false [frozenRight]=true
+    [width]="100">
+    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+      <button [disabled]="awDisable" class="btn btn-dynamic-2c btn-icon ml-0 mr-0" title="Edit" placement="left"
+        (click)="selectItem=row;getDiagnoseById(row.id)"><i class="fa fa-pencil"></i>
+      </button>
+      <button [disabled]="awDisable" class="btn btn-danger btn-icon" (click)="openConfirmModal(row)"><i
+          class="fa fa-trash"></i></button>
+    </ng-template>
+  </ngx-datatable-column> -->
+</ngx-datatable>
+
+<app-add-task #addPTaskRef></app-add-task>
+<div mdbModal #clickOnRow="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myBasicModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog flat-modal" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+
+        <h4 class="modal-title w-100 text-center" id="myModalLabel">Incomplete
+          Profile
+        </h4>
+      </div>
+      <div class="modal-body">
+        <p class="text-center">
+          <i class="fa fa-exclamation-triangle text-danger" style="font-size: 3rem;"></i>
+        </p>
+
+        <p class="text-center">
+          Patient profile looks incomplete. <br> Would you like to edit patient profile?
+        </p>
+
+        <!-- Some required fields are missing.Please enter that data first. -->
+        <div class="d-flex justify-content-center mt-3">
+          <button type="button"  (click)="addRequiredData()" class="relative btn btn-sm btn-dynamic-2c"
+            mdbWavesEffect>YES</button>
+          <button type="button" class="btn btn-sm btn-dynamic-2c" aria-label="Close"
+            (click)="clickOnRow.hide()">NO</button>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

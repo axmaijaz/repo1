@@ -1,0 +1,104 @@
+<div class="d-flex flex-row align-items-center justify-content-between mb-3">
+  <div class="d-flex justify-content-start align-items-center">
+    <!-- <h4 class="mr-3 mb-0"><a class="text-dark" (click)="goBack()">
+        <i class="fa fa-arrow-left"></i></a></h4> -->
+        <h1 class="page-title mb-0">Monthly Review Problems</h1>
+  </div>
+  <div>
+    <a class="btn btn-dynamic-2c btn-sm m-0" (click)="addEditProblemDto={};createMrProblemMOdel.show()" date-placement="left">Add New</a>
+  </div>
+</div>
+<div class="dataTables_length" id="example_length"><label>Show
+  <select name="example_length" aria-controls="example" [(ngModel)]="pageSize" class="">
+    <option value="10">10</option>
+    <option value="25">25</option>
+    <option value="50">50</option>
+    <option value="100">100</option>
+  </select> entries</label>
+</div>
+<div class="ccm-body">
+
+    <div *ngIf="isLoadingProblems" class="d-flex justify-content-center text-center">
+      <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+    </div>
+    <ngx-datatable  [columnMode]="'force'" class="material z-depth-1" [headerHeight]="50"
+      [footerHeight]="50" [rowHeight]="40"  [rows]="mrProblemsList" [limit]="pageSize">
+      <ngx-datatable-column name="#" [maxWidth]=50>
+        <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+          {{rowIndex + 1}}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="Description" prop="description">
+      </ngx-datatable-column>
+      <ngx-datatable-column name="Condition" prop="condName">
+      </ngx-datatable-column>
+      <ngx-datatable-column name="Type" prop="typeName" >
+      </ngx-datatable-column>
+      <ngx-datatable-column name="Action"   >
+        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+          <button class="btn btn-dynamic-2c btn-icon" (click)="openEditProblemModel(row , createMrProblemMOdel)" title="Edit"
+            placement="left"><i class="fa fa-pencil"></i> </button>
+          <!-- <button class="btn btn-danger btn-icon" [disabled]="awDisable || row['deleting']" (click)="openConfirmModal(row)"> <span
+              *ngIf="row['deleting']" class="mr-1 spinner-border spinner-border-sm" role="status"
+              aria-hidden="true"></span><i class="fa fa-trash"></i></button> -->
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
+</div>
+
+<div mdbModal #createMrProblemMOdel="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-md flat-modal " role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="createMrProblemMOdel.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" *ngIf="!addEditProblemDto.id">Add Problem</h4>
+        <h4 class="modal-title w-100" *ngIf="addEditProblemDto.id">Edit Problem</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <!-- <div class="col-sm-12 mb-2">
+            <small class="text-dynamic-2c text-uppercase font-500">User Information</small>
+          </div> -->
+          <div class="col-sm-12">
+
+            <div class="form-group">
+              <label for="reason">Description</label>
+              <textarea type="text" id="reason" rows="10"
+                placeholder="Description" [(ngModel)]="addEditProblemDto.description" class="form-control" style="height: 150px;"></textarea>
+            </div>
+            <div *ngIf="mrService.selectedMRType === 'ccm'" class="form-group">
+              <label for="practiceName">Mr Type</label>
+              <ng-select class="ng-select-small" [multiple]="false" [(ngModel)]="addEditProblemDto.mrTypeId"
+                [searchable]="true" placeholder="Mr Type">
+                <ng-option [value]="item.id" *ngFor="let item of mrTypeList">{{item.name}}</ng-option>
+              </ng-select>
+            </div>
+            <div *ngIf="mrService.selectedMRType === 'rpm'" class="form-group">
+              <label for="practiceName">Mr Type</label>
+              <ng-select class="ng-select-small" [multiple]="false" [(ngModel)]="addEditProblemDto.mrTypeId"
+                [searchable]="true" placeholder="Mr Type">
+                <ng-option [value]="item.id" *ngFor="let item of rpmMrTypeList">{{item.name}}</ng-option>
+              </ng-select>
+            </div>
+            <div class="form-group">
+              <label for="practiceName">Chronic Condition Id</label>
+              <ng-select class="ng-select-small" container="body" [multiple]="false" [(ngModel)]="addEditProblemDto.chronicConditionId"
+                [searchable]="true" placeholder="Chronic Condition Id">
+                <ng-option container="body" [value]="item.id" *ngFor="let item of cronicDiseaseList">{{item.algorithm}}</ng-option>
+              </ng-select>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-dark btn-sm" (click)="createMrProblemMOdel.hide()">Close</button>
+        <button *ngIf="!addEditProblemDto.id" type="submit" class="btn btn-dynamic-2c btn-sm" (click)="AddMrProblem(createMrProblemMOdel)" [disabled]="savingMrProblem">Add</button>
+        <button *ngIf="addEditProblemDto.id" type="submit" class="btn btn-dynamic-2c btn-sm" (click)="EditMrProblem(createMrProblemMOdel)" [disabled]="savingMrProblem">Edit</button>
+      </div>
+    </div>
+  </div>
+</div>

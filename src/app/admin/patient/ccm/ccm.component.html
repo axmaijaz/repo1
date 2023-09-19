@@ -1,0 +1,1021 @@
+<div class="ccm-header mb-3">
+
+  <div *ngIf="isLoading">
+    <div class="p-3">
+      <skltn-root duration="2000" [rectRadius]="0" flareWidth="50%" bgFill="#f2f3f8" flareFill="rgba(255,255,255, 0.5)">
+        <!-- Card with Avatar -->
+        <div class="skltn-card">
+          <!-- <div skltn-bone class="skltn-card__avatar" type="circle"></div> -->
+          <div class="skltn-card__body">
+            <div skltn-bone class="skltn-card__title"></div>
+            <div skltn-bone class="skltn-card__line"></div>
+            <div skltn-bone class="skltn-card__line"></div>
+            <div skltn-bone class="skltn-card__line"></div>
+            <!-- <div skltn-bone class="skltn-card__line"></div> -->
+          </div>
+        </div>
+      </skltn-root>
+    </div>
+  </div>
+
+  <div class="d-flex flex-wrap follow-up-date" *ngIf="!isLoading">
+
+    <div *ngIf="PatientData.ccmStatus == 7" class="col-sm-4 ">
+      <label class="mt-1">Next CCM </label>
+      <div class="input-group form-group mb-0">
+        <input type="text" [(ngModel)]="followUpDataObj.followUpDate" class="form-control form-control-sm"
+          #dateDPicker="dpDayPicker" [dpDayPicker]="datePickerConfig" [theme]="'dp-material ccm-date-picker'"
+          [mode]="'daytime'" />
+        <a (click)="updateFollowUpDate('nextCCM');" class="input-group-append">
+          <span class="input-group-text text-white bg-dynamic-2c" id="category"><i class="fa fa-check"></i></span>
+        </a>
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <label class="mt-1">Recent PCP Appointment </label>
+      <div class="input-group form-group mb-0">
+        <!-- <input type="text" [(ngModel)]="" class="form-control form-control-sm"
+                #dateDPicker="dpDayPicker" [dpDayPicker]="datePickerConfig" [theme]="'dp-material ccm-date-picker'"
+                [mode]="'daytime'" mask="0000-00-00 00:00 SS"/> -->
+        <input type="text" [(ngModel)]="followUpDataObj.recentPcpAppointment" class="form-control form-control-sm"
+          #dateToDp="dpDayPicker" [dpDayPicker]="datePickerConfig" [theme]="'dp-material ccm-date-picker'"
+          [mode]="'daytime'" />
+        <a (click)="updateFollowUpDate('pcpAppointment');" class="input-group-append">
+          <span class="input-group-text text-white bg-dynamic-2c" id="category"><i class="fa fa-check"></i></span>
+        </a>
+      </div>
+    </div>
+    <div  class="col-sm-4">
+      <div class="d-flex justify-content-between">
+        <label class="mt-1">Hospitalization Date </label>
+        <div class="d-flex align-items-center" *ngIf="lastTcmStatus == 1 || lastTcmStatus == 2">
+          <small>Current Status:</small>
+          <mdb-badge success="true" color="ml-2">{{tcmStatusEnum[lastTcmStatus]}}</mdb-badge>
+        </div>
+      </div>
+      <div class="input-group form-group mb-0">
+        <!-- <div class="chip">  Jane Doe </div> -->
+        <input type="text" [(ngModel)]="followUpDataObj.recentHospitalizationDate"
+          class="form-control form-control-sm" [disabled]="lastTcmStatus === 2 || lastTcmStatus === 1" #dateDPicker="dpDayPicker" [dpDayPicker]="onlydatePickerConfig"
+          [theme]="'dp-material ccm-date-picker'" [mode]="'day'" />
+
+          <button (click)="updateFollowUpDate('hospitalizationDate');createTcmEncounter();" [disabled]="lastTcmStatus === 2 || lastTcmStatus === 1" routerLinkActive="router-link-active"
+          class="input-group-append input-group-text text-white bg-dynamic-2c border-0 rounded-0">
+          <span *ngIf="creatingTcm" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          <i class="fa fa-check"></i>
+        </button>
+        <!--for status {{tcmStatusEnum[followUpDataObj.LastTcmStatus]}}
+        *ngIf="followUpDataObj.LastTcmEncounterId" -->
+
+        <a class="input-group-append" *hasClaim="['tcmService']">
+          <span *ngIf="lastTcmEncounterId && lastTcmStatus < 3" routerLink="/tcm/dischargeOverview/{{PatientId}}/{{lastTcmEncounterId}}" class="input-group-text text-white bg-dynamic-2c border-left" id="category">
+            <i class="fa fa-eye"></i>
+            <span *ngIf="creatingTcm" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          </span>
+        </a>
+      </div>
+    </div>
+    <div class="p-3 w-100">
+      <div class="row">
+        <!-- <div class="col-12">
+          <div class="d-flex justify-content-between align-items-center">
+            <h4><strong>Services Status</strong></h4>
+            <div *ngIf="PatientData.rpmStatus == 0" class="border p-2 mb-2 d-flex rounded justify-content-between align-items-center">
+              <div class="custom-control custom-switch">
+                <input type="checkbox" class="custom-control-input" id="customSwitches" [(ngModel)]="isBluetoothEnabled" (ngModelChange)="checkBluetooth()">
+                <label class="custom-control-label" for="customSwitches">Bluetooth Compatible</label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div (click)="statusChangeRef.OpenModel(PatientData?.id , 'ccmStatus' ,PatientData?.ccmStatus)" class="border p-2 mb-2 d-flex rounded cursor justify-content-between align-items-center">
+            <p class="mb-0"><strong>CCM</strong></p>
+            <span *ngIf="PatientData.ccmStatus== 7" style="min-width: 100px;" class="badge badge-success py-2 px-3">{{ccmStatus[PatientData.ccmStatus]}}</span>
+            <span *ngIf="PatientData.ccmStatus!= 7"style="min-width: 100px;" class="badge badge-light py-2 px-3">{{ccmStatus[PatientData.ccmStatus]}}</span>
+
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div (click)="statusChangeRef.OpenModel(PatientData?.id , 'rpmStatus' ,PatientData?.rpmStatus)" class="border p-2 mb-2 d-flex rounded cursor justify-content-between align-items-center">
+            <p class="mb-0"><strong>RPM</strong></p>
+            <span *ngIf="PatientData.rpmStatus== 0" style="min-width: 100px;" class="badge badge-success py-2 px-3">{{rpmStatus[PatientData.rpmStatus]}}</span>
+            <span *ngIf="PatientData.rpmStatus!= 0" style="min-width: 100px;" class="badge badge-light py-2 px-3">{{rpmStatus[PatientData.rpmStatus]}}</span>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div (click)="statusChangeRef.OpenModel(PatientData?.id , 'bhiStatus' ,PatientData?.bhiStatus)" class="border p-2 mb-2 d-flex rounded cursor justify-content-between align-items-center">
+            <p class="mb-0"><strong>BHI</strong></p>
+            <span *ngIf="PatientData.bhiStatus== 5" style="min-width: 100px;" class="badge badge-success py-2 px-3">{{bhiStatus[PatientData.bhiStatus]}}</span>
+            <span *ngIf="PatientData.bhiStatus!= 5" style="min-width: 100px;" class="badge badge-light py-2 px-3">{{bhiStatus[PatientData.bhiStatus]}}</span>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div (click)="statusChangeRef.OpenModel(PatientData?.id , 'pcmStatus' ,PatientData?.pcmStatus)" class="border p-2 mb-2 d-flex rounded cursor justify-content-between align-items-center">
+            <p class="mb-0"><strong>PCM</strong></p>
+            <span *ngIf="PatientData.pcmStatus== 1" style="min-width: 100px;" class="badge badge-success py-2 px-3">{{pcmStatus[PatientData.pcmStatus]}}</span>
+            <span *ngIf="PatientData.pcmStatus!= 1" style="min-width: 100px;" class="badge badge-light py-2 px-3">{{pcmStatus[PatientData.pcmStatus]}}</span>
+          </div>
+        </div> -->
+
+        <div class="col-sm-6">
+          <div class="d-flex justify-content-between align-items-center">
+            <h4><strong>Services Status</strong></h4>
+          </div>
+          <div (click)="statusChangeRef.OpenModel(PatientData?.id , 'ccmStatus' ,PatientData?.ccmStatus)" class="border p-2 mb-2 d-flex rounded cursor justify-content-between align-items-center">
+            <p class="mb-0"><strong>CCM</strong></p>
+            <span *ngIf="PatientData.ccmStatus== 7" style="min-width: 100px;" class="badge badge-success py-2 px-3">{{ccmStatus[PatientData.ccmStatus]}}</span>
+            <span *ngIf="PatientData.ccmStatus!= 7"style="min-width: 100px;" class="badge badge-light py-2 px-3">{{ccmStatus[PatientData.ccmStatus]}}</span>
+
+          </div>
+          <div (click)="statusChangeRef.OpenModel(PatientData?.id , 'rpmStatus' ,PatientData?.rpmStatus)" class="border p-2 mb-2 d-flex rounded cursor justify-content-between align-items-center">
+            <p class="mb-0"><strong>RPM</strong></p>
+            <span *ngIf="PatientData.rpmStatus== 0" style="min-width: 100px;" class="badge badge-success py-2 px-3">{{rpmStatus[PatientData.rpmStatus]}}</span>
+            <span *ngIf="PatientData.rpmStatus!= 0" style="min-width: 100px;" class="badge badge-light py-2 px-3">{{rpmStatus[PatientData.rpmStatus]}}</span>
+          </div>
+          <div (click)="statusChangeRef.OpenModel(PatientData?.id , 'bhiStatus' ,PatientData?.bhiStatus)" class="border p-2 mb-2 d-flex rounded cursor justify-content-between align-items-center">
+            <p class="mb-0"><strong>BHI</strong></p>
+            <span *ngIf="PatientData.bhiStatus== 5" style="min-width: 100px;" class="badge badge-success py-2 px-3">{{bhiStatus[PatientData.bhiStatus]}}</span>
+            <span *ngIf="PatientData.bhiStatus!= 5" style="min-width: 100px;" class="badge badge-light py-2 px-3">{{bhiStatus[PatientData.bhiStatus]}}</span>
+          </div>
+          <div (click)="statusChangeRef.OpenModel(PatientData?.id , 'pcmStatus' ,PatientData?.pcmStatus)" class="border p-2 mb-2 d-flex rounded cursor justify-content-between align-items-center">
+            <p class="mb-0"><strong>PCM</strong></p>
+            <span *ngIf="PatientData.pcmStatus== 1" style="min-width: 100px;" class="badge badge-success py-2 px-3">{{pcmStatus[PatientData.pcmStatus]}}</span>
+            <span *ngIf="PatientData.pcmStatus!= 1" style="min-width: 100px;" class="badge badge-light py-2 px-3">{{pcmStatus[PatientData.pcmStatus]}}</span>
+          </div>
+          <div *ngIf="PatientData.rpmStatus == 0" class="border p-2 mb-2 d-flex rounded justify-content-between align-items-center">
+            <div class="custom-control custom-switch">
+              <input type="checkbox" class="custom-control-input" id="customSwitches" [(ngModel)]="isBluetoothEnabled" (ngModelChange)="checkBluetooth()">
+              <label class="custom-control-label" for="customSwitches">Bluetooth Compatible</label>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="d-flex justify-content-between align-items-center">
+            <h4><strong>Patient Preferences</strong></h4>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+          
+              <div class="form-group">
+                <label for="">What is the best time to call?</label>
+                <ng-select [(ngModel)]="editPatientPreferencesDto.bestTimeToCall" appendTo="body" class="ng-select-small" [multiple]="false"
+                  [searchable]="false" placeholder="best time to call">
+                  <ng-option [value]="'Morning'">Morning</ng-option>
+                  <ng-option [value]="'Afternoon'">Afternoon</ng-option>
+                  <ng-option [value]="'Evening'">Evening</ng-option>
+                </ng-select>
+              </div>
+            </div>
+            
+          </div>
+          <div class="form-group mb-0">
+            <label class="mb-0">Preferred Language?</label>
+          </div>
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input" [(ngModel)]="editPatientPreferencesDto.preferredLanguage" id="materialInline1" name="preferredLanguage"
+               [value]="'English'" mdbInput>
+              <label class="form-check-label" style="padding-left: 30px!important;" for="materialInline1">English</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input type="radio" [(ngModel)]="editPatientPreferencesDto.preferredLanguage" class="form-check-input" id="materialInline2" name="preferredLanguage"
+               [value]="'Spanish'" mdbInput>
+              <label class="form-check-label" style="padding-left: 30px!important;" for="materialInline2">Spanish</label>
+            </div>
+            <div class="form-check form-check-inline"
+              *ngIf="language && language != 'English' && language != 'Spanish' ">
+              <input type="radio" class="form-check-input" id="materialInline3"
+                name="preferredLanguage" [value]="language" mdbInput>
+              <label class="form-check-label" style="padding-left: 30px!important;" for="materialInline3">{{language}}</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <button (click)="selectLanguageModal.show()" class="btn btn-outline-dark btn-sm px-2">
+                <i
+                  class="fa fa-angle-left"></i> more</button>
+            </div>
+            <div>
+              <button [disabled]="!editPatientPreferencesDto.bestTimeToCall" (click)="editPatientPreferences()" class="btn btn-dynamic-2c btn-sm ">
+                Update</button>
+            </div>
+            
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+  <div mdbModal #selectLanguageModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  [config]="{backdrop: true, ignoreBackdropClick: true}" aria-labelledby="myselectLanguageModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <!-- <button type="button" class="close pull-right" aria-label="Close" (click)="selectLanguageModal.hide()">
+            <span aria-hidden="true">×</span>
+          </button> -->
+        <h4 class="modal-title w-100" id="myModalLabel">Select Language</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label for="namea">Language List</label>
+              <ng-select class="ng-select-small"  [(ngModel)]="language"
+                [multiple]="false" [searchable]="true" placeholder="Select Language">
+                <ng-option *ngFor="let item of languageList" [value]="item.name">{{item.name}}
+                </ng-option>
+              </ng-select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+          (click)="selectLanguageModal.hide()" mdbWavesEffect>Close</button>
+        <button type="button"  (click)="selectLanguageModal.hide()" class="relative btn-dynamic-2c btn btn-sm waves-light"
+          mdbWavesEffect>Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- <div class="care-plan-status flex-wrap d-flex justify-content-between align-items-center p-3 bg-white border">
+  <div class="time-container">
+    <div class="item-icon">
+      <div style="width: 150px">
+        <canvas mdbChart [chartType]="pie" [datasets]="doughnutchartDatasets" [labels]="doughnutchartLabels"
+          [colors]="doughnutchartColors" [options]="chartOptions" [legend]="false">
+        </canvas>
+      </div>
+    </div>
+    <div class="btn-group">
+      <a routerLink="/rpm/PatientRpm/{{PatientId}}" class="btn btn-dynamic-secondary-2c btn-sm px-3 m-0 ml-auto"> View RPM
+      </a>
+      <a routerLink="/admin/CpQuestions/{{PatientId}}" class="btn btn-dynamic-2c btn-sm px-3 m-0 ml-auto"> View Care PLan
+      </a>
+
+    </div>
+
+  </div>
+  <div class="btn-group">
+    <a routerLink="/admin/CpQuestions/{{PatientId}}" class="btn btn-dynamic-2c btn-sm px-3 m-0 ml-auto"> View Care PLan
+    </a>
+
+  </div>
+</div> -->
+
+<!-- <div *ngIf="!isLoading"
+  class="care-plan-status flex-wrap d-flex justify-content-between align-items-center px-3 py-2 mt-3 bg-white border">
+  <div class="time-container">
+    <div class="item-icon">
+      <i class="fa fa-pie-chart"></i>
+    </div>
+    <div>
+      <p class="mb-0"><small>CCM Time Completed</small></p>
+      <strong>{{ ccmEncounterList?.ccmTimeCompleted }}</strong>
+    </div>
+
+  </div>
+  <div class="d-flex align-items-center ml-auto">
+    <div class="form-group d-inline-flex mb-0 align-items-center">
+      <label class="mb-0 mr-2" for="name">CCM Status</label>
+      <ng-select style="width: 200px;" [(ngModel)]="PatientData.ccmStatus" (ngModelChange)="AssignCcmStatus()" appendTo="body" [searchable]="false"
+        [closeOnSelect]="true" class="ng-select-small" placeholder="Ccm Status" [multiple]="false" [clearable]="false">
+        <ng-option [value]="item.value" *ngFor="let item of ccmStatusList">{{item.text}} </ng-option>
+      </ng-select>
+    </div>
+    <div class="form-group d-inline-flex mb-0 align-items-center ml-3">
+      <label class="mb-0 mr-2" for="name">CCM Monthly Status</label>
+      <ng-select style="width: 200px;" [(ngModel)]="PatientData.ccmMonthlyStatus" (ngModelChange)="AssignCcmMonthlyStatus()" appendTo="body" [searchable]="false"
+        [closeOnSelect]="true" class="ng-select-small" placeholder="Ccm Monthly Status" [multiple]="false" [clearable]="false">
+        <ng-option [value]="item.value" *ngFor="let item of CcmMonthlyStatusList">{{item.name}} </ng-option>
+      </ng-select>
+    </div>
+  </div>
+  <div class="btn-group ml-3">
+
+    <a (click)="MReview = 'mr2';checkCcmRevoked()" class="btn btn-dynamic-2c btn-sm px-3 m-0">Monthly Review
+    </a>
+  </div>
+
+  <div class="show-logs ml-3"
+  appDebounceClick (debounceClick)="ccmEncounter.isCollapsed ? checkCareplanApproval(ccmEncounter, true): ccmEncounter.toggle();">
+    <i *ngIf="ccmEncounter.isCollapsed" class="fa fa-angle-down"></i>
+    <i *ngIf="!ccmEncounter.isCollapsed" class="fa fa-angle-up"></i>
+  </div>
+
+</div> -->
+
+<div class="border border-top-0" mdbCollapse #ccmEncounter="bs-collapse">
+  <div class="ccm-body z-depth-0">
+    <div class="encounter-section">
+      <div class="encounter-header flex-wrap d-flex align-items-center justify-content-between p-3">
+        <strong class="col-lg-auto col-sm-12 d-sm-block mb-3">CCM Encounter</strong>
+        <div class="month ml-auto">
+          <ng-select [searchable]="false" [(ngModel)]="currentMonth" class="ng-select-small" placeholder="Select Month"
+            (click)="$event.stopPropagation();" (change)="searchLogsByMonth()" style="min-width:200px">
+            <ng-option [value]="1">January</ng-option>
+            <ng-option [value]="2">February</ng-option>
+            <ng-option [value]="3">March</ng-option>
+            <ng-option [value]="4">April</ng-option>
+            <ng-option [value]="5">May</ng-option>
+            <ng-option [value]="6">June</ng-option>
+            <ng-option [value]="7">July</ng-option>
+            <ng-option [value]="8">August</ng-option>
+            <ng-option [value]="9">September</ng-option>
+            <ng-option [value]="10">October</ng-option>
+            <ng-option [value]="11">November</ng-option>
+            <ng-option [value]="12">December</ng-option>
+          </ng-select>
+        </div>
+        <div class="month ml-sm-3">
+          <ng-select [searchable]="false" [appendTo]="'body'" class="ng-select-small" placeholder="Select Month"
+            [(ngModel)]="yearNum" (ngModelChange)="searchLogsByMonth()" (click)="$event.stopPropagation();"
+            style="min-width:200px">
+            <ng-option *ngFor="let year of listOfYears" [value]="year">{{year}}</ng-option>
+          </ng-select>
+        </div>
+        <!-- <div class="ccm-date">
+                          <div class="follow-date">
+                            <div class="input-group form-group mb-0">
+                              <label>Follow up Date:</label>
+                              <input type="text" [(ngModel)]="followUpDate" class="form-control form-control-sm"
+                                #dateDPicker="dpDayPicker" [dpDayPicker]="datePickerConfig" [theme]="'dp-material ccm-date-picker'"
+                                [mode]="'day'" />
+                              <a (click)="updateFollowUpDate(followUpDate);" class="input-group-append">
+                                <span class="input-group-text text-white bg-dynamic-2c" id="category"><i
+                                    class="fa fa-save fa-lg"></i></span>
+                              </a>
+                            </div>
+                          </div>
+                        </div> -->
+        <!-- <div class="ccm-time ml-md-auto">
+
+          <p class="mb-0 text-dark"><i class="fa fa-clock-o fa-lg"></i> CCM Time Completed: <strong
+              class="text-dynamic-2c">{{ ccmEncounterList?.ccmTimeCompleted }}</strong> </p>
+        </div> -->
+      </div>
+
+      <div class="encounter-body px-3">
+        <div class="row">
+          <div class="enc-time col-xl-6 col-lg-12 col-md-12 col-sm-12 py-3">
+            <form [formGroup]="encounterTimeForm" (ngSubmit)="SubmitEncounterTimeForm()">
+              <strong class="text-dynamic-2c mb-3 d-block">Encounter Time</strong>
+              <div class="row">
+                <div class="col-sm-6">
+                  <div class="input-group form-group mb-0">
+                    <label class="w-100">Record Time</label>
+                    <input type="text" #timerInput class="form-control form-control-sm" placeholder="00:00:00"
+                      id="category">
+                    <a class="input-group-append play-counter" (click)="stopTimer()" title="Stop"
+                      date-placement="Pause">
+                      <span class="input-group-text text-white bg-dynamic-2c" id="category"><i
+                          class="fa fa-stop fa-lg"></i></span>
+                    </a>
+                    <a *ngIf="timerStart" class="input-group-append play-counter" (click)="pauseTimer()"
+                      date-placement="right" title="Pause" date-placement="right">
+                      <span class="input-group-text text-white bg-dynamic-2c" id="category"><i
+                          class="fa fa-pause fa-lg"></i></span>
+                    </a>
+                    <a *ngIf="!timerStart" class="input-group-append play-counter" (click)="startTimer()"
+                      date-placement="right" title="Start" date-placement="right">
+                      <span class="input-group-text text-white bg-dynamic-2c" id="category"><i
+                          class="fa fa-play fa-lg"></i></span>
+                    </a>
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="input-group form-group">
+                    <label class="w-100">Date</label>
+                    <input type="text" class="form-control form-control-sm" #dateDPicker="dpDayPicker"
+                      formControlName="encounterDate" [dpDayPicker]="datePickerConfig"
+                      [theme]="'dp-material ccm-date-picker'" [mode]="'day'" />
+                    <a (click)="dateDPicker.api.open();" class="input-group-append">
+                      <span class="input-group-text text-white bg-dynamic-2c" id="category"><i
+                          class="fa fa-calendar fa-lg"></i></span>
+                    </a>
+                  </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                  <div class="form-group">
+                    <label class="w-100">Start Time</label>
+                    <input type="text" class="form-control form-control-sm" #dateDpTime="dpDayPicker"
+                      [dpDayPicker]="timePickerConfig" formControlName="startTime"
+                      [theme]="'dp-material ccm-date-picker'" [mode]="'time'" />
+                  </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                  <div class="form-group">
+                    <label class="w-100">End Time</label>
+                    <input type="text" readonly class="form-control form-control-sm" formControlName="endTime">
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label class="w-100">Duration: <small class="text-info">Enter in Minutes</small></label>
+                    <input #durationInput type="text" [disabled]="!encounterTimeForm.get('startTime').value"
+                      class="form-control form-control-sm" OnlyNumbers
+                      (input)="stopCounterOnDuration = false;stopTimer();durationChanged($event.target.value)">
+                  </div>
+                </div>
+
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label>Care Provide</label>
+                    <ng-select [searchable]="true" formControlName="careProviderId" class="ng-select-small"
+                      placeholder="Select Provider" (click)="$event.stopPropagation();">
+                      <ng-option [value]="item.id" *ngFor="let item of providerList">{{item.lastName}},{{item.firstName}}</ng-option>
+                    </ng-select>
+                    <!-- <ng-select class="ng-select-small" formControlName="careProviderId" [closeOnSelect]="true"
+                                      [multiple]="false" [searchable]="true" appendTo="body" placeholder="Select Provider">
+                                      <ng-option *ngFor="let item of providerList" [value]="item.id">{{item.firstName}}
+                                        {{item.lastName}}
+                                      </ng-option>
+                                    </ng-select> -->
+                  </div>
+
+                </div>
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label>Service Name</label>
+                    <ng-select [searchable]="true" formControlName="ccmServiceTypeId" class="ng-select-small"
+                      placeholder="Select Service Type" (click)="$event.stopPropagation();">
+                      <ng-option [value]="item.id" *ngFor="let item of serviceTypes">{{item.name}}</ng-option>
+                    </ng-select>
+                  </div>
+                </div>
+                <div class="col-sm-12">
+                  <div class="form-form form-group">
+                    <label for="note1">Notes</label>
+                    <textarea type="text" id="note1" formControlName="note" rows="6" class="form-control"></textarea>
+                  </div>
+                </div>
+                <div class="col-sm-12" *ngIf="loading">
+                  <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate"></mdb-progress-bar>
+                </div>
+                <div #alert *ngIf="showAlertFEncounter"
+                  class="alert alert-warning alert-dismissible animated fade show col-sm-12" role="alert">
+                  <!-- <button type="button" class="close" aria-label="Close" >
+                    <span aria-hidden="true">&times;</span>
+                  </button> -->
+                  <strong>End Time must be greater than Start Time!</strong>
+                </div>
+                <div class="col-sm-12 d-flex justify-content-end" *hasClaim=" ['CanModifyCCMEncounter']">
+                  <button [disabled]="addingEncounter ||!encounterTimeForm.valid" type="submit" mdbBtn
+                    class="btn btn-dynamic-2c btn-sm m-o">
+                    <span *ngIf="addingEncounter" class="spinner-border spinner-border-sm" role="status"
+                      aria-hidden="true"></span>
+                    Add Encounter</button>
+                </div>
+              </div>
+            </form>
+          </div>
+
+          <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 py-3">
+            <p class="mb-3"> <strong class="text-dynamic-2c ">Encounter Logs</strong></p>
+
+
+            <div class="logs-container" style="position: relative;"
+              *ngIf="ccmEncounterList && ccmEncounterList.ccmEncountersList && ccmEncounterList.ccmEncountersList.length > 0"
+              malihu-scrollbar [scrollbarOptions]="dropdownScroll">
+              <div class="logs">
+                <div class="log-item" *ngFor="let ccm of ccmEncounterList?.ccmEncountersList">
+                  <p class="log-title" [attr.date-time]="ccm.encounterDate| dateFormatPipe">
+                    <span class="log-bullet"></span><span class="font-400 pl-3"><strong
+                        class="text-gray">{{ccm.ccmServiceType}}</strong></span>
+
+                    <a *ngIf="ccm.note" appDebounceClick (debounceClick)="test.toggle()" [debounceTime]="200"
+                      class="float-right">
+                      <i *ngIf="test.isCollapsed" class="fa fa-angle-down"></i>
+                      <i *ngIf="!test.isCollapsed" class="fa fa-angle-up"></i>
+                    </a></p>
+
+                  <div class="log-info">
+                    <div class="" mdbCollapse #test="bs-collapse">
+                      <div class="border border-grey p-2 rounded mt-2">
+                        <strong class="text-dynamic-2c">Encounter Note:</strong>
+                        <p class="mb-0">{{ccm.note}}</p>
+                      </div>
+                    </div>
+                    <p class="mb-0"></p>
+                    <small class="font-400 mr-2"><span class="text-unique-color">Date:</span>
+                      {{ccm.encounterDate| dateFormatPipe}}</small>
+                    <small class="mr-2"><span class="text-unique-color">Created By :</span> <strong
+                        class="text-dynamic-2c"> {{ccm.careProviderName}}</strong></small>
+                    <small class="text-unique-color mr-2">Start Time: {{ccm.startTime}}</small>
+                    <small class="text-unique-color">Duration: {{ccm.duration}}</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="alert alert-danger"
+              *ngIf="ccmEncounterList && ccmEncounterList.ccmEncountersList && ccmEncounterList.ccmEncountersList.length === 0"
+              role="alert">
+              No CCM Encounter Created yet!
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- <div *ngIf="!isLoading"
+  class="care-plan-status flex-wrap d-flex justify-content-between align-items-center px-3 py-2 mt-3 bg-white border">
+  <div class="time-container">
+    <div class="item-icon">
+      <i class="fa fa-pie-chart"></i>
+    </div>
+    <div>
+      <p class="mb-0"><small>RPM Time completed</small></p>
+      <strong>{{ rpmEncounterTime }}</strong>
+    </div>
+
+  </div>
+  <div class="btn-group ml-auto">
+    <a (click)="checkRpmRevoked()" class="btn btn-dynamic-secondary-2c btn-sm px-3 m-0 ml-auto" style="width: 122px;">
+      View RPM
+    </a>
+  </div>
+  <div class="show-logs ml-3" appDebounceClick (debounceClick)="toggleCheckRpmRevoked(rpmEncounter);note.reset();">
+    <i *ngIf="rpmEncounter.isCollapsed" class="fa fa-angle-down"></i>
+    <i *ngIf="!rpmEncounter.isCollapsed" class="fa fa-angle-up"></i>
+  </div>
+</div> -->
+
+
+<div class="border border-top-0" mdbCollapse #rpmEncounter="bs-collapse">
+  <div class="ccm-body z-depth-0">
+    <div class="encounter-section">
+
+      <div class="encounter-header flex-wrap d-flex align-items-center justify-content-between p-3">
+        <strong class="col-lg-auto col-sm-12 d-sm-block mb-3">RPM Encounter</strong>
+        <div class="month ml-auto">
+          <ng-select [searchable]="false" class="ng-select-small" [(ngModel)]="rpmMonthId"
+            (ngModelChange)="getLogsByPatientAndMonthIdRPM()" placeholder="Select Month"
+            (click)="$event.stopPropagation();" style="min-width:200px">
+            <ng-option [value]="1">January</ng-option>
+            <ng-option [value]="2">February</ng-option>
+            <ng-option [value]="3">March</ng-option>
+            <ng-option [value]="4">April</ng-option>
+            <ng-option [value]="5">May</ng-option>
+            <ng-option [value]="6">June</ng-option>
+            <ng-option [value]="7">July</ng-option>
+            <ng-option [value]="8">August</ng-option>
+            <ng-option [value]="9">September</ng-option>
+            <ng-option [value]="10">October</ng-option>
+            <ng-option [value]="11">November</ng-option>
+            <ng-option [value]="12">December</ng-option>
+          </ng-select>
+        </div>
+        <div class="month ml-sm-3">
+          <ng-select [searchable]="false" [appendTo]="'body'" class="ng-select-small" placeholder="Select Month"
+            [(ngModel)]="yearNum" (ngModelChange)="getLogsByPatientAndMonthIdRPM()" (click)="$event.stopPropagation();"
+            style="min-width:200px">
+            <ng-option *ngFor="let year of listOfYears" [value]="year">{{year}}</ng-option>
+          </ng-select>
+        </div>
+
+      </div>
+      <div class="encounter-body px-3">
+        <div class="row">
+          <div class="enc-time col-xl-6 col-lg-12 col-md-12 col-sm-12 py-3">
+            <!-- <div class="row border-bottom mb-3"> -->
+            <!-- <div class="col-lg-6 col-md-6 col-sm-12">
+                <label for="selectBillingProvider">Select Billing Provider</label>
+                <ng-select [(ngModel)]="selectedBillingProvider" [multiple]="false" [searchable]="false"
+                  id="selectBillingProvider" class="ng-select-small" placeholder="Default Billing Provider"
+                  (click)="$event.stopPropagation();" style="min-width:200px">
+                  <ng-option *ngFor="let item of billingProviders" [value]="item">{{item.firstName}}
+                    {{item.lastName}}
+                  </ng-option>
+
+                </ng-select>
+              </div> -->
+            <!-- <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="form-group">
+                  <label for="verifyPassword">Password</label>
+                  <div class="input-group mb-3">
+                    <input type="password" [(ngModel)]="password" class="form-control form-control-sm"
+                      placeholder="Type your Password">
+                    <div class="input-group-append">
+                      <button [disabled]="!password || !selectedBillingProvider" (click)="validateUser()"
+                        class="btn btn-sm btn-dynamic-2c m-0">Verify</button>
+                    </div>
+                  </div>
+                </div>
+
+              </div> -->
+            <!-- </div> -->
+            <strong class="text-dynamic-2c mb-3 d-block">Encounter Time</strong>
+
+            <div class="rpm-container border mt-3 p-3">
+              <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                  <div class="form-group">
+                    <label for="startTime">Date</label>
+                    <input type="text" mask="0000-00-00 00:00 SS" [(ngModel)]="rpmEncounterDto.encounterDate"
+                      class="form-control form-control-sm" #dateToDp="dpDayPicker" [dpDayPicker]="datePickerConfig"
+                      [theme]="'dp-material ccm-date-picker'" [mode]="'daytime'" />
+                  </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                  <div class="form-group">
+                    <label for="endTime">Duration</label>
+                    <input type="number" min="0" oninput="validity.valid||(value='');"
+                      [(ngModel)]="rpmEncounterDto.duration" class="form-control form-control-sm"
+                      placeholder="Duration In Minutes">
+                    <!-- <input type="text" [(ngModel)]="rpmEncounterDto.duration" class="form-control form-control-sm"
+                                            #dateToDp="dpDayPicker" [dpDayPicker]="timePickerConfig" [theme]="'dp-material ccm-date-picker'"
+                                            [mode]="'time'" /> -->
+                  </div>
+                </div>
+                <div class="col-sm-12">
+                  <div class="form-form form-group">
+                    <label for="forlkm7">Notes <sup class="text-danger">*</sup></label>
+                    <textarea type="text" id="forlkm7" #note='ngModel' [(ngModel)]="rpmEncounterDto.note" rows="6"
+                      [ngClass]="{ 'is-invalid': note.touched && note.invalid }" class="form-control"
+                      required></textarea>
+                    <div class="invalid invalid-text">
+                      <small *ngIf="note.invalid && note.touched" class="text-danger">Please write some note.</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            <div class="d-flex justify-content-end">
+              <button [disabled]="!rpmEncounterDto.duration || !rpmEncounterDto.encounterDate || !canAddEncounter"
+                type="submit" class="btn btn-dynamic-2c btn-sm m-0 mt-3" (click)="addRpmEncounter();note.reset()">Add
+                Encounter</button>
+            </div>
+          </div>
+
+          <!-- Logs -->
+          <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 py-3">
+            <p class="mb-3"> <strong class="text-dynamic-2c ">Encounter Logs</strong></p>
+
+            <!-- <strong>{{ccm.encounterDate | dateFormatPipe}}</strong>  -->
+            <div class="logs-container" style="position: relative;"
+              *ngIf="rpmEncounterList && rpmEncounterList.length > 0" malihu-scrollbar
+              [scrollbarOptions]="dropdownScroll">
+              <div class="logs">
+                <div class="log-item" *ngFor="let item of rpmEncounterList">
+                  <p class="log-title" [attr.date-time]="item.encounterDate| dateFormatPipe">
+                    <span class="log-bullet"></span><span class="font-400 pl-3"><strong class="text-gray">RPM
+                        Service</strong></span>
+                    <a appDebounceClick (debounceClick)="logs.toggle()" [debounceTime]="200" class="float-right">
+                      <i *ngIf="logs.isCollapsed" class="fa fa-angle-down"></i>
+                      <i *ngIf="!logs.isCollapsed" class="fa fa-angle-up"></i>
+                    </a></p>
+
+                  <div class="log-info">
+                    <div class="" mdbCollapse #logs="bs-collapse">
+                      <div class="border border-grey p-2 rounded mt-2">
+                        <strong class="text-dynamic-2c">Encounter Note:</strong>
+                        <p class="mb-0"> {{item.note}}.</p>
+                      </div>
+                    </div>
+                    <p class="mb-0"></p>
+                    <small class="font-400 mr-2"><span class="text-unique-color">Date:</span>
+                      {{item.encounterDate| dateFormatPipe}}</small>
+                    <small class="mr-2"><span class="text-unique-color">Created By :</span> <strong
+                        class="text-dynamic-2c">
+                        {{item.facilityUserName}}</strong></small>
+                    <small class="text-unique-color mr-2">Start Time: {{item.encounterDate | date}}</small>
+                    <small class="text-unique-color">Duration: {{item.duration}}</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="alert alert-danger" *ngIf="!rpmEncounterList || rpmEncounterList.length < 1" role="alert">
+              No RPM Encounter Created yet!
+            </div>
+
+          </div>
+
+          <!-- Logs End -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- <div *ngIf="!isLoading"
+  class="care-plan-status flex-wrap d-flex justify-content-between align-items-center px-3 py-2 mt-3 bg-white border">
+  <div class="time-container">
+    <div class="item-icon">
+      <i class="fa fa-pie-chart"></i>
+    </div>
+    <div>
+      <p class="mb-0"><small>BHI Time completed</small></p>
+      <strong *ngIf="bhiEncounterDto && bhiEncounterDto.bhiTimeCompleted">{{ bhiEncounterDto.bhiTimeCompleted }}</strong>
+    </div>
+
+  </div>
+  <div class="btn-group ml-auto">
+    <a (click)="checkBhiRevoked()" class="btn btn-dynamic-secondary-2c btn-sm px-3 m-0 ml-auto" style="width: 122px;">
+      View BHI
+    </a>
+  </div>
+  <div class="show-logs ml-3" appDebounceClick (debounceClick)="toggleCheckBhiRevoked(bhiEncounter);note.reset();">
+    <i *ngIf="bhiEncounter.isCollapsed" class="fa fa-angle-down"></i>
+    <i *ngIf="!bhiEncounter.isCollapsed" class="fa fa-angle-up"></i>
+  </div>
+</div> -->
+<div class="border border-top-0" mdbCollapse #bhiEncounter="bs-collapse">
+  <div class="ccm-body z-depth-0">
+    <div class="encounter-section">
+
+      <div class="encounter-header flex-wrap d-flex align-items-center justify-content-between p-3">
+        <strong class="col-lg-auto col-sm-12 d-sm-block mb-3">BHI Encounter</strong>
+        <div class="month ml-auto">
+          <ng-select [searchable]="false" class="ng-select-small" [(ngModel)]="bhiMonthId"
+            (ngModelChange)="getBhiEncountersByPatientId()" placeholder="Select Month"
+            (click)="$event.stopPropagation();" style="min-width:200px">
+            <ng-option [value]="1">January</ng-option>
+            <ng-option [value]="2">February</ng-option>
+            <ng-option [value]="3">March</ng-option>
+            <ng-option [value]="4">April</ng-option>
+            <ng-option [value]="5">May</ng-option>
+            <ng-option [value]="6">June</ng-option>
+            <ng-option [value]="7">July</ng-option>
+            <ng-option [value]="8">August</ng-option>
+            <ng-option [value]="9">September</ng-option>
+            <ng-option [value]="10">October</ng-option>
+            <ng-option [value]="11">November</ng-option>
+            <ng-option [value]="12">December</ng-option>
+          </ng-select>
+        </div>
+        <div class="month ml-sm-3">
+          <ng-select [searchable]="false" [appendTo]="'body'" class="ng-select-small" placeholder="Select year"
+            [(ngModel)]="bhiYearNum" (ngModelChange)="getBhiEncountersByPatientId()" (click)="$event.stopPropagation();"
+            style="min-width:200px">
+            <ng-option *ngFor="let year of listOfYears" [value]="year">{{year}}</ng-option>
+          </ng-select>
+        </div>
+
+      </div>
+      <div class="encounter-body px-3">
+        <div class="row">
+          <div class="enc-time col-xl-6 col-lg-12 col-md-12 col-sm-12 py-3">
+            <!-- <ng-template > -->
+              <div class="row">
+
+                <div class="col-sm-6">
+                  <div class="input-group form-group">
+                    <label class="w-100">Date <sup class="text-danger">*</sup> </label>
+                    <input type="text" class="form-control form-control-sm" #dateDPicker="dpDayPicker"
+                      [dpDayPicker]="datePickerConfig" [ngModel]="addBhiEncounterDto.encounterDate | dateFormatPipe"
+                      (ngModelChange)="addBhiEncounterDto.encounterDate=$event" [theme]="'dp-material ccm-date-picker'"
+                      [mode]="'day'" />
+                    <a (click)="dateDPicker.api.open();" class="input-group-append">
+                      <span class="input-group-text text-white bg-dynamic-2c"><i class="fa fa-calendar fa-lg"></i></span>
+                    </a>
+                  </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                  <div class="form-group">
+                    <label class="w-100">Start Time <sup class="text-danger">*</sup> </label>
+                    <input type="text" class="form-control form-control-sm" #dateDpTime="dpDayPicker"
+                      [dpDayPicker]="timePickerConfig" [(ngModel)]="addBhiEncounterDto.startTime"
+                      [theme]="'dp-material ccm-date-picker'" [mode]="'time'" />
+                  </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                  <div class="form-group">
+                    <label class="w-100">End Time <sup class="text-danger">*</sup> </label>
+                    <input type="text" readonly class="form-control form-control-sm"
+                      [(ngModel)]="addBhiEncounterDto.endTime">
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label class="w-100">Duration: <small class="text-info">Enter in Minutes</small></label>
+                    <input #durationInput [(ngModel)]="durationNO" type="text" [readOnly]="!addBhiEncounterDto.startTime"
+                      class="form-control form-control-sm"
+                      (input)="stopCounterOnDuration = false;bhiDurationChanged($event.target.value)">
+
+                  </div>
+                </div>
+
+                <div class="col-sm-6">
+                  <div class="form-group" >
+                    <label>BHI Manager <sup class="text-danger">*</sup> </label>
+                    <ng-select [searchable]="true" [loading]=isLoadingUsers class="ng-select-small"
+                      [(ngModel)]="addBhiEncounterDto.bhiCareManagerId" placeholder="Select Provider"
+                      (click)="$event.stopPropagation();">
+                      <ng-option [value]="item.id" *ngFor="let item of (facilityUsersList | filterFUsersByRole: 'Care Manager')">{{item.lastName}},{{item.firstName}}</ng-option>
+                    </ng-select>
+                  </div>
+
+                </div>
+                <div class="col-sm-6">
+                  <div class="form-group" *ngIf="PatientData && PatientData.bhiStatus !== 4">
+                    <label>Psychiatrist <sup class="text-danger">*</sup> </label>
+                    <ng-select [searchable]="true" [loading]=isLoadingUsers class="ng-select-small"
+                      [(ngModel)]="addBhiEncounterDto.psychiatristId" placeholder="Select Provider"
+                      (click)="$event.stopPropagation();">
+                      <ng-option [value]="item.id" *ngFor="let item of (facilityUsersList | filterFUsersByRole: 'Psychiatrist')">{{item.lastName}},{{item.firstName}}</ng-option>
+                    </ng-select>
+                  </div>
+
+                  <div class="form-group" *ngIf="PatientData && PatientData.bhiStatus == 4">
+                    <label class="w-100">Psychiatrist </label>
+                    <input class="form-control form-control-sm" [(ngModel)]="addBhiEncounterDto.gbhiPsychiatrist" type="text">
+
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label>Care Coordinator <sup class="text-danger">*</sup> </label>
+                    <ng-select [searchable]="true" [loading]=isLoadingUsers class="ng-select-small"
+                      [(ngModel)]="addBhiEncounterDto.bhiCareCoordinatorId" placeholder="Care Coordinator"
+                      (click)="$event.stopPropagation();">
+                      <ng-option [value]="item.id" *ngFor="let item of (facilityUsersList | filterFUsersByRole: 'Care Coordinator')">{{item.lastName}},{{item.firstName}}</ng-option>
+                    </ng-select>
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label>Service Name <sup class="text-danger">*</sup> </label>
+                    <ng-select [searchable]="true" class="ng-select-small"
+                      [(ngModel)]="addBhiEncounterDto.bhiServiceTypeId" placeholder="Select Service Type"
+                      (click)="$event.stopPropagation();">
+                      <ng-option [value]="0">Evaluation Counselling </ng-option>
+                      <ng-option [value]="1">Initial Assessment </ng-option>
+                      <!-- <ng-option [value]="item.id" *ngFor="let item of serviceTypes">{{item.name}}</ng-option> -->
+                    </ng-select>
+                  </div>
+                </div>
+                <div class="col-sm-12">
+                  <div class="form-form form-group">
+                    <label for="form12">Notes <sup class="text-danger">*</sup> </label>
+                    <textarea type="text" style="min-height: 200px;" class="form-control form-control-sm" id="form12"
+                      rows="6" [(ngModel)]="addBhiEncounterDto.note"></textarea>
+                    <!-- <div class="invalid invalid-text">
+                        <small *ngIf="encounterTimeForm.get('note').invalid && encounterTimeForm.get('note').touched"
+                          class="text-danger">Please write some note.</small>
+                      </div> -->
+                  </div>
+                </div>
+
+                <div class="col-sm-12 mt-2">
+                  <sup class="text-danger">*</sup>
+                  <div class="form-check pl-0 form-check-inline" *ngIf="PatientData && PatientData.bhiStatus=== bhiStatusEnum['Active CoCM']">
+                    <input [(ngModel)]="addBhiEncounterDto.cptCode" name="TakeMedications"
+                      [value]="'99492'" type="radio" class="form-check-input" mdbInput id="TakeMedications1">
+                    <label class="form-check-label" for="TakeMedications1">Initial (CPT 99492)</label>
+                  </div>
+                  <div class="form-check pl-0 form-check-inline" *ngIf="PatientData && PatientData.bhiStatus=== bhiStatusEnum['Active CoCM']">
+                    <input [(ngModel)]="addBhiEncounterDto.cptCode" name="TakeMedications"
+                      [value]="'99493'" type="radio" class="form-check-input" mdbInput id="TakeMedications2">
+                    <label class="form-check-label" for="TakeMedications2">Subsequent (CPT 99493)</label>
+                  </div>
+                  <div class="form-check pl-0 form-check-inline" *ngIf="PatientData && PatientData.bhiStatus=== bhiStatusEnum['Active G-BHI']">
+                    <input [(ngModel)]="addBhiEncounterDto.cptCode" name="TakeMedications"
+                      [value]="'99484'" type="radio" class="form-check-input" mdbInput id="TakeMedications3">
+                    <label class="form-check-label" for="TakeMedications3">G Bhi (CPT 99484)</label>
+                  </div>
+                  <a id="tobaccoCessation" class="ml-3" container="body" [mdbPopover]="tobaccoCessation" placement="bottom"
+                  triggers="focus"><i class="fa fa-exclamation-circle text-success fa-lg"></i></a>
+                  <ng-template #tobaccoCessation>
+                    <div class="bg-dark text-white py-3 pl-3 pr-2">
+                      <div class="who-covered" (click)="$event.stopPropagation()" [innerHTML]="bhiINfoHtml"
+                        malihu-scrollbar [scrollbarOptions]="scrollbarOptionsTimeline" style="max-height: 300px;"></div>
+                    </div>
+                  </ng-template>
+                </div>
+                <div class="w-100 px-3 d-flex justify-content-end" >
+                  <button *ngIf="addBhiEncounterDto.id === 0" [disabled]="IsaddingEncounterLoading || !addBhiEncounterDto.bhiCareCoordinatorId || !addBhiEncounterDto.cptCode || !addBhiEncounterDto.note || !addBhiEncounterDto.startTime || !addBhiEncounterDto.endTime
+                       || !addBhiEncounterDto.bhiCareManagerId || (!addBhiEncounterDto.psychiatristId && PatientData.bhiStatus!== 4)" type="submit" (click)="addBhiEncounter()" mdbBtn
+                    class="btn btn-dynamic-2c btn-sm m-o">
+                    <span *ngIf="IsaddingEncounterLoading" class="spinner-border spinner-border-sm" role="status"
+                      aria-hidden="true"></span>
+                    Add Encounter</button>
+                </div>
+              </div>
+            <!-- </ng-template> -->
+          </div>
+
+          <!-- Logs -->
+          <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 py-3">
+            <p class="mb-3"> <strong class="text-dynamic-2c ">Encounter Logs</strong></p>
+
+            <!-- <strong>{{ccm.encounterDate | dateFormatPipe}}</strong>  -->
+            <div class="logs-container" style="position: relative;"
+              *ngIf="bhiEncounterDto && bhiEncounterDto.bhiEncountersList && bhiEncounterDto.bhiEncountersList.length > 0" malihu-scrollbar
+              [scrollbarOptions]="dropdownScroll">
+              <div class="logs">
+                <div class="log-item" *ngFor="let item of bhiEncounterDto.bhiEncountersList">
+                  <p class="log-title" [attr.date-time]="item.encounterDate| dateFormatPipe">
+                    <span class="log-bullet"></span><span class="font-400 pl-3"><strong class="text-gray">BHI
+                        Service</strong></span>
+                    <a appDebounceClick (debounceClick)="logs.toggle()" [debounceTime]="200" class="float-right">
+                      <i *ngIf="logs.isCollapsed" class="fa fa-angle-down"></i>
+                      <i *ngIf="!logs.isCollapsed" class="fa fa-angle-up"></i>
+                    </a></p>
+
+                  <div class="log-info">
+                    <div class="" mdbCollapse #logs="bs-collapse">
+                      <div class="border border-grey p-2 rounded mt-2">
+                        <strong class="text-dynamic-2c">Encounter Note:</strong>
+                        <p class="mb-0"> {{item.note}}.</p>
+                      </div>
+                    </div>
+                    <p class="mb-0"></p>
+                    <small class="font-400 mr-2"><span class="text-unique-color">Date:</span>
+                      {{item.encounterDate| dateFormatPipe}}</small>
+                    <small class="mr-2"><span class="text-unique-color">Created By :</span> <strong
+                        class="text-dynamic-2c">
+                        {{item.bhiCareCoordinatorName}}</strong></small>
+                    <small class="text-unique-color mr-2">Start Time: {{item.encounterDate | date}}</small>
+                    <small class="text-unique-color">Duration: {{item.duration}}</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="alert alert-danger" *ngIf="bhiEncounterDto && !bhiEncounterDto.bhiEncountersList && bhiEncounterDto.bhiEncountersList.length < 1" role="alert">
+              No RPM Encounter Created yet!
+            </div>
+
+          </div>
+
+          <!-- Logs End -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div mdbModal #unApprovedCarePLanModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog flat-modal" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+
+        <h4 class="modal-title w-100 text-center" id="myModalLabel">Unapproved
+          Profile
+        </h4>
+      </div>
+      <div class="modal-body">
+        <p class="text-center"><i class="fa fa-exclamation-triangle text-danger" style="font-size: 3rem;"></i> </p>
+        <p class="text-center"> Care Plan is not approved by Billing Provider.</p>
+
+        <div class="d-flex justify-content-center mt-3">
+          <button type="button" class="waves-light btn btn-sm btn-dynamic-2c" aria-label="Close"
+            (click)="unApprovedCarePLanModal.hide();isOpenCollapse ? ccmEncounter.toggle(): navigateToMonthlyReview()">Proceed</button>
+          <button type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+            (click)="unApprovedCarePLanModal.hide()">Close</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div mdbModal #IsRevokedModal="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myBasicModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog flat-modal" role="document">
+    <div class="modal-content">
+      <!-- <div class="modal-header">
+
+        <h4 class="modal-title w-100 text-center" id="myModalLabel">
+        </h4>
+      </div> -->
+      <div class="modal-body">
+        <p class="text-center">
+          <i class="fa fa-exclamation-triangle text-danger" style="font-size: 3rem;"></i>
+        </p>
+
+        <p class="text-center" *ngIf="textFor === 'ccm'">
+         Patient CCM Consent is revoked. <br> This patient is not eligible for this work.
+        </p>
+        <p class="text-center" *ngIf="textFor === 'rpm'">
+         Patient RPM Consent is revoked. <br> This patient is not eligible for this work.
+        </p>
+        <p class="text-center" *ngIf="textFor === 'bhi'">
+         Patient BHI Consent is revoked. <br> This patient is not eligible for this work.
+        </p>
+
+        <!-- Some required fields are missing.Please enter that data first. -->
+        <div class="d-flex justify-content-center mt-3">
+          <!-- <button type="button" mdbBtn color="pimary" size="sm" (click)="addRequiredData()" class="relative"
+            mdbWavesEffect>YES</button> -->
+          <button type="button" class="btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+            (click)="IsRevokedModal.hide()">OK</button>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!--<app-care-plan></app-care-plan> -->
+<app-patient-status-change #statusChangeRef (statusValueChanged)="gertPatientData()"></app-patient-status-change>

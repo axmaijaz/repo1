@@ -1,0 +1,65 @@
+
+:root{
+    --theme-primary:#4eaf48; 
+    --theme-secondary:#134389; 
+}
+
+nav.NavigationBar_root.ConversationsPanel_tabBar {
+    /* display: none; */
+}
+
+.NavigationBar_root {
+    background-color:var(--theme-primary);
+}
+
+.Search_textIcon path{
+    fill:var(--theme-primary);
+}
+
+
+.MessageItem_unread .MessageItem_contactDisplay,
+.MessageItem_unread .MessageItem_details,
+.MessageItem_unread .MessageItem_creationTime,
+.MessageItem_unread .MessageItem_separatrix {
+    color:var(--theme-secondary);
+}
+
+
+/* nav.NavigationBar_root div:nth-child(2) {
+    background: var(--theme-secondary);
+    display: none;
+}
+
+
+nav.NavigationBar_root > div:nth-child(1) {
+    display: none;
+} */
+
+nav.NavigationBar_root {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+nav.NavigationBar_root > div {
+    flex: 1;
+}
+.ContactSourceFilter_contactSourceFilter .ContactSourceFilter_filterIconContainer .ContactSourceFilter_iconNoneFill path{
+    stroke: var(--theme-secondary);
+}
+.ContactsView_iconContainer .ContactsView_iconNode path{
+    fill: var(--theme-secondary);
+}
+.Spinner_spinner {
+    border-color: var(--theme-primary);
+    border-top-color: var(--theme-secondary);
+}
+.MessageTabButton_navigationButton.MessageTabButton_active {
+    border-bottom: 1px solid var(--theme-secondary);
+}
+.LoginPanel_loginButton{
+    background-color: var(--theme-primary);
+}
+.LoginPanel_loginButton:active{
+    background-color: var(--theme-secondary);
+}

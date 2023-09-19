@@ -1,0 +1,12 @@
+
+<!-- <p class="text-left">Hello World.</p> -->
+<div class="row">
+  <div class="col" >
+    <div class="form-group">
+      <!-- <textarea [(ngModel)]="speechContent" class="form-control h-100" rows="10"></textarea> -->
+      <editor #speechTextEditor style="width: 100%;" (onPostRender)="loadingEditor=false" [(ngModel)]="speechContent"
+          apiKey="d8t35ignh0gnngobzvmdpf3pnxi74f0gcqhmr0xgu5xt0qr5"
+          [init]="editorConfObject"></editor>
+    </div>
+  </div>
+</div>

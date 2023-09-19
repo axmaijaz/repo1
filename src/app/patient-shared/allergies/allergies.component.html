@@ -1,0 +1,256 @@
+<div class="ccm-body" *ngIf="!hideListView">
+  <div class="d-flex align-items-center justify-content-between p-3">
+    <p class="mb-0"><strong *ngIf="!careplanView">Allergy Record</strong></p>
+    <a (click)="dateValidation = false;Category.reset();Reaction.reset(); agent.reset(); Type.reset() ;Criticality.reset(); ClinicalStatus.reset();addAllergyModal.show();resetAllergy();"
+      *hasClaim=" ['CanModifyAllergies']" class="btn btn-dynamic-2c btn-sm m-0" title="Add Allergy"
+      date-placement="left">Add New</a>
+  </div>
+  <div *ngIf="isLoading" class="d-flex justify-content-center text-center">
+    <!-- <div class="d-flex justify-content-center text-center"> -->
+    <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+  </div>
+
+  <ngx-datatable style="width: 100%;" [columnMode]="'force'" class="material z-depth-0" [headerHeight]="50"
+    [footerHeight]="50" [rowHeight]="35" [scrollbarV]="false" [scrollbarH]="true" [rows]="rows" [limit]="15"
+    (activate)="onActivate($event)">
+    <ngx-datatable-column name="#" [maxWidth]=50>
+      <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+        {{rowIndex + 1}}
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Agent" prop="agent">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        {{row.agent| titlecase}}
+              </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Reaction" prop="reaction">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+{{row.reaction| titlecase}}
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Category" prop="category">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+       {{allergyCategoryEnum[row.category]}}
+        <!-- <ng-container [ngSwitch]="row.category">
+          <div *ngSwitchCase="1">Food</div>
+          <div *ngSwitchCase="2">Medication</div>
+          <div *ngSwitchCase="3">Environment</div>
+          <div *ngSwitchCase="4">Biologic</div>
+          <div *ngSwitchDefault></div>
+        </ng-container> -->
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Type" prop="type">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        {{allergyTypesEnum[row.type]}}
+        <!-- <ng-container [ngSwitch]="row.type">
+          <div *ngSwitchCase="1">Allergy</div>
+          <div *ngSwitchCase="2">Intolerance-Underlying mechanism</div>
+          <div *ngSwitchDefault></div>
+        </ng-container> -->
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Status" prop="clinicalStatus">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        {{allergyClinicalStatusEnum[row.clinicalStatus]}}
+        <!-- <ng-container [ngSwitch]="row.clinicalStatus">
+          <div *ngSwitchCase="1">Active</div>
+          <div *ngSwitchCase="2">InActive</div>
+          <div *ngSwitchCase="3">Resolved</div>
+          <div *ngSwitchDefault></div>
+        </ng-container> -->
+      </ng-template>
+    </ngx-datatable-column>
+    <!-- <ngx-datatable-column name="Generic Name" prop="genericName">
+    </ngx-datatable-column> -->
+    <ngx-datatable-column name="Date" prop="createdOn">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        <span *ngIf="row.createdOn">{{row.createdOn | dateFormatPipe}}</span>
+        <span *ngIf="row.date">{{row.date | dateFormatPipe}}</span>
+        <!-- {{row.createdOn | dateFormatPipe}} -->
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column *hasClaim=" ['CanModifyAllergies']" name="Action" [canAutoResize]=false [frozenRight]=true
+      [width]="150">
+      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+        <button [disabled]="awDisable" class="btn btn-dynamic-2c btn-icon mx-2" title="Edit" placement="left"
+          (click)="dateValidation = false;editVaccination(row);dateformat(allergyDto);addAllergyModal.show()"><span class="fa fa-pencil"></span> </button>
+          <button [disabled]="awDisable" class="btn btn-danger btn-icon" (click)="openConfirmModal(row)"><span class="fa fa-trash"></span></button>
+      </ng-template>
+    </ngx-datatable-column>
+  </ngx-datatable>
+
+</div>
+
+
+<div style="overflow-y: auto" mdbModal #addAllergyModal="mdbModal" (open)="nkda = false" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg flat-modal" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close"
+          (click)="addAllergyModal.hide(); resetAllergy();">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 *ngIf="allergyDto.id === 0" class="modal-title w-100" id="myModalLabel">Add Allergy</h4>
+        <h4 *ngIf="allergyDto.id > 0" class="modal-title w-100" id="myModalLabel">Edit Allergy</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-12 mb-2">
+            <small class="text-dynamic-2c text-uppercase font-500">Allergy Info</small>
+            <div class="custom-control custom-checkbox custom-control-inline float-right" *ngIf="(!rows || !rows.length) && !isLoading">
+              <input type="checkbox" class="custom-control-input" id="InstrumentalActivities4"
+                [(ngModel)]="nkda" (change)="NKDAassignValues()"
+                name="InstrumentalActivities">
+              <label class="custom-control-label" for="InstrumentalActivities4">NKDA </label>
+            </div>
+          </div>
+          <div class="col-sm-12" [class.overlay-Body]="nkda === true">
+            <div class="row">
+
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <label class="w-100">Date<small class="text-danger">*</small></label>
+                  <input type="text" class="form-control form-control-sm" #date="ngModel" [(ngModel)]="allergyDto.date"
+                    #dateToDp="dpDayPicker" [dpDayPicker]="datePickerConfig" [displayDate]="displayDate"
+                    [theme]="'dp-material ccm-date-picker'" [mode]="'day'" (ngModelChange)="checkvalidation()" [ngClass]="{ 'is-invalid': dateValidation || !date.valid }" required />
+                  <div  class="invalid invalid-text">
+                    <!-- <div *ngIf="date.touched"> -->
+                      <small *ngIf="dateValidation || !date.valid" class="text-danger">Date must be valid or filled out.</small>
+                    <!-- </div><small *ngIf="dateValidation" class="text-danger">Date must be valid or filled out.</small> -->
+                  </div>
+
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="Category">Category<small class="text-danger">*</small></label>
+                  <ng-select id="Category" class="ng-select-small" #Category="ngModel" [(ngModel)]="allergyDto.category"
+                    [ngModelOptions]="{standalone: true}" [multiple]="false" [searchable]="true" [loading]="isLoading"
+                    placeholder="Category " required [ngClass]="{ 'is-invalid':(Category.touched ||
+                    Category.dirty) &&
+                    !Category.valid }">
+
+                    <ng-option [value]="-1">All</ng-option>
+                    <ng-option [value]="1">Food</ng-option>
+                    <ng-option [value]="2">Medication</ng-option>
+                    <ng-option [value]="3">Environment</ng-option>
+                    <ng-option [value]="4">Biologic</ng-option>
+                  </ng-select>
+                  <div *ngIf="Category.invalid && Category.touched" class="invalid invalid-text">
+                    <div *ngIf="Category.errors">
+                      <small class="text-danger">Category name must be filled out.</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="Clinical">Clinical Status<small class="text-danger">*</small></label>
+                  <ng-select id="Clinical" class="ng-select-small" #ClinicalStatus="ngModel"
+                    [(ngModel)]="allergyDto.clinicalStatus" [ngModelOptions]="{standalone: true}" [multiple]="false"
+                    [searchable]="true" [loading]="isLoading" placeholder="Clinical Status" required [ngClass]="{ 'is-invalid':(ClinicalStatus.touched ||
+                    ClinicalStatus.dirty) &&
+                    !ClinicalStatus.valid }">
+
+                    <ng-option [value]="-1">NA</ng-option>
+                    <ng-option [value]="1">Active</ng-option>
+                    <ng-option [value]="2">Inactive</ng-option>
+                    <ng-option [value]="3">Resolved</ng-option>
+                  </ng-select>
+                  <div *ngIf="ClinicalStatus.invalid && (ClinicalStatus.dirty || ClinicalStatus.touched)"
+                    class="invalid invalid-text">
+                    <div *ngIf="!!ClinicalStatus.errors">
+                      <small class="text-danger">Clinical Status name must be filled out.</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="Criticality">Criticality<small class="text-danger">*</small></label>
+                  <ng-select id="Criticality" class="ng-select-small" #Criticality="ngModel"
+                    [(ngModel)]="allergyDto.criticality" [ngModelOptions]="{standalone: true}" [multiple]="false"
+                    [searchable]="true" [loading]="isLoading" placeholder="Criticality" required [ngClass]="{ 'is-invalid':(Criticality.touched ||
+                    Criticality.dirty) &&
+                    !Criticality.valid }">
+                    <ng-option [value]="-1">NA</ng-option>
+                    <ng-option [value]="1">Low</ng-option>
+                    <ng-option [value]="2">High</ng-option>
+                    <ng-option [value]="3">Unable-to-Access</ng-option>
+                  </ng-select>
+                  <div *ngIf="Criticality.invalid && (Criticality.dirty || Criticality.touched)"
+                    class="invalid invalid-text">
+                    <div *ngIf="!!Criticality.errors">
+                      <small class="text-danger">Criticality name must be filled out.</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="Type">Type<small class="text-danger">*</small></label>
+                  <ng-select id="Type" class="ng-select-small" #Type="ngModel" [(ngModel)]="allergyDto.type"
+                    [ngModelOptions]="{standalone: true}" [multiple]="false" [searchable]="true" [loading]="isLoading"
+                    placeholder="Type" required [ngClass]="{ 'is-invalid':(Type.touched ||
+                    Type.dirty) &&
+                    !Type.valid }">
+                    <ng-option [value]="-1">NA</ng-option>
+                    <ng-option [value]="1">Allergy </ng-option>
+                    <ng-option [value]="2">Intolerance - Underlying mechanism</ng-option>
+                  </ng-select>
+                  <div *ngIf="Type.invalid && (Type.dirty || Type.touched)" class="invalid invalid-text">
+                    <div *ngIf="!!Type.errors">
+                      <small class="text-danger">Type name must be filled out.</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="medDose1">Agent<small class="text-danger">*</small></label>
+                  <input type="text" class="form-control form-control-sm" #agent="ngModel" [(ngModel)]="allergyDto.agent"
+                    id="medDose1" placeholder="Agent" [ngClass]="{ 'is-invalid':(agent.touched ||
+                  agent.dirty) &&
+                  !agent.valid }" required>
+                  <div *ngIf="agent.invalid && (agent.dirty || agent.touched)" class="invalid invalid-text">
+                    <div *ngIf="!!agent.errors">
+                      <small class="text-danger">Agent must be filled out.</small>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="medagent12">Reaction<small class="text-danger">*</small></label>
+                  <input type="text" class="form-control form-control-sm" #Reaction="ngModel"
+                    [(ngModel)]="allergyDto.reaction" id="medReaction12" placeholder="Reaction" [ngClass]="{ 'is-invalid':(Reaction.touched ||
+                  Reaction.dirty) &&
+                  !Reaction.valid }" required>
+                  <div *ngIf="Reaction.invalid && (Reaction.dirty || Reaction.touched)" class="invalid invalid-text">
+                    <div *ngIf="!!Reaction.errors">
+                      <small class="text-danger">Reaction must be filled out.</small>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-dark btn-sm" aria-label="Close" (click)="addAllergyModal.hide();"
+          mdbWavesEffect>Close</button>
+        <button *ngIf="allergyDto.id === 0" type="button"
+          [disabled]="!allergyDto.date || date.invalid || !allergyDto.category || !allergyDto.clinicalStatus || !allergyDto.criticality || !allergyDto.type || !allergyDto.agent|| !allergyDto.reaction"
+          class="btn btn-dynamic-2c btn-sm" (click)="addAllergyModal.hide();addAllergy()">Add</button>
+        <button *ngIf="allergyDto.id > 0" type="button"
+          [disabled]="!allergyDto.date || date.invalid || !allergyDto.category || !allergyDto.clinicalStatus || !allergyDto.criticality || !allergyDto.type || !allergyDto.agent|| !allergyDto.reaction"
+          class="btn btn-dynamic-2c btn-sm" (click)="addAllergyModal.hide();addAllergy(); resetAllergy();">Update</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,56 @@
+@import "theme";
+.modal-open {
+  overflow: hidden !important;
+}
+body.modal-open {
+  overflow: hidden !important;
+}
+.border {
+  border-width: 2px !important;
+}
+.border-primary {
+  border-color: orange !important;
+}
+
+.inline-form-field .form-group {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 5px;
+}
+
+.inline-form-field .form-group label {
+  margin-right: 1rem;
+  min-width: 100px;
+  max-width: 100px;
+}
+
+.inline-form-field .form-group .ng-select {
+  flex: 1;
+
+}
+.prior-form{
+ 
+  @include media-breakpoint-up(md){
+    display: flex;
+    align-items: center;
+  }
+}
+.vertical-text-heading{
+  @include media-breakpoint-up(md){
+  writing-mode: vertical-rl;
+  font-size: 14px;
+  font-weight: normal;
+  margin: 0;
+  white-space: pre;
+  align-self: stretch;
+  text-align: center;
+  border-width: 2px !important;
+
+  }
+  h3{
+    margin: 0;
+    font-size: 1rem;
+    padding: .2rem;
+  }
+}

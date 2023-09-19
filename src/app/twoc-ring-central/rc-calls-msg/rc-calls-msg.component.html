@@ -1,0 +1,895 @@
+<div class="d-flex align-items-center justify-content-start mb-3">
+  <!-- <h4 class="mr-2 mb-0"><a class="text-dark"><i class="fa fa-arrow-left"></i></a></h4> -->
+  <h1 class="page-title mb-0 position-beta">Patient Engagement </h1>
+</div>
+
+<div class="panel mb-0">
+  <div>
+    <div class="position-relative">
+      <div class="side-bar-ex">
+        <div *ngIf="loadingCases" class="d-flex justify-content-center text-center">
+          <mdb-progress-bar * class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+        </div>
+        <div class="p-3 pb-0">
+          <div class="d-flex align-content-center justify-content-between w-100">
+            <h6 class="mb-0">Search</h6>
+            <div class="d-inline-flex align-items-center mb-2">
+              <!-- <div [class.active]="searchByOrgName==true" (click)="searchByOrgName=true" class="border rounded px-2 main-index-box py-1 mr-1 ">
+                <div class="d-flex justify-content-between align-items-center">
+                  <h5 class="title mb-0" style="font-size: 12px;">Organization</h5>
+                </div>
+              </div> -->
+              <div [class.active]="true" (click)="ResetPemFilterObj()" class="border rounded mx-1 px-2 main-index-box py-1 active">
+                <div class="d-flex justify-content-between align-items-center">
+                  <h5 class="title mb-0" style="font-size: 12px;">Reset</h5>
+                </div>
+              </div>
+              <div [class.active]="true" (click)="RefreshPemData()" class="border rounded px-2 main-index-box py-1 active">
+                <div class="d-flex justify-content-between align-items-center">
+                  <!-- <span class="input-group-text text-white bg-dynamic-2c" id="category"><i class="fa fa-refresh fa-lg"></i></span> -->
+                  <h5 class="title mb-0" style="font-size: 12px;">Refresh</h5>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- <div class="form-group">
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input" [value]="true" [(ngModel)]="searchByOrgName"
+                (ngModelChange)="filterOrg()" id="internetAccess" name="internetAccess" mdbInput>
+              <label class="form-check-label" for="internetAccess">Organization</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input" [value]="false" [(ngModel)]="searchByOrgName"
+                (ngModelChange)="filterOrg()" id="internetAccess1" name="internetAccess1" mdbInput>
+              <label class="form-check-label" for="internetAccess1">Facility</label>
+            </div>
+          </div> -->
+          <div class="form-group mb-0">
+            <div class="d-flex align-items-center justify-content-start">
+              <input type="text" [(ngModel)]="pemFilterParamsObj.patientName" type="text" appOnDebounce [debounceTime]="1500" (onDebounce)="GetPemData()"
+              #searchPatient autocomplete="off" autocomplete="off"
+                class="form-control form-control-sm box-shadow w-100" placeholder="Search by Name" />
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="!loadingCases && (!PemResData || !PemResData.length)">
+          <div class="alert m-3 alert-warning"> No Record Found</div>
+        </div>
+
+        <ul>
+          <li [class.active]="SelectedPemCase.id==item.id" (click)="SelectCase(item)" *ngFor="let item of PemResData; let i= index;">
+              <a class="p-2" >
+                <div class="d-flex justify-content-between align-items-center">
+                  <p class="mb-1"><strong class="text-dynamic-2c">Name: </strong>{{item.patientName || 'Anonymous'}} ({{item.pemCaseDetails?.length}})</p>
+                  <div>
+                    <span class="cursor-pointer" (click)="OpenMapNumberModal(item, transferModal)"
+                    title="Map Number">
+                    <i class="fa fa-share fa-lg" style="font-weight: 700;"></i>
+                  </span>
+                      <!-- <span class="cursor-pointer" title="View Facilities"
+                    routerLink="/org/organizations/Facilities/{{item.id}}" placement="left"><i class="fa fa-eye fa-lg"></i>
+                    </span> -->
+                  </div>
+                </div>
+                <!-- <p class="mb-1"><strong class="text-dynamic-2c">Email: </strong>{{item.contactEmail}}</p> -->
+                <p class="mb-1"><strong class="text-dynamic-2c">Phone No: </strong>
+                  <ng-container>
+                    {{item.phoneNumber }}
+                  </ng-container>
+                </p>
+                <div style="display: none;">
+                  <div class="action-button d-flex justify-content-start m-0">
+                    <button [disabled]="!item.patientUserId" (click)="OpenNewCaseModal(item,createNEwCaseModal)"
+                    [title]="'New Case'" class="btn btn-dynamic-2c btn-icon"><i
+                        class="fa fa-plus"></i></button>
+                    <button [disabled]="!item.patientUserId" (click)="TransferCaseDetails(item,transerCaseDetailModal)"
+                    [title]="'Transfer Case Details'" class="btn btn-dynamic-2c btn-icon"><i
+                        class="fa fa-share"></i></button>
+                    <button title="Edit Case" class="btn btn-dynamic-2c btn-icon" (click)="SelectedPemCase=item;getPatientDetail();assignEditPemCaseData(item);edit.show()"><i
+                        class="fa fa-pencil"></i></button>
+                    <button title="Send Fax" class="btn btn-dynamic-2c btn-icon" (click)="SelectedPemCase=item;;sendFaxModal.show()"><i
+                        class="fa fa-fax"></i></button>
+                    <button (click)="OpenCallView(item)" title="Call" class="btn btn-dynamic-2c btn-icon"><i
+                        class="fa fa-phone"></i></button>
+                    <!-- <button (click)="OpenMessageView(item)" title="Send message" class="btn btn-dynamic-2c btn-icon mx-0 my-0"><i
+                        class="fa fa-commenting"></i></button> -->
+                    <button (click)="OpenConverSation(item)" title="Open conversation"
+                      class="btn btn-dynamic-2c btn-icon"><i class="fa fa-comments"></i></button>
+                  </div>
+                </div>
+                <!-- <p class="mb-1"><strong class="text-dynamic-2c">Address: </strong>{{item.website}}</p> -->
+              </a>
+          </li>
+        </ul>
+      </div>
+      <div class="main-layout-in">
+        <mdb-progress-bar class="progress primary-color-dark mb-0" *ngIf="loadingCases || sendingMessage" mode="indeterminate">
+        </mdb-progress-bar>
+        <div class="main-outlet">
+            <div class="row justify-content-center">
+              <div class="col-12 p-0" >
+                <div class="chat-messages ">
+                  <div  class="chat-header px-3">
+                    <div >
+                      <div class="d-flex justify-content-between align-items-center">
+                        <h2 class="m-0" style="font-weight: 400;" *ngIf="SelectedPemCase?.id">{{SelectedPemCase.patientName || 'Anonymous'}}</h2>
+                        <!-- <div class=""> -->
+                          <!-- <div class="d-inline-block" ngbDropdown #myDrop="ngbDropdown">
+                            <button type="button" class="btn btn-md  ellips-icon" id="dropdownManual"  (focus)="myDrop.open()">
+                              <i style="color: #fff;font-size: 19px;" class="fa fa-ellipsis-v "></i>
+                            </button>
+                            <div class="dropdown-menu" style="right: 0px;" ngbDropdownMenu aria-labelledby="dropdownManual">
+                              <button ngbDropdownItem>Add Instant Meeting</button>
+                              <div class="dropdown-divider"></div>
+                              <button ngbDropdownItem (click)="addScheduleModal(template)">Add Schedule</button>
+                            </div>
+                          </div> -->
+                          <!-- <button type="button" class="btn btn-primary"><i class="fa fa-ellipsis-v"></i></button> -->
+                        <!-- </div> -->
+                      </div>
+                    </div>
+                  </div>
+                  <!-- <div class="text-center" *ngIf="gettingChatTitle">
+                    <div class="spinner-border" role="status">
+                      <span class="visually-hidden">Loading...</span>
+                    </div>
+                  </div> -->
+                  <hr *ngIf="SelectedPemCase?.id" style="margin: 0.6rem 0;" class="" />
+                  <ng-container *ngIf="SelectedPemCase?.id">
+                    <div id="messageListDiv" class="px-3" style="min-height: 100%; height: calc(100vh - 290px);;overflow-y: auto;">
+                      <div  class="message-body" *ngFor="let msg of SelectedPemCase.pemCaseDetails; let i = index">
+                        <div class="your-message d-flex align-items-end py-2" *ngIf="msg.direction != 'Outbound'">
+                          <div class="user-avatar mr-1">
+                            <!-- <img src="../../assets/male-placeholder-image.jpeg" alt="" /> -->
+                            <i class="fa fa-user fa-2x text-dynamic-2c"></i>
+                          </div>
+                          <div class="your-chat-message">
+                            <p style="text-align: left; font-weight: 600;" class="m-0 text-dynamic-secondary-2c">{{msg.type}}</p>
+                            <p class="m-0">{{msg.subject}}</p>
+                            <p style="text-align: left; font-weight: 500;" class="m-0 text-dynamic-secondary-2c">{{msg.creationTime}}</p>
+                          </div>
+                        </div>
+                        <div class="other-message d-flex flex-row-reverse align-items-end py-2" *ngIf="msg.direction == 'Outbound'">
+                          <div class="user-avatar ml-1">
+                            <!-- <img src="../../assets/male-placeholder-image.jpeg" alt="" /> -->
+                            <i class="fa fa-user fa-2x text-dynamic-2c"></i>
+                          </div>
+                          <div class="other-chat-message">
+                            <p style="text-align: left; font-weight: 600;" class="m-0 text-dynamic-secondary-2c">{{msg.type}}</p>
+                            <p class="m-0">{{msg.subject}}</p>
+                            <p style="text-align: right; font-weight: 500;" class="m-0 text-dynamic-secondary-2c">{{msg.creationTime}}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </ng-container>
+                  <!-- <div class="text-center" *ngIf="gettingGroupChatHistory">
+                    <div class="spinner-border" role="status">
+                      <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <div class="item">
+                      <ngx-skeleton-loader count="5" [animation]="'progress'" appearance="line"></ngx-skeleton-loader>
+                    </div>
+                  </div> -->
+                  <div class="chat-type-box py-2 px-3" *ngIf="SelectedPemCase?.id">
+                    <div class="chat-type position-relative">
+                      <!-- <i class="fa fa-paperclip paper-clip" aria-hidden="true"></i> -->
+                      <input [(ngModel)]="messageText" (keyup.enter)="SendRCMessage()" type="text" placeholder="Add your message" class="form-control"/>
+                      <button  (click)="SendRCMessage()"  class="send-btn" >
+                        Send
+                        <i class="fa fa-paper-plane paper-icon "></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+                <div class="col-12 " style="display: none;">
+                  <div>
+                    <div class="p-3 history-table">
+                      <p><strong>Communication Detail</strong></p>
+                      <table class="table btn-table table-nowrap table-borderd w-100 mb-0 bg-white">
+                        <thead class="bg-dynamic-2c text-white">
+                          <tr>
+                            <th>
+                              <div class="d-flex align-items-center">
+                                <div class="custom-control custom-checkbox custom-control-inline mr-0 py-0">
+                                  <input [disabled]="!SelectedPemCase.patientUserId" [(ngModel)]="SelectedPemCase['allSelected']" (change)="selectAllDetails(SelectedPemCase)" type="checkbox" class="custom-control-input" id="selectAll"
+                                    name="selectMessage">
+                                  <label class="custom-control-label" for="selectAll"></label>
+                                </div>
+                                Message Type
+                              </div>
+
+                              </th>
+                            <th>Response Time </th>
+                            <th>Time</th>
+                            <!-- <th>Direction</th> -->
+                            <th>Message</th>
+                            <th class="text-left" style="width: 100px;">Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let msg of SelectedPemCase.pemCaseDetails; let i = index">
+                            <td>
+                              <div class="d-flex align-items-center">
+                                <div class="custom-control custom-checkbox custom-control-inline mr-0 py-0">
+                                  <input [disabled]="!SelectedPemCase.patientUserId" [(ngModel)]="msg['selected']" (change)="selectDetail(SelectedPemCase, msg['selected'])" type="checkbox" class="custom-control-input" id="selectMessage{{i}}"
+                                    name="selectMessage">
+                                  <label class="custom-control-label" for="selectMessage{{i}}"></label>
+                                </div>
+                                <span>{{msg.type}}</span>
+                              </div>
+
+                            </td>
+                            <td>{{msg.responseTime}} min</td>
+                            <td>
+                              <div>
+                                <button class="btn btn-icon bg-transparent z-depth-0 m-0">
+                                  <i
+                                    class="fa fa-arrow-{{msg.direction === 'Outbound' ? 'up': 'down'}} text-{{msg.direction === 'Outbound' ? 'primary': 'secondary'}}"></i>
+                                </button>
+                                <span class="ml-2">{{msg.creationTime}}</span>
+                              </div>
+                            </td>
+                            <!-- <td>
+                              <div>
+                                <button class="btn btn-icon bg-transparent z-depth-0 m-0">
+                                  <i
+                                    class="fa fa-arrow-{{msg.direction === 'Outbound' ? 'up': 'down'}} text-{{msg.direction === 'Outbound' ? 'primary': 'secondary'}}"></i>
+                                </button>
+                                <span class="ml-2">{{msg.direction}}</span>
+                              </div>
+
+
+                            </td> -->
+                            <td>{{(msg.attachments?.length) - 1 ? (msg.attachments?.length) - 1: '' }} {{msg.subject}}</td>
+                            <td style="width: 100px;">
+                              <div class="btn-action">
+                                <div class="d-flex justify-content-end align-items-center">
+
+                                    <!-- <button type="button" *ngIf="msg.type !== 'Text'" (click)="GetAttachmentDetails(msg)" class="flex-grow-1 btn btn-dynamic-secondary-2c btn-sm px-2 my-0 ml-0">
+                                      <i class="fa fa-eye fa-lg"></i> View
+                                    </button> -->
+                                    <!-- <button type="button" class="btn btn-success btn-sm px-2 my-0">
+                                      <i class="fa fa-play fa-lg"></i> Play
+                                    </button> -->
+                                    <!-- <button [disabled]="!item.patientUserId" class="btn btn-dynamic-2c btn-sm px-2 my-0 mx-0"><i class="fa fa-plus fa-lg mr-1"></i> New Case</button> -->
+                                  </div>
+                                  <!-- <button class="px-2" (click)="transferModal.show();"><i class="fa fa-share fa-lg mr-1"></i>
+                                    Transfer</button> -->
+
+                              </div>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+
+                    </div>
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+  </div>
+</div>
+
+<div class="d-flex form-group" style="display: none !important;">
+  <div class="flex-grow-1">
+    <label for="searchBy">Search Patient</label>
+    <div class="d-flex align-items-center justify-content-start">
+      <input [(ngModel)]="pemFilterParamsObj.patientName" type="text" appOnDebounce [debounceTime]="1500" (onDebounce)="GetPemData()"
+      #searchPatient autocomplete="off" class="form-control form-control-sm box-shadow w-100"
+        id="searchBy" placeholder="Name / EMR ID" />
+    </div>
+  </div>
+  <div class="d-flex align-items-end">
+    <div class="flex-grow-1">
+      <!-- <label for="namea"> Care Provider</label>
+      <ng-select class="ng-select-small" [closeOnSelect]="true" [multiple]="false" [searchable]="true"
+        placeholder="Care Provider">
+        <ng-option [value]="0">Care Provider </ng-option>
+        <ng-option></ng-option>
+      </ng-select> -->
+    </div>
+    <div>
+      <button (click)="test.toggle()" type="button" class="btn btn-dynamic-2c btn-sm my-0 flex-shrink-0 mr-0">
+        <i class="fa fa-filter fa-lg"></i> Filter
+      </button>
+      <button type="button" (click)="ResetPemFilterObj()" class="btn btn-dynamic-secondary-2c btn-sm mr-0 flex-shrink-0">
+        <i class="fa fa-refresh fa-lg"></i> Reset
+      </button>
+    </div>
+
+    <!-- <button id="sakdjnaslkj" type="button" class="btn btn-dynamic-2c btn-sm my-0 flex-shrink-0 mr-0">
+      <i class="fa fa-bluetooth fa-lg"></i> Blutooth
+    </button> -->
+  </div>
+</div>
+
+<div class="search-filter collapseable" mdbCollapse #test="bs-collapse">
+  <div class="panel" style="overflow: visible;">
+    <div class="panel-header d-flex justify-content-between align-items-center">
+      <h3>Search Filter</h3>
+      <div>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="test.toggle()">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-xl-4 col-lg-4 col-sm-4">
+          <div class="form-group">
+            <label for="status">Status</label>
+            <ng-select [(ngModel)]="pemFilterParamsObj.pemCaseStatus" class="ng-select-small" id="status" [searchable]="false" placeholder="Select Status"
+              [closeOnSelect]="true">
+              <!-- <ng-option [value]="-1">All</ng-option> -->
+
+              <ng-option [value]="-1">All</ng-option>
+              <ng-option *ngFor="let item of caseStatusEnumArr" [value]="item.value">{{item.name}}</ng-option>
+            </ng-select>
+          </div>
+        </div>
+        <div class="col-xl-4 col-lg-4 col-sm-4">
+          <div class="form-group">
+            <label for="insurancePLan">Query Type<small class="text-danger"></small></label>
+            <ng-select [(ngModel)]="pemFilterParamsObj.pemCaseQueryType" class="ng-select-small" id="insurancePLan" [multiple]="false" [searchable]="true"
+              placeholder="Query Type">
+              <ng-option [value]="-1">All</ng-option>
+              <ng-option *ngFor="let item of caseQueryEnumArr" [value]="item.value">{{item.name}}</ng-option>
+            </ng-select>
+          </div>
+        </div>
+        <div class="col-xl-4 col-lg-4 col-sm-4">
+          <div class="form-group">
+            <label for="cd">Msg Type</label>
+            <ng-select class="ng-select-small" id="cd" [searchable]="false" [multiple]="true" placeholder="Msg Type"
+              [closeOnSelect]="true">
+              <ng-option>ABCD</ng-option>
+            </ng-select>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xl-4 col-lg-4 col-sm-4">
+          <div class="form-group">
+            <label for="status">Rsp Time (min)</label>
+            <input type="text" [(ngModel)]="pemFilterParamsObj.responseTime" class="form-control" placeholder="Rsp Time">
+          </div>
+        </div>
+        <div class="col-xl-4 col-lg-4 col-sm-4">
+          <div class="form-group">
+            <label for="insurancePLan">Assigned To<small class="text-danger"></small></label>
+            <ng-select [(ngModel)]="pemFilterParamsObj.assignedToId" class="ng-select-small" id="insurancePLan" [multiple]="false" [searchable]="true"
+              placeholder="Assigned To">
+              <ng-option [value]="0">All</ng-option>
+              <ng-option [value]="item.id" *ngFor="let item of (facilityUserList | filterFUsersByRole: 'Billing Provider')">{{item.lastName}},{{item.firstName}}</ng-option>
+            </ng-select>
+          </div>
+        </div>
+        <div class="col-xl-4 col-lg-4 col-sm-4">
+          <div class="form-group">
+            <label for="lsdnlkfa">Care Manager</label>
+            <ng-select [(ngModel)]="pemFilterParamsObj.caseManagerId" class="ng-select-small" id="lsdnlkfa" [searchable]="false" [multiple]="false" placeholder="Care Manager"
+              [closeOnSelect]="false">
+              <ng-option [value]="0">All</ng-option>
+              <ng-option [value]="item.id" *ngFor="let item of (facilityUserList | filterFUsersByRole: 'Billing Provider')">{{item.lastName}},{{item.firstName}}</ng-option>
+            </ng-select>
+          </div>
+        </div>
+        <div class="col-xl-4 col-lg-4 col-sm-4">
+          <div class="form-group">
+            <label for="edwew">Closed By</label>
+            <ng-select [(ngModel)]="pemFilterParamsObj.closedById" class="ng-select-small" id="edwew" [searchable]="false" [multiple]="false" placeholder="Closed By"
+              [closeOnSelect]="true">
+              <ng-option [value]="0">All</ng-option>
+              <ng-option [value]="item.id" *ngFor="let item of (facilityUserList | filterFUsersByRole: 'Billing Provider')">{{item.lastName}},{{item.firstName}}</ng-option>
+            </ng-select>
+          </div>
+        </div>
+      </div>
+      <div class="d-flex justify-content-end mt-2">
+        <div class="btn-group">
+          <button type="button" (click)="GetPemData()" class="btn btn-dynamic-2c btn-sm mx-0 flex-shrink-0">
+            <i class="fa fa-filter fa-lg"></i> Search
+          </button>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- <button class="btn btn-dynamic-2c btn-sm" type="button" (click)="startCall()">Call</button>
+<button class="btn btn-dynamic-secondary-2c btn-sm" type="button" (click)="sendSms()">SMS</button> -->
+
+<div mdbModal #edit="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myeditLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="edit.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">Edit Case</h4>
+      </div>
+      <div class="modal-body">
+        <fieldset [disabled]="SelectedPemCase.pemCaseStatus === PemCaseStatusEnum.Closed">
+        <!-- <form name="form" #f="ngForm" novalidate> -->
+          <div class="task-patient-info mb-3">
+            <div class="row" *ngIf="SelectedPemCase.patientUserId">
+              <div class="col-sm-6">
+
+                <p><strong>Patient: </strong>
+                  {{selectedPatient.fullName}}
+                </p>
+                <p><strong>DOB: </strong>
+                  <ng-container *ngIf="selectedPatient.dateOfBirth">{{selectedPatient.dateOfBirth | date}}</ng-container>
+                </p>
+                <div class="cp-list d-flex justify-content-between">
+                  <strong style="font-size: 14px;">Care Provider: </strong>
+                  <div class="user-name-list">
+                    <div title="{{item.fullName}}" class="name-caption" *ngFor="let item of selectedPatient.careProviders">
+                      <span>{{item['nameAbbreviation']}}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="col-sm-6">
+                <p><strong>EMR ID: </strong>
+                  {{selectedPatient.patientEmrId}}
+                </p>
+                <p><strong>Phone #: </strong>
+                  {{selectedPatient['primaryPhoneNumber']}}
+                </p>
+                <div>
+                  <p><strong>Billing Provider: </strong>
+                    {{selectedPatient.billingProviderName}}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="task-form mt-3">
+              <div class="row">
+                <div class="col-sm-6">
+                  <div class="d-flex form-group">
+                    <label for="assignTo" style="width: 80px;" class="flex-shrink-0">Status <sup
+                        class="text-danger">*</sup></label>
+                    <ng-select class="w-100 ng-select-small ml-3" [(ngModel)]="pemCaseEditObj.pemCaseStatus" [closeOnSelect]="true" [multiple]="false"
+                      [searchable]="true" placeholder="Assign" name="assignTo">
+                      <ng-option *ngFor="let item of caseStatusEnumArr" [value]="item.value">{{item.name}}</ng-option>
+                    </ng-select>
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="d-flex form-group">
+                    <label for="taskType" style="width: 80px;" class="flex-shrink-0">Query Type <sup
+                        class="text-danger">*</sup></label>
+                    <ng-select class="w-100 ng-select-small ml-3" [(ngModel)]="pemCaseEditObj.pemCaseQueryType" name="type" [multiple]="false"
+                      [searchable]="true" placeholder="Query Type">
+                      <ng-option *ngFor="let item of caseQueryEnumArr" [value]="item.value">{{item.name}}</ng-option>
+                    </ng-select>
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="d-flex form-group">
+                    <label style="width: 80px;" class="flex-shrink-0">Assigned To</label>
+                    <ng-select class="w-100 ng-select-small ml-3" [(ngModel)]="pemCaseEditObj.assignedToId" [closeOnSelect]="true" [multiple]="false"
+                      [searchable]="true" placeholder="Assigned To" required name="assignTo">
+                      <ng-select [clearable]="false" [(ngModel)]="pemCaseEditObj.assignedToId" class="flex-1 ng-select-small"  [multiple]="false" [searchable]="true"
+                        required >
+                        <ng-option [value]="item.id" *ngFor="let item of (facilityUserList | filterFUsersByRole: 'Billing Provider')">{{item.lastName}},{{item.firstName}}</ng-option>
+                      </ng-select>
+                    </ng-select>
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="d-flex form-group">
+                    <label for="" style="width: 80px;" class="flex-shrink-0">Close Date<sup
+                        class="text-danger"></sup></label>
+                    <div class=" ml-3 w-100">
+                      <input [disabled]="true"
+                        type="text"
+                        [(ngModel)]="pemCaseEditObj.closedDate"
+                        class="form-control form-control-sm"
+                        #dateToDp="dpDayPicker"
+                        name="startedTime"
+                        #startedTime="ngModel"
+                        [dpDayPicker]="datePickerConfig"
+                        [theme]="'dp-material ccm-date-picker'"
+                        [mode]="'day'"
+                        required
+                        [ngClass]="{
+                          'is-invalid': startedTime.touched && startedTime.invalid
+                        }"
+                      />
+                      <!-- <input [(ngModel)]="pemCaseEditObj.closedDate" type="date" class="form-control w-100" placeholder="close date"> -->
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-12">
+                  <div class="d-flex form-group">
+                    <label style="width: 80px; " class="flex-shrink-0" for="form12">Notes
+                    </label>
+                    <textarea [(ngModel)]="pemCaseEditObj.note" type="text" id="form12" rows="6" class="form-control ml-3" style="height: 100%;" required
+                      name="notes"></textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        <!-- </form> -->
+        </fieldset>
+      </div>
+
+      <div class="modal-footer">
+        <div class="w-100 d-flex justify-content-between align-item-center">
+          <div>
+            <!-- <button type="button" size="sm" mdbBtn color="secondry" class="waves-light" aria-label="Close"
+              (click)="edit.hide()" mdbWavesEffect>Close Case</button> -->
+          </div>
+          <div>
+            <button type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+              (click)="edit.hide()" mdbWavesEffect>Close</button>
+            <button type="button" [disabled]="(!pemCaseEditObj.pemCaseQueryType &&  pemCaseEditObj.pemCaseQueryType!==0)
+            || (!pemCaseEditObj.pemCaseStatus &&  pemCaseEditObj.pemCaseStatus!==0)"
+             (click)="EditPemCase(edit)" class="relative waves-light btn btn-sm btn-dynamic-2c" mdbWavesEffect>Save
+              changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div mdbModal #transferModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="mytransferModalLabel" aria-hidden="true" (close)="MapPhoneNumberModelClosed()">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="transferModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">Map Phone Number</h4>
+      </div>
+      <div class="modal-body">
+        <div class="d-flex flex-wrap flex-1">
+
+          <div class="flex-grow-0  mb-3"
+            *ngIf="SelectedPemCase && SelectedPemCase.phoneNumber" >
+            <div class="anonymous-number border">
+              <div class="align-items-center d-flex justify-content-start px-3 py-2">
+                <div class="border icon-block btn-icon d-flex align-items-center justify-content-center bg-dynamic-2c">
+                  <i class="fa fa-phone text-white"></i>
+                </div>
+                <div class="info-block px-3">
+                  <p class="mb-0 text-dynamic-2c"><strong>{{ SelectedPemCase.patientName || 'Anonymous' }}</strong></p>
+                  <p class="mb-0"><strong>{{SelectedPemCase.phoneNumber}}</strong></p>
+                  <!-- <p class="mb-0">2 Message</p> -->
+                </div>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="SelectedPemCase && SelectedPemCase.phoneNumber"  class="d-flex p-3">
+            <i class="fa fa-arrow-right fa-2x"></i>
+          </div>
+          <div class="row flex-1">
+            <div class="col-sm-8">
+              <div class="form-group">
+                <label for="searchBy">Search Patient</label>
+                <ng-select id="medNameSearch" class="ng-select-small" #searchPatientRef="ngModel"
+                [(ngModel)]="selectedPatient" [loading]="isLoading" [multiple]="false"
+                  [searchable]="true" placeholder="Search Patient" [typeahead]="searchWatch">
+                  <ng-option [value]="item" *ngFor="let item of rows">
+                    {{item.fullName}} ({{item.patientEmrId}})</ng-option>
+                </ng-select>
+                <!-- <label for="searchBy113">Search Patient</label>
+                <div class="d-flex align-items-center justify-content-start">
+                  <input [hidden]="filterPatientDto.filterBy === 2" type="text" #searchPatientELe12
+                    [(ngModel)]="filterPatientDto.SearchParam" autocomplete="off"
+                    class="form-control form-control-sm box-shadow w-100" id="searchBy113"
+                    placeholder="{{ filterPatientDto.filterBy === 1 ? 'Name, Emr Id' : filterPatientDto.filterBy === 2 ? 'Date of Birth e.g yyyy-MM-dd': 'Phone No'}}" />
+                  <input [hidden]="filterPatientDto.filterBy !== 2" id="searchBy113" type="text"
+                    class="bg-white form-control form-control-sm box-shadow w-100" #dateDPicker="dpDayPicker"
+                    autocomplete="off" [dpDayPicker]="datePickerConfig2" placeholder="MM-DD-YYYY"
+                    [(ngModel)]="filterPatientDto.SearchParam"
+                    (ngModelChange)="filterPatientDto.SearchParam.length == 10 ? getFilterPatientsList2(): ''"
+                    [theme]="'dp-material ccm-date-picker'" [mode]="'day'" />
+                </div> -->
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label for="namea">Filter By</label>
+                <ng-select class="ng-select-small" [(ngModel)]="filterPatientDto.filterBy"
+                  (ngModelChange)="filterPatientDto.SearchParam = '';getFilterPatientsList2()" [closeOnSelect]="true"
+                  [multiple]="false" [searchable]="true" placeholder="Filter By">
+                  <ng-option [value]="1">Name, EMR ID</ng-option>
+                  <ng-option [value]="2">Date of Birth </ng-option>
+                  <ng-option [value]="3">Phone No </ng-option>
+                </ng-select>
+              </div>
+            </div>
+
+            <!-- <div class="d-flex justify-content-between">
+              <button class="btn btn-dynamic-2c btn-sm my-0 ml-0">New Case</button>
+
+              <div class="btn-group">
+                <button class="btn btn-dynamic-2c btn-sm">Save</button>
+                <button class="btn btn-dynamic-secondary-2c btn-sm">Cancel</button>
+              </div>
+            </div> -->
+          </div>
+        </div>
+
+        <!-- <mdb-progress-bar class="progress primary-color-dark mb-0" *ngIf="isLoading" mode="indeterminate">
+        </mdb-progress-bar> -->
+        <div *ngIf="selectedPatient" style="height: 60px;overflow-y: auto;">
+          <div style="height: 100%;">
+            <table class="table btn-table table-nowrap table-borderd expandable-row bg-white border">
+              <thead>
+                <tr class="grid-row" style="grid-template-columns: repeat(3, 1fr);">
+                  <th>Patient Name</th>
+                  <th>EMR ID</th>
+                  <th>Date of Birth</th>
+                  <!-- <th class="text-right">Action</th> -->
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  class="grid-row" style="grid-template-columns: repeat(3, 1fr);">
+                  <!-- <tr onClick='toggleRow(this)'> -->
+                  <td>
+                    <div>
+                      <!-- <button class="btn btn-icon bg-transparent z-depth-0 m-0"> <i class="fa fa-angle-up"></i> </button> -->
+                      <span class="ml-2"> {{selectedPatient.fullName}}</span>
+                    </div>
+                  </td>
+                  <td>{{selectedPatient.patientEmrId}}</td>
+                  <td>
+                    <ng-container *ngIf="selectedPatient.dateOfBirth">
+                      {{selectedPatient.dateOfBirth | date}}
+                    </ng-container>
+                  </td>
+                  <!-- <td>
+                    <div class="action-button ml-auto d-flex justify-content-start"
+                      (click)="mapNumberObj.appUserId=selectedPatient.userId">
+                      <a class="btn btn-dynamic-2c btn-sm my-0 mr-0">Select</a>
+
+                    </div>
+                  </td> -->
+                  <!-- .hide-row -->
+
+                  <td class='expanded-row-grid row-table hide-row'>
+                    <div class="p-3 history-table">
+                      <p><strong>Communication Detail</strong></p>
+                      <table class="table btn-table table-nowrap table-borderd w-100">
+                        <thead class="bg-dynamic-2c text-white">
+                          <tr>
+                            <th>Date Time</th>
+                            <th>Message Type</th>
+                            <th>Response Time </th>
+                            <th>Direction</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>12 Dec 2020 12:22</td>
+                            <td>SMS</td>
+                            <td>12 Min</td>
+                            <td>In Bound</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div *ngIf="mapNumberObj && selectedPatient" class="row">
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label for="namea">Primary Number <small class="text-dynamic-2c">{{selectedPatient.primaryPhoneNumber}}</small></label>
+              <div class="d-flex">
+                <input readonly [(ngModel)]="mapNumberObj.primaryPhoneNumber" type="text" class="form-control form-control-sm">
+                <button (click)="changePatientPhone(1)" class="btn btn-dynamic-2c btn-sm m-0 ml-2">Update</button>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label for="namea">Secondary Number <small class="text-dynamic-2c">{{selectedPatient.secondaryPhoneNumber}}</small></label>
+              <div class="d-flex">
+                <input readonly [(ngModel)]="mapNumberObj.secondaryPhoneNumber" type="text" class="form-control form-control-sm">
+                <button (click)="changePatientPhone(2)" class="btn btn-dynamic-2c btn-sm m-0 ml-2">Update</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+
+      <div class="modal-footer">
+        <div class="w-100 d-flex justify-content-end align-item-center">
+
+          <div>
+            <button type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+              (click)="transferModal.hide()" mdbWavesEffect>Cancel</button>
+            <button [disabled]="!mapNumberObj.primaryPhoneNumber && !mapNumberObj.secondaryPhoneNumber" (click)="MapNumberTOUser(transferModal)" [disabled]=" mappingNumber"
+              type="button" class="relative waves-light btn btn-sm btn-dynamic-2c" mdbWavesEffect>Save
+              changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div mdbModal #transerCaseDetailModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="mytranserCaseDetailModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="transerCaseDetailModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">Transfer Case Detail</h4>
+      </div>
+      <div class="modal-body">
+
+        <mdb-progress-bar class="progress primary-color-dark mb-0" *ngIf="gettingCasesByUSer" mode="indeterminate">
+        </mdb-progress-bar>
+        <div class="table-responsive">
+
+        <table class="table btn-table table-nowrap table-borderd expandable-row bg-white border">
+          <thead>
+            <tr class="grid-row" style="grid-template-columns: 150px repeat(6, 1fr);">
+              <th> Patient Name</th>
+              <th>Case Number</th>
+              <th>Query Type</th>
+              <th>Status</th>
+              <th>Assigned</th>
+              <!-- <th>Close By</th> -->
+              <th>Close Date</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr id="{{i}}" [style.background]="(transferCaseDetailObj.destinationCaseId === item.id) ? '#53b0481f': ''"
+              class="grid-row" *ngFor="let item of pemCasesByUserId; let i= index;" style="grid-template-columns: 150px repeat(6, 1fr);">
+              <!-- <tr onClick='toggleRow(this)'> -->
+                <td>
+                  <div class="d-flex flex-1">
+                    <div class="flex-1 d-flex justify-content-between align-items-center">
+                      <span class="ml-2"> {{item.patientName || 'Anonymous'}}</span>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <ng-container>
+                    {{item.phoneNumber}}
+                  </ng-container>
+                </td>
+                <td>{{PemCaseQueryTypeEnum[item.pemCaseQueryType]}}</td>
+                <td>{{PemCaseStatusEnum[item.pemCaseStatus]}}</td>
+                <td>{{item.assignedTo}}</td>
+                <!-- <td>{{item.closedBy}}</td> -->
+                <td>
+                  <ng-container *ngIf="item.closedDate">{{item.closedDate | date}}</ng-container>
+                </td>
+                <td>
+                  <div class="action-button ml-auto d-flex justify-content-start"
+                    (click)="transferCaseDetailObj.destinationCaseId=item.id">
+                    <a class="btn btn-dynamic-2c btn-sm my-0 mr-0">Select</a>
+
+                  </div>
+                </td>
+            </tr>
+          </tbody>
+        </table>
+
+      </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <div class="w-100 d-flex justify-content-end align-item-center">
+
+          <div>
+            <button type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+              (click)="transerCaseDetailModal.hide()" mdbWavesEffect>Close</button>
+            <button (click)="TransferDetailsToOtherCase(transerCaseDetailModal)" [disabled]="!transferCaseDetailObj.destinationCaseId || transferingDetails"
+              type="button" class="relative waves-light btn btn-sm btn-dynamic-2c" mdbWavesEffect>Save
+              changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div mdbModal #createNEwCaseModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="mycreateNEwCaseModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="createNEwCaseModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">Create New Case</h4>
+      </div>
+      <div class="modal-body">
+
+        <mdb-progress-bar class="progress primary-color-dark mb-0" *ngIf="gettingCasesByUSer" mode="indeterminate">
+        </mdb-progress-bar>
+
+        Do you want to create
+      </div>
+
+      <div class="modal-footer">
+        <div class="w-100 d-flex justify-content-end align-item-center">
+
+          <div>
+            <button type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+              (click)="createNEwCaseModal.hide()" mdbWavesEffect>Close</button>
+            <button (click)="CreateNewCase(createNEwCaseModal)" [disabled]="creatingNEwCase"
+              type="button" class="relative waves-light btn btn-sm btn-dynamic-2c" mdbWavesEffect>Save
+              changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div mdbModal #sendFaxModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="mysendFaxModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="sendFaxModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">Attach Files</h4>
+      </div>
+      <div class="modal-body">
+        <div class="d-flex align-items-center">
+          <label for="file" class="flex-shrink-0" style="width: 70px;">Attachment</label>
+          <div class="file-field flex-wrap align-items-center w-100 ml-3">
+            <div class="btn btn-success btn-sm mx-0 mt-0">
+              <span class="w-100"><i class="fa fa-paperclip fa-lg"></i> Attach File
+              </span>
+              <input type="file" mdbFileSelect multiple
+                (change)="onUploadOutput($event);" #select>
+            </div>
+            <div class="w-100" *ngIf="filesArr && filesArr.length > 0">
+              <div class="d-flex justify-content-between align-items-center" *ngFor="let doc of filesArr">
+                <p class="mb-0">{{doc.name}}<a><i class="ml-2 fa fa-trash fa-lg text-danger" (click)="popFile(doc)" ></i></a></p>
+              </div>
+          </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <div class="w-100 d-flex justify-content-end align-item-center">
+
+          <div>
+            <button type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+              (click)="sendFaxModal.hide()" mdbWavesEffect>Close</button>
+            <button (click)="SendFax(sendFaxModal)" [disabled]="sendingFax || (!filesArr || !filesArr.length)"
+              type="button" class="relative waves-light btn btn-sm btn-dynamic-2c" mdbWavesEffect>Save
+              changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

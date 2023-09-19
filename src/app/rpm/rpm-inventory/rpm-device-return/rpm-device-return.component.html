@@ -1,0 +1,90 @@
+<div mdbModal #returnDeviceModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-xlx" role="document">
+    <div class="modal-content">
+      <div class="modal-header d-flex justify-content-between">
+        <button (click)="returnDeviceModal.hide()" type="button" class="close" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">
+          Move to Inhand
+        </h4>
+      </div>
+      <div class="modal-body py-4">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="row">
+                  <div *ngIf="!isDeviceSelected" class="col-12">
+                    <div class="form-group">
+                      <label for="searchBy">Select Patient</label>
+                      <ng-select id="medNameSearch" class="ng-select-small" #medicationName1="ngModel"
+                        [(ngModel)]="filterPatientId" (ngModelChange)="GetIssuedDevices()"
+                        [loading]="LoadingData" [multiple]="false" [searchable]="true" placeholder="Search Patient"
+                        [typeahead]="searchWatch" >
+
+                        <ng-option [value]="item.id" *ngFor="let item of patientList">{{item.fullName}}
+                          ({{item.patientEmrId}})</ng-option>
+                      </ng-select>
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <h5>Patient Detail</h5>
+                  </div>
+                  <div class="col-12 mb-5">
+                    <!-- <div class="pb-info">
+                      <p>Please Select Patient </p>
+                    </div> -->
+                    <div class="pb-info">
+                      <p><strong>Patient Name</strong> {{CurrentPatient.fullName}} </p>
+                      <p><strong>DOB</strong> {{CurrentPatient.dateOfBirth | date}} </p>
+                      <p><strong>EMR Id</strong> {{CurrentPatient.patientEmrId}} </p>
+                      <p><strong>Phone No.</strong> {{CurrentPatient.primaryPhoneNumber}} </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="row">
+                  <div *ngIf="!isDeviceSelected" class="col-12">
+                    <div class="form-group">
+                      <label for="searchBy">Device Search</label>
+                      <ng-select #SearchDeviceSelectRef [(ngModel)]="selectedDevice" class="ng-select-small" [multiple]="false" (ngModelChange)="SelectPatient()"
+                      [searchable]="true" [loading]="gettingInHandDevices" placeholder="Device Search" [clearable]=false>
+                      <ng-option [value]="item" *ngFor="let item of rpmDevicesList">
+                        Serial: {{item.serialNo}} - Mac/IMEI: {{item.macAddress}}
+                      </ng-option>
+                    </ng-select>
+                    </div>
+                  </div>
+                  <div class="col-12 ">
+                    <h5>Device Detail</h5>
+                  </div>
+                  <div class="col-12 mb-5">
+                    <!-- <div class="pb-info">
+                      <p>Please Select Device</p>
+                    </div> -->
+                    <div class="pb-info">
+                      <!-- <p><strong>Vendor</strong> {{selectedDevice.manufacturer}} </p> -->
+                      <p><strong>Serial No.</strong> {{selectedDevice.serialNo}} </p>
+                      <p><strong>IMEI No.</strong> {{selectedDevice.macAddress}} </p>
+                      <p><strong>Modality</strong> {{selectedDevice.modalityName}} </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button (click)="returnDeviceModal.hide()" type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+         mdbWavesEffect>Close</button>
+        <button type="button" [disabled]="!selectedDevice || !selectedDevice.id || !CurrentPatient || !CurrentPatient.id || returnIngDevice"
+         (click)="openConfirmModal()" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+             mdbWavesEffect>Move</button>
+      </div>
+    </div>
+  </div>
+</div>

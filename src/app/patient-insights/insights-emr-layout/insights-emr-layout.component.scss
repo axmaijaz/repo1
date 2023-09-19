@@ -1,0 +1,146 @@
+
+@import 'theme';
+.side-bar-ex {
+  position: absolute;
+  left: 0;
+  width: 200px;
+  background:var(--dynamic-sidenav);
+  height: 100vh;
+}
+
+.side-bar-ex ul {
+  padding: 0;
+}
+
+.side-bar-ex ul li {
+  margin: 15px 0;
+  display: block;
+  text-align: center;
+  position: relative;
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+}
+
+.side-bar-ex ul li a {
+  width: 180px;
+  height: 30px;
+  filter: drop-shadow(0px 10px 40px rgba(0, 0, 0, 0.20));
+  display: inline-block;
+  justify-content: start;
+  align-items: center;
+  border-radius: 6px;
+  font-size: 14px;
+  color: white;
+  line-height: 30px;
+  text-align: left;
+  padding-left: 1rem;
+}
+
+.side-bar-ex ul li.active,
+.side-bar-ex ul li:hover {
+  border-left: 5px solid $dynamic-colour;
+  cursor: pointer;
+}
+
+.side-bar-ex ul li.active a,
+.side-bar-ex ul li:hover a {
+  background-color:var(--dynamic-sidenav);
+  color:$dynamic-colour;
+}
+
+.side-bar-ex ul li.active a svg path,
+.side-bar-ex ul li:hover a svg path {
+  fill: $dynamic-colour;
+}
+.main-layout-in {
+  padding: 70px 50px 0px 200px;
+  width: 100%;
+  // color: #fff;
+  height: 100vh;
+ }
+.main-outlet {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 1rem;
+}
+.signal-state {
+  display: none !important;
+}
+.Btm {
+  position: fixed !important;
+  Bottom: 0;
+  width: 200px;
+}
+.bg-sidenav {
+  background-color: var(--dynamic-sidenav);
+}
+
+
+.athene-header {
+  padding: 0.5rem 1rem;
+  background-color: #D9D9D9;
+  position: absolute;
+  z-index: 999;
+  top: 0;
+  right: 0;
+  left: 200px;
+  height: 70px;
+}
+.athene-right-side {
+  padding:0 0.5rem 0.5rem 0.5rem;
+  background-color: #D9D9D9;
+  position: absolute;
+  z-index: 999;
+  top: 70px;
+  right: 0;
+  bottom: 0;
+  width: 50px;
+  text-align: center;
+}
+.name-userid {
+  text-align: right;
+  border-right: 2px solid $dynamic-colour;
+  padding-right: 1rem;
+  h4 {
+    margin-bottom: 0;
+    font-weight: 800;
+    color: #4B6177;
+    font-size: 16px;
+    margin-left: auto;
+  }
+  p {
+    font-size: 12px;
+    margin: 0;
+  }
+}
+.patient-detail {
+  background: #456279;
+  border-radius: 5px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  font-size: 10px;
+  margin-bottom: 5px;
+  .name {
+    background: $dynamic-colour;
+    width: 95px;
+    color: #fff;
+    border-radius: 5px 0 0 5px;
+    padding: 3px 0.5rem;
+    margin-right: 8px;
+  }
+}
+.alert-count-number {
+  width: 20px;
+    height: 20px;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #2b373d;
+    display: inline-flex;
+    margin-left: 0.5rem;
+    justify-content: center;
+    font-size: 12px;
+    align-items: center;
+    font-weight: 600;
+}

@@ -1,0 +1,506 @@
+<div class="row">
+  <div class="col-sm-12">
+    <div class="tcm-panel rounded-0 rounded-bottom">
+      <div class="body" *ngIf="!gettingTcmData;else loadingSklton">
+        <div class="d-flex justify-content-between align-items-center">
+          <p class="m-0"><strong>Interactive Contact</strong></p>
+          <button class="btn btn-dynamic-secondary-2c btn-icon" [disabled]="tcmStore.tcmData.tcmStatus > 2"
+            (click)="resetInitialContact();assignFacilityUser();interactiveContactModal.show()"><i
+              class="fa fa-plus"></i></button>
+        </div>
+        <div class="alert alert-danger" role="alert"
+          *ngIf="!tcmStore.tcmData.tcmInitialComms || tcmStore.tcmData.tcmInitialComms.length < 1">
+          No record found!
+        </div>
+        <div>
+          <div class="table-responsive">
+            <table class="table table-striped btn-table table-sm mb-0"
+              *ngIf="tcmStore.tcmData.tcmInitialComms && tcmStore.tcmData.tcmInitialComms.length > 0" cellpadding="0">
+
+              <thead class="bg-dynamic-2c text-white">
+                <tr>
+                  <th>#</th>
+                  <th>Date</th>
+                  <th>Follow Up date</th>
+                  <th>Method</th>
+                  <th>User</th>
+                  <th>Is Successful</th>
+                  <th>Note</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr *ngFor="let item of tcmStore.tcmData.tcmInitialComms; let i =index;">
+                  <th scope="row">{{i + 1}}</th>
+                  <td>{{item.contactDate | date}}</td>
+                  <td>{{item.followUpDate | date}}</td>
+                  <td>{{contactMethodEnum[item.contactMethod]}}</td>
+                  <td>{{item.careProviderName}}</td>
+                  <td>
+                    <div *ngIf="item.isSuccessfull == true">
+                      <span class="text-success">Yes</span>
+                    </div>
+                    <div *ngIf="item.isSuccessfull == false ">
+                      <span class="text-danger">No</span>
+                    </div>
+                  </td>
+                  <td>{{item.note}}</td>
+                </tr>
+
+                <!-- <tr>
+                  <td colspan="6" id="interactive-contact" class="p-0">
+                    <div class="table-responsive">
+                      <div malihu-scrollbar [scrollbarOptions]="scrollbarOptions"
+                        style="min-width:1000px; max-height: 200px;">
+                        <table class="table table-striped btn-table table-sm mb-0 w-100" cellpadding="0">
+                          <colgroup>
+                            <col width="5%">
+                            <col width="10%">
+                            <col width="10%">
+                            <col width="20%">
+                            <col width="10%">
+                            <col width="30%">
+                          </colgroup>
+
+                        </table>
+                      </div>
+                    </div>
+
+                  </td>
+                </tr> -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="panel mt-4" style="overflow: visible;">
+  <div class="panel-header d-flex justify-content-between align-items-center">
+    <h3>Review Discharge Information</h3>
+    <p class="mb-0">Status: <mdb-badge color="bg-dynamic-secondary-2c">{{tcmStatusEnum[tcmStore.tcmData.tcmStatus]}}</mdb-badge>
+    </p>
+  </div>
+  <div class="panel-body" *ngIf="!tcmStore.gettingTcmData;else loadingSklton">
+    <div class="row">
+      <div class="col-lg-6 col-sm-12" [ngClass]="{disabledDiv: tcmStore.tcmData.tcmStatus > 2}" >
+        <div class="border py-3" style="height: 100%;">
+          <div class="col-sm-12">
+            <p><strong>Patient was discharged on :<span *ngIf="tcmStore.viewDischargeDate != 'Invalid date' && tcmStore.viewDischargeDate != '0001-01-01T00:00:00'">{{tcmStore.viewDischargeDate}}</span> </strong>
+            </p>
+            <div class="form-group">
+              <label class="w-100">Tentative Discharge Date</label>
+              <!-- <input type="text" class="form-control form-control-sm" #dateToDp="dpDayPicker" [disabled]='tcmStore.tcmData.tcmStatus > 2' (close)="AddPatientDischargeData()"
+                [(ngModel)]="patientDischarge.dischargeDate" [dpDayPicker]="datePickerConfig"
+                [theme]="'dp-material ccm-date-picker'" [mode]="'daytime'"> -->
+                <input type="text" [ngModel]="patientDischarge.tentativeDischargeDate | dateFormatPipe" [readonly]='tcmStore.tcmData.tcmStatus > 2'
+                        (ngModelChange)="patientDischarge.tentativeDischargeDate=$event;AddPatientDischargeData()"
+                        class="form-control form-control-sm" #dateDPicker="dpDayPicker" [dpDayPicker]="datePickerConfig12"
+                        placeholder="MM-DD-YYYY" [theme]="'dp-material ccm-date-picker'" [mode]="'daytime'" />
+            </div>
+            <div class="form-group">
+              <label class="w-100">Discharge Date</label>
+              <!-- <input type="text" class="form-control form-control-sm" #dateToDp="dpDayPicker" [disabled]='tcmStore.tcmData.tcmStatus > 2' (close)="AddPatientDischargeData()"
+                [(ngModel)]="patientDischarge.dischargeDate" [dpDayPicker]="datePickerConfig"
+                [theme]="'dp-material ccm-date-picker'" [mode]="'daytime'"> -->
+                <input type="text" [ngModel]="patientDischarge.dischargeDate | dateFormatPipe" [readonly]='tcmStore.tcmData.tcmStatus > 2'
+                        (ngModelChange)="patientDischarge.dischargeDate=$event;AddPatientDischargeData()"
+                        class="form-control form-control-sm" #dateDPicker="dpDayPicker" [dpDayPicker]="datePickerConfig12"
+                        placeholder="MM-DD-YYYY" [theme]="'dp-material ccm-date-picker'" [mode]="'daytime'" />
+            </div>
+            <div class="form-group">
+              <label for="discharge-from">Discharge from</label>
+              <input type="text" [(ngModel)]="patientDischarge.dischargedFrom" [disabled]='tcmStore.tcmData.tcmStatus > 2' (blur)="AddPatientDischargeData()" class="form-control"
+                id="discharge-from" placeholder="discharge-from">
+            </div>
+
+          </div>
+          <div class="col-sm-12">
+            <p><strong>Which is best describe as a/an:</strong></p>
+
+            <div class="form-check pl-0">
+              <input type="radio" class="form-check-input" id="d1"
+                [(ngModel)]="patientDischarge.tcmEligibilityCondition" [disabled]='tcmStore.tcmData.tcmStatus > 2' (ngModelChange)="AddPatientDischargeData()"
+                [value]="'Inpatient acute care hospital'" name="desribe" mdbInput>
+              <label class="form-check-label" for="d1">Inpatient acute care hospital</label>
+            </div>
+            <div class="form-check pl-0">
+              <input type="radio" class="form-check-input" id="d2"
+                [(ngModel)]="patientDischarge.tcmEligibilityCondition" [disabled]='tcmStore.tcmData.tcmStatus > 2' (ngModelChange)="AddPatientDischargeData()"
+                [value]="'Inpatient Psychiatric hospital'" name="desribe" mdbInput>
+              <label class="form-check-label" for="d2">Inpatient Psychiatric hospital</label>
+            </div>
+
+            <div class="form-check pl-0">
+              <input type="radio" class="form-check-input" id="d3"
+                [(ngModel)]="patientDischarge.tcmEligibilityCondition" (ngModelChange)="AddPatientDischargeData()" [disabled]='tcmStore.tcmData.tcmStatus > 2'
+                [value]="'Long term care hospital'" name="desribe" mdbInput>
+              <label class="form-check-label" for="d3">Long term care hospital
+              </label>
+            </div>
+            <div class="form-check pl-0">
+              <input type="radio" class="form-check-input" id="d4" [disabled]='tcmStore.tcmData.tcmStatus > 2'
+                [(ngModel)]="patientDischarge.tcmEligibilityCondition" (ngModelChange)="AddPatientDischargeData()"
+                [value]="'Skilled nursing facility'" name="desribe" mdbInput>
+              <label class="form-check-label" for="d4">Skilled nursing facility
+              </label>
+            </div>
+            <div class="form-check pl-0">
+              <input type="radio" class="form-check-input" id="d5" [disabled]='tcmStore.tcmData.tcmStatus > 2'
+                [(ngModel)]="patientDischarge.tcmEligibilityCondition" (ngModelChange)="AddPatientDischargeData()"
+                [value]="'Inpatient Rehab facility'" name="desribe" mdbInput>
+              <label class="form-check-label" for="d5">Inpatient Rehab facility</label>
+            </div>
+            <div class="form-check pl-0">
+              <input type="radio" class="form-check-input" id="d6" [disabled]='tcmStore.tcmData.tcmStatus > 2'
+                [(ngModel)]="patientDischarge.tcmEligibilityCondition" (ngModelChange)="AddPatientDischargeData()"
+                [value]="'Hospital outpatient observation or partial hospitalization'" name="desribe" mdbInput>
+              <label class="form-check-label" for="d6">Hospital outpatient observation or partial
+                hospitalization</label>
+            </div>
+            <div class="form-check pl-0">
+              <input type="radio" class="form-check-input" id="d7" [disabled]='tcmStore.tcmData.tcmStatus > 2'
+                [(ngModel)]="patientDischarge.tcmEligibilityCondition" (ngModelChange)="AddPatientDischargeData()"
+                [value]="'Partial hospitalization at a Community Mental Health Center'" name="desribe" mdbInput>
+              <label class="form-check-label" for="d7">Partial hospitalization at a Community Mental Health Center
+              </label>
+            </div>
+          </div>
+          <div class="col-sm-12">
+            <p class="mt-3"><strong>Discharged to:</strong></p>
+            <div class="form-check pl-0">
+              <input type="radio" class="form-check-input" id="dis1" [disabled]='tcmStore.tcmData.tcmStatus > 2'
+                [(ngModel)]="patientDischarge.dischargedTo" [value]="1"
+                (ngModelChange)="AddPatientDischargeData()" name="dischargto" mdbInput>
+              <label class="form-check-label" for="dis1">Home</label>
+            </div>
+            <div class="form-check pl-0">
+              <input type="radio" class="form-check-input" id="dis2" [disabled]='tcmStore.tcmData.tcmStatus > 2'
+                [(ngModel)]="patientDischarge.dischargedTo" [value]="2"
+                (ngModelChange)="AddPatientDischargeData()" name="dischargto" mdbInput>
+              <label class="form-check-label" for="dis2">Domiciliary</label>
+            </div>
+            <div class="form-check pl-0">
+              <input type="radio" class="form-check-input" id="dis3" [disabled]='tcmStore.tcmData.tcmStatus > 2'
+                [(ngModel)]="patientDischarge.dischargedTo" [value]="3"
+                (ngModelChange)="AddPatientDischargeData()" name="dischargto" mdbInput>
+              <label class="form-check-label" for="dis3">Rest Home</label>
+            </div>
+            <div class="form-check pl-0">
+              <input type="radio" class="form-check-input" id="dis4" [disabled]='tcmStore.tcmData.tcmStatus > 2'
+                [(ngModel)]="patientDischarge.dischargedTo" [value]="4"
+                (ngModelChange)="AddPatientDischargeData()" name="dischargto" mdbInput>
+              <label class="form-check-label" for="dis4">Assisted Living</label>
+            </div>
+            <div class="form-check pl-0">
+              <input type="radio" class="form-check-input" id="dis5" [disabled]='tcmStore.tcmData.tcmStatus > 2'
+                [(ngModel)]="patientDischarge.dischargedTo" [value]="5"
+                (ngModelChange)="AddPatientDischargeData()" name="dischargto" mdbInput>
+              <label class="form-check-label" for="dis5">Others</label>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="col-lg-6 col-sm-12" [ngClass]="{disabledDiv: !tcmStore.checkIsSuccessfull || !patientDischarge.dischargeDate}">
+        <div class="border p-3" style="height: 100%;" >
+          <p>Discharge Summary / Other pertinent documents arranged(Please attach discharge Summary at minimum)</p>
+          <form action="">
+            <div class="row">
+              <div class="col-sm-12">
+                <!-- [ngClass]="{disabledDiv: inputLoading}" -->
+                <div class="file-field flex-wrap align-items-center" >
+                  <div class="btn btn-success btn-icon mx-0 mt-0" [ngClass]="{disabledDiv: tcmStore.tcmData.tcmStatus > 2}">
+                    <span class="w-100"><i class="fa fa-file"></i></span>
+                    <!-- <input type="file" mdbFileSelect (uploadOutput)="onUploadOutput($event)"> -->
+
+                    <input type="file" mdbFileSelect (change)="onUploadOutput($event)">
+                  </div>
+                  <div class="file-path-wrapper" [ngClass]="{disabledDiv: tcmStore.tcmData.tcmStatus > 2}">
+                    <input *ngIf="file && file.name" class="file-path" type="text" class="form-control form-control-sm"
+                      readonly placeholder="Upload your file" [value]="file.name" [disabled]='tcmStore.tcmData.tcmStatus > 2'>
+                    <input *ngIf="!file" class="file-path" type="text" class="form-control form-control-sm " readonly
+                      placeholder="Upload your file" [value]="" [disabled]='tcmStore.tcmData.tcmStatus > 2'>
+                  </div>
+                  <span *ngIf="upLoadingDoc" class="spinner-border spinner-border-sm ml-2 mb-1" role="status"
+                    aria-hidden="true"></span>
+                  <button [disabled]="!file || tcmStore.tcmData.tcmStatus > 2" *ngIf="!upLoadingDoc"
+                    class="mt-0 ml-0 rounded-0 rounded-right btn btn-dynamic-2c btn-sm" (click)="uploadDocument()">Upload</button>
+                    <div class="w-100" *ngIf="tcmDocListDto.length > 0">
+
+                        <div class="d-flex justify-content-between align-items-center" *ngFor="let doc of tcmDocListDto">
+                          <p class="mb-0"><a class="link text-amber" (click)="getpublicUrl(doc.path)">{{doc.title}}</a><a><i class="ml-2 fa fa-trash fa-lg text-danger" (click)="deleteTcmDocument(doc.id)" ></i></a></p>
+                          <!-- <a class="" title="View" (click)="deleteTcmDocument(doc.tcmEncounterId)" ><i class="fa fa-eye"></i> </a> -->
+                        </div>
+
+                    </div>
+                </div>
+                <div class="form-group" [ngClass]="{disabledDiv: tcmStore.tcmData.tcmStatus > 2}">
+                  <label class="w-100">Follow Up Date</label>
+                  <!-- <input type="text" class="form-control form-control-sm" #dateToDp="dpDayPicker"
+                    name="followUpAppointment" [disabled]='tcmStore.tcmData.tcmStatus > 2'
+                    [(ngModel)]="patientDischarge.followUpAppointment"
+                    (close)="AddPatientDischargeData()" [dpDayPicker]="datePickerConfig" [theme]="'dp-material ccm-date-picker'" [mode]="'daytime'"> -->
+                    <input type="text" [ngModel]="patientDischarge.followUpAppointment | dateFormatPipe: 'time'" [readonly]='tcmStore.tcmData.tcmStatus > 2'
+                    name="followUpAppointment" (ngModelChange)="patientDischarge.followUpAppointment=$event;AddPatientDischargeData()"
+                        class="form-control form-control-sm" #dateDPicker="dpDayPicker" [dpDayPicker]="datePickerConfig"
+                        placeholder="MM-DD-YYYY" [theme]="'dp-material ccm-date-picker'" [mode]="'daytime'" />
+                </div>
+
+              </div>
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <label for="note">Additional Note:</label>
+                  <textarea class="md-textarea form-control " [disabled]='tcmStore.tcmData.tcmStatus > 2'
+                    [(ngModel)]="patientDischarge.additionalNotes" (blur)="AddPatientDischargeData()" name="additionalNotes" rows="3"
+                    id="note" type="text"></textarea>
+                </div>
+              </div>
+            </div>
+          </form>
+
+        </div>
+      </div>
+    </div>
+    <div class="mt-3" [ngClass]="{disabledDiv: tcmStore.tcmData.tcmStatus > 2}">
+      <!-- Material inline 1 -->
+      <!-- <div class="form-check form-check-inline">
+        <input type="radio" class="form-check-input" id="materialInline1" [value]="true"
+          [(ngModel)]="patientDischarge.isTcmEligible" (ngModelChange)="AddPatientDischargeData()" name="inlineMaterialRadiosExample" mdbInput>
+        <label class="form-check-label" for="materialInline1">Patient is TCM Eligible</label>
+      </div> -->
+
+      <!-- Material inline 2 -->
+      <div class="custom-control custom-checkbox custom-control-inline">
+        <input type="checkbox" class="custom-control-input" id="InstrumentalActivities4"
+        [(ngModel)]="patientDischarge.isTcmEligible" (change)="openModel()" [disabled]='tcmStore.tcmData.tcmStatus > 2'
+        name="InstrumentalActivities">
+      <label class="custom-control-label" for="InstrumentalActivities4">Patient is not Eligible for TCM</label>
+        <!-- <input type="radio" class="form-check-input" id="materialInline2" [value]="false"
+          [(ngModel)]="patientDischarge.isTcmEligible" (ngModelChange)="AddPatientDischargeData()" name="inlineMaterialRadiosExample" mdbInput>
+        <label class="form-check-label" for="materialInline2">Patient is not Eligible for TCM</label> -->
+      </div>
+    </div>
+
+    <!-- <div class="d-flex justify-content-end">
+      <button [disabled]="isSavingDischarge || !patientDischarge.dischargeDate
+      || tcmStore.tcmData.tcmStatus > 2" type="button" mdbBtn color="priary" size="sm"
+        (ngModelChange)="AddPatientDischargeData()">
+        <span *ngIf="isSavingDischarge" class="spinner-border spinner-border-sm " role="status"
+          aria-hidden="true"></span>
+        Save</button>
+    </div> -->
+  </div>
+</div>
+
+
+<div mdbModal #interactiveContactModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  [config]="{ignoreBackdropClick: true}" aria-labelledby="myclinicalSummaryLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close"
+          (click)="resetInitialContact();interActiveContactForm.reset();interactiveContactModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">Interactive Contact</h4>
+      </div>
+      <div class="modal-body">
+        <!-- Timeline -->
+        <form name="form" #interActiveContactForm="ngForm" novalidate>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label class="w-100">Date Time</label>
+                <!-- | dateFormatPipe: 'time'  YYYY-MM-DD hh:mm A-->
+                <!-- <input type="text" [(ngModel)]="initialCommObj.initialCommunication.contactDate"
+                class="form-control form-control-sm" #dateToDp="dpDayPicker" #contactDate="ngModel" name="contactDate" [dpDayPicker]="datePickerConfig"
+                  [theme]="'dp-material ccm-date-picker'" [mode]="'daytime'"> -->
+                  <input type="text" [ngModel]="initialCommObj.initialCommunication.contactDate | dateFormatPipe: 'time'"
+                        (ngModelChange)="initialCommObj.initialCommunication.contactDate=$event" #contactDate="ngModel" name="contactDate"
+                        class="form-control form-control-sm" #dateDPicker="dpDayPicker" [dpDayPicker]="datePickerConfig"
+                        placeholder="MM-DD-YYYY" [theme]="'dp-material ccm-date-picker'" [mode]="'daytime'" />
+              </div>
+            </div>
+
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label for="method">Method<span class="text-danger">*</span></label>
+                <ng-select [searchable]="false" [(ngModel)]="initialCommObj.initialCommunication.contactMethod" #contactMethod="ngModel"
+                  required name="contactMethod" [appendTo]="'body'" class="ng-select-small" placeholder="Select User"
+                  [ngClass]="{ 'is-invalid':(contactMethod.touched || contactMethod.dirty) && !contactMethod.valid }">
+                  <ng-option [value]="-1">Select</ng-option>
+                  <ng-option [value]="0">Phone Call</ng-option>
+                  <ng-option [value]="1">SMS</ng-option>
+                  <ng-option [value]="2">Email</ng-option>
+                </ng-select>
+                <div *ngIf="contactMethod.invalid && (contactMethod.dirty || contactMethod.touched)"
+                  class="invalid invalid-text">
+                  <div *ngIf="contactMethod.errors['required']">
+                    <small class="text-danger">Please select Method.</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label for="Status">Status<span class="text-danger">*</span></label>
+                <ng-select [searchable]="false" [(ngModel)]="initialCommObj.initialCommunication.isSuccessfull" #contactStatus="ngModel"
+                  required name="contactStatus" [appendTo]="'body'" class="ng-select-small" placeholder="Select User"
+                  [ngClass]="{ 'is-invalid':(contactStatus.touched || contactStatus.dirty) && !contactStatus.valid }">
+                  <ng-option [value]="true">Successful</ng-option>
+                  <ng-option [value]="false">Not Successful</ng-option>
+                </ng-select>
+                <div *ngIf="contactStatus.invalid && (contactStatus.dirty || contactStatus.touched)"
+                  class="invalid invalid-text">
+                  <div *ngIf="contactStatus.errors['required']">
+                    <small class="text-danger">Please select Status.</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label class="w-100">Follow Up Date</label>
+                <!-- | dateFormatPipe: 'time'  YYYY-MM-DD hh:mm A-->
+                <!-- <input type="text" [(ngModel)]="initialCommObj.initialCommunication.contactDate"
+                class="form-control form-control-sm" #dateToDp="dpDayPicker" #contactDate="ngModel" name="contactDate" [dpDayPicker]="datePickerConfig"
+                  [theme]="'dp-material ccm-date-picker'" [mode]="'daytime'"> -->
+                  <input type="text" [ngModel]="initialCommObj.followUpDate | dateFormatPipe: 'time'" [disabled]="initialCommObj.initialCommunication.isSuccessfull == false"
+                        (ngModelChange)="initialCommObj.followUpDate=$event" #followdate="ngModel" name="followdate"
+                        class="form-control form-control-sm" #dateDPicker="dpDayPicker" [dpDayPicker]="datePickerConfig"
+                        placeholder="MM-DD-YYYY" [theme]="'dp-material ccm-date-picker'" [mode]="'daytime'" />
+              </div>
+            </div>
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label>Select Facility User<span class="text-danger">*</span></label>
+                <ng-select [searchable]="false" [(ngModel)]="initialCommObj.initialCommunication.careProviderId"
+                  #contactCareProvider="ngModel" required name="careProviderId" [appendTo]="'body'"
+                  class="ng-select-small" placeholder="Select User"
+                  [ngClass]="{ 'is-invalid':(contactCareProvider.touched || contactCareProvider.dirty) && !contactCareProvider.valid }">
+                  <ng-option [value]="0">Select User</ng-option>
+                  <ng-option [value]="item.id" *ngFor="let item of facilityUserList">{{item.lastName}},{{item.firstName}}
+                  </ng-option>
+                </ng-select>
+                <div *ngIf="contactCareProvider.invalid && (contactCareProvider.dirty || contactCareProvider.touched)"
+                  class="invalid invalid-text">
+                  <div *ngIf="contactCareProvider.errors['required']">
+                    <small class="text-danger">Please select User.</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label for="contactNote">Note</label>
+                <textarea class="md-textarea form-control" #contactNote="ngModel" [(ngModel)]="initialCommObj.initialCommunication.note"
+                  name="contactNote" rows="3" id="contactNote" type="text"></textarea>
+              </div>
+            </div>
+          </div>
+        </form>
+        <!-- Timeline -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-sm btn-dynamic-secondary-2c"
+          (click)="interactiveContactModal.hide();resetInitialContact();interActiveContactForm.reset();">Discard</button>
+        <button [disabled]="contactMethod.invalid || contactStatus.invalid || contactCareProvider.invalid || isSavinginitialContact || initialCommObj.initialCommunication.contactMethod == -1 ||
+        initialCommObj.initialCommunication.careProviderId == 0" type="button"
+          (click)="AddEditInitComm();interActiveContactForm.reset();interactiveContactModal.hide()" class="btn btn-sm btn-dynamic-2c">
+          <span *ngIf="isSavinginitialContact" class="spinner-border spinner-border-sm " role="status"
+            aria-hidden="true"></span>
+          Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div mdbModal #ClosedStatusModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+aria-labelledby="myBasicModalLabel" aria-hidden="true" mdbTableScroll>
+<div class="modal-dialog" role="document">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close pull-right" aria-label="Close" (click)="ClosedStatusModal.hide()">
+        <span aria-hidden="true">×</span>
+      </button>
+      <h4 class="modal-title w-100" id="myModalLabel">Closed Status</h4>
+    </div>
+    <div class="modal-body" *ngIf="ClosedStatusModal.isShown">
+      <div>
+        <ul class="status-list">
+          <!-- <li [class.active]="tcmEncounterCloseDto.ClosedStatus === 0"> <a class="link"
+            (click)="tcmEncounterCloseDto.ClosedStatus = 0;openConfirmModal()">None
+          </a>
+        </li> -->
+          <li [class.active]="tcmEncounterCloseDto.ClosedStatus === 3"> <a class="link"
+              (click)="tcmEncounterCloseDto.ClosedStatus = 3;openConfirmModal()">Time Lapse
+            </a>
+          </li>
+          <li [class.active]="tcmEncounterCloseDto.ClosedStatus === 4"> <a class="link"
+              (click)="tcmEncounterCloseDto.ClosedStatus = 4;openConfirmModal()">IneligibleDischarge
+            </a>
+          </li>
+          <li [class.active]="tcmEncounterCloseDto.ClosedStatus === 5"> <a class="link"
+              (click)="tcmEncounterCloseDto.ClosedStatus = 5;openConfirmModal()">Death
+            </a>
+          </li>
+          <li [class.active]="tcmEncounterCloseDto.ClosedStatus === 7"> <a class="link"
+              (click)="tcmEncounterCloseDto.ClosedStatus = 7;openConfirmModal()">AddErrornously
+            </a>
+          </li>
+          <li [class.active]="tcmEncounterCloseDto.ClosedStatus === 8"> <a class="link"
+              (click)="tcmEncounterCloseDto.ClosedStatus = 8;openConfirmModal()">Duplicate
+            </a>
+          </li>
+          <li [class.active]="tcmEncounterCloseDto.ClosedStatus === 9"> <a class="link"
+              (click)="tcmEncounterCloseDto.ClosedStatus = 9;openConfirmModal()">WrongPatient
+            </a>
+          </li>
+          <li [class.active]="tcmEncounterCloseDto.ClosedStatus === 10"> <a class="link"
+              (click)="tcmEncounterCloseDto.ClosedStatus = 10;openConfirmModal()">Other
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+
+      <button type="button" (click)="patientDischarge.isTcmEligible = false;ClosedStatusModal.hide()" class="waves-light btn btn-sm btn-dynamic-secondary-2c"
+        aria-label="Close" mdbWavesEffect>Cancel</button>
+      <!-- <button type="button" mdbBtn color="primry" (click)="addRequiredData()" class="relative waves-light"
+      mdbWavesEffect>Add Data</button> -->
+    </div>
+  </div>
+</div>
+</div>
+
+<ng-template #loadingSklton>
+  <div appCcmLoader>
+    <div class="loader-wrap">
+      <div class="text-dynamic-2c la-ball-pulse ccm-loader">
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+<div mdbModal #viewPdfModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" [config]="{backdrop: true, ignoreBackdropClick: true}" aria-hidden="true"
+  (close)="objectURLStrAW=''">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-body" style="height:calc(100vh - 50px); padding: 0px;">
+        <button type="button" class="close pull-right document-close" aria-label="Close" (click)="viewPdfModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <app-pdf-view *ngIf="objectURLStrAW" [documentUrl]="objectURLStrAW"></app-pdf-view>
+      </div>
+    </div>
+  </div>
+</div>

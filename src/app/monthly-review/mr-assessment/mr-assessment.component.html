@@ -1,0 +1,94 @@
+<div class="row">
+  <div class="p-0 col-12" *ngIf="isLoadingProblems">
+    <ng-container *ngIf="isLoadingProblems; then loadingSklton"></ng-container>
+  </div>
+  <div class="col-lg-3" *ngIf="!isLoadingProblems">
+    <div class="border rounded">
+      <div class="assement-list">
+        <div class="type" *ngFor="let type of mrTypesList;index as tIndex; trackBy: tIndex">
+          <p class="title"><strong>{{type.name}}</strong></p>
+          <div class="type-info">
+            <ul class="list-inline">
+              <li [class.active]="selectedProblem.id === prob.id" (click)="filterQuestionsBYProblem(prob)"
+                *ngFor="let prob of type.assessmentPatientProblems;index as pIndex; trackBy: pIndex">
+                <a>{{prob.description}}</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-9 pl-lg-0">
+    <div class="active-section">
+      <p><strong>{{selectedProblem.description}}</strong></p>
+    </div>
+    <div class=" ques-section">
+      <ng-container *ngFor="let question of SelectedQuestionsList;">
+        <div class="heighlight row">
+          <div class="col-sm-6 col-12">
+            {{question.question}}
+          </div>
+          <div class="col-sm-6 col-12">
+
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <ng-container *ngIf="question.questionType === 1 || question.questionType === 2">
+                  <div>
+                    <div class="form-check form-check-inline">
+                      <input type="radio" class="form-check-input" id="question1{{question.id}}" [value]="'Yes'"
+                        [(ngModel)]="question.answer" (click)="question.answer='Yes';editMRPatientQuestion(question, 'yesNo');"
+                        name="question{{question.id}}" mdbInput />
+                      <label class="form-check-label" for="question1{{question.id}}">Yes</label>
+                    </div>
+  
+                    <!-- Material inline 2 -->
+                    <div class="form-check form-check-inline">
+                      <input type="radio" class="form-check-input" id="question2{{question.id}}" [value]="'No'"
+                        [(ngModel)]="question.answer" (click)="question.answer='No';editMRPatientQuestion(question, 'yesNo');"
+                        name="question{{question.id}}" mdbInput />
+                      <label class="form-check-label" for="question2{{question.id}}">No</label>
+                    </div>
+                  </div>
+                </ng-container>
+              </div>
+              
+              <mdb-badge (click)="editMRPatientQuestion(question)" *ngIf="question.assessed"  class="bg-dynamic-2c">Assessed</mdb-badge>
+              <mdb-badge (click)="editMRPatientQuestion(question)" *ngIf="!question.assessed" class="bg-grey">Assessed</mdb-badge>
+            </div>
+
+
+
+            <div class="col-sm-12 p-0" *ngIf="question.questionType === 0 || question.questionType === 2">
+              <div class="form-form form-group mb-1">
+                <label for="form12">Comments <sup class="text-danger">*</sup>
+                </label>
+                <textarea type="text" id="form12" rows="6" [(ngModel)]="question.comment"
+                  (blur)="editMRPatientQuestion(question, 'comment');" class="form-control" style="height: 70px;"
+                  required></textarea>
+              </div>
+            </div>
+            <ng-container *ngIf="question.lastAssessmentDate" >
+              <p class="text-dynamic-2c text-right mb-0"><small> Date: {{ question.lastAssessmentDate | dateFormatPipe: 'time'}}</small></p>
+            </ng-container>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>
+<ng-template #loadingSklton>
+  <skltn-root duration="2000" [rectRadius]="0" flareWidth="50%" bgFill="#f2f3f8" flareFill="rgba(255,255,255, 0.5)">
+    <!-- Card with Avatar -->
+    <div class="p-3">
+      <div class="skltn-card">
+        <div class="skltn-card__body">
+          <div skltn-bone class="skltn-card__line"></div>
+          <div skltn-bone class="skltn-card__line"></div>
+          <div skltn-bone class="skltn-card__line"></div>
+          <div skltn-bone class="skltn-card__line"></div>
+        </div>
+      </div>
+    </div>
+  </skltn-root>
+</ng-template>

@@ -1,0 +1,55 @@
+<div mdbModal #changeProviderModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true" [config]="{ backdrop: false, ignoreBackdropClick: false }">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <!-- <button type="button" class="close pull-right" aria-label="Close" (click)="changeProviderModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel"><i class="fa fa-exclamation-triangle yellow-text"></i>{{modalObj.Title}}
+        </h4> -->
+        <h4 class="modal-title w-100" id="myModalLabel">Select Provider
+        </h4>
+      </div>
+      <div class="modal-body">
+        <!-- {{modalObj.Text}} -->
+        <!-- <p class="text-center"><i class="fa fa-exclamation-triangle text-danger" style="font-size: 3rem;"></i> </p> -->
+
+          <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+              <div class="form-group">
+                <label for="selectBillingProvider">Select Billing Provider</label>
+                <ng-select [(ngModel)]="selectedBillingProvider" [multiple]="false" [searchable]="false"
+                  id="selectBillingProvider" class="ng-select-small" placeholder="Default Billing Provider"
+                  (click)="$event.stopPropagation();" style="min-width:200px">
+                  <ng-option *ngFor="let item of billingProviders" [value]="item">{{item.lastName}},{{item.firstName}}
+                  </ng-option>
+
+                </ng-select>
+              </div>
+            </div>
+            <div class="col-lg-12 col-md-12 col-sm-12">
+              <div class="form-group">
+                <label for="defaultLoginFormPassword">Password</label>
+                <div class="d-flex">
+                  <input type="password" [(ngModel)]="password" name="password" autocomplete="new-password"  id="defaultLoginFormPassword" class="form-control form-control-sm"
+                    placeholder="Password">
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close" (click)="Reject();"
+          mdbWavesEffect>Close</button>
+        <button [disabled]="Verifying || !selectedBillingProvider.id || !password" type="button" (click)="validateUser()"
+          class="relative waves-light btn btn-sm btn-dynamic-2c" mdbWavesEffect>
+          <span *ngIf="Verifying" class="spinner-border spinner-border-sm" role="status"
+        aria-hidden="true"></span>
+          Proceed</button>
+      </div>
+    </div>
+  </div>
+</div>

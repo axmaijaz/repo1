@@ -1,0 +1,117 @@
+<div class="d-flex flex-row align-items-center justify-content-between mb-3" *ngIf="!awSId">
+  <div class="d-flex justify-content-start align-items-center">
+    <h4 class="mr-3 mb-0"><a class="text-dark" (click)="goBack()">
+        <i class="fa fa-arrow-left"></i></a></h4>
+    <h1 class="page-title mb-0">Depression Screening</h1>
+  </div>
+</div>
+<app-patient-details *ngIf="!awSId"></app-patient-details>
+<div class="panel rounded-0 mt-2">
+  <div class="panel-header d-flex justify-content-between">
+    <h3>Depression Screening Questionnaire</h3>
+    <ng-container *hasClaim="['IsFacilityUser']">
+      <div  class="form-check pl-0 align-self-end ng-star-inserted" *ngIf="PHQScoreCalculate">
+        <div  class="alert alert-success d-inline-block px-2 py-1 mb-0"><span ><strong >PHQ Score: </strong>{{PHQScoreCalculate}}</span>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+  <div class="panel-body" >
+    <ng-container *ngIf="isLoadingScreening;then loadingSkelton"></ng-container>
+    <ng-container *ngIf="!isLoadingScreening">
+      <div class="form-group border-bottom pb-3" *ngFor="let question of depressionScreeningObj.depressionScreeningDetails;let qIndex = index;trackBy: qIndex">
+        <p class="mb-2"><strong>{{qIndex + 1}}. {{question.question}}</strong>
+        </p>
+        <ng-container *ngFor="let option of question.options;let oIndex = index;trackBy: oIndex">
+          <div class="form-check pl-0 form-check-inline">
+            <input type="radio" class="form-check-input" [checked]="question.selectedOptionScore===option.score" (change)="question.selectedOptionScore=option.score;calculateScore();saveDepressionScreening()" id="{{question.id}}{{option.id}}" name="describe{{question.id}}" mdbInput>
+            <label class="form-check-label" for="{{question.id}}{{option.id}}">{{option.text}}</label>
+          </div>
+        </ng-container>
+      </div>
+    </ng-container>
+  </div>
+</div>
+<!-- <div class="row" *ngIf="awSId">
+  <div class="d-flex d-flex justify-content-end">
+    <button type="button" [disabled]="savingEncounter" (click)="saveDepressionScreening()" class="btn btn-sm btn-dynamic-2c">
+      <span *ngIf="savingEncounter" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      Save</button>
+
+    <button type="button" [disabled]="savingEncounter || IsSigning || ( !pcmScreeningSignDto.signatureDate || !pcmScreeningSignDto.signature)" (click)="saveDepressionScreening();SignScreeningEncounter()" class="btn btn-sm btn-dynamic-2c">
+      <span *ngIf="IsSigning" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      Save & Submit</button>
+  </div>
+</div> -->
+<div class="panel" style="overflow: visible;" [hidden]="awSId">
+  <div class="panel-header">
+    <h3>Result</h3>
+  </div>
+  <div class="panel-body">
+    <ng-container *ngIf="isLoadingScreening;then loadingSkelton"></ng-container>
+    <div class="row" *ngIf="!isLoadingScreening;">
+
+      <div class="col-sm-6">
+
+        <div class="form-group">
+          <label for="note963">Note</label>
+          <textarea type="text" [(ngModel)]="editDepressionScreeningDto.note" id="note963" rows="4" placeholder="Enter note text..." class="form-control"
+            style="height:50px;"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="date">Date</label>
+          <input type="text" [ngModel]="pcmScreeningSignDto.signatureDate | dateFormatPipe" (ngModelChange)="pcmScreeningSignDto.signatureDate=$event" placeholder="Target Date" class="form-control form-control-sm" #dateToDp="dpDayPicker"
+            [dpDayPicker]="datePickerConfig" [theme]="'dp-material ccm-date-picker'" [mode]="'day'">
+        </div>
+
+        <div class="form-group">
+          <label for="signature">Signature</label>
+          <input type="text" [(ngModel)]="pcmScreeningSignDto.signature" class="form-control" id="signature" placeholder="Signature">
+        </div>
+
+      </div>
+
+      <div class="col-sm-6">
+        <p  class="mb-2"><strong>Score:</strong></p>
+        <div class="border p-3 rounded">
+          <div class="alert alert-info">
+            <span><strong>Result : </strong> {{editDepressionScreeningDto.scoreResult}}</span>
+          </div>
+          <!-- <p>{{editAlcoholScreeningDto.scoreResult}}</p> -->
+        </div>
+        <div class="d-flex d-flex justify-content-end">
+          <button type="button" [disabled]="savingEncounter" (click)="saveDepressionScreening()" class="btn btn-sm btn-dynamic-2c">
+            <span *ngIf="savingEncounter" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            Save</button>
+
+          <button type="button" [disabled]="savingEncounter || IsSigning || ( !pcmScreeningSignDto.signatureDate || !pcmScreeningSignDto.signature)" (click)="saveDepressionScreening();SignScreeningEncounter()" class="btn btn-sm btn-dynamic-2c">
+            <span *ngIf="IsSigning" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            Save & Submit</button>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+<ng-template #loadingSkelton>
+  <div class="row">
+    <div class="col-sm-12 p-0">
+      <skltn-root duration="2000" [rectRadius]="0" flareWidth="50%" bgFill="#f2f3f8" flareFill="rgba(255,255,255, 0.5)">
+        <!-- Card with Avatar -->
+        <div class="p-3">
+          <div class="skltn-card">
+            <div class="skltn-card__body">
+              <div skltn-bone class="skltn-card__line"></div>
+              <div skltn-bone class="skltn-card__line"></div>
+              <div skltn-bone class="skltn-card__line"></div>
+              <div skltn-bone class="skltn-card__line"></div>
+            </div>
+          </div>
+        </div>
+      </skltn-root>
+    </div>
+  </div>
+
+</ng-template>

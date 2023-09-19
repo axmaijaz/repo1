@@ -1,0 +1,434 @@
+
+@import "config";
+
+@import "~ng-uikit-pro-standard/assets/scss/core/bootstrap/functions";
+@import "~ng-uikit-pro-standard/assets/scss/core/bootstrap/variables";
+@import "~ng-uikit-pro-standard/assets/scss/core/bootstrap/rfs";
+@import '~ng-uikit-pro-standard/assets/scss/core/mixins';
+// $dynamic-colour: var(--dynamic-colour);
+
+// $header-hight: 60px;
+// $side-nav: 240px;
+// $theme-font: "IBM Plex Sans", sans-serif;
+
+// small {
+//   font-size: 75% !important;
+// }
+
+// $primary-colors: (
+//   "primary-color": $primary,
+// );
+
+// $buttons: (
+//   "primary": $primary,
+//   "secondary": $secondary,
+//   "success": $primary,
+// );
+// $basic: map-merge(
+//   (
+//     "primary": $primary-color,
+//     "danger": $danger-color,
+//   ),
+//   $basic
+// );
+
+// // @debug $basic;
+
+// $material-colors: map-merge($material-colors, $primary-colors);
+// $mdb-colors: map-merge($mdb-colors, $buttons);
+// $basic: map-merge($basic, $buttons);
+// $basic-mdb-colors: map-merge($basic, $buttons);
+
+
+// @mixin badge($name, $color) {
+//   .status-#{$name} {
+//     background-color: lighten($color, 25%) !important;
+//     border: $color;
+//     color: darken($color, 15%) !important;
+//   }
+// }
+
+
+// @each $name, $color in $mdb-colors {
+//   @include make-button($name, $color);
+//   @include text-emphasis-variant(".text-#{$name}", $color);
+//   @include bg-variant(".bg-#{$name}", $color);
+//   @include make-outline-button($name, $color);
+// }
+// @each $name, $color in $dropdown-colors {
+//   @include badge($name, $color);
+// }
+// .status-danger,
+// .status-dark {
+//   color: $white !important;
+// }
+
+// // @each $name,$color in $basic-mdb-colors {
+// //   @include badge($name, $color);
+// // }
+
+
+// // Make outline button
+// @mixin make-outline-button($name, $color) {
+
+//     .btn-outline-#{$name} {
+//       border: 1px solid $color !important;
+//       background-color: transparent !important;
+//       color: $color !important;
+
+//       &:hover,
+//       &:focus,
+//       &:active,
+//       &:active:focus,
+//       &.active {
+//         border-color: $color !important;
+//         background-color: transparent !important;
+//         color: $color !important;
+//       }
+
+//       &:not([disabled]):not(.disabled):active,
+//       &:not([disabled]):not(.disabled).active,
+//       .show > &.dropdown-toggle {
+//         box-shadow: $box-shadow;
+//         background-color: transparent !important;
+//         border-color: $color !important;
+//       }
+
+//       &:not([disabled]):not(.disabled):active:focus,
+//       &:not([disabled]):not(.disabled).active:focus,
+//       .show > &.dropdown-toggle:focus {
+//         box-shadow: $box-shadow;
+//       }
+//     }
+
+// }
+
+
+
+// @mixin make-button($name, $color) {
+//   .btn.btn-#{$name} {
+//     background-color: $color !important;
+//     color: set-notification-text-color($color);
+
+//     &:hover {
+//       background-color: lighten($color, 5%);
+//       color: set-notification-text-color($color);
+//     }
+
+//     &:focus,
+//     &.focus {
+//       box-shadow: $box-shadow;
+//     }
+
+//     &:focus,
+//     &:active,
+//     &.active {
+//       background-color: darken($color, 20%);
+//     }
+
+//     &.dropdown-toggle {
+//       background-color: $color !important;
+
+//       &:hover,
+//       &:focus {
+//         background-color: lighten($color, 5%) !important;
+//       }
+//     }
+
+//     &:not([disabled]):not(.disabled):active,
+//     &:not([disabled]):not(.disabled).active,
+//     .show > &.dropdown-toggle {
+//       box-shadow: $box-shadow;
+//       background-color: darken($color, 20%) !important;
+//     }
+
+//     &:not([disabled]):not(.disabled):active:focus,
+//     &:not([disabled]):not(.disabled).active:focus,
+//     .show > &.dropdown-toggle:focus {
+//       box-shadow: $box-shadow;
+//     }
+//   }
+
+//   .#{$name}-ic {
+//     color: $color !important;
+
+//     &:hover,
+//     &:focus {
+//       color: $color;
+//     }
+//   }
+
+//   a.btn:not([href]):not([tabindex]),
+//   a.btn:not([href]):not([tabindex]):focus,
+//   a.btn:not([href]):not([tabindex]):hover {
+//     color: set-notification-text-color($color);
+//   }
+// }
+
+
+
+
+// // Typography
+// @mixin text-emphasis-variant($parent, $color) {
+//   #{$parent} {
+//     color: $color !important;
+//   }
+
+//   a#{$parent} {
+//     @include hover-focus {
+//       color: darken($color, 10%) !important;
+//     }
+//   }
+// }
+
+// h1,
+// h2,
+// h3,
+// h4,
+// h5,
+// h6,
+// p,
+// span,
+// a {
+//   font-family: $theme-font;
+// }
+
+// // Background color
+// @mixin bg-variant($parent, $color) {
+//   #{$parent} {
+//     background-color: $color !important;
+//   }
+
+//   a#{$parent},
+//   button#{$parent} {
+//     @include hover-focus {
+//       background-color: darken($color, 10%) !important;
+//     }
+//   }
+// }
+
+// .classic-tabs {
+//   .nav {
+//     white-space: nowrap;
+//     overflow-x: auto;
+//     position: relative;
+//     border-radius: $classic-tabs-border-radius $classic-tabs-border-radius 0 0;
+
+//     @media (min-width: 62rem) {
+//       overflow-x: hidden;
+//     }
+
+//     li {
+//       a {
+//         display: block;
+//         padding: $classic-tabs-padding-y $classic-tabs-padding-x;
+//         font-size: $classic-tabs-font-size;
+//         text-transform: uppercase;
+//         color: $classic-tabs-color;
+//         text-align: center;
+//         border-radius: 0;
+
+//         &:not(.active) {
+//           margin-bottom: $classic-tabs-li-a-active-border-bottom - 2;
+//         }
+
+//         &.active {
+//           border-bottom: $classic-tabs-li-a-active-border-bottom - 2 solid lighten($grey, 13%);
+//           color: $dark;
+//         }
+//       }
+
+//       @media (min-width: 62em) {
+//         &:first-child {
+//           margin-left: 0;
+//         }
+//         &:last-child {
+//           margin-right: 0;
+//         }
+//       }
+//     }
+
+//     @each $name, $color in $material-colors {
+//       &.#{$name} {
+//         li {
+//           a {
+//             &.active {
+//               border-color: $color;
+//             }
+//           }
+//         }
+//       }
+//     }
+
+//     &.tabs-animated {
+//       li {
+//         a {
+//           &.active {
+//             border: none;
+//           }
+//         }
+//       }
+
+//       @each $name, $color in $material-colors {
+//         &.#{$name} {
+//           .floor {
+//             background-color: $color;
+//           }
+//         }
+//       }
+
+//       .floor {
+//         display: inline-block;
+//         width: 30px;
+//         height: 3px;
+//         position: absolute;
+//         z-index: 1200;
+//         bottom: 0;
+//         transition: all 0.4s linear;
+//       }
+//     }
+//   }
+
+//   .tab-content {
+//     &.card {
+//       border-top-left-radius: 0;
+//       border-top-right-radius: 0;
+//     }
+//   }
+// }
+
+// @each $name, $color in $material-colors {
+//   .pills-#{$name} {
+//     .show > .nav-link {
+//       background-color: $color !important;
+//     }
+
+//     .nav-link {
+//       &.active {
+//         background-color: $color !important;
+//       }
+//     }
+//   }
+
+//   .tabs-#{$name} {
+//     background-color: $color !important;
+//   }
+
+//   mdb-tabset {
+//     ul.tabs-outline-#{$name} {
+//       box-shadow: inset 0px -1px 0 $light-grey;
+//       background-color: $white;
+
+//       li {
+//         a {
+//           cursor: pointer;
+//           span {
+//             color: lighten($secondary, 20%);
+//             &.t-number {
+//               width: 20px;
+//               height: 20px;
+//               background-color: $grey;
+//               color: $white;
+//               margin-right: 0.5rem;
+//               display: inline-block;
+//               border-radius: 10px;
+//             }
+//           }
+//         }
+
+//         &.active {
+//           a {
+//             span {
+//               color: $color;
+//               &.t-number {
+//                 color: $white;
+//                 background-color: $primary;
+//               }
+//             }
+//           }
+//         }
+//       }
+//     }
+//     .tab-content {
+//       background: $white;
+//       &.tab-shadow {
+//         box-shadow: 0px 10px 15px 0px rgba(51, 51, 51, 0.04);
+//       }
+//     }
+//   }
+// }
+
+// // table
+
+// table {
+//   @include media-breakpoint-down(sm) {
+//     &.vertical {
+//       thead {
+//         display: none;
+//       }
+
+//       tbody {
+//         tr {
+//           display: flex;
+//           flex-wrap: wrap;
+//           align-items: center;
+
+//           td {
+//             flex: 0 0 100%;
+//             text-align: right;
+//             padding: 10px 0 !important;
+
+//             &::before {
+//               content: attr(data-label);
+//               float: left;
+//               font-weight: 500;
+//               color: $primary;
+//             }
+//           }
+//         }
+//       }
+//     }
+//   }
+// }
+
+// .panel {
+//   box-shadow: $box-shadow;
+//   background-color: $white;
+//   margin-bottom: 1rem;
+//   border-radius: 5px;
+//   overflow: hidden;
+//   .panel-header {
+//     border-bottom: 1px solid $light-grey;
+//     padding: 1rem;
+//     overflow: hidden;
+//     @each $name, $color in $material-colors {
+//       &.#{$name} {
+//         background-color: $color;
+//         color: $white;
+//       }
+//     }
+//     h3 {
+//       margin: 0;
+//       font-size: 1rem;
+//       font-weight: 500;
+//     }
+//   }
+//   .panel-body {
+//     padding: 1rem;
+//   }
+// }
+
+
+// .mdb-accordion-indicator {
+//   &::after {
+//     display: none !important;
+//   }
+//   &::before {
+//     content: "";
+//     display: inline-block;
+//     font: normal normal normal 14px/1 "line-awesome";
+//     font-size: inherit;
+//     text-rendering: auto;
+//     -webkit-font-smoothing: antialiased;
+//   }
+// }

@@ -1,0 +1,29 @@
+@import "theme";
+.modal-title {
+    word-break: break-all;
+
+}
+
+.modal-custom-text {
+    word-break: break-all;
+    display: flex;
+    margin-bottom: 1rem;
+}
+
+.modal-custom-text {
+    span {
+        min-width: 150px;
+        padding-right: 1rem;
+        font-weight: bold;
+        word-break: normal;
+    }
+}
+
+.number-title span {
+    font-weight: 400;
+    font-size: 1rem;
+    color: $dynamic-colour;
+}
+.modal-xlx {
+    max-width: 1200px !important;
+}

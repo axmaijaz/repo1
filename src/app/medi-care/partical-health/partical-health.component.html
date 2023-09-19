@@ -1,0 +1,33 @@
+<app-patient-details></app-patient-details>
+
+<div class="row">
+  <div class="col-sm-12">
+    <div class="form-group">
+      <label for="ssnNumber">SSN Number</label>
+      <input type="text" [(ngModel)]="ssnNumber" class="form-control form-control-sm"
+        id="ssnNumber" placeholder="Enter SSN Number">
+    </div>
+  </div>
+</div>
+<button [disabled]="isLoadingPData" type="submit" mdbBtn (click)="GetParticleHealthZip()"
+      class="btn btn-dynamic-2c btn-sm m-0 mb-3 mr-1">
+      <span *ngIf="isLoadingPData" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      Download Zip</button>
+
+<button [disabled]="isLoadingPXMLData" type="submit" mdbBtn (click)="GetParticleHealthxml()"
+      class="btn btn-dynamic-2c btn-sm m-0 mb-3 mr-1">
+      <span *ngIf="isLoadingPXMLData" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      Download XML</button>
+<a type="submit" mdbBtn href="http://backbeachsoftware.com.au/challenge/index.htm" target="_blank"
+class="btn btn-info btn-sm m-0 mb-3 mr-1">
+Xml Viewer</a>
+<!-- <button type="button" mdbBtn (click)="goIframeBack()"
+      class="btn btn-dynamic-2c btn-sm m-0 mb-3 mr-1">
+      Back</button>
+<button type="button" mdbBtn (click)="goIframeFoward()"
+      class="btn btn-dynamic-2c btn-sm m-0 mb-3 mr-1">
+      Forward</button> -->
+<div class="embed-responsive embed-responsive-16by9 mb-5">
+    <iframe id="partcalHealthIframe" src="../../../assets/CCDA/index.html"></iframe>
+    <!-- <iframe id="partcalHealthIframe" src="http://backbeachsoftware.com.au/challenge/index.htm"></iframe> -->
+</div>

@@ -1,0 +1,204 @@
+<div class="ccm-body">
+  <div class="d-flex align-items-center justify-content-between p-3">
+    <strong>Surgical History</strong>
+    <a class="btn btn-dynamic-2c btn-sm m-0" *hasClaim="['CanModifySurgicalHistory']" (click)="newSurgicalHistory();addSurgicalModal.show()">Add New</a>
+  </div>
+
+  <!-- <div class="d-flex justify-content-center text-center">
+    <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+  </div> -->
+
+
+
+  <div *ngIf="isLoadingSH" class="d-flex justify-content-center text-center">
+    <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+  </div>
+  <ngx-datatable style="width: 100%;" [columnMode]="'force'" class="material z-depth-0"  [headerHeight]="50" [footerHeight]="50"
+    [rowHeight]="35" [scrollbarV]="false" [scrollbarH]="true" [rows]="patientProceduresList" [limit]="15"
+    >
+    <ngx-datatable-column name="#" [maxWidth]=50>
+      <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+        {{rowIndex + 1}}
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="System" prop="surgicalSystemName">
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Procedure" prop="procedure">
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Surgeon Name" prop="surgeonName">
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Date" prop="dateOperated">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        {{row.dateOperated| dateFormatPipe}}
+      </ng-template>
+    </ngx-datatable-column>
+    <!-- <ngx-datatable-column name="Date" prop="date">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        {{row.date | dateFormatPipe}}
+      </ng-template>
+    </ngx-datatable-column> -->
+    <ngx-datatable-column name="Note" prop="notes">
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Action" *hasClaim="['CanModifySurgicalHistory']" [canAutoResize]=false [frozenRight]=true [width]="150">
+      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+        <button (click)="openEditModel(row, addSurgicalModal)" class="btn btn-dynamic-2c btn-icon" title="Edit" placement="left"
+          ><i class="fa fa-pencil"></i> </button>
+          <button class="btn btn-danger btn-icon" (click)=" openConfirmModal(row)"><i class="fa fa-trash"></i></button>
+      </ng-template>
+    </ngx-datatable-column>
+  </ngx-datatable>
+  <div class="row m-0 pb-2" style="display: none;">
+    <ng-container *ngFor="let item of patientProceduresList">
+
+      <div class="col-sm-6">
+
+        <div class="radio-box">
+          <div class="d-flex align-items-center">
+            <div>
+              <label>{{item.procedure}}</label>
+              <p class="mb-0"><strong> Surgeon Name: </strong>{{item.surgeonName}}</p>
+            </div>
+            <div class="ml-auto mr-1"><span
+                class="badge bg-dynamic-2c darken-2 py-2 d-flex align-items-center h-100">{{item.dateOperated}}</span>
+            </div>
+            <!-- <button [disabled]="awDisable" class="btn btn-danger btn-icon m-0" (click)="deleteProcedure()"><i class="fa fa-trash"></i></button> -->
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>
+
+
+<div mdbModal #addSurgicalModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myaddSurgicalModalLabel" aria-hidden="true" (open)="nkdaCheck=false">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="addSurgicalModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">{{ selectedId ? 'Edit Surgical History' : 'Add Surgical History'}}</h4>
+      </div>
+      <div class="modal-body" >
+        <div class="row">
+          <div class="col-lg-3 col-sm-12">
+            <div class="panel z-depth-0 border">
+              <div class="panel-header border-bottom">
+                <h3>System</h3>
+              </div>
+              <div class="panel-body" [class.overlay-Body]="nkdaCheck === true">
+
+                <div class="horizontal-scroll">
+                  <button class="hs-btn pre" (click)="scrollLeft()"> <i class="fa fa-angle-left"></i> </button>
+                  <div class="horizontal-scroll-body">
+                    <ng-container *ngIf="isLoadingSystems;then loadingSklton"></ng-container>
+                    <ul class="list-inline system-list" style="cursor: pointer;" *ngIf="!isLoadingSystems" #listItems>
+                      <li class="radio-box" [class.active]="activeSystem.id===item.id" *ngFor="let item of systemsList"
+                        (click)="activeSystem=item;GetSurgicalProceduresBySystem()"><a>{{item.name}}</a></li>
+                    </ul>
+
+                  </div>
+                  <button class="hs-btn next" (click)="scrollRight()"><i class="fa fa-angle-right"></i></button>
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-9 col-sm-12">
+
+            <div class="panel z-depth-0 border">
+              <div class="panel-header border-bottom d-flex align-items-center justify-content-between py-2 pr-2">
+                <h3>Procedure</h3>
+                <div class="ml-auto mr-2">
+                  <div class="custom-control custom-checkbox" *ngIf="(!patientProceduresList || !patientProceduresList.length) && !isLoadingSH">
+                    <mdb-checkbox [(ngModel)]="nkdaCheck" (ngModelChange)="nkdaChecked()" [default]="true" [checked]="false">No surgical history</mdb-checkbox>
+                  </div>
+                  <!-- <input [ngModel]="dateOperated | dateFormatPipe" (ngModelChange)="dateOperated=$event" type="text"
+                    placeholder="Target Date" class="form-control form-control-sm" #dateToDp="dpDayPicker"
+                    [dpDayPicker]="datePickerConfig" [theme]="'dp-material ccm-date-picker'" [mode]="'day'"
+                    style="width:250"> -->
+
+                  <!-- <label for="endTime">Duration</label> -->
+                  <!-- <input type="text" [(ngModel)]="dateOperated" class="form-control form-control-sm"
+                    placeholder="Date"> -->
+                </div>
+              </div>
+              <div class="panel-body ml-1" [class.overlay-Body]="nkdaCheck === true">
+
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <!-- <label for="endTime">Surgeon Name</label> -->
+                      <input type="text" [(ngModel)]="surgeonName" class="form-control form-control-sm"
+                        placeholder="Surgeon Name">
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <!-- <label for="endTime">Surgeon Name</label> -->
+                      <input type="text" [(ngModel)]="dateOperated" class="form-control form-control-sm"
+                        placeholder="Date">
+                    </div>
+                  </div>
+                  <div class="col-md-12">
+                    <div class="form-group">
+                      <textarea placeholder="Note" [(ngModel)]="notes" class="form-control h-100" rows="3"></textarea>
+                    </div>
+                  </div>
+                  <div class="col-sm-12">
+                    <ng-container *ngIf="isLoadingProcedures;then loadingSklton"></ng-container>
+                  </div>
+                  <!-- <ng-container *ngFor="let item of proceduresList;let index = index;">
+                  <div (click)="selectProcedure(item)" class="form-check form-check-inline radio-box" [ngClass]="{'checked': item['value'] == item.id}">
+                    <label class="form-check-label" for="defaultInline1{{index}}" >{{item.name}}</label>
+                  </div>
+                </ng-container> -->
+                <!-- [ngClass]="{'checked': selectedProcedure && (selectedProcedure.toString() == item.id.toString())}" -->
+                  <ng-container *ngFor="let item of proceduresList;let index = index;">
+                    <div class="col-sm-6">
+                      <div class="form-check radio-box" [class.checked]="selectedProcedure===item.id">
+                        <input type="radio" #checkbox class="form-check-input" [(ngModel)]="selectedProcedure"
+                          id="defaultInline1{{index}}" name="inlineDefaultRadiosExample" [value]="item.id" mdbInput>
+                        <label class="form-check-label w-100" for="defaultInline1{{index}}">{{item.name}}</label>
+                      </div>
+                    </div>
+
+                  </ng-container>
+                </div>
+
+              </div>
+
+            </div>
+
+
+
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+          (click)="addSurgicalModal.hide()" mdbWavesEffect>Close</button>
+        <button (click)="saveProcedure(addSurgicalModal)"
+          [disabled]="!dateOperated || !selectedProcedure || !selectedProcedure || savingProvedure" type="button"
+           class="relative waves-light btn btn-sm btn-dynamic-2c" mdbWavesEffect>Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+<ng-template #loadingSklton>
+  <skltn-root duration="2000" [rectRadius]="0" flareWidth="50%" bgFill="#f2f3f8" flareFill="rgba(255,255,255, 0.5)">
+
+    <div class="skltn-card">
+      <div class="skltn-card__body row">
+        <div skltn-bone class="skltn-card__line col mx-2"></div>
+        <div skltn-bone class="skltn-card__line col mx-2"></div>
+      </div>
+      <div class="skltn-card__body row">
+        <div skltn-bone class="skltn-card__line col mx-2"></div>
+        <div skltn-bone class="skltn-card__line col mx-2"></div>
+      </div>
+    </div>
+  </skltn-root>
+</ng-template>

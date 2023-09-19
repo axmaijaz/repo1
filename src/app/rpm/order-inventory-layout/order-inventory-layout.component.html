@@ -1,0 +1,9 @@
+<mdb-tabset #orderTabs [buttonClass]="'classic-tabs classic-tabs-mh  tabs-outline-primary tabs-2'"
+    [contentClass]="'tab-shadow border'" class="classic-tabs classic-tabs-mh mt-3 row tabs-outline-primary">
+    <mdb-tab [disabled]="!deviceRequestId" heading="Add Order">
+        <app-new-device-order></app-new-device-order>
+    </mdb-tab>
+    <mdb-tab heading="Add Inventory">
+        <app-add-inventory></app-add-inventory>
+    </mdb-tab>
+</mdb-tabset>

@@ -1,0 +1,353 @@
+<div class="d-flex align-item-center justify-content-start">
+  <!-- <h4 class="mr-3 mb-0"><a class="text-dark" (click)="navigateBack()">
+      <i class="fa fa-arrow-left"></i></a></h4> -->
+  <h1 class="page-title">Medicare EOB  <span>Loaded <span class="text-info">({{entryList.length}})</span> out of <span class="text-info">({{total}})</span></span></h1>
+</div>
+<div>
+  <div *ngIf="loadingEobData" class="d-flex justify-content-center text-center mb-1">
+    <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+  </div>
+  <mdb-tabset #FStepTabs [buttonClass]="'modality-tabs rounded-0'"
+  [contentClass]="'m-0 p-0 z-depth-0 bg-transparent'" class="modality-tabs">
+    <mdb-tab heading="In Patient  {{inPatientClaims.length ? inPatientClaims.length : ''}}">
+      <div class="row">
+        <div class="col-12">
+          <div class="table-responsive">
+            <table class="table table-bordered btn-table u-small-table eob-table mb-0">
+              <thead>
+                <tr>
+                  <th>Index</th>
+                  <th>Facility</th>
+                  <th>Date</th>
+                  <th>Principle Diagnosis</th>
+                  <th>Total-Cost</th>
+                  <th>Total-Payment</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody >
+
+                <tr *ngFor="let value of inPatientClaims;let index = index">
+
+                  <td>{{index + 1}}</td>
+                  <td>{{value.facility}}</td>
+                  <td title="Start: {{value.fromDate}} End: {{value.toDate}}">Start:
+                    {{value.fromDate}} End: {{value.toDate}}</td>
+                    <td>{{value.principleDiagnoses}}</td>
+                    <td>{{value.totalCost}}</td>
+                    <td>{{value.totalPayment}}</td>
+                    <div class="d-flex">
+                      <button (click)="OpenInPatientDetails(value, inPatientDetailsModel)" class="btn btn-icon btn-dynamic-2c my-0"><i
+                          class="fa fa-eye"></i></button>
+                      <!-- <button class="btn btn-icon btn-danger ml-0 my-0" (click)="DeleteBhiDocument(item.id)">
+                        <i class="fa fa-trash"></i></button> -->
+                    </div>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </mdb-tab>
+    <mdb-tab heading="Out Patient  {{outPatientClaims.length ? outPatientClaims.length : ''}}">
+      <div class="row">
+        <div class="col-12">
+          <div class="table-responsive">
+            <table class="table table-bordered btn-table u-small-table eob-table mb-0">
+              <thead>
+                <tr>
+                  <th>Index</th>
+                  <th>Facility</th>
+                  <th>Provider</th>
+                  <th>Date</th>
+                  <th>Principle Diagnosis</th>
+                  <th>Total-Cost</th>
+                  <th>Total-Payment</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody >
+
+                <tr *ngFor="let value of outPatientClaims;let index = index">
+
+                  <td>{{index + 1}}</td>
+                  <td>{{value.facility}}</td>
+                  <td>{{value.primaryProvider}}</td>
+                  <td title="Start: {{value.fromDate}} End: {{value.toDate}}">Start:
+                    {{value.fromDate}} End: {{value.toDate}}</td>
+                    <td>{{value.principleDiagnoses}}</td>
+                    <td>{{value.totalCost}}</td>
+                    <td>{{value.totalPayment}}</td>
+                    <div class="d-flex">
+                      <button (click)="OpenOutPatientDetails(value, outPatientDetailsModel)" class="btn btn-icon btn-dynamic-2c my-0"><i
+                          class="fa fa-eye"></i></button>
+                      <!-- <button class="btn btn-icon btn-danger ml-0 my-0" (click)="DeleteBhiDocument(item.id)">
+                        <i class="fa fa-trash"></i></button> -->
+                    </div>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </mdb-tab>
+    <mdb-tab heading="Carrier  {{carrierLength ? carrierLength : ''}}">
+      <div class="row">
+        <div class="col-12">
+          <div class="table-responsive">
+            <table class="table table-bordered btn-table u-small-table eob-table mb-0">
+              <thead>
+                <tr>
+                  <th>Index</th>
+                  <th>Date</th>
+                  <th>Service Code</th>
+                  <th>Description</th>
+                  <th>Category</th>
+                  <th>Provider</th>
+                  <th>Diagnoses</th>
+                  <th>Allowed Cost</th>
+                </tr>
+              </thead>
+              <tbody >
+
+                <tr [style.background]="value.colorCode" *ngFor="let value of carrierPatientClaims;let index = index; let isEven= even;">
+
+                  <td>{{index + 1}}</td>
+                  <td>{{value.date}}</td>
+                  <td>{{value.serviceCode}}</td>
+                  <td>{{value.descriptionHpsc}}</td>
+                  <td>{{value.category}}</td>
+                  <td>{{value.provider}}</td>
+                  <td>{{value.diagnosesStr}}</td>
+                  <td>{{value.allowedCost}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </mdb-tab>
+    <mdb-tab heading="PDE  {{pdeLength ? pdeLength : ''}}">
+      <div class="row">
+        <div class="col-12">
+          <div class="table-responsive">
+            <table class="table table-bordered btn-table u-small-table eob-table mb-0">
+              <thead>
+                <tr>
+                  <th>Index</th>
+                  <th>Date</th>
+                  <th>Drug No</th>
+                  <th>Drug Name</th>
+                  <th>Provider</th>
+                  <th>Drug Cost</th>
+                </tr>
+              </thead>
+              <tbody >
+
+                <tr [style.background]="value.colorCode" *ngFor="let value of pdePatientClaims;let index = index; let isEven= even;">
+
+                  <td>{{index + 1}}</td>
+                  <td>{{value.date}}</td>
+                  <td>{{value.drugNo}}</td>
+                  <td>{{value.drugName}}</td>
+                  <td>{{value.provider}}</td>
+                  <td>{{value.drugCost}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </mdb-tab>
+  </mdb-tabset>
+</div>
+
+<div mdbModal #inPatientDetailsModel="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-fluid" role="document">
+    <div class="modal-content" *ngIf="inPatientDetailsModel.isShown">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="inPatientDetailsModel.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <!-- <h4 class="modal-title w-100" id="myModalLabel"><i class="fa fa-exclamation-triangle yellow-text"></i>{{modalObj.Title}}
+        </h4> -->
+        <h4 class="modal-title w-100 text-center" id="myModalLabel"> {{selectedInPatient.entry.resource.resourceType}} {{selectedInPatient.entry.resource.meta.lastUpdated | date}}
+        </h4>
+      </div>
+      <div class="modal-body">
+        <!-- {{modalObj.Text}} -->
+        <!-- <p class="text-center"><i class="fa fa-exclamation-triangle text-danger" style="font-size: 3rem;"></i> </p> -->
+        <h3 class="text-center text-dynamic-2c">Diagnoses</h3>
+        <div class="text-center">
+          <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+              <div class="table-responsive">
+                <table class="table table-bordered btn-table u-small-table eob-table mb-0">
+                  <thead>
+                    <tr>
+                      <th>Index</th>
+                      <th>Code</th>
+                      <th>CodableSystem</th>
+                      <th>Type</th>
+                      <th>Display</th>
+                    </tr>
+                  </thead>
+                  <tbody *ngIf="!loadingEobData">
+
+                    <tr *ngFor="let value of selectedInPatient.diagnoses;let index = index">
+
+                      <td>{{index + 1}}</td>
+                      <td>{{value.code}}</td>
+                      <td>{{value.codableSystem}}</td>
+                      <td>{{value.type}}</td>
+                      <td>{{value.display}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <h3 class="text-center text-dynamic-2c">Procedures</h3>
+        <div class="text-center">
+          <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+              <div class="table-responsive">
+                <table class="table table-bordered btn-table u-small-table eob-table mb-0">
+                  <thead>
+                    <tr>
+                      <th>Index</th>
+                      <th>Date</th>
+                      <th>Code</th>
+                      <!-- <th>CodableSystem</th> -->
+                      <th>Display</th>
+                    </tr>
+                  </thead>
+                  <tbody *ngIf="!loadingEobData">
+
+                    <tr *ngFor="let value of selectedInPatient.procedures;let index = index">
+
+                      <td>{{index + 1}}</td>
+                      <td>
+                        <ng-container *ngIf="value.date">
+                          {{value.date | date}}
+                        </ng-container>
+                      </td>
+                      <td>{{value.code}}</td>
+                      <td>{{value.display}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <h3 class="text-center text-dynamic-2c">Care Team</h3>
+        <div class="text-center">
+          <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+              <div class="table-responsive">
+                <table class="table table-bordered btn-table u-small-table eob-table mb-0">
+                  <thead>
+                    <tr>
+                      <th>Index</th>
+                      <th>Name</th>
+                      <th>Npi/Value</th>
+                      <th>System</th>
+                      <th>Display</th>
+                    </tr>
+                  </thead>
+                  <tbody *ngIf="!loadingEobData">
+
+                    <tr *ngFor="let value of selectedInPatient.careTeam;let index = index">
+
+                      <td>{{index + 1}}</td>
+                      <td>{{value.name}}</td>
+                      <td>{{value.value}}</td>
+                      <td>{{value.system}}</td>
+                      <td>{{value.display}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+          (click)="inPatientDetailsModel.hide()" mdbWavesEffect>Close</button>
+        <!-- <button [disabled]="signingAWEncounter || !signature" type="button" mdbBtn color="primay"
+          (click)="SignAWEncounter(inPatientDetailsModel)" class="relative waves-light btn-sm" mdbWavesEffect>
+          <span *ngIf="signingAWEncounter" class="spinner-border spinner-border-sm" role="status"
+            aria-hidden="true"></span>
+          Submit</button> -->
+      </div>
+    </div>
+  </div>
+</div>
+<div mdbModal #outPatientDetailsModel="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-fluid" role="document">
+    <div class="modal-content" *ngIf="outPatientDetailsModel.isShown">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="outPatientDetailsModel.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <!-- <h4 class="modal-title w-100" id="myModalLabel"><i class="fa fa-exclamation-triangle yellow-text"></i>{{modalObj.Title}}
+        </h4> -->
+        <h4 class="modal-title w-100 text-center" id="myModalLabel"> {{selectedOutPatient.entry.resource.resourceType}} {{selectedOutPatient.entry.resource.meta.lastUpdated | date}}
+        </h4>
+      </div>
+      <div class="modal-body">
+        <!-- {{modalObj.Text}} -->
+        <!-- <p class="text-center"><i class="fa fa-exclamation-triangle text-danger" style="font-size: 3rem;"></i> </p> -->
+        <h3 class="text-center text-dynamic-2c">Line Items</h3>
+        <div class="text-center">
+          <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+              <div class="table-responsive">
+                <table class="table table-bordered btn-table u-small-table eob-table mb-0">
+                  <thead>
+                    <tr>
+                      <th>Index</th>
+                      <th>Provider</th>
+                      <th>Service</th>
+                      <th>Charge</th>
+                      <th>Charge Display</th>
+                      <th>Payment</th>
+                      <th>Payment Display</th>
+                    </tr>
+                  </thead>
+                  <tbody *ngIf="!loadingEobData">
+
+                    <tr *ngFor="let value of selectedOutPatient.lineItems;let index = index">
+
+                      <td>{{index + 1}}</td>
+                      <td>{{value.provider}}</td>
+                      <td>{{value.service}}</td>
+                      <td>{{value.chargeAmount}}</td>
+                      <td>{{value.chargeDisplay}}</td>
+                      <td>{{value.paymentAmount}}</td>
+                      <td>{{value.paymentDisplay}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="waves-light btn-sm btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+          (click)="outPatientDetailsModel.hide()" mdbWavesEffect>Close</button>
+        <!-- <button [disabled]="signingAWEncounter || !signature" type="button" mdbBtn color="primay"
+          (click)="SignAWEncounter(outPatientDetailsModel)" class="relative waves-light btn-sm" mdbWavesEffect>
+          <span *ngIf="signingAWEncounter" class="spinner-border spinner-border-sm" role="status"
+            aria-hidden="true"></span>
+          Submit</button> -->
+      </div>
+    </div>
+  </div>
+</div>

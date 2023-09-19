@@ -1,0 +1,3329 @@
+<ng-container *ngIf="loadingHumanaData;then loadingSkelton"></ng-container>
+<fieldset *ngIf="!loadingHumanaData" [disabled]="awDataService.awStatus !== 1" [class.disable]="awDataService.awStatus !== 1">
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel z-depth-0 rounded-0">
+        <div class="panel-header">
+          <div class="d-flex align-content-center justify-content-between">
+            <h3>Patient Information</h3>
+            <div>
+              <!-- <button type="button" mdbBtn color="primry" size="sm" [disabled]="isLoadingZip"
+                          (click)="DownLoadAwPdf(viewPdfModal)" class="relative">
+                          <span *ngIf="isLoadingZip" class="mr-1 spinner-border spinner-border-sm " role="status" aria-hidden="true"></span>
+                          <span class="fa fa-download"></span>
+                          Download
+                        </button>
+                          <button type="button" mdbBtn color="primay" size="sm" [disabled]="isLoadingZipHM" id="humanaFormButton"
+                          (click)="DownLoadPdf(viewPdfModal)" class="relative" class="mr-0">
+                          <span *ngIf="isLoadingZipHM" class="mr-1 spinner-border spinner-border-sm " role="status" aria-hidden="true"></span>
+                          <span class="fa fa-download"></span>
+                          Download HUMANA
+                        </button> -->
+            </div>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Patient</label>
+                <input [readOnly]="true" type="text" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.patientInfo.patient" class="form-control" placeholder="Patient">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Date of Birth</label>
+                <!-- <input [readOnly]="true" type="text" [dpDayPicker]="datePickerConfig"
+                                placeholder="MM-DD-YYYY" [theme]="'dp-material ccm-date-picker'" [mode]="'day'" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                                 (ngModelChange)="humanaResObj.humanaDto.patientInfo.dateOfBirth=$event;" [ngModel]="humanaResObj.humanaDto.patientInfo.dateOfBirth | dateFormatPipe" class="bg-white form-control" placeholder="Date Of Birth"> -->
+                <input [disabled]="true" type="text"
+                  (ngModelChange)="humanaResObj.humanaDto.patientInfo.dateOfBirth=$event;"
+                  [ngModel]="humanaResObj.humanaDto.patientInfo.dateOfBirth | dateFormatPipe"
+                  class="bg-white form-control" placeholder="Date Of Birth">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <!-- <div class="col-md-6">
+                            <div class="form-group">
+                                <label >Name</label>
+                                <input type="text" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                                 [(ngModel)]="humanaResObj.humanaDto.patientInfo.name" class="form-control" placeholder="Name">
+                            </div>
+                        </div> -->
+            <div class="col-md-12">
+              <div class="form-group">
+                <label class="d-flex">Gender</label>
+                <div class="form-check form-check-inline mt-0">
+                  <input [disabled]="true" type="radio" [(ngModel)]="humanaResObj.humanaDto.patientInfo.gender"
+                    [value]="'male'" class="form-check-input" id="male" name="Gender" mdbInput>
+                  <label class="form-check-label" for="male">Male</label>
+                </div>
+                <div class="form-check form-check-inline mt-0">
+                  <input [disabled]="true" type="radio" [(ngModel)]="humanaResObj.humanaDto.patientInfo.gender"
+                    [value]="'female'" class="form-check-input" id="female" name="Gender" mdbInput>
+                  <label class="form-check-label" for="female">Female</label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Humana Member ID</label>
+                <input type="text" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.patientInfo.humanaMemberId" class="form-control"
+                  placeholder="Humana Member ID">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Date of Service</label>
+                <input type="text" [dpDayPicker]="datePickerConfig" placeholder="MM-DD-YYYY"
+                  [theme]="'dp-material ccm-date-picker'" [mode]="'day'" appOnDebounce [debounceTime]="1500"
+                  (onDebounce)="EditHumanaForm()"
+                  (ngModelChange)="humanaResObj.humanaDto.patientInfo.dateOfService=$event;"
+                  [ngModel]="humanaResObj.humanaDto.patientInfo.dateOfService | dateFormatPipe"
+                  class="bg-white form-control" placeholder="Date Of Service">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <label class="d-flex">Race/Ethnicity</label>
+              <div class="custom-control  pl-0 custom-checkbox custom-control-inline ">
+                <input type="radio" name="racenameradio" class="form-check-input" appOnDebounce [debounceTime]="500"
+                  (onDebounce)="checkRaceEthnicity();EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.patientInfo.raceOrEthnicity" id="HispanicLatine"
+                  [value]="'HispanicLatine'">
+                <label for="HispanicLatine" class="form-check-label"> Hispanic / Latino </label>
+              </div>
+              <div class="custom-control  pl-0 custom-checkbox custom-control-inline">
+                <input type="radio" name="racenameradio" class="form-check-input" appOnDebounce [debounceTime]="500"
+                  (onDebounce)="checkRaceEthnicity();EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.patientInfo.raceOrEthnicity" id="AmericanIndian"
+                  [value]="'AmericanIndian'">
+                <label for="AmericanIndian" class="form-check-label"> American Indian </label>
+              </div>
+              <div class="custom-control  pl-0 custom-checkbox custom-control-inline">
+                <input type="radio" name="racenameradio" class="form-check-input" appOnDebounce [debounceTime]="500"
+                  (onDebounce)="checkRaceEthnicity();EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.patientInfo.raceOrEthnicity" id="Alaska" [value]="'Alaska'">
+                <label for="Alaska" class="form-check-label"> Alaska Native </label>
+              </div>
+              <div class="custom-control  pl-0 custom-checkbox custom-control-inline">
+                <input type="radio" name="racenameradio" class="form-check-input" appOnDebounce [debounceTime]="500"
+                  (onDebounce)="checkRaceEthnicity();EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.patientInfo.raceOrEthnicity" id="Black" [value]="'Black'">
+                <label for="Black" class="form-check-label"> Black / African American </label>
+              </div>
+              <div class="custom-control  pl-0 custom-checkbox custom-control-inline">
+                <input type="radio" name="racenameradio" class="form-check-input" appOnDebounce [debounceTime]="500"
+                  (onDebounce)="checkRaceEthnicity();EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.patientInfo.raceOrEthnicity" id="African" [value]="'African'">
+                <label for="African" class="form-check-label"> African Asia </label>
+              </div>
+              <div class="custom-control  pl-0 custom-checkbox custom-control-inline">
+                <input type="radio" name="racenameradio" class="form-check-input" appOnDebounce [debounceTime]="500"
+                  (onDebounce)="checkRaceEthnicity();EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.patientInfo.raceOrEthnicity" id="AsiaIndia" [value]="'AsiaIndia'">
+                <label for="AsiaIndia" class="form-check-label"> Asia Indian </label>
+              </div>
+              <div class="custom-control  pl-0 custom-checkbox custom-control-inline">
+                <input type="radio" name="racenameradio" class="form-check-input" appOnDebounce [debounceTime]="500"
+                  (onDebounce)="checkRaceEthnicity();EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.patientInfo.raceOrEthnicity" id="NativeHawaiian"
+                  [value]="'NativeHawaiian'">
+                <label for="NativeHawaiian" class="form-check-label"> Native Hawaiian </label>
+              </div>
+              <div class="custom-control  pl-0 custom-checkbox custom-control-inline">
+                <input type="radio" name="racenameradio" class="form-check-input" appOnDebounce [debounceTime]="500"
+                  (onDebounce)="checkRaceEthnicity();EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.patientInfo.raceOrEthnicity" id="OtherPacific"
+                  [value]="'OtherPacific'">
+                <label for="OtherPacific" class="form-check-label"> Other Pacific Islander </label>
+              </div>
+              <div class="custom-control  pl-0 custom-checkbox custom-control-inline">
+                <input type="radio" name="racenameradio" class="form-check-input" appOnDebounce [debounceTime]="500"
+                  (onDebounce)="checkRaceEthnicity();EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.patientInfo.raceOrEthnicity" id="White" [value]="'White'">
+                <label for="White" class="form-check-label"> White / Caucasian </label>
+              </div>
+              <div class="custom-control  pl-1 custom-checkbox custom-control-inline align-items-center">
+                <mdb-checkbox appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="OtherRaceSelect"
+                  (change)="OtherRaceSelect ? humanaResObj.humanaDto.patientInfo.raceOrEthnicity = '': raceOrEthnicity=''"
+                  [default]="true" [checked]="false">
+                  <span class="pl-2">Other</span>
+                </mdb-checkbox>
+                <div class="form-check pl-3 form-check-inline">
+                  <input [disabled]="!OtherRaceSelect" type="text" appOnDebounce [debounceTime]="1500"
+                    (onDebounce)="EditHumanaForm()" [(ngModel)]="raceOrEthnicity" class="form-control form-control-sm ">
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel z-depth-0 rounded-0">
+        <div class="panel-header">
+          <div class="current-section">
+            <h3>Medical History</h3>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="table-responsive">
+                <table class="table table-bordered table-hover table-nowrap">
+                  <thead class="bg-dynamic-2c text-white">
+                    <tr>
+                      <th>ICD Code</th>
+                      <th>ICD Description</th>
+                      <th>Description</th>
+                      <!-- <th>Is Chronic</th> -->
+                      <!-- <th>Diagnose Date</th> -->
+                      <th>Active/Resolve</th>
+                      <!-- <th>Active</th> -->
+                      <!-- <th>Resolved </th> -->
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of humanaResObj.humanaDto.medicalHistory">
+                      <td>
+                        {{item.icdCode}}
+                      </td>
+                      <td>
+                        {{item.description}}
+                      </td>
+                      <td>
+                        {{item.note}}
+                      </td>
+                      <!-- <td>
+                                                <span class="ccm-active">
+                                                    <i class="fa fa-{{item.isChronic ? 'check': 'close'}} fa-lg">
+                                                    </i>
+                                                </span>
+                                            </td> -->
+                      <!-- <td>
+                                                {{item.diagnosisDate | date}}
+                                            </td> -->
+                      <td>
+                        <ng-container *ngIf="item.resolvedDate">
+                          {{item.resolvedDate | date}}
+                        </ng-container>
+                      </td>
+                      <!-- <td>
+                                                <span  class="ccm-inactive">
+                                                  <i class="fa fa-{{item.active ? 'check': 'close'}} fa-lg"></i>
+                                                </span>
+                                            </td> -->
+                      <!-- <td>
+                                              <input appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()" [(ngModel)]="item.resolved" type="text" class="form-control">
+
+                                            </td> -->
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- End Patient Information -->
+  <!-- Start Medical History -->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel z-depth-0 rounded-0">
+        <div class="panel-header">
+          <div class="current-section">
+            <h3>Providers regularly involved with care — specialists/suppliers</h3>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="table-responsive">
+                <table class="table table-bordered table-hover table-nowrap">
+                  <thead class="bg-dynamic-2c text-white">
+                    <tr>
+                      <th>Name</th>
+                      <th>Degree</th>
+                      <th>Speciality</th>
+                      <!-- <th>Is Chronic</th> -->
+                      <!-- <th>Diagnose Date</th> -->
+                      <th>Prev Appointment</th>
+                      <th>Next Appointment</th>
+                      <!-- <th>Active</th> -->
+                      <!-- <th>Resolved </th> -->
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of humanaResObj.humanaDto.providers">
+                      <td>
+                        {{item.lastName}},{{item.firstName}}
+                      </td>
+                      <td>
+                        {{item.degree}}
+                      </td>
+                      <td>
+                        {{item.specialty}}
+                      </td>
+                      <td *ngIf="item.prevAppointment">
+                        {{item.prevAppointment | date}}
+                      </td>
+                      <td *ngIf="item.nextAppointment">
+                        {{item.nextAppointment | date}}
+                      </td>
+                      <!-- <td>
+                                              <span class="ccm-active">
+                                                  <i class="fa fa-{{item.isChronic ? 'check': 'close'}} fa-lg">
+                                                  </i>
+                                              </span>
+                                          </td> -->
+                      <!-- <td>
+                                              {{item.diagnosisDate | date}}
+                                          </td> -->
+                      <!-- <td *ngIf="item.resolvedDate">
+                                              {{item.resolvedDate | date}}
+                                          </td> -->
+                      <!-- <td>
+                                              <span  class="ccm-inactive">
+                                                <i class="fa fa-{{item.active ? 'check': 'close'}} fa-lg"></i>
+                                              </span>
+                                          </td> -->
+                      <!-- <td>
+                                            <input appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()" [(ngModel)]="item.resolved" type="text" class="form-control">
+
+                                          </td> -->
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel z-depth-0 rounded-0">
+        <div class="panel-header">
+          <div class="current-section">
+            <h3>Surgical History</h3>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="table-responsive">
+                <table class="table table-bordered table-hover table-nowrap">
+                  <thead class="bg-dynamic-2c text-white">
+                    <tr>
+                      <th>Procedure</th>
+                      <th>Reason</th>
+                      <th>Date</th>
+                      <!-- <th>Is Chronic</th> -->
+                      <!-- <th>Diagnose Date</th> -->
+                      <th>Surgeon or facility</th>
+                      <!-- <th>Active</th> -->
+                      <!-- <th>Resolved </th> -->
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of humanaResObj.humanaDto.surgicalHistory">
+                      <td>
+                        {{item.procedure}}
+                      </td>
+
+                      <td>
+                        <input appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                          [(ngModel)]="item.reason" type="text" class="form-control">
+
+                      </td>
+                      <!-- <td>
+                                                {{item.reason}}
+                                            </td> -->
+                      <td>
+                        <ng-container *ngIf="item.date">
+                          {{item.date}}
+                        </ng-container>
+                      </td>
+                      <td>
+                        {{item.surgeonOrFacility}}
+                      </td>
+                      <!-- <td>
+                                                <span class="ccm-active">
+                                                    <i class="fa fa-{{item.isChronic ? 'check': 'close'}} fa-lg">
+                                                    </i>
+                                                </span>
+                                            </td> -->
+                      <!-- <td>
+                                                {{item.diagnosisDate | date}}
+                                            </td> -->
+                      <!-- <td>
+                                                {{item.resolvedDate | date}}
+                                            </td> -->
+                      <!-- <td>
+                                                <span  class="ccm-inactive">
+                                                  <i class="fa fa-{{item.active ? 'check': 'close'}} fa-lg"></i>
+                                                </span>
+                                            </td> -->
+                      <!-- <td>
+                                              <input appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()" [(ngModel)]="item.resolved" type="text" class="form-control">
+
+                                            </td> -->
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- End Medical History -->
+  <!-- Start Current Medication -->
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel z-depth-0 rounded-0">
+        <div class="panel-header">
+          <div class="current-section">
+            <h3>Current Medication</h3>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="table-responsive">
+                <table class="table table-bordered table-hover table-nowrap">
+                  <thead class="bg-dynamic-2c text-white">
+                    <tr>
+                      <th>Medication</th>
+                      <th>Dose</th>
+                      <!-- <th>Start Date</th>
+                                         <th>Stop Date</th>
+                                         <th>Status</th> -->
+                      <th>Conditions being treated</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of humanaResObj.humanaDto.currentMedications">
+                      <td>
+                        {{item.medicationName}}
+                      </td>
+                      <td>
+                        {{item.dose}}
+                      </td>
+                      <!-- <td>
+                                        {{item.startDate | date}}
+                                    </td>
+                                    <td>
+                                        {{item.stopDate | date}}
+                                    </td>
+                                    <td>
+                                      {{item.status}}
+                                    </td> -->
+                      <td>
+                        <input appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                          [(ngModel)]="item.conditionsTreated" type="text" class="form-control">
+                        <!-- {{item.conditionsTreated}} -->
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End Current Medication -->
+  <!-- Start Surgical History -->
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel z-depth-0 rounded-0">
+        <div class="panel-header">
+          <div class="current-section">
+            <h3>Medication Reconciliation <small class="text-warning-dark">(Based on TCM)</small></h3>
+          </div>
+        </div>
+        <!-- <div class="position-relative">
+                <div [class.overlay-Body]="true"> -->
+        <div class="panel-body">
+          <!-- <p><strong> Surgical Table Component </strong></p> -->
+          <div class="row">
+            <div class="col-12">
+              <p class="mb-2 sub-title font-600 text-dynamic-2c">
+                Medication reconciliation post-discharge - Has the patient been hospitalized in the last year?
+              </p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-2">
+              <div class="custom-control  pl-0 custom-checkbox custom-control-inline">
+                <div class="custom-control  pl-0 custom-checkbox custom-control-inline">
+                  <input type="radio" name="racenameradio89898" class="form-check-input" appOnDebounce
+                    [debounceTime]="500" (onDebounce)="EditHumanaForm()"
+                    [(ngModel)]="humanaResObj.humanaDto.medicalReconsiliation.hospitalizedLastYear" id="343443"
+                    [value]="true">
+                  <label for="343443" class="form-check-label"> Yes </label>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-5">
+              <p>
+                If yes, is there documentation that physician
+                reconciled the current and discharge medications
+                within 30 days after discharge ?
+              </p>
+            </div>
+            <div class="col-md-5">
+              <div class="form-group">
+                <label>Date of review</label>
+                <input type="text" [dpDayPicker]="datePickerConfig" placeholder="MM-DD-YYYY"
+                  [theme]="'dp-material ccm-date-picker'" [mode]="'day'" appOnDebounce [debounceTime]="1500"
+                  (onDebounce)="EditHumanaForm()"
+                  (ngModelChange)="humanaResObj.humanaDto.medicalReconsiliation.dateOfReview=$event;"
+                  [ngModel]="humanaResObj.humanaDto.medicalReconsiliation.dateOfReview | dateFormatPipe"
+                  class="bg-white form-control">
+              </div>
+              <div class="form-group">
+                <label>Physician</label>
+                <input type="text" placeholder="physician name" appOnDebounce [debounceTime]="1500"
+                  (onDebounce)="EditHumanaForm()" [(ngModel)]="humanaResObj.humanaDto.medicalReconsiliation.physician"
+                  class="form-control">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-2">
+              <div class="custom-control  pl-0 custom-checkbox custom-control-inline">
+                <input type="radio" name="racenameradio89898" class="form-check-input" appOnDebounce
+                  [debounceTime]="500"
+                  (onDebounce)="humanaResObj.humanaDto.medicalReconsiliation.hospitalizedLastYear === false ? resetMedicalRconsilitian() : EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.medicalReconsiliation.hospitalizedLastYear" id="9646"
+                  [value]="false">
+                <label for="9646" class="form-check-label"> No </label>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <p>
+                If checked , move to next section
+              </p>
+            </div>
+          </div>
+        </div>
+        <!-- </div>
+              </div> -->
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel z-depth-0 rounded-0">
+        <div class="panel-header">
+          <div class="current-section">
+            <h3>Statin therapy<small class="text-warning-dark ml-1">(Based on Statin Care Gap)</small> </h3>
+
+          </div>
+        </div>
+        <div class="panel-body">
+
+          <div class="row">
+            <div class="col-12">
+              <p class="mb-2 sub-title font-600 text-dynamic-2c">
+                Statin therapy - Please fill in all appropriate dates for therapy received, only ONE is needed
+                to meet HEDIS measure.
+              </p>
+
+            </div>
+          </div>
+          <div class="row pt-3">
+            <div class="col-md-4">
+              <div class="custom-control  pl-0 custom-checkbox custom-control-inline">
+                <input type="radio" name="therapyReceived" class="form-check-input" appOnDebounce [debounceTime]="1500"
+                  (onDebounce)="EditHumanaForm()" disabled
+                  [(ngModel)]="humanaResObj.humanaDto.statinTherapy.therapyReceived" id="asoijdsaiasjnaksj"
+                  [value]="true">
+                <label for="asoijdsaiasjnaksj" class="form-check-label"> Yes </label>
+              </div>
+              <p>
+                Dispensed or filled statin medication in 2019
+              </p>
+              <p class="pt-3 pl-3">
+                statin therapy intensity (circle one) High
+                intensity/Moderate intensity
+              </p>
+              <div class="d-flex mb-3 pl-3">
+                <div class="custom-control  pl-0 custom-checkbox ">
+                  <input type="radio" name="statinTherapyIntensity" class="form-check-input" (change)="EditHumanaForm()"
+                    [disabled]="!humanaResObj.humanaDto.statinTherapy.therapyReceived"
+                    [(ngModel)]="humanaResObj.humanaDto.statinTherapy.statinTherapyIntensity" id="Hintensity"
+                    [value]="'High intensity'">
+                  <label for="Hintensity" class="form-check-label"> High intensity </label>
+                </div>
+                <div class="custom-control  pl-0 custom-checkbox ml-3">
+                  <input type="radio" name="statinTherapyIntensity" class="form-check-input" (change)="EditHumanaForm()"
+                    [disabled]="!humanaResObj.humanaDto.statinTherapy.therapyReceived"
+                    [(ngModel)]="humanaResObj.humanaDto.statinTherapy.statinTherapyIntensity" id="Mintensity"
+                    [value]="'Moderate intensity'">
+                  <label for="Mintensity" class="form-check-label"> Moderate intensity </label>
+                </div>
+              </div>
+
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Date</label>
+                <input readOnly type="text" [dpDayPicker]="datePickerConfig" placeholder="MM-DD-YYYY"
+                  [theme]="'dp-material ccm-date-picker'" [mode]="'day'" appOnDebounce [debounceTime]="1500"
+                  (onDebounce)="EditHumanaForm()" (ngModelChange)="humanaResObj.humanaDto.statinTherapy.date=$event;"
+                  [ngModel]="humanaResObj.humanaDto.statinTherapy.date | dateFormatPipe" placeholder="Date"
+                  class="bg-white bg-white form-control">
+              </div>
+              <!-- <div class="form-group">
+                          <label>Rx administration route</label>
+                          <input [disabled]="!humanaResObj.humanaDto.statinTherapy.therapyReceived" type="text" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                           [(ngModel)]="humanaResObj.humanaDto.statinTherapy.rxAdministrationMode" class="form-control">
+                      </div> -->
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Rx Name</label>
+                <input disabled type="text" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.statinTherapy.statinRxName" placeholder="Rx Name"
+                  class="form-control">
+              </div>
+              <div class="form-group">
+                <label>Rx Dose</label>
+                <input [disabled]="!humanaResObj.humanaDto.statinTherapy.therapyReceived" type="text" appOnDebounce
+                  [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.statinTherapy.rxDose" class="form-control">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="custom-control  pl-0 custom-checkbox ">
+                <input type="radio" name="therapyReceived" class="form-check-input" appOnDebounce [debounceTime]="500"
+                  disabled
+                  (onDebounce)="humanaResObj.humanaDto.statinTherapy.therapyReceived === false ? resetstatinTherapy() : EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.statinTherapy.therapyReceived" id="oijaslkncnxkjbd"
+                  [value]="false">
+                <label for="oijaslkncnxkjbd" class="form-check-label"> No </label>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+
+            <div class="col-md-6">
+              <p>
+                If checked, move to next section Excluded
+                due to patient being dispensed at least one
+                prescription for clomiphene
+              </p>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <!-- <label>Date</label> -->
+                <input readOnly type="text" [dpDayPicker]="datePickerConfig" placeholder="MM-DD-YYYY"
+                  [theme]="'dp-material ccm-date-picker'" [mode]="'day'" appOnDebounce [debounceTime]="1500"
+                  (onDebounce)="EditHumanaForm()"
+                  (ngModelChange)="humanaResObj.humanaDto.statinTherapy.patientDispensedDate=$event;"
+                  [ngModel]="humanaResObj.humanaDto.statinTherapy.patientDispensedDate | dateFormatPipe"
+                  placeholder="Date" class="bg-white bg-white form-control">
+              </div>
+              <!-- <div class="form-group">
+                          <label>Rx administration route</label>
+                          <input [disabled]="!humanaResObj.humanaDto.statinTherapy.therapyReceived" type="text" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                           [(ngModel)]="humanaResObj.humanaDto.statinTherapy.rxAdministrationMode" class="form-control">
+                      </div> -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End Surgical History -->
+  <!-- Start Medical Allergies -->
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel z-depth-0 rounded-0">
+        <div class="panel-header">
+          <div class="current-section">
+            <h3>Medical Allergies </h3>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="table-responsive">
+                <table class="table table-bordered table-hover table-nowrap">
+                  <thead class="bg-dynamic-2c text-white">
+                    <tr>
+                      <th>Agent</th>
+                      <th>Date</th>
+                      <th>Reaction</th>
+                      <th>Category</th>
+                      <th>Type</th>
+                      <th>Status</th>
+                      <th>Criticality</th>
+                      <!-- <th>Action</th> -->
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of humanaResObj.humanaDto.medicalAllergies">
+                      <td>
+                        {{item.agent}}
+                      </td>
+                      <td *ngIf="item.date">
+                        {{item.date | date}}
+                      </td>
+                      <td>
+                        {{item.reaction}}
+                      </td>
+                      <td>
+                        {{item.category}}
+                      </td>
+                      <td>
+                        {{item.type}}
+                      </td>
+                      <td>
+                        {{item.clinicalStatus}}
+                      </td>
+                      <td>
+                        {{item.criticality}}
+                      </td>
+                      <!-- <td>
+                                          {{item.stopDate | date}}
+                                      </td>
+                                      <td>
+                                        {{item.status}}
+                                      </td>
+                                      <td>
+                                          {{item.conditionsTreated}}
+                                      </td> -->
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End Medical Allergies -->
+  <!-- Start Social History -->
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel z-depth-0 rounded-0">
+        <div class="panel-header">
+          <div class="current-section">
+            <h3>Social History </h3>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="table-responsive">
+            <table class="table table-bordered table-hover table-nowrap ">
+              <thead class="bg-dynamic-2c text-white">
+                <tr>
+                  <th>Social History</th>
+                  <th>Remarks</th>
+                  <!-- <th>Social History</th>
+                                    <th>Remarks</th> -->
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="height:auto;" *ngFor="let item of humanaResObj.humanaDto.socialHistory; let index=index;">
+                  <ng-container>
+                    <td>{{item.name}}
+                      <small class="text-warning" *ngIf="item.name == 'Alcohol/Drug use'">(Based on Patient tab)</small>
+                      <small class="text-warning" *ngIf="item.name == 'Tobacco use'">(Based on Staff tab)</small>
+                    </td>
+                    <td>
+                      <textarea rows="1" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                        [(ngModel)]="item.remarks" type="text" class="form-control"></textarea>
+                    </td>
+                  </ng-container>
+                  <!-- <ng-container *ngIf="index>2">
+                                    <td>{{item.name}}</td>
+                                    <td>
+                                      <input [(ngModel)]="item.remarks" type="text" class="form-control">
+                                    </td>
+                                  </ng-container> -->
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- End Vitals -->
+  <!-- Start Family History -->
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel z-depth-0 rounded-0">
+        <div class="panel-header">
+          <div class="current-section d-flex align-items-center justify-content-between">
+            <h3>Family History </h3>
+            <!-- <a class="btn btn-dynamic-2c btn-sm m-0" (click)="addFamiliyHistory.show();" date-placement="left">Add New</a> -->
+
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="table-responsive">
+                <table class="table table-bordered table-hover table-nowrap">
+                  <thead class="bg-dynamic-2c text-white">
+                    <tr>
+                      <!-- <th>#</th> -->
+                      <th>Disease</th>
+                      <th>Father</th>
+                      <th>Mother</th>
+                      <th>Children</th>
+                      <th>Siblings</th>
+                      <th>GrandParents</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of humanaResObj.humanaDto.familyHistory">
+                      <td>
+                        {{item.diseaseName}}
+                      </td>
+                      <td>
+                        <div *ngIf="item.father == true">
+                          <span class="ccm-active"><i class="fa fa-check fa-lg"></i></span>
+                        </div>
+                        <div *ngIf="!item.father ">
+                          <!-- <span class="ccm-inactive"><i class="fa fa-close fa-lg"></i></span> -->
+                        </div>
+                      </td>
+                      <td>
+                        <div *ngIf="item.mother == true">
+                          <span class="ccm-active"><i class="fa fa-check fa-lg"></i></span>
+                        </div>
+                        <div *ngIf="!item.mother ">
+                          <!-- <span class="ccm-inactive"><i class="fa fa-close fa-lg"></i></span> -->
+                        </div>
+                      </td>
+                      <td>
+                        <div *ngIf="item.siblings == true">
+                          <span class="ccm-active"><i class="fa fa-check fa-lg"></i></span>
+                        </div>
+                        <div *ngIf="!item.siblings ">
+                          <!-- <span class="ccm-inactive"><i class="fa fa-close fa-lg"></i></span> -->
+                        </div>
+                        <!-- <input appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()" [(ngModel)]="item.note" type="text" class="form-control"> -->
+                      </td>
+                      <td>
+                        <div *ngIf="item.children == true">
+                          <span class="ccm-active"><i class="fa fa-check fa-lg"></i></span>
+                        </div>
+                        <div *ngIf="!item.children ">
+                          <!-- <span class="ccm-inactive"><i class="fa fa-close fa-lg"></i></span> -->
+                        </div>
+                        <!-- <input appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()" [(ngModel)]="item.note" type="text" class="form-control"> -->
+                      </td>
+                      <td>
+                        <mdb-checkbox appOnDebounce [debounceTime]="300" (onDebounce)="EditHumanaForm()"
+                          [(ngModel)]="item.grandparents" [default]="true" [checked]="false">
+                        </mdb-checkbox>
+                      </td>
+                      <!-- <td>
+                                      {{item.stopDate | date}}
+                                  </td>
+                                  <td>
+                                    {{item.status}}
+                                  </td>
+                                  <td>
+                                      {{item.conditionsTreated}}
+                                  </td> -->
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End Social History -->
+  <!-- Start Vitals -->
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel z-depth-0 rounded-0">
+        <div class="panel-header">
+          <div class="current-section">
+            <h3>Vitals </h3>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-md-9">
+              <div class="form-group">
+                <p class="mb-2"><strong>Patient’s Height?</strong></p>
+                <div class="form-check pl-0 form-check-inline mb-3">
+                  <label for="two" class="form-check-label mr-2">BMI</label>
+                  <input min="0" type="number" [readOnly]=true [(ngModel)]="humanaResObj.humanaDto.vitals.bmi"
+                    appondebounce="" id="two" mdbinput="" class="form-control form-control-sm mr-2 ">
+                </div>
+                <div class="form-check pl-0 form-check-inline mb-3">
+                  <label for="onetwo" class="form-check-label mr-2">Height</label>
+                  <input type="text" [readOnly]=true [(ngModel)]="humanaResObj.humanaDto.vitals.height" id="515151"
+                    mdbinput="" class="form-control form-control-sm mr-2">
+                  <!-- <label  for="515151" class="form-check-label">
+                                        <small  class="text-info">feet</small>
+                                    </label> -->
+                </div>
+                <!-- <div  class="form-check pl-0 form-check-inline mb-3" >
+                                    <input  min="0" type="number" [readOnly]=true
+                                     [(ngModel)]="humanaResObj.humanaDto.vitals.bmi"  mdbinput="" class="form-control form-control-sm mr-2">
+                                    <label  for="onetwo" class="form-check-label">
+                                        <small  class="text-info">inches</small>
+                                    </label>
+                                </div> -->
+                <div class="form-check pl-0 form-check-inline mb-3">
+                  <label for="onetwo1" class="form-check-label mr-2">Weight</label>
+                  <input min="0" type="number" [readOnly]="true" placeholder="lbs"
+                    [(ngModel)]="humanaResObj.humanaDto.vitals.weight" id="onetwo1" mdbinput=""
+                    class="form-control form-control-sm mr-2">
+                  <!-- <label  for="onetwo1" class="form-check-label">
+                                        <small  class="text-info">lbs</small>
+                                    </label> -->
+                </div>
+              </div>
+              <div class="form-group">
+                <p class="mb-2">
+                  <strong>What was your last BP reading?</strong>
+                </p>
+                <div class="form-check pl-0 form-check-inline mb-3">
+                  <label for="Systolic" class="form-check-label mr-2">Systolic</label>
+                  <input min="0" type="number" readonly [(ngModel)]="humanaResObj.humanaDto.vitals.bpSystolic"
+                    mdbinput="" placeholder="mmHg" class="form-control form-control-sm mr-2 ">
+                </div>
+                <div class="form-check pl-0 form-check-inline">
+                  <label for="Diastolic" class="form-check-label mr-2">Diastolic</label>
+                  <input min="0" type="number" readonly [(ngModel)]="humanaResObj.humanaDto.vitals.bpDiastolic"
+                    id="Diastolic" placeholder="mmHg" appondebounce="" mdbinput=""
+                    class="form-control form-control-sm mr-2 ">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <p class="mb-2">
+                  <strong>Heart Rate</strong>
+                </p>
+                <div class="form-check pl-0 form-check-inline mb-3">
+                  <input min="0" type="number" appOnDebounce [debounceTime]="1500" placeholder="BPM"
+                    (onDebounce)="EditHumanaForm()" readonly [(ngModel)]="humanaResObj.humanaDto.vitals.heartRate"
+                    appondebounce="" mdbinput="" class="form-control form-control-sm mr-2 ">
+                </div>
+              </div>
+              <div class="form-group">
+                <p class="mb-2">
+                  <strong>BMI not complete due to pregnancy</strong>
+                </p>
+                <div class="form-check pl-0 form-check-inline mb-3">
+                  <input type="radio" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()" disabled
+                    [(ngModel)]="humanaResObj.humanaDto.vitals.bmiCompleted" [value]="true" id="pregrancy-yes"
+                    name="pregrancy" mdbinput="" class="form-check-input">
+                  <label for="pregrancy-yes" class="form-check-label active">Yes </label>
+                </div>
+                <div class="form-check pl-0 form-check-inline mb-3">
+                  <input type="radio" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()" disabled
+                    [(ngModel)]="humanaResObj.humanaDto.vitals.bmiCompleted" [value]="false" id="pregrancy-no"
+                    name="pregrancy" mdbinput="" class="form-check-input ">
+                  <label for="pregrancy-no" class="form-check-label active">No </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- End Family History -->
+  <!-- Start Physical Examination -->
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel z-depth-0 rounded-0">
+        <div class="panel-header">
+          <div class="current-section d-flex justify-content-between align-items-center">
+            <h3>Physical Examination </h3>
+            <button class="btn btn-dynamic-secondary-2c btn-sm mr-1" (click)="ClearPhyExam()">Clear All</button>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="table-responsive">
+                <table class="table table-bordered table-hover table-nowrap">
+                  <thead class="bg-dynamic-2c text-white">
+                    <tr>
+                      <th>Physical Examination</th>
+                      <th>Within normal limits</th>
+                      <th>Abnormal</th>
+                      <th>Finding</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of humanaResObj.humanaDto.physicalExamination">
+                      <td>
+                        {{item.examinationName}}
+                      </td>
+                      <td>
+                        <mdb-checkbox appOnDebounce [debounceTime]="300"
+                          (onDebounce)="item.normalLimit ? item.abnormal = false: '';EditHumanaForm()"
+                          [(ngModel)]="item.normalLimit" [default]="true" [checked]="false">
+                        </mdb-checkbox>
+                        <!-- <input appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()" [(ngModel)]="item.normalLimit" type="checkbox" class="form-control"> -->
+                        <!-- {{item.normalLimit}} -->
+                      </td>
+                      <td>
+                        <mdb-checkbox appOnDebounce [debounceTime]="300"
+                          (onDebounce)="item.abnormal ? item.normalLimit = false: '';EditHumanaForm()"
+                          [(ngModel)]="item.abnormal" [default]="true" [checked]="false">
+                        </mdb-checkbox>
+                        <!-- <input appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()" [(ngModel)]="item.abnormal" type="checkbox" class="form-control"> -->
+                        <!-- {{item.abnormal}} -->
+                      </td>
+                      <td>
+                        <input style="min-width: 200px;" appOnDebounce [debounceTime]="1500"
+                          (onDebounce)="EditHumanaForm()" [(ngModel)]="item.findings" type="text" class="form-control">
+                        <!-- {{item.findings}} -->
+                      </td>
+                      <!-- <td>
+                                      {{item.stopDate | date}}
+                                  </td>
+                                  <td>
+                                    {{item.status}}
+                                  </td>
+                                  <td>
+                                      {{item.conditionsTreated}}
+                                  </td> -->
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End Physical Examination -->
+  <!-- Start Cognitive Impairment -->
+
+  <div class="row ">
+    <div class="col-md-12">
+      <div class="panel z-depth-0 rounded-0">
+        <div class="panel-header">
+          <div class="current-section">
+            <h3>Cognitive Impairment <small class="text-warning-dark">(Based on Staff tab)</small></h3>
+          </div>
+        </div>
+        <div class="panel-body">
+          <!-- <div class="position-relative">
+                      <div [class.overlay-Body]="true"> -->
+          <div class="cognitive">
+            <ul>
+              <li>1. Ask patient to remember the following two words to ensure the learning was correct.
+                <ul>
+                  <li>
+                    <mdb-checkbox [default]="true" [checked]="false" appOnDebounce [debounceTime]="500"
+                      (onDebounce)="RememberCheckedManage()" [(ngModel)]="rememberThreeObj.one">
+                      Banana
+                    </mdb-checkbox>
+                  </li>
+                  <li>
+                    <mdb-checkbox [default]="true" [checked]="false" appOnDebounce [debounceTime]="500"
+                      (onDebounce)="RememberCheckedManage()" [(ngModel)]="rememberThreeObj.two">
+                      Sunrise
+                    </mdb-checkbox>
+                  </li>
+                  <li>
+                    <mdb-checkbox [default]="true" [checked]="false" appOnDebounce [debounceTime]="500"
+                      (onDebounce)="RememberCheckedManage()" [(ngModel)]="rememberThreeObj.three">
+                      Chair
+                    </mdb-checkbox>
+                  </li>
+                </ul>
+              </li>
+              <li>
+                2. Ask patient to draw a clock . After numbers are on the face, ask patient to draw hand to read 20
+                minutes after 8 ( or 10 minutes after 11)
+              </li>
+
+              <!-- <li>
+                                3. Ask the patient to repeat the three words given previously
+                                <ul>
+                                    <li><input type="text" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                                       [(ngModel)]="humanaResObj.humanaDto.cognitiveImpairement.repeatedWordOne" class="form-control"></li>
+                                    <li><input type="text" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                                       [(ngModel)]="humanaResObj.humanaDto.cognitiveImpairement.repeatedWordTwo" class="form-control"></li>
+                                    <li><input type="text" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                                       [(ngModel)]="humanaResObj.humanaDto.cognitiveImpairement.repeatedWordThree" class="form-control"></li>
+                                </ul>
+                            </li> -->
+            </ul>
+            <div>
+              <input type="text" [(ngModel)]="humanaResObj.humanaDto.cognitiveImpairement.clockResponse"
+                class="form-control">
+            </div>
+          </div>
+          <!-- </div>
+                  </div> -->
+
+          <div class="col-sm-12 border-top pt-3">
+            <div class="d-flex flex-wrap align-items-center">
+              <div class="flex-grow-sm-1">
+                <div class="file-field flex-wrap align-items-center">
+                  <div class="file-item">
+                    <small *ngIf="humanaResObj.humanaDto.cognitiveImpairement.cognitiveAssessmentDoc"
+                      (click)="getPublicUrl(humanaResObj.humanaDto.cognitiveImpairement.cognitiveAssessmentDoc)"
+                      class="mb-0"><a>Download Document</a><a><i class="ml-2 fa fa-download fa-lg text-info"></i>
+                      </a></small>
+                    <small *ngIf="!humanaResObj.humanaDto.cognitiveImpairement.cognitiveAssessmentDoc" class="mb-0">No
+                      document found</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- <div class="w-100" *ngIf="pcmMOdelData.pcmDocuments && pcmMOdelData.pcmDocuments.length > 0">
+                          <div class="file-field flex-wrap align-items-center">
+                            <div *ngFor="let doc of pcmMOdelData.pcmDocuments" class="file-item">
+                              <small class="mb-0"><a (click)="viewDoc(doc)">{{doc.title | slice:0:40}}</a><a (click)="DeleteDoc(doc)"><i
+                                    class="ml-2 fa fa-times fa-lg text-danger"></i>
+                                </a></small>
+                            </div>
+                          </div>
+                        </div> -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- End Cognitive Impairment -->
+  <!-- Start Scoring Instructions -->
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel z-depth-0 rounded-0">
+        <div class="panel-header">
+          <div class="current-section">
+            <h3>Scoring Instructions </h3>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="scoring">
+            <p>
+              <strong>
+                Scoring Instructions for recall words and clock drawing text (CDT)
+              </strong>
+            </p>
+            <p class="mb-2">3 recalled words or 1-2 recalled words + normal CDT</p>
+            <div class="row">
+              <div class="col-md-12">
+                <p>
+                  1-2 recalled words + abnormal CDT or 0 recalled words
+                </p>
+              </div>
+              <div class="col-md-4">
+                <p>Additional comments:</p>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <input type="text" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                    [(ngModel)]="humanaResObj.humanaDto.scoringInstruction.additionalComments" class="form-control">
+                </div>
+              </div>
+            </div>
+
+            <div class="form-check pl-4 form-check-inline mb-2">
+              <input type="radio" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                [(ngModel)]="humanaResObj.humanaDto.scoringInstruction.cognitiveImpairment" id="nagitive"
+                name="pregrancyssfsfahsvh" [value]="true" mdbinput="" class="form-check-input">
+              <label for="nagitive" class="form-check-label active">Negative for cognitive impairment </label>
+            </div>
+            <div class="form-check pl-4 form-check-inline mb-2">
+              <input type="radio" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                [(ngModel)]="humanaResObj.humanaDto.scoringInstruction.cognitiveImpairment" id="positive"
+                name="pregrancyssfsfahsvh" [value]="false" mdbinput="" class="form-check-input ">
+              <label for="positive" class="form-check-label active">Positive for cognitive impairment </label>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <p>Alternative screening tool used and comments:</p>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <input type="text" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                    [(ngModel)]="humanaResObj.humanaDto.scoringInstruction.alternateToolUsed" class="form-control">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- End Scoring Instructions -->
+  <!-- Start Cancer Screening  -->
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel z-depth-0 rounded-0">
+        <div class="panel-header">
+          <div class="current-section d-flex align-items-center">
+            <h3>Cancer Screening </h3>
+            <i id="popTemplate" placement="bottom" triggers="hover" mdbPopoverHeader="Cancer Screening"
+              #pop="bs-mdbPopover" [mdbPopover]="popTemplate"
+              class="fa fa-exclamation-circle fa-lg ml-2 cursor-pointer"></i>
+            <ng-template #popTemplate>
+              <div class="p-2" #cctt>
+                <p class="mb-2"><strong style="min-width:75px;display:inline-block;">Status: </strong>
+                  <span>{{gapStatusEnum[pCMeasureDataListDto.colorectalCancerScreening.currentStatus]}}</span>
+                </p>
+                <p class="mb-2"><strong style="min-width:75px;display:inline-block;">Last Done: </strong>
+                  <span
+                    *ngIf="pCMeasureDataListDto.colorectalCancerScreening.lastDone">{{pCMeasureDataListDto.colorectalCancerScreening.lastDone}}</span>
+                </p>
+                <p class="mb-2"><strong style="min-width:75px;display:inline-block;">Result: </strong>
+                  <span
+                    *ngIf="pCMeasureDataListDto.colorectalCancerScreening.result">{{pCMeasureDataListDto.colorectalCancerScreening.result}}</span>
+                </p>
+                <p class="mb-2"><strong style="min-width:75px;display:inline-block;">Note: </strong>
+                  <span
+                    *ngIf="pCMeasureDataListDto.colorectalCancerScreening.note">{{pCMeasureDataListDto.colorectalCancerScreening.note}}</span>
+                </p>
+                <p class="mb-2"><strong style="min-width:75px;display:inline-block;">Next Due: </strong>
+                  <span
+                    *ngIf="pCMeasureDataListDto.colorectalCancerScreening.nextDue">{{pCMeasureDataListDto.colorectalCancerScreening.nextDue}}</span>
+                </p>
+              </div>
+
+            </ng-template>
+            <button class="btn btn-icon btn-dynamic-2c m-0 ml-2 "
+              (click)="copy(pCMeasureDataListDto.colorectalCancerScreening)">
+              <i class="fa fa-clipboard"> </i><span *ngIf="pcmModelLoading"
+                class="mr-1 spinner-border spinner-border-sm " role="status" aria-hidden="true"></span>
+            </button>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-md-12">
+              <p><strong> Cancer screening – Please fill in all appropriate dates for screening received; only ONE is
+                  needed to meet HEDIS measures under each section.</strong></p>
+              <p><strong>Colorectal cancer screening</strong></p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-7">
+              <p>Colonoscopy performed in current measurement year or nine previous measurement years</p>
+            </div>
+            <div class="col-md-5 d-flex">
+              <button class="btn btn-icon btn-dynamic-2c m-0 mr-2 ">
+                <i class="fa fa-calendar" [dpDayPicker]="datePickerConfig" #date="dpDayPicker"
+                  [theme]="'dp-material ccm-date-picker'" [mode]="'day'"
+                  (onSelect)="CancerScreeningDates($event , 'colonscopyPerformedDate')"> </i>
+              </button>
+              <div class="form-group w-100">
+                <input type="text" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.colorectalCancerScreening.colonscopyPerformedDate"
+                  class="form-control">
+                <!-- <input type="text" [dpDayPicker]="datePickerConfig"
+                                placeholder="MM-DD-YYYY" #date [theme]="'dp-material ccm-date-picker'" [mode]="'day'" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                                 (ngModelChange)="humanaResObj.humanaDto.colorectalCancerScreening.colonscopyPerformedDate=$event;" [ngModel]="humanaResObj.humanaDto.colorectalCancerScreening.colonscopyPerformedDate | dateFormatPipe" class="bg-white form-control" placeholder="Date"> -->
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-7">
+              <p>CT colonography performed in current measurement year or four previous years</p>
+
+            </div>
+            <div class="col-md-5 d-flex ">
+              <button class="btn btn-icon btn-dynamic-2c m-0 mr-2 ">
+                <i class="fa fa-calendar" [dpDayPicker]="datePickerConfig" #date="dpDayPicker"
+                  [theme]="'dp-material ccm-date-picker'" [mode]="'day'"
+                  (onSelect)="CancerScreeningDates($event, 'colonsgraphyPerformedDate')"> </i>
+              </button>
+              <div class="form-group w-100">
+                <input type="text" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.colorectalCancerScreening.colonsgraphyPerformedDate"
+                  class="form-control">
+                <!-- <input type="text" [dpDayPicker]="datePickerConfig"
+                                placeholder="MM-DD-YYYY" [theme]="'dp-material ccm-date-picker'" [mode]="'day'" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                                 (ngModelChange)="humanaResObj.humanaDto.colorectalCancerScreening.colonsgraphyPerformedDate=$event;" [ngModel]="humanaResObj.humanaDto.colorectalCancerScreening.colonsgraphyPerformedDate | dateFormatPipe" class="bg-white form-control" placeholder="Date"> -->
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-7 ">
+              <p>Flexible sigmoidoscopy performed in current measurement year or four previous measurement years</p>
+
+            </div>
+            <div class="col-md-5 d-flex">
+              <button class="btn btn-icon btn-dynamic-2c m-0 mr-2 ">
+                <i class="fa fa-calendar" [dpDayPicker]="datePickerConfig" #date="dpDayPicker"
+                  [theme]="'dp-material ccm-date-picker'" [mode]="'day'"
+                  (onSelect)="CancerScreeningDates($event, 'sigmoidoscopyPerformedDate')"> </i>
+              </button>
+              <div class="form-group w-100">
+                <input type="text" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.colorectalCancerScreening.sigmoidoscopyPerformedDate"
+                  class="form-control">
+                <!-- <input type="text" [dpDayPicker]="datePickerConfig"
+                                placeholder="MM-DD-YYYY" [theme]="'dp-material ccm-date-picker'" [mode]="'day'" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                                 (ngModelChange)="humanaResObj.humanaDto.colorectalCancerScreening.sigmoidoscopyPerformedDate=$event;" [ngModel]="humanaResObj.humanaDto.colorectalCancerScreening.sigmoidoscopyPerformedDate | dateFormatPipe" class="bg-white form-control" placeholder="Date"> -->
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-7">
+              <p> FIT-DNA test (Cologuard) performed in current measurement year or two previous measurement years </p>
+
+            </div>
+            <div class="col-md-5 d-flex">
+              <button class="btn btn-icon btn-dynamic-2c m-0 mr-2 ">
+                <i class="fa fa-calendar" [dpDayPicker]="datePickerConfig" #date="dpDayPicker"
+                  [theme]="'dp-material ccm-date-picker'" [mode]="'day'"
+                  (onSelect)="CancerScreeningDates($event, 'cologuardPerformedDate')"> </i>
+              </button>
+              <div class="form-group w-100">
+                <input type="text" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.colorectalCancerScreening.cologuardPerformedDate"
+                  class="form-control">
+                <!-- <input type="text" [dpDayPicker]="datePickerConfig"
+                                placeholder="MM-DD-YYYY" [theme]="'dp-material ccm-date-picker'" [mode]="'day'" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                                 (ngModelChange)="humanaResObj.humanaDto.colorectalCancerScreening.cologuardPerformedDate=$event;" [ngModel]="humanaResObj.humanaDto.colorectalCancerScreening.cologuardPerformedDate | dateFormatPipe" class="bg-white form-control" placeholder="Date"> -->
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-7">
+              <p>Fecal occult blood test (FOBT) performed in current measurement year </p>
+
+            </div>
+            <div class="col-md-5 d-flex">
+              <button class="btn btn-icon btn-dynamic-2c m-0 mr-2 ">
+                <i class="fa fa-calendar" [dpDayPicker]="datePickerConfig" #date="dpDayPicker"
+                  [theme]="'dp-material ccm-date-picker'" [mode]="'day'"
+                  (onSelect)="CancerScreeningDates($event, 'fobtPerformedDate')"> </i>
+              </button>
+              <div class="form-group w-100">
+                <input type="text" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.colorectalCancerScreening.fobtPerformedDate" class="form-control">
+
+                <!-- <input type="text" [dpDayPicker]="datePickerConfig"
+                                placeholder="MM-DD-YYYY" [theme]="'dp-material ccm-date-picker'" [mode]="'day'" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                                 (ngModelChange)="humanaResObj.humanaDto.colorectalCancerScreening.fobtPerformedDate=$event;" [ngModel]="humanaResObj.humanaDto.colorectalCancerScreening.fobtPerformedDate | dateFormatPipe" class="bg-white form-control" placeholder="Date"> -->
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-7">
+              <p>Excluded due to total colectomy </p>
+            </div>
+            <div class="col-md-5 d-flex">
+              <button class="btn btn-icon btn-dynamic-2c m-0 mr-2 ">
+                <i class="fa fa-calendar" [dpDayPicker]="datePickerConfig" #date="dpDayPicker"
+                  [theme]="'dp-material ccm-date-picker'" [mode]="'day'"
+                  (onSelect)="CancerScreeningDates($event, 'excludedColectomyDate')"> </i>
+              </button>
+              <div class="form-group w-100">
+                <input type="text" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.colorectalCancerScreening.excludedColectomyDate"
+                  class="form-control">
+                <!-- <input type="text" [dpDayPicker]="datePickerConfig"
+                                placeholder="MM-DD-YYYY" [theme]="'dp-material ccm-date-picker'" [mode]="'day'" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                                 (ngModelChange)="humanaResObj.humanaDto.colorectalCancerScreening.excludedColectomyDate=$event;" [ngModel]="humanaResObj.humanaDto.colorectalCancerScreening.excludedColectomyDate | dateFormatPipe" class="bg-white form-control" placeholder="Date"> -->
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-7">
+              <p>Excluded due to diagnosis of colorectal cancer </p>
+
+            </div>
+            <div class="col-md-5 d-flex">
+              <button class="btn btn-icon btn-dynamic-2c m-0 mr-2 ">
+                <i class="fa fa-calendar" [dpDayPicker]="datePickerConfig" #date="dpDayPicker"
+                  [theme]="'dp-material ccm-date-picker'" [mode]="'day'"
+                  (onSelect)="CancerScreeningDates($event, 'excludedColorectalDate')"> </i>
+              </button>
+              <div class="form-group w-100">
+                <input type="text" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.colorectalCancerScreening.excludedColorectalDate"
+                  class="form-control">
+                <!-- <input type="text" [dpDayPicker]="datePickerConfig"
+                                placeholder="MM-DD-YYYY" [theme]="'dp-material ccm-date-picker'" [mode]="'day'" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                                 (ngModelChange)="humanaResObj.humanaDto.colorectalCancerScreening.excludedColorectalDate=$event;" [ngModel]="humanaResObj.humanaDto.colorectalCancerScreening.excludedColorectalDate | dateFormatPipe" class="bg-white form-control" placeholder="Date"> -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- End Cancer Screening  -->
+  <!-- Start Breast cancer screening  -->
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel z-depth-0 rounded-0">
+        <div class="panel-header">
+          <div class="current-section d-flex justify-content-between">
+            <div class="d-flex align-items-center">
+              <h3>Breast cancer screening </h3>
+              <!-- <i title="info" placement="right" container="body" class="fa fa-exclamation-circle fa-lg ml-2 cursor-pointer"></i> -->
+              <i id="SMpopTemplate" placement="bottom" triggers="hover" mdbPopoverHeader="Breast Cancer Screening"
+                #SMpop="bs-mdbPopover" [mdbPopover]="SMpopTemplate"
+                class="fa fa-exclamation-circle fa-lg ml-2 cursor-pointer"></i>
+              <ng-template #SMpopTemplate>
+                <div class="p-2">
+                  <p class="mb-2"><strong style="min-width:75px;display:inline-block;">Status: </strong>
+                    {{gapStatusEnum[pCMeasureDataListDto.breastCancerScreening.currentStatus]}}
+                  </p>
+                  <p class="mb-2"><strong style="min-width:75px;display:inline-block;">Last Done: </strong>
+                    {{pCMeasureDataListDto.breastCancerScreening.lastDone}}
+                  </p>
+                  <p class="mb-2"><strong style="min-width:75px;display:inline-block;">Result: </strong>
+                    {{pCMeasureDataListDto.breastCancerScreening.result}}
+                  </p>
+                  <p class="mb-2"><strong style="min-width:75px;display:inline-block;">Note: </strong>
+                    {{pCMeasureDataListDto.breastCancerScreening.note}}
+                  </p>
+                  <p class="mb-2"><strong style="min-width:75px;display:inline-block;">Next Due: </strong>
+                    {{pCMeasureDataListDto.breastCancerScreening.nextDue}}
+                  </p>
+                </div>
+
+              </ng-template>
+              <button class="btn btn-icon btn-dynamic-2c m-0 ml-2 "
+                (click)="copy(pCMeasureDataListDto.breastCancerScreening)">
+                <i class="fa fa-clipboard"> </i><span *ngIf="pcmModelLoading"
+                  class="mr-1 spinner-border spinner-border-sm " role="status" aria-hidden="true"></span>
+              </button>
+            </div>
+            <div class="d-flex">
+              <span class="mr-3">Screening not applicable</span>
+              <mdb-checkbox [default]="true" [checked]="false" appOnDebounce [debounceTime]="500"
+                (onDebounce)="humanaResObj.humanaDto.breastCancerScreening.applicable===true ? resetBreastcancerSection() :EditHumanaForm()"
+                [(ngModel)]="humanaResObj.humanaDto.breastCancerScreening.applicable">
+                If checked, move to next section
+              </mdb-checkbox>
+            </div>
+          </div>
+        </div>
+        <div class="panel-body" [class.overlay-Body]="humanaResObj.humanaDto.breastCancerScreening.applicable===true">
+          <!-- <div class="row">
+                        <div class="col-md-12">
+                            <p>If checked, Move to next section</p>
+                        </div>
+                    </div> -->
+          <div class="row">
+            <div class="col-md-7 d-flex justify-content-between">
+              <p>Mammography performed 27 months prior to Dec. 31 of the current measurement year</p>
+
+            </div>
+            <div class="col-md-5 d-flex">
+              <button class="btn btn-icon btn-dynamic-2c m-0 mr-2 "
+                [disabled]="humanaResObj.humanaDto.breastCancerScreening.applicable===true">
+                <i class="fa fa-calendar" [dpDayPicker]="datePickerConfig" #date="dpDayPicker"
+                  [theme]="'dp-material ccm-date-picker'" [mode]="'day'"
+                  (onSelect)="breastCancerScreeningDate($event, 'mammographyPerformedDate')"> </i>
+              </button>
+              <div class="form-group w-100">
+                <input type="text" [disabled]="humanaResObj.humanaDto.breastCancerScreening.applicable===true"
+                  appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.breastCancerScreening.mammographyPerformedDate"
+                  class="form-control">
+                <!-- <input [disabled]="humanaResObj.humanaDto.breastCancerScreening.applicable===true" type="text" [dpDayPicker]="datePickerConfig"
+                              placeholder="MM-DD-YYYY" [theme]="'dp-material ccm-date-picker'" [mode]="'day'" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                               (ngModelChange)="humanaResObj.humanaDto.breastCancerScreening.mammographyPerformedDate=$event;" [ngModel]="humanaResObj.humanaDto.breastCancerScreening.mammographyPerformedDate | dateFormatPipe" class="bg-white form-control" placeholder="Date"> -->
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-7">
+              <p>Excluded due to bilateral mastectomy</p>
+
+            </div>
+            <div class="col-md-5 d-flex">
+              <button class="btn btn-icon btn-dynamic-2c m-0 mr-2 "
+                [disabled]="humanaResObj.humanaDto.breastCancerScreening.applicable===true">
+                <i class="fa fa-calendar" [dpDayPicker]="datePickerConfig" #date="dpDayPicker"
+                  [theme]="'dp-material ccm-date-picker'" [mode]="'day'"
+                  (onSelect)="breastCancerScreeningDate($event, 'excludedBilateralMastectomy')"> </i>
+              </button>
+              <div class="form-group w-100">
+                <input type="text" [disabled]="humanaResObj.humanaDto.breastCancerScreening.applicable===true"
+                  appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.breastCancerScreening.excludedBilateralMastectomy"
+                  class="form-control">
+                <!-- <input [disabled]="humanaResObj.humanaDto.breastCancerScreening.applicable===true" type="text" [dpDayPicker]="datePickerConfig"
+                              placeholder="MM-DD-YYYY" [theme]="'dp-material ccm-date-picker'" [mode]="'day'" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                               (ngModelChange)="humanaResObj.humanaDto.breastCancerScreening.excludedBilateralMastectomy=$event;" [ngModel]="humanaResObj.humanaDto.breastCancerScreening.excludedBilateralMastectomy | dateFormatPipe" class="bg-white form-control" placeholder="Date"> -->
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-7 ">
+              <p>Excluded due to two unilateral mastectomies with service dates 14 days or more apart</p>
+
+            </div>
+            <div class="col-md-2 d-flex">
+              <button class="btn btn-icon btn-dynamic-2c m-0 mr-2 "
+                [disabled]="humanaResObj.humanaDto.breastCancerScreening.applicable===true">
+                <i class="fa fa-calendar" [dpDayPicker]="datePickerConfig" #date="dpDayPicker"
+                  [theme]="'dp-material ccm-date-picker'" [mode]="'day'"
+                  (onSelect)="breastCancerScreeningDate($event, 'excludedUnilateralMastectomy')"> </i>
+              </button>
+              <div class="form-group w-100">
+                <input type="text" [disabled]="humanaResObj.humanaDto.breastCancerScreening.applicable===true"
+                  appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.breastCancerScreening.excludedUnilateralMastectomy"
+                  class="form-control">
+                <!-- <input [disabled]="humanaResObj.humanaDto.breastCancerScreening.applicable===true" type="text" [dpDayPicker]="datePickerConfig"
+                              placeholder="MM-DD-YYYY" [theme]="'dp-material ccm-date-picker'" [mode]="'day'" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                               (ngModelChange)="humanaResObj.humanaDto.breastCancerScreening.excludedUnilateralMastectomy=$event;" [ngModel]="humanaResObj.humanaDto.breastCancerScreening.excludedUnilateralMastectomy | dateFormatPipe" class="bg-white form-control" placeholder="Date"> -->
+              </div>
+            </div>
+            <div class="col-md-1 d-flex justify-content-center align-items-center">
+              And
+            </div>
+            <div class="col-md-2 d-flex">
+              <button class="btn btn-icon btn-dynamic-2c m-0 mr-2"
+                [disabled]="humanaResObj.humanaDto.breastCancerScreening.applicable===true">
+                <i class="fa fa-calendar" [dpDayPicker]="datePickerConfig" #date="dpDayPicker"
+                  [theme]="'dp-material ccm-date-picker'" [mode]="'day'"
+                  (onSelect)="breastCancerScreeningDate($event, 'excludedUnilateralMastectomyTwo')"> </i>
+              </button>
+              <div class="form-group">
+                <input type="text" [disabled]="humanaResObj.humanaDto.breastCancerScreening.applicable===true"
+                  appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.breastCancerScreening.excludedUnilateralMastectomyTwo"
+                  class="form-control">
+                <!-- <input [disabled]="humanaResObj.humanaDto.breastCancerScreening.applicable===true" type="text" [dpDayPicker]="datePickerConfig"
+                              placeholder="MM-DD-YYYY" [theme]="'dp-material ccm-date-picker'" [mode]="'day'" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                               (ngModelChange)="humanaResObj.humanaDto.breastCancerScreening.excludedUnilateralMastectomyTwo=$event;" [ngModel]="humanaResObj.humanaDto.breastCancerScreening.excludedUnilateralMastectomyTwo | dateFormatPipe" class="bg-white form-control" placeholder="Date"> -->
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-7">
+              <p>Excluded due to unilateral mastectomy with bilateral modifier</p>
+
+            </div>
+            <div class="col-md-5 d-flex">
+              <button class="btn btn-icon btn-dynamic-2c m-0 mr-2 "
+                [disabled]="humanaResObj.humanaDto.breastCancerScreening.applicable===true">
+                <i class="fa fa-calendar" [dpDayPicker]="datePickerConfig" #date="dpDayPicker"
+                  [theme]="'dp-material ccm-date-picker'" [mode]="'day'"
+                  (onSelect)="breastCancerScreeningDate($event, 'excludedUnilateralMastectomyWithBilateralModifier')">
+                </i>
+              </button>
+              <div class="form-group w-100">
+                <input type="text" [disabled]="humanaResObj.humanaDto.breastCancerScreening.applicable===true"
+                  appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.breastCancerScreening.excludedUnilateralMastectomyWithBilateralModifier"
+                  class="form-control">
+                <!-- <input [disabled]="humanaResObj.humanaDto.breastCancerScreening.applicable===true" type="text" [dpDayPicker]="datePickerConfig"
+                              placeholder="MM-DD-YYYY" [theme]="'dp-material ccm-date-picker'" [mode]="'day'" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                               (ngModelChange)="humanaResObj.humanaDto.breastCancerScreening.excludedUnilateralMastectomyWithBilateralModifier=$event;" [ngModel]="humanaResObj.humanaDto.breastCancerScreening.excludedUnilateralMastectomyWithBilateralModifier | dateFormatPipe" class="bg-white form-control" placeholder="Date"> -->
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-7 d-flex justify-content-between">
+              <p>Excluded due to unilateral mastectomy code with right side modifier and a unilateral mastectomy
+                with a left side modifier on the same or different date of service
+              </p>
+
+            </div>
+            <div class="col-md-5 d-flex">
+              <button class="btn btn-icon btn-dynamic-2c m-0 mr-2 "
+                [disabled]="humanaResObj.humanaDto.breastCancerScreening.applicable===true">
+                <i class="fa fa-calendar" [dpDayPicker]="datePickerConfig" #date="dpDayPicker"
+                  [theme]="'dp-material ccm-date-picker'" [mode]="'day'"
+                  (onSelect)="breastCancerScreeningDate($event, 'excludedUnilateralMastectomyWithRightSideModifier')">
+                </i>
+              </button>
+              <div class="form-group w-100">
+                <input type="text" [disabled]="humanaResObj.humanaDto.breastCancerScreening.applicable===true"
+                  appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.breastCancerScreening.excludedUnilateralMastectomyWithRightSideModifier"
+                  class="form-control">
+                <!-- <input [disabled]="humanaResObj.humanaDto.breastCancerScreening.applicable===true" type="text" [dpDayPicker]="datePickerConfig"
+                              placeholder="MM-DD-YYYY" [theme]="'dp-material ccm-date-picker'" [mode]="'day'" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                               (ngModelChange)="humanaResObj.humanaDto.breastCancerScreening.excludedUnilateralMastectomyWithRightSideModifier=$event;" [ngModel]="humanaResObj.humanaDto.breastCancerScreening.excludedUnilateralMastectomyWithRightSideModifier | dateFormatPipe" class="bg-white form-control" placeholder="Date"> -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End Breast cancer screening  -->
+  <!-- Start Disease Specific Management  -->
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel z-depth-0 rounded-0">
+        <div class="panel-header">
+          <div class="current-section d-flex justify-content-between flex-wrap">
+            <div class="d-flex align-items-center">
+              <h3>Disease Specific Management<small> (Diabetic Nephropathy)</small></h3>
+              <!-- <i id="DNpopTemplate" placement="bottom" triggers="hover" mdbPopoverHeader="Disease Specific Management" #DNpop="bs-mdbPopover" [mdbPopover]="DNpopTemplate" class="fa fa-exclamation-circle fa-lg ml-2 cursor-pointer"></i> -->
+              <!-- <ng-template #DNpopTemplate>
+                            <div class="p-2" >
+                                <p class="mb-2"><strong style="min-width:75px;display:inline-block;">Status: </strong>
+                                    {{gapStatusEnum[pCMeasureDataListDto.diabeticNephropathy.currentStatus]}}
+                                </p>
+                                <p class="mb-2"><strong style="min-width:75px;display:inline-block;">Last Done: </strong>
+                                  {{pCMeasureDataListDto.diabeticNephropathy.lastDone}}
+                                </p>
+                                <p class="mb-2"><strong style="min-width:75px;display:inline-block;">Result: </strong>
+                                    {{pCMeasureDataListDto.diabeticNephropathy.result}}
+                                </p>
+                                <p class="mb-2"><strong style="min-width:75px;display:inline-block;">Note: </strong>
+                                    {{pCMeasureDataListDto.diabeticNephropathy.note}}
+                                </p>
+                                <p class="mb-2"><strong style="min-width:75px;display:inline-block;">Next Due: </strong>
+                                    {{pCMeasureDataListDto.diabeticNephropathy.nextDue}}
+                                </p>
+                            </div>
+
+                        </ng-template> -->
+              <!-- <button class="btn btn-icon btn-dynamic-2c m-0 ml-2 " (click)="copy(pCMeasureDataListDto.diabeticNephropathy)" >
+                          <i class="fa fa-clipboard"> </i><span *ngIf="pcmModelLoading"
+                          class="mr-1 spinner-border spinner-border-sm " role="status" aria-hidden="true"></span>
+                      </button> -->
+            </div>
+            <div class="d-flex flex-wrap">
+              <span class="mr-3">Screening not applicable</span>
+              <!-- [disabled]="humanaResObj.humanaDto.isDiabetic===false" -->
+              <mdb-checkbox [default]="true" [checked]="false" appOnDebounce [debounceTime]="500"
+                (onDebounce)="humanaResObj.humanaDto.diabeticNephropathy.applicable===true ? resetdiabeticNephropathy() :EditHumanaForm()"
+                [(ngModel)]="humanaResObj.humanaDto.diabeticNephropathy.applicable">
+                If checked, move to next section
+              </mdb-checkbox>
+            </div>
+          </div>
+        </div>
+        <div class="panel-body" [class.overlay-Body]="humanaResObj.humanaDto.diabeticNephropathy.applicable===true">
+          <div class="row">
+            <div class="col-md-12">
+              <p><strong>Disease-specific management – Please fill in all appropriate dates for screening received; only
+                  ONE is needed to meet HEDIS measures under each section.</strong></p>
+            </div>
+            <div class="col-md-6">
+              <p><strong>Diabetic nephropathy</strong></p>
+            </div>
+            <!-- <div class="col-md-6">
+                            <p>If checked, Move to next section</p>
+                        </div> -->
+          </div>
+          <div class="row">
+            <div class="col-md-4 justfy-content-between d-flex">
+              <p>Nephropathy screening: microalbumin test during calendar year</p>
+
+            </div>
+            <div class="col-md-3 d-flex">
+              <button class="btn btn-icon btn-dynamic-2c m-0 mr-2 "
+                [disabled]="humanaResObj.humanaDto.diabeticNephropathy.applicable===true">
+                <i class="fa fa-calendar" [dpDayPicker]="datePickerConfig" #date="dpDayPicker"
+                  [theme]="'dp-material ccm-date-picker'" [mode]="'day'"
+                  (onSelect)="DiseaseSpecificManagement($event, 'microalbuminTestDate')"> </i>
+              </button>
+              <div class="form-group w-100">
+                <input type="text" [disabled]="humanaResObj.humanaDto.diabeticNephropathy.applicable===true"
+                  appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.diabeticNephropathy.microalbuminTestDate" class="form-control">
+                <!-- <input [disabled]="humanaResObj.humanaDto.diabeticNephropathy.applicable===true" type="text" [dpDayPicker]="datePickerConfig"
+                                placeholder="MM-DD-YYYY" [theme]="'dp-material ccm-date-picker'" [mode]="'day'" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                                 (ngModelChange)="humanaResObj.humanaDto.diabeticNephropathy.microalbuminTestDate=$event;" [ngModel]="humanaResObj.humanaDto.diabeticNephropathy.microalbuminTestDate | dateFormatPipe" placeholder="Date" class="bg-white bg-white form-control"> -->
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <input [disabled]="humanaResObj.humanaDto.diabeticNephropathy.applicable===true" type="text"
+                  appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.diabeticNephropathy.microalbuminTestResult" placeholder="Result"
+                  class="form-control">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4 justfy-content-between d-flex">
+              <p>Nephropathy screening: macroalbumin test during calendar year</p>
+
+            </div>
+            <div class="col-md-3 d-flex">
+              <button class="btn btn-icon btn-dynamic-2c m-0 mr-2 "
+                [disabled]="humanaResObj.humanaDto.diabeticNephropathy.applicable===true">
+                <i class="fa fa-calendar" [dpDayPicker]="datePickerConfig" #date="dpDayPicker"
+                  [theme]="'dp-material ccm-date-picker'" [mode]="'day'"
+                  (onSelect)="DiseaseSpecificManagement($event, 'macroalbuminTestDate')"> </i>
+              </button>
+              <div class="form-group w-100">
+                <input type="text" [disabled]="humanaResObj.humanaDto.diabeticNephropathy.applicable===true"
+                  appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.diabeticNephropathy.macroalbuminTestDate" class="form-control">
+                <!-- <input [disabled]="humanaResObj.humanaDto.diabeticNephropathy.applicable===true" type="text" [dpDayPicker]="datePickerConfig"
+                                placeholder="MM-DD-YYYY" [theme]="'dp-material ccm-date-picker'" [mode]="'day'" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                                 (ngModelChange)="humanaResObj.humanaDto.diabeticNephropathy.macroalbuminTestDate=$event;" [ngModel]="humanaResObj.humanaDto.diabeticNephropathy.macroalbuminTestDate | dateFormatPipe" placeholder="Date" class="bg-white form-control"> -->
+              </div>
+            </div>
+            <!-- <div class="col-md-2">
+                            <div class="form-check form-check-inline mt-0">
+                                <input [disabled]="humanaResObj.humanaDto.diabeticNephropathy.applicable===true" type="radio" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                                 [(ngModel)]="humanaResObj.humanaDto.diabeticNephropathy.macroalbuminTestDate" class="form-check-input" id="yes-2" name="Gender" mdbInput>
+                                <label class="form-check-label" for="yes-2">Yes</label>
+                            </div>
+                            <div class="form-check form-check-inline mt-0">
+                                <input [disabled]="humanaResObj.humanaDto.diabeticNephropathy.applicable===true" type="radio" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                                 [(ngModel)]="humanaResObj.humanaDto.diabeticNephropathy.macroalbuminTestDate" class="form-check-input" id="no-2" name="Gender" mdbInput>
+                                <label class="form-check-label" for="no-2">No</label>
+                            </div>
+                        </div> -->
+            <div class="col-md-3">
+              <div class="form-group">
+                <input [disabled]="humanaResObj.humanaDto.diabeticNephropathy.applicable===true" type="text"
+                  appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.diabeticNephropathy.macroalbuminTestResult" placeholder="Result"
+                  class="form-control">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4 justfy-content-between d-flex">
+              <p> Is patient taking angiotensin-converting enzyme (ACE) inhibitor or angiotensin receptor blocker (ARB)
+                during calendar year? </p>
+
+            </div>
+            <div class="col-md-3 d-flex">
+              <button class="btn btn-icon btn-dynamic-2c m-0 mr-2 "
+                [disabled]="humanaResObj.humanaDto.diabeticNephropathy.applicable===true">
+                <i class="fa fa-calendar" [dpDayPicker]="datePickerConfig" #date="dpDayPicker"
+                  [theme]="'dp-material ccm-date-picker'" [mode]="'day'"
+                  (onSelect)="DiseaseSpecificManagement($event, 'aceInhibitorDate')"> </i>
+              </button>
+              <div class="form-group w-100">
+                <input type="text" [disabled]="humanaResObj.humanaDto.diabeticNephropathy.applicable===true"
+                  appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.diabeticNephropathy.aceInhibitorDate" class="form-control">
+                <!-- <input [disabled]="humanaResObj.humanaDto.diabeticNephropathy.applicable===true" type="text" [dpDayPicker]="datePickerConfig"
+                                placeholder="MM-DD-YYYY" [theme]="'dp-material ccm-date-picker'" [mode]="'day'" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                                 (ngModelChange)="humanaResObj.humanaDto.diabeticNephropathy.aceInhibitorDate=$event;" [ngModel]="humanaResObj.humanaDto.diabeticNephropathy.aceInhibitorDate | dateFormatPipe" placeholder="Date" class="bg-white form-control"> -->
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-check form-check-inline mt-0">
+                <input [disabled]="humanaResObj.humanaDto.diabeticNephropathy.applicable===true" type="radio"
+                  appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.diabeticNephropathy.isACEInhibitor" [value]="true"
+                  class="form-check-input" id="yes-3osso" name="Gendersisss" mdbInput>
+                <label class="form-check-label" for="yes-3osso">Yes</label>
+              </div>
+              <div class="form-check form-check-inline mt-0">
+                <input [disabled]="humanaResObj.humanaDto.diabeticNephropathy.applicable===true" type="radio"
+                  appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.diabeticNephropathy.isACEInhibitor" [value]="false"
+                  class="form-check-input" id="no-3wkkw" name="Gendersisss" mdbInput>
+                <label class="form-check-label" for="no-3wkkw">No</label>
+              </div>
+            </div>
+            <!-- <div class="col-md-3">
+                            <div class="form-group">
+                                <input [disabled]="humanaResObj.humanaDto.diabeticNephropathy.applicable===true" type="text" placeholder="Medication" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                                 [(ngModel)]="humanaResObj.humanaDto.diabeticNephropathy.medication" class="form-control">
+                            </div>
+                        </div> -->
+            <div class="col-md-3">
+              <div class="d-flex justify-content-between">
+                <div class="form-group height-humana w-100 mt-0">
+                  <ng-select class="ng-select-small" [multiple]="false" [searchable]="true"
+                    [readonly]="humanaResObj.humanaDto.diabeticNephropathy.applicable===true"
+                    [(ngModel)]="humanaResObj.humanaDto.diabeticNephropathy.medication" placeholder="Medication"
+                    (ngModelChange)="EditHumanaForm()">
+                    <ng-option *ngFor="let item of humanaResObj.humanaDto.currentMedications"
+                      [value]="item.medicationName">{{item.medicationName}}</ng-option>
+
+                  </ng-select>
+                </div>
+                <!-- <div>
+                                    <button class="btn btn-dynamic-2c btn-icon m-0 ml-2" type="button" title="copy">
+                                        <i class="fa fa-clipboard"></i>
+                                    </button>
+                                </div> -->
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4 justfy-content-between d-flex">
+              <p>Nephrologist visit during calendar year</p>
+
+            </div>
+            <div class="col-md-3 d-flex">
+              <button class="btn btn-icon btn-dynamic-2c m-0 mr-2 "
+                [disabled]="humanaResObj.humanaDto.diabeticNephropathy.applicable===true">
+                <i class="fa fa-calendar" [dpDayPicker]="datePickerConfig" #date="dpDayPicker"
+                  [theme]="'dp-material ccm-date-picker'" [mode]="'day'"
+                  (onSelect)="DiseaseSpecificManagement($event, 'nephrologistVisitDate')"> </i>
+              </button>
+              <div class="form-group w-100">
+                <input type="text" [disabled]="humanaResObj.humanaDto.diabeticNephropathy.applicable===true"
+                  appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.diabeticNephropathy.nephrologistVisitDate" class="form-control">
+                <!-- <input [disabled]="humanaResObj.humanaDto.diabeticNephropathy.applicable===true" type="text" [dpDayPicker]="datePickerConfig"
+                                placeholder="MM-DD-YYYY" [theme]="'dp-material ccm-date-picker'" [mode]="'day'" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                                 (ngModelChange)="humanaResObj.humanaDto.diabeticNephropathy.nephrologistVisitDate=$event;" [ngModel]="humanaResObj.humanaDto.diabeticNephropathy.nephrologistVisitDate | dateFormatPipe" placeholder="Date" class="bg-white form-control"> -->
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-check form-check-inline mt-0">
+                <input [disabled]="humanaResObj.humanaDto.diabeticNephropathy.applicable===true" type="radio"
+                  appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.diabeticNephropathy.nephrologistVisit" [value]="true"
+                  class="form-check-input" id="yes-4" name="Genderpalpsko" mdbInput>
+                <label class="form-check-label" for="yes-4">Yes</label>
+              </div>
+              <div class="form-check form-check-inline mt-0">
+                <input [disabled]="humanaResObj.humanaDto.diabeticNephropathy.applicable===true" type="radio"
+                  appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.diabeticNephropathy.nephrologistVisit" [value]="false"
+                  class="form-check-input" id="no-4" name="Genderpalpsko" mdbInput>
+                <label class="form-check-label" for="no-4">No</label>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4 justfy-content-between d-flex">
+              <p>Renal Transplant</p>
+
+            </div>
+            <div class="col-md-3 d-flex">
+              <button class="btn btn-icon btn-dynamic-2c m-0 mr-2 "
+                [disabled]="humanaResObj.humanaDto.diabeticNephropathy.applicable===true">
+                <i class="fa fa-calendar" [dpDayPicker]="datePickerConfig" #date="dpDayPicker"
+                  [theme]="'dp-material ccm-date-picker'" [mode]="'day'"
+                  (onSelect)="DiseaseSpecificManagement($event, 'renalTransplantDate')"> </i>
+              </button>
+              <div class="form-group w-100">
+                <input type="text" [disabled]="humanaResObj.humanaDto.diabeticNephropathy.applicable===true"
+                  appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.diabeticNephropathy.renalTransplantDate" class="form-control">
+                <!-- <input [disabled]="humanaResObj.humanaDto.diabeticNephropathy.applicable===true" type="text" [dpDayPicker]="datePickerConfig"
+                                placeholder="MM-DD-YYYY" [theme]="'dp-material ccm-date-picker'" [mode]="'day'" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                                 (ngModelChange)="humanaResObj.humanaDto.diabeticNephropathy.renalTransplantDate=$event;" [ngModel]="humanaResObj.humanaDto.diabeticNephropathy.renalTransplantDate | dateFormatPipe" placeholder="Date" class="bg-white form-control"> -->
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-check form-check-inline mt-0">
+                <input [disabled]="humanaResObj.humanaDto.diabeticNephropathy.applicable===true" type="radio"
+                  appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.diabeticNephropathy.renalTransplant" [value]="true"
+                  class="form-check-input" id="yes-5" name="sssdGenderpalpsko" mdbInput>
+                <label class="form-check-label" for="yes-5">Yes</label>
+              </div>
+              <div class="form-check form-check-inline mt-0">
+                <input [disabled]="humanaResObj.humanaDto.diabeticNephropathy.applicable===true" type="radio"
+                  appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.diabeticNephropathy.renalTransplant" [value]="false"
+                  class="form-check-input" id="no-5" name="sssdGenderpalpsko" mdbInput>
+                <label class="form-check-label" for="no-5">No</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End Disease Specific Management  -->
+  <!-- Start Disease Specific Management  -->
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel z-depth-0 rounded-0">
+        <div class="panel-header">
+          <div class="current-section d-flex justify-content-between">
+            <div class="d-flex align-items-center">
+              <h3>Disease Specific Management<small> (Diabetic eye care)</small></h3>
+              <i id="DEpopTemplate" placement="bottom" triggers="hover" mdbPopoverHeader="Disease Specific Management"
+                #DEpop="bs-mdbPopover" [mdbPopover]="DEpopTemplate"
+                class="fa fa-exclamation-circle fa-lg ml-2 cursor-pointer"></i>
+              <ng-template #DEpopTemplate>
+                <div class="p-2">
+                  <p class="mb-2"><strong style="min-width:75px;display:inline-block;">Status: </strong>
+                    {{gapStatusEnum[pCMeasureDataListDto.diabeticEyeCare.currentStatus]}}
+                  </p>
+                  <p class="mb-2"><strong style="min-width:75px;display:inline-block;">Last Done: </strong>
+                    {{pCMeasureDataListDto.diabeticEyeCare.lastDone}}
+                  </p>
+                  <p class="mb-2"><strong style="min-width:75px;display:inline-block;">Result: </strong>
+                    {{pCMeasureDataListDto.diabeticEyeCare.result}}
+                  </p>
+                  <p class="mb-2"><strong style="min-width:75px;display:inline-block;">Note: </strong>
+                    {{pCMeasureDataListDto.diabeticEyeCare.note}}
+                  </p>
+                  <p class="mb-2"><strong style="min-width:75px;display:inline-block;">Next Due: </strong>
+                    {{pCMeasureDataListDto.diabeticEyeCare.nextDue}}
+                  </p>
+                </div>
+
+              </ng-template>
+              <button class="btn btn-icon btn-dynamic-2c m-0 ml-2 " (click)="copy(pCMeasureDataListDto.diabeticEyeCare)">
+                <i class="fa fa-clipboard"> </i><span *ngIf="pcmModelLoading"
+                  class="mr-1 spinner-border spinner-border-sm " role="status" aria-hidden="true"></span>
+              </button>
+            </div>
+            <div class="d-flex">
+              <span class="mr-3">Screening not applicable</span>
+              <!-- [disabled]="humanaResObj.humanaDto.isDiabetic===false" -->
+              <mdb-checkbox [default]="true" [checked]="false" appOnDebounce [debounceTime]="500"
+                (onDebounce)="humanaResObj.humanaDto.diabeticEyeCare.applicable === true ? resetdiabaticEyeCare() : EditHumanaForm()"
+                [(ngModel)]="humanaResObj.humanaDto.diabeticEyeCare.applicable">
+                If checked, move to next section
+              </mdb-checkbox>
+            </div>
+          </div>
+        </div>
+        <div class="panel-body" [class.overlay-Body]="humanaResObj.humanaDto.diabeticEyeCare.applicable===true">
+          <div class="row">
+            <div class="col-md-12">
+              <p><strong>Disease-specific management – Please fill in all appropriate dates for screening received; only
+                  ONE is needed to meet HEDIS measures under each section.</strong></p>
+            </div>
+          </div>
+          <!-- <div class="row">
+
+                      <div class="col-md-4">
+                        <p><strong>Name of eye care professional</strong></p>
+                      </div>
+                      <div class="col-md-8">
+                        <div class="form-group">
+                          <input [disabled]="humanaResObj.humanaDto.diabeticEyeCare.applicable===true" type="text" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                           [(ngModel)]="humanaResObj.humanaDto.diabeticEyeCare.eyeCareProfessional" placeholder="" class="form-control">
+                        </div>
+                      </div>
+                    </div> -->
+          <div class="row">
+            <div class="col-md-4 d-flex justify-content-between">
+              <p>
+                Retinal or dilated eye exam by an eye care professional during current
+                measurement year
+              </p>
+
+            </div>
+            <div class="col-md-3 d-flex">
+              <button class="btn btn-icon btn-dynamic-2c m-0 mr-2 "
+                [disabled]="humanaResObj.humanaDto.diabeticEyeCare.applicable===true">
+                <i class="fa fa-calendar" [dpDayPicker]="datePickerConfig" #date="dpDayPicker"
+                  [theme]="'dp-material ccm-date-picker'" [mode]="'day'"
+                  (onSelect)="DiabeticEyeCare($event, 'retinalOrDilatedExamDate')"> </i>
+              </button>
+              <div class="form-group w-100">
+                <input type="text" [disabled]="humanaResObj.humanaDto.diabeticEyeCare.applicable===true" appOnDebounce
+                  [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.diabeticEyeCare.retinalOrDilatedExamDate" class="form-control">
+                <!-- <input [disabled]="humanaResObj.humanaDto.diabeticEyeCare.applicable===true" type="text" [dpDayPicker]="datePickerConfig"
+                                placeholder="MM-DD-YYYY" [theme]="'dp-material ccm-date-picker'" [mode]="'day'" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                                 (ngModelChange)="humanaResObj.humanaDto.diabeticEyeCare.retinalOrDilatedExamDate=$event;" [ngModel]="humanaResObj.humanaDto.diabeticEyeCare.retinalOrDilatedExamDate | dateFormatPipe" placeholder="Date" class="bg-white form-control"> -->
+              </div>
+            </div>
+            <div class="col-md-5">
+              <div class="form-group">
+                <input [disabled]="humanaResObj.humanaDto.diabeticEyeCare.applicable===true" type="text" appOnDebounce
+                  [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.diabeticEyeCare.retinalOrDilatedProfessional"
+                  placeholder="Name of eye care professional" class="form-control">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4 d-flex justify-content-between">
+              <p>
+                Negative retinal or dilated eye exam (negative for retinopathy) by an eye care
+                professional during last measurement year
+              </p>
+
+            </div>
+            <div class="col-md-3 d-flex">
+              <button class="btn btn-icon btn-dynamic-2c m-0 mr-2 "
+                [disabled]="humanaResObj.humanaDto.diabeticEyeCare.applicable===true">
+                <i class="fa fa-calendar" [dpDayPicker]="datePickerConfig" #date="dpDayPicker"
+                  [theme]="'dp-material ccm-date-picker'" [mode]="'day'"
+                  (onSelect)="DiabeticEyeCare($event, 'negativeRetinalOrDilatedExamDate')"> </i>
+              </button>
+              <div class="form-group w-100">
+                <input type="text" [disabled]="humanaResObj.humanaDto.diabeticEyeCare.applicable===true" appOnDebounce
+                  [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.diabeticEyeCare.negativeRetinalOrDilatedExamDate"
+                  class="form-control">
+                <!-- <input [disabled]="humanaResObj.humanaDto.diabeticEyeCare.applicable===true" type="text" [dpDayPicker]="datePickerConfig"
+                                placeholder="MM-DD-YYYY" [theme]="'dp-material ccm-date-picker'" [mode]="'day'" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                                 (ngModelChange)="humanaResObj.humanaDto.diabeticEyeCare.negativeRetinalOrDilatedExamDate=$event;" [ngModel]="humanaResObj.humanaDto.diabeticEyeCare.negativeRetinalOrDilatedExamDate | dateFormatPipe" placeholder="Date" class="bg-white form-control"> -->
+              </div>
+            </div>
+            <div class="col-md-5">
+              <div class="form-group">
+                <input [disabled]="humanaResObj.humanaDto.diabeticEyeCare.applicable===true" type="text" appOnDebounce
+                  [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.diabeticEyeCare.negativeRetinalOrDilatedProfessional"
+                  placeholder="Name of eye care professional" class="form-control">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4 d-flex justify-content-between">
+              <p>Excluded due to diagnosis of gestational diabetes during past two calendar years</p>
+
+            </div>
+            <div class="col-md-3 d-flex">
+              <button class="btn btn-icon btn-dynamic-2c m-0 mr-2 "
+                [disabled]="humanaResObj.humanaDto.diabeticEyeCare.applicable===true">
+                <i class="fa fa-calendar" [dpDayPicker]="datePickerConfig" #date="dpDayPicker"
+                  [theme]="'dp-material ccm-date-picker'" [mode]="'day'"
+                  (onSelect)="DiabeticEyeCare($event, 'gestationalDiabetesDate')"> </i>
+              </button>
+              <div class="form-group w-100">
+                <input type="text" [disabled]="humanaResObj.humanaDto.diabeticEyeCare.applicable===true" appOnDebounce
+                  [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.diabeticEyeCare.gestationalDiabetesDate" class="form-control">
+                <!-- <input [disabled]="humanaResObj.humanaDto.diabeticEyeCare.applicable===true" type="text" [dpDayPicker]="datePickerConfig"
+                                placeholder="MM-DD-YYYY" [theme]="'dp-material ccm-date-picker'" [mode]="'day'" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                                 (ngModelChange)="humanaResObj.humanaDto.diabeticEyeCare.gestationalDiabetesDate=$event;" [ngModel]="humanaResObj.humanaDto.diabeticEyeCare.gestationalDiabetesDate | dateFormatPipe" placeholder="Date" class="bg-white form-control"> -->
+              </div>
+            </div>
+            <div class="col-md-5">
+              <div class="form-group">
+                <input [disabled]="humanaResObj.humanaDto.diabeticEyeCare.applicable===true" type="text" appOnDebounce
+                  [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.diabeticEyeCare.gestationalDiabetesProfessional"
+                  placeholder="Name of eye care professional" class="form-control">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4 d-flex justify-content-between">
+              <p>
+                Excluded due to diagnosis of steroid-induced diabetes during past two calendar
+                Years
+              </p>
+
+            </div>
+            <div class="col-md-3 d-flex">
+              <button class="btn btn-icon btn-dynamic-2c m-0 mr-2 "
+                [disabled]="humanaResObj.humanaDto.diabeticEyeCare.applicable===true">
+                <i class="fa fa-calendar" [dpDayPicker]="datePickerConfig" #date="dpDayPicker"
+                  [theme]="'dp-material ccm-date-picker'" [mode]="'day'"
+                  (onSelect)="DiabeticEyeCare($event, 'steroidInducedDiabetesDate')"> </i>
+              </button>
+              <div class="form-group w-100">
+                <input type="text" [disabled]="humanaResObj.humanaDto.diabeticEyeCare.applicable===true" appOnDebounce
+                  [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.diabeticEyeCare.steroidInducedDiabetesDate" class="form-control">
+                <!-- <input [disabled]="humanaResObj.humanaDto.diabeticEyeCare.applicable===true" type="text" [dpDayPicker]="datePickerConfig"
+                                placeholder="MM-DD-YYYY" [theme]="'dp-material ccm-date-picker'" [mode]="'day'" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                                 (ngModelChange)="humanaResObj.humanaDto.diabeticEyeCare.steroidInducedDiabetesDate=$event;" [ngModel]="humanaResObj.humanaDto.diabeticEyeCare.steroidInducedDiabetesDate | dateFormatPipe" placeholder="Date" class="bg-white form-control"> -->
+              </div>
+            </div>
+            <div class="col-md-5">
+              <div class="form-group">
+                <input [disabled]="humanaResObj.humanaDto.diabeticEyeCare.applicable===true" type="text" appOnDebounce
+                  [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.diabeticEyeCare.steroidInducedDiabetesProfessional"
+                  placeholder="Name of eye care professional" class="form-control">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4 d-flex justify-content-between">
+              <p>
+                Excluded due to diagnosis of Polycystic Ovarian Syndrome during past two calendar
+                Years
+              </p>
+
+            </div>
+            <div class="col-md-3 d-flex">
+              <button class="btn btn-icon btn-dynamic-2c m-0 mr-2 "
+                [disabled]="humanaResObj.humanaDto.diabeticEyeCare.applicable===true">
+                <i class="fa fa-calendar" [dpDayPicker]="datePickerConfig" #date="dpDayPicker"
+                  [theme]="'dp-material ccm-date-picker'" [mode]="'day'"
+                  (onSelect)="DiabeticEyeCare($event, 'polycysticOvarianSyndromeDate')"> </i>
+              </button>
+              <div class="form-group w-100">
+                <input type="text" [disabled]="humanaResObj.humanaDto.diabeticEyeCare.applicable===true" appOnDebounce
+                  [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.diabeticEyeCare.polycysticOvarianSyndromeDate"
+                  class="form-control">
+                <!-- <input [disabled]="humanaResObj.humanaDto.diabeticEyeCare.applicable===true" type="text" [dpDayPicker]="datePickerConfig"
+                                placeholder="MM-DD-YYYY" [theme]="'dp-material ccm-date-picker'" [mode]="'day'" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                                 (ngModelChange)="humanaResObj.humanaDto.diabeticEyeCare.steroidInducedDiabetesDate=$event;" [ngModel]="humanaResObj.humanaDto.diabeticEyeCare.steroidInducedDiabetesDate | dateFormatPipe" placeholder="Date" class="bg-white form-control"> -->
+              </div>
+            </div>
+            <div class="col-md-5">
+              <div class="form-group">
+                <input [disabled]="humanaResObj.humanaDto.diabeticEyeCare.applicable===true" type="text" appOnDebounce
+                  [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.diabeticEyeCare.polycysticOvarianSyndromeProfessional"
+                  placeholder="Name of eye care professional" class="form-control">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- END Disease Specific Management  -->
+  <!-- Start Diabetic Foot Exam  -->
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel z-depth-0 rounded-0">
+        <div class="panel-header">
+          <div class="current-section d-flex justify-content-between">
+            <h3>Diabetic Foot Exam</h3>
+            <div class="d-flex">
+              <span class="mr-2">Screening not applicable </span>
+              <!-- [disabled]="humanaResObj.humanaDto.isDiabetic===false" -->
+              <mdb-checkbox
+                *ngIf="humanaResObj.humanaDto.diabeticFootExam && humanaResObj.humanaDto.diabeticFootExam.length"
+                [default]="true" [checked]="false" appOnDebounce [debounceTime]="1500"
+                (onDebounce)="humanaResObj.humanaDto.diabeticFootExam[0].applicable === true ? resetdiabaticFootExam() : EditHumanaForm()"
+                [(ngModel)]="humanaResObj.humanaDto.diabeticFootExam[0].applicable">
+                If checked, move to next section
+              </mdb-checkbox>
+            </div>
+          </div>
+        </div>
+        <div class="panel-body"
+          [class.overlay-Body]="humanaResObj.humanaDto.diabeticFootExam && humanaResObj.humanaDto.diabeticFootExam.length && humanaResObj.humanaDto.diabeticFootExam[0].applicable===true">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="table-responsive">
+                <table class="table table-bordered table-hover table-nowrap">
+                  <thead class="bg-dynamic-2c text-white">
+                    <tr>
+                      <th>Physical Examination</th>
+                      <th>Within limits</th>
+                      <th>Abnormal Findings</th>
+                      <th>Comments</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of humanaResObj.humanaDto.diabeticFootExam; let index=index;">
+                      <td>
+                        {{item.examinationName}}
+                      </td>
+                      <td>
+                        <mdb-checkbox appOnDebounce [debounceTime]="300"
+                          (onDebounce)="item.normalLimit ? item.abnormal = false: '';EditHumanaForm()"
+                          [(ngModel)]="item.normalLimit" [default]="true" [checked]="false"> Normal
+                        </mdb-checkbox>
+
+                        <mdb-checkbox appOnDebounce [debounceTime]="300"
+                          (onDebounce)="item.abnormal ? item.normalLimit = false: '';EditHumanaForm()"
+                          [(ngModel)]="item.abnormal" [default]="true" [checked]="false"> Abnormal
+                        </mdb-checkbox>
+                        <!-- <input appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()" [(ngModel)]="item.abnormal" type="checkbox" class="form-control"> -->
+                        <!-- {{item.abnormal}} -->
+                      </td>
+                      <td width="400">
+                        <ul class="status-list" *ngIf="index===0">
+                          <ng-container *ngFor="let fItem of footExamFindingList1">
+                            <li [class.active]="fItem.active===true"
+                              (click)="!fItem.active ? fItem.active=true : fItem.active = false;FootExamFIndingChanges(item, 1)">
+                              <a class="link">{{fItem.text}}</a>
+                            </li>
+                          </ng-container>
+                        </ul>
+                        <ul class="status-list" *ngIf="index===1">
+                          <ng-container *ngFor="let fItem of footExamFindingList2">
+                            <li [class.active]="fItem.active===true"
+                              (click)="!fItem.active ? fItem.active=true : fItem.active = false;FootExamFIndingChanges(item, 2)">
+                              <a class="link">{{fItem.text}}</a>
+                            </li>
+                          </ng-container>
+                        </ul>
+                        <ul class="status-list" *ngIf="index===2">
+                          <ng-container *ngFor="let fItem of footExamFindingList3">
+                            <li [class.active]="fItem.active===true"
+                              (click)="!fItem.active ? fItem.active=true : fItem.active = false;FootExamFIndingChanges(item, 3)">
+                              <a class="link">{{fItem.text}}</a>
+                            </li>
+                          </ng-container>
+                        </ul>
+                      </td>
+
+                      <td>
+                        <input style="min-width: 200px" appOnDebounce [debounceTime]="1500"
+                          (onDebounce)="EditHumanaForm()" [(ngModel)]="item.comment" type="text" class="form-control">
+                      </td>
+                      <!-- <td>
+                                            {{item.stopDate | date}}
+                                        </td>
+                                        <td>
+                                          {{item.status}}
+                                        </td>
+                                        <td>
+                                            {{item.conditionsTreated}}
+                                        </td> -->
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End Diabetic Foot Exam  -->
+  <!-- Start Immunization  -->
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel z-depth-0 rounded-0">
+        <div class="panel-header">
+          <div class="current-section">
+            <h3>Immunization</h3>
+
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-md-4 mb-2 d-flex align-items-center">
+              <mdb-checkbox [default]="true" [checked]="false" appOnDebounce [debounceTime]="1500"
+                (onDebounce)="EditHumanaForm()" [(ngModel)]="humanaResObj.humanaDto.immunization.influenzaVaccine">
+                Influenza virus vaccine - annually
+              </mdb-checkbox>
+              <i id="IVpopTemplate" container="body" placement="right" triggers="hover"
+                mdbPopoverHeader="Infulenza vaccine" #IVpop="bs-mdbPopover" [mdbPopover]="IVpopTemplate"
+                class="fa fa-exclamation-circle fa-lg ml-2 cursor-pointer"></i>
+              <ng-template #IVpopTemplate>
+                <div class="p-2">
+                  <p class="mb-2"><strong style="min-width:75px;display:inline-block;">Status: </strong>
+                    {{gapStatusEnum[pCMeasureDataListDto.influenzaVaccine.currentStatus]}}
+                  </p>
+                  <p class="mb-2"><strong style="min-width:75px;display:inline-block;">Last Done: </strong>
+                    {{pCMeasureDataListDto.influenzaVaccine.lastDone}}
+                  </p>
+                  <p class="mb-2"><strong style="min-width:75px;display:inline-block;">Result: </strong>
+                    {{pCMeasureDataListDto.influenzaVaccine.result}}
+                  </p>
+                  <p class="mb-2"><strong style="min-width:75px;display:inline-block;">Note: </strong>
+                    {{pCMeasureDataListDto.influenzaVaccine.note}}
+                  </p>
+                  <p class="mb-2"><strong style="min-width:75px;display:inline-block;">Next Due: </strong>
+                    {{pCMeasureDataListDto.influenzaVaccine.nextDue}}
+                  </p>
+                </div>
+
+              </ng-template>
+              <button class="btn btn-icon btn-dynamic-2c m-0 ml-2 " (click)="copy(pCMeasureDataListDto.influenzaVaccine)">
+                <i class="fa fa-clipboard"> </i><span *ngIf="pcmModelLoading"
+                  class="mr-1 spinner-border spinner-border-sm " role="status" aria-hidden="true"></span>
+              </button>
+
+            </div>
+            <div class="col-md-8">
+              <div class="form-group">
+                <input type="text" [dpDayPicker]="datePickerConfig" placeholder="MM-DD-YYYY"
+                  [theme]="'dp-material ccm-date-picker'" [mode]="'day'" appOnDebounce [debounceTime]="1500"
+                  (onDebounce)="EditHumanaForm()"
+                  (ngModelChange)="humanaResObj.humanaDto.immunization.influenzaVaccineDate=$event;"
+                  [ngModel]="humanaResObj.humanaDto.immunization.influenzaVaccineDate | dateFormatPipe"
+                  placeholder="Date" class="bg-white form-control">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4 d-flex align-items-center">
+              <p>Pneumococcal vaccine — two recommended in lifetime</p>
+              <i id="PVpopTemplate" placement="right" container="body" triggers="hover"
+                mdbPopoverHeader="Pneumococcal vaccine" #PVpop="bs-mdbPopover" [mdbPopover]="PVpopTemplate"
+                class="fa fa-exclamation-circle fa-lg ml-2 cursor-pointer pos-1"></i>
+              <ng-template class="ab-1" #PVpopTemplate>
+                <div class="p-2">
+                  <p class="mb-2"><strong style="min-width:75px;display:inline-block;">Status: </strong>
+                    {{gapStatusEnum[pCMeasureDataListDto.pneumococcalVaccine.currentStatus]}}
+                  </p>
+                  <p class="mb-2"><strong style="min-width:75px;display:inline-block;">Last Done: </strong>
+                    {{pCMeasureDataListDto.pneumococcalVaccine.lastDone}}
+                  </p>
+                  <p class="mb-2"><strong style="min-width:75px;display:inline-block;">Result: </strong>
+                    {{pCMeasureDataListDto.pneumococcalVaccine.result}}
+                  </p>
+                  <p class="mb-2"><strong style="min-width:75px;display:inline-block;">Note: </strong>
+                    {{pCMeasureDataListDto.pneumococcalVaccine.note}}
+                  </p>
+                  <p class="mb-2"><strong style="min-width:75px;display:inline-block;">Next Due: </strong>
+                    {{pCMeasureDataListDto.pneumococcalVaccine.nextDue}}
+                  </p>
+                </div>
+
+              </ng-template>
+              <button class="btn btn-icon btn-dynamic-2c m-0 ml-2 "
+                (click)="copy(pCMeasureDataListDto.pneumococcalVaccine)">
+                <i class="fa fa-clipboard"> </i><span *ngIf="pcmModelLoading"
+                  class="mr-1 spinner-border spinner-border-sm " role="status" aria-hidden="true"></span>
+              </button>
+            </div>
+            <div class="col-md-2">
+              <mdb-checkbox [default]="true" [checked]="false" appOnDebounce [debounceTime]="1500"
+                (onDebounce)="EditHumanaForm()" [(ngModel)]="humanaResObj.humanaDto.immunization.pcV13">
+                PCV 13
+              </mdb-checkbox>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <input [disabled]="!humanaResObj.humanaDto.immunization.pcV13" type="text"
+                  [dpDayPicker]="datePickerConfig" placeholder="MM-DD-YYYY" [theme]="'dp-material ccm-date-picker'"
+                  [mode]="'day'" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  (ngModelChange)="humanaResObj.humanaDto.immunization.pcV13Date=$event;"
+                  [ngModel]="humanaResObj.humanaDto.immunization.pcV13Date | dateFormatPipe" placeholder="Date"
+                  class="bg-white form-control">
+              </div>
+            </div>
+            <div class="col-md-2">
+              <mdb-checkbox [default]="true" [checked]="false" appOnDebounce [debounceTime]="1500"
+                (onDebounce)="EditHumanaForm()" [(ngModel)]="humanaResObj.humanaDto.immunization.pcV23">
+                PCV 23
+              </mdb-checkbox>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <input [disabled]="!humanaResObj.humanaDto.immunization.pcV23" type="text"
+                  [dpDayPicker]="datePickerConfig" placeholder="MM-DD-YYYY" [theme]="'dp-material ccm-date-picker'"
+                  [mode]="'day'" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  (ngModelChange)="humanaResObj.humanaDto.immunization.pcV23Date=$event;"
+                  [ngModel]="humanaResObj.humanaDto.immunization.pcV23Date | dateFormatPipe" placeholder="Date"
+                  class="bg-white form-control">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- End Immunization  -->
+  <!-- Start Labs/pathology  -->
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel z-depth-0 rounded-0">
+        <div class="panel-header">
+          <div class="current-section d-flex justify-content-between">
+            <h3>Labs/pathology</h3>
+            <div class="d-flex">
+              <span class="mr-3">Lab not applicable</span>
+              <mdb-checkbox [default]="true" [checked]="false" appOnDebounce [debounceTime]="500"
+                (onDebounce)="humanaResObj.humanaDto.labs.applicable===true ? resetLabData(): EditHumanaForm()"
+                [(ngModel)]="humanaResObj.humanaDto.labs.applicable">
+                If checked, move to next section
+              </mdb-checkbox>
+            </div>
+          </div>
+        </div>
+        <div class="panel-body" [class.overlay-Body]="humanaResObj.humanaDto.labs.applicable===true">
+          <!-- <div class="row">
+                          <div class="col-md-6">
+                              <p>Lab not applicable</p>
+                          </div>
+                          <div class="col-md-6">
+                              <p>Test Result</p>
+                          </div>
+                    </div> -->
+          <div class="row">
+            <div class="col-md-4">
+              HbA1c for patients with diabetes
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <input [disabled]="humanaResObj.humanaDto.labs.applicable===true" type="text"
+                  [dpDayPicker]="datePickerConfig" placeholder="MM-DD-YYYY" [theme]="'dp-material ccm-date-picker'"
+                  [mode]="'day'" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  (ngModelChange)="humanaResObj.humanaDto.labs.hbA1cDate=$event;"
+                  [ngModel]="humanaResObj.humanaDto.labs.hbA1cDate | dateFormatPipe" class="bg-white form-control"
+                  placeholder="date">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <input [disabled]="humanaResObj.humanaDto.labs.applicable===true" type="text" appOnDebounce
+                  [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.labs.hbA1cResult" placeholder="result" class="form-control">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              Excluded due to diagnosis of gestational diabetes in past two calendar years
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <input [disabled]="humanaResObj.humanaDto.labs.applicable===true" type="text"
+                  [dpDayPicker]="datePickerConfig" placeholder="MM-DD-YYYY" [theme]="'dp-material ccm-date-picker'"
+                  [mode]="'day'" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  (ngModelChange)="humanaResObj.humanaDto.labs.excludedGestationalDiabetesDate=$event;"
+                  [ngModel]="humanaResObj.humanaDto.labs.excludedGestationalDiabetesDate | dateFormatPipe"
+                  class="bg-white form-control" placeholder="date">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <!-- <div class="form-group">
+                            <input [disabled]="humanaResObj.humanaDto.labs.applicable===true" type="text" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                             [(ngModel)]="humanaResObj.humanaDto.labs.gestationalResult" placeholder="result" class="form-control">
+                          </div> -->
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              Excluded due to diagnosis of steroid-induced diabetes in past two calendar years
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <input [disabled]="humanaResObj.humanaDto.labs.applicable===true" type="text"
+                  [dpDayPicker]="datePickerConfig" placeholder="MM-DD-YYYY" [theme]="'dp-material ccm-date-picker'"
+                  [mode]="'day'" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  (ngModelChange)="humanaResObj.humanaDto.labs.excludedSteroidInducedDiabetesDate=$event;"
+                  [ngModel]="humanaResObj.humanaDto.labs.excludedSteroidInducedDiabetesDate | dateFormatPipe"
+                  class="bg-white form-control" placeholder="date">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <!-- <div class="form-group">
+                            <input [disabled]="humanaResObj.humanaDto.labs.applicable===true" type="text" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                             [(ngModel)]="humanaResObj.humanaDto.labs.result" placeholder="result" class="form-control">
+                          </div> -->
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              Excluded due to diagnosis of Polycystic Ovarian Syndrome during past two calendar years
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <input [disabled]="humanaResObj.humanaDto.labs.applicable===true" type="text"
+                  [dpDayPicker]="datePickerConfig" placeholder="MM-DD-YYYY" [theme]="'dp-material ccm-date-picker'"
+                  [mode]="'day'" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  (ngModelChange)="humanaResObj.humanaDto.labs.polycysticOvarianSyndromeDate=$event;"
+                  [ngModel]="humanaResObj.humanaDto.labs.polycysticOvarianSyndromeDate | dateFormatPipe"
+                  class="bg-white form-control" placeholder="date">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <!-- <div class="form-group">
+                            <input [disabled]="humanaResObj.humanaDto.labs.applicable===true" type="text" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                             [(ngModel)]="humanaResObj.humanaDto.labs.result" placeholder="result" class="form-control">
+                          </div> -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End Labs/pathology  -->
+  <!-- Start Rheumatoid Arthritis Management  -->
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel z-depth-0 rounded-0">
+        <div class="panel-header">
+          <div class="current-section d-flex justify-content-between">
+            <h3>Rheumatoid Arthritis Management</h3>
+            <div class="d-flex">
+              <span class="mr-3">Screening not applicable</span>
+              <mdb-checkbox [default]="true" [checked]="false" appOnDebounce [debounceTime]="500"
+                (onDebounce)="humanaResObj.humanaDto.raManagement.applicable===true? resetraManagement() : EditHumanaForm()"
+                [(ngModel)]="humanaResObj.humanaDto.raManagement.applicable">
+                If checked, move to next section
+              </mdb-checkbox>
+            </div>
+          </div>
+        </div>
+        <div class="panel-body" [class.overlay-Body]="humanaResObj.humanaDto.raManagement.applicable===true">
+          <div class="row">
+            <div class="col-md-12">
+              <p><strong>Diagnosis for RA not verified</strong></p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-8">
+              <p>
+                Dispensed or filled disease-modifying antirheumatic drug (DMARD) during
+                current measurement year
+              </p>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <input [disabled]="humanaResObj.humanaDto.raManagement.applicable" type="text"
+                  [dpDayPicker]="datePickerConfig" placeholder="MM-DD-YYYY" [theme]="'dp-material ccm-date-picker'"
+                  [mode]="'day'" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  (ngModelChange)="humanaResObj.humanaDto.raManagement.dmard=$event;"
+                  [ngModel]="humanaResObj.humanaDto.raManagement.dmard | dateFormatPipe"
+                  class="bg-white form-control" placeholder="Date">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Medication</label>
+                <input [disabled]="humanaResObj.humanaDto.raManagement.applicable" type="text" appOnDebounce
+                  [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.raManagement.medicationName" placeholder="Medication"
+                  class="form-control">
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label>Administration Route</label>
+                <input [disabled]="humanaResObj.humanaDto.raManagement.applicable" type="text" appOnDebounce
+                  [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.raManagement.adminRoute" placeholder="Administration Route"
+                  class="form-control">
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label>Dosage</label>
+                <input [disabled]="humanaResObj.humanaDto.raManagement.applicable" type="text" appOnDebounce
+                  [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.raManagement.dosage" class="form-control" placeholder="Dosage">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-8">
+              <p>Excluded due to pregnancy during calendar year </p>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <input [disabled]="humanaResObj.humanaDto.raManagement.applicable" type="text"
+                  [dpDayPicker]="datePickerConfig" placeholder="MM-DD-YYYY" [theme]="'dp-material ccm-date-picker'"
+                  [mode]="'day'" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  (ngModelChange)="humanaResObj.humanaDto.raManagement.excludedPregnancyDate=$event;"
+                  [ngModel]="humanaResObj.humanaDto.raManagement.excludedPregnancyDate | dateFormatPipe"
+                  class="bg-white form-control" placeholder="Date">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-8">
+              <p>Excluded due to diagnosis of HIV positive</p>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <input [disabled]="humanaResObj.humanaDto.raManagement.applicable" type="text"
+                  [dpDayPicker]="datePickerConfig" placeholder="MM-DD-YYYY" [theme]="'dp-material ccm-date-picker'"
+                  [mode]="'day'" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  (ngModelChange)="humanaResObj.humanaDto.raManagement.excludedHIVDate=$event;"
+                  [ngModel]="humanaResObj.humanaDto.raManagement.excludedHIVDate | dateFormatPipe"
+                  class="bg-white form-control" placeholder="Date">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- End Rheumatoid Arthritis Management  -->
+  <!-- Start Osteoporosis management  -->
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel z-depth-0 rounded-0">
+        <div class="panel-header">
+          <div class="current-section d-flex justify-content-between">
+            <h3>Osteoporosis management</h3>
+            <div class="d-flex">
+              <span class="mr-3">Screening not applicable</span>
+              <mdb-checkbox [default]="true" [checked]="false" appOnDebounce [debounceTime]="500"
+                (onDebounce)="humanaResObj.humanaDto.osteoporosisManagement.applicable===true? resetosteoporosisManagement() : EditHumanaForm()"
+                [(ngModel)]="humanaResObj.humanaDto.osteoporosisManagement.applicable">
+                If checked, move to next section
+              </mdb-checkbox>
+            </div>
+          </div>
+        </div>
+        <div class="panel-body" [class.overlay-Body]="humanaResObj.humanaDto.osteoporosisManagement.applicable===true">
+          <div class="row">
+            <div class="col-md-12">
+              <p><strong>Disease-specific management – Please fill in all appropriate dates for screening received; only
+                  ONE is needed to meet HEDIS measures under each section.</strong></p>
+            </div>
+            <div class="col-md-12">
+              <p><strong>Osteoporosis management in women who had a fracture</strong></p>
+            </div>
+            <!-- <div class="col-md-12">
+                            <p>If checked, Move to next section</p>
+                        </div> -->
+          </div>
+          <div class="row">
+            <div class="col-md-8">
+              <p>
+                Osteoporosis medication was prescribed or currently taken within six months after the fracture
+              </p>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <input [disabled]="humanaResObj.humanaDto.osteoporosisManagement.applicable===true" type="text"
+                  [dpDayPicker]="datePickerConfig" placeholder="MM-DD-YYYY" [theme]="'dp-material ccm-date-picker'"
+                  [mode]="'day'" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  (ngModelChange)="humanaResObj.humanaDto.osteoporosisManagement.osteoporosisMedicationDate=$event;"
+                  [ngModel]="humanaResObj.humanaDto.osteoporosisManagement.osteoporosisMedicationDate | dateFormatPipe"
+                  class="bg-white form-control" placeholder="Date">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Medication</label>
+                <input [disabled]="humanaResObj.humanaDto.osteoporosisManagement.applicable===true" type="text"
+                  appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.osteoporosisManagement.medicationName" placeholder="Medication"
+                  class="form-control">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Administration Route</label>
+                <input [disabled]="humanaResObj.humanaDto.osteoporosisManagement.applicable===true" type="text"
+                  appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.osteoporosisManagement.adminRoute"
+                  placeholder="Administration Route" class="form-control">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Dosage</label>
+                <input [disabled]="humanaResObj.humanaDto.osteoporosisManagement.applicable===true" type="text"
+                  appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.osteoporosisManagement.dosage" placeholder="Dosage"
+                  class="form-control">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-8">
+              <p>
+                Bone mineral density test completed within six months after the fracture
+              </p>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <input [disabled]="humanaResObj.humanaDto.osteoporosisManagement.applicable===true" type="text"
+                  [dpDayPicker]="datePickerConfig" placeholder="MM-DD-YYYY" [theme]="'dp-material ccm-date-picker'"
+                  [mode]="'day'" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  (ngModelChange)="humanaResObj.humanaDto.osteoporosisManagement.boneMineralDensityTestDate=$event;"
+                  [ngModel]="humanaResObj.humanaDto.osteoporosisManagement.boneMineralDensityTestDate | dateFormatPipe"
+                  class="bg-white form-control" placeholder="Date">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-8">
+              <p>
+                Excluded due to bone mineral density testing within 24 months prior to fracture
+              </p>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <input [disabled]="humanaResObj.humanaDto.osteoporosisManagement.applicable===true" type="text"
+                  [dpDayPicker]="datePickerConfig" placeholder="MM-DD-YYYY" [theme]="'dp-material ccm-date-picker'"
+                  [mode]="'day'" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  (ngModelChange)="humanaResObj.humanaDto.osteoporosisManagement.excludedBoneMineralDensityTestDate=$event;"
+                  [ngModel]="humanaResObj.humanaDto.osteoporosisManagement.excludedBoneMineralDensityTestDate | dateFormatPipe"
+                  class="bg-white form-control" placeholder="Date">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-8">
+              <p>
+                Excluded due to osteoporosis therapy within the 12 months prior to the fracture
+              </p>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <input [disabled]="humanaResObj.humanaDto.osteoporosisManagement.applicable===true" type="text"
+                  [dpDayPicker]="datePickerConfig" placeholder="MM-DD-YYYY" [theme]="'dp-material ccm-date-picker'"
+                  [mode]="'day'" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  (ngModelChange)="humanaResObj.humanaDto.osteoporosisManagement.excludedOsteoporosisTherapyDate=$event;"
+                  [ngModel]="humanaResObj.humanaDto.osteoporosisManagement.excludedOsteoporosisTherapyDate | dateFormatPipe"
+                  class="bg-white form-control" placeholder="Date">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-8">
+              <p>
+                Excluded due to patient receiving osteoporosis prescription within 12 months prior to fracture
+              </p>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <input [disabled]="humanaResObj.humanaDto.osteoporosisManagement.applicable===true" type="text"
+                  [dpDayPicker]="datePickerConfig" placeholder="MM-DD-YYYY" [theme]="'dp-material ccm-date-picker'"
+                  [mode]="'day'" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  (ngModelChange)="humanaResObj.humanaDto.osteoporosisManagement.excludedOsteoporosisPrescriptionDate=$event;"
+                  [ngModel]="humanaResObj.humanaDto.osteoporosisManagement.excludedOsteoporosisPrescriptionDate | dateFormatPipe"
+                  class="bg-white form-control" placeholder="Date">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-8">
+              <p>
+                Excluded because fracture was a finger, toe, face or skull
+              </p>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <input [disabled]="humanaResObj.humanaDto.osteoporosisManagement.applicable===true" type="text"
+                  [dpDayPicker]="datePickerConfig" placeholder="MM-DD-YYYY" [theme]="'dp-material ccm-date-picker'"
+                  [mode]="'day'" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  (ngModelChange)="humanaResObj.humanaDto.osteoporosisManagement.excludedFractureDate=$event;"
+                  [ngModel]="humanaResObj.humanaDto.osteoporosisManagement.excludedFractureDate | dateFormatPipe"
+                  class="bg-white form-control" placeholder="Date">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- End Osteoporosis management  -->
+  <!-- Start Screening Assessment  -->
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel z-depth-0 rounded-0">
+        <div class="panel-header">
+          <div class="current-section">
+            <h3>Screening Assessment</h3>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="row justify-content-center align-items-center">
+            <div class="col-md-12">
+              <p>Pain Screening - Please circle the level of pain patient is in on a daily basis</p>
+            </div>
+            <div class="col-lg-8 col-md-12 text-center">
+              <ul class="pain-check p-0">
+                <li class="m-0"><img src="/assets/img/emoji.png" width="30" alt="Emoji"></li>
+                <li (click)="humanaResObj.humanaDto.painScreening.painLevel=0;EditHumanaForm()"><span
+                    [class.active]="humanaResObj.humanaDto.painScreening.painLevel===0">0</span></li>
+                <li (click)="humanaResObj.humanaDto.painScreening.painLevel=1;EditHumanaForm()"><span
+                    [class.active]="humanaResObj.humanaDto.painScreening.painLevel===1">1</span></li>
+                <li (click)="humanaResObj.humanaDto.painScreening.painLevel=2;EditHumanaForm()"><span
+                    [class.active]="humanaResObj.humanaDto.painScreening.painLevel===2">2</span></li>
+                <li (click)="humanaResObj.humanaDto.painScreening.painLevel=3;EditHumanaForm()"><span
+                    [class.active]="humanaResObj.humanaDto.painScreening.painLevel===3">3</span></li>
+                <li (click)="humanaResObj.humanaDto.painScreening.painLevel=4;EditHumanaForm()"><span
+                    [class.active]="humanaResObj.humanaDto.painScreening.painLevel===4">4</span></li>
+                <li (click)="humanaResObj.humanaDto.painScreening.painLevel=5;EditHumanaForm()"><span
+                    [class.active]="humanaResObj.humanaDto.painScreening.painLevel===5">5</span></li>
+                <li (click)="humanaResObj.humanaDto.painScreening.painLevel=6;EditHumanaForm()"><span
+                    [class.active]="humanaResObj.humanaDto.painScreening.painLevel===6">6</span></li>
+                <li (click)="humanaResObj.humanaDto.painScreening.painLevel=7;EditHumanaForm()"><span
+                    [class.active]="humanaResObj.humanaDto.painScreening.painLevel===7">7</span></li>
+                <li (click)="humanaResObj.humanaDto.painScreening.painLevel=8;EditHumanaForm()"><span
+                    [class.active]="humanaResObj.humanaDto.painScreening.painLevel===8">8</span></li>
+                <li (click)="humanaResObj.humanaDto.painScreening.painLevel=9;EditHumanaForm()"><span
+                    [class.active]="humanaResObj.humanaDto.painScreening.painLevel===9">9</span></li>
+                <li (click)="humanaResObj.humanaDto.painScreening.painLevel=10;EditHumanaForm()"><span
+                    [class.active]="humanaResObj.humanaDto.painScreening.painLevel===10">10</span></li>
+                <li><img src="/assets/img/sad.png" width="30" alt="Emoji"></li>
+              </ul>
+              <div class="row">
+                <div class="col-md-4 col-xs-4 col">
+                  <p class="text-center pr-4">No pain</p>
+                </div>
+                <div class="col-md-4 col-xs-4 col">
+                  <p class="text-center">Moderate Pain</p>
+                </div>
+                <div class="col-md-4 col-xs-4 col">
+                  <p class="text-center">Extreme pain</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 text-center">
+              <div class="form-group">
+                <mdb-checkbox [default]="true" [checked]="false" appOnDebounce [debounceTime]="1500"
+                  (onDebounce)="EditHumanaForm()" [(ngModel)]="humanaResObj.humanaDto.painScreening.painManagement">
+                  If pain , evidence of pain management
+                </mdb-checkbox>
+              </div>
+            </div>
+            <div class="col-md-6 text-center">
+              <div class="form-group">
+                <mdb-checkbox [default]="true" [checked]="false" appOnDebounce [debounceTime]="1500"
+                  (onDebounce)="EditHumanaForm()" [(ngModel)]="humanaResObj.humanaDto.painScreening.painMedication">
+                  If currently prescribed pain medication
+                </mdb-checkbox>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel z-depth-0 rounded-0">
+        <div class="panel-header">
+          <div class="current-section">
+            <h3> Functional status assessment</h3>
+          </div>
+        </div>
+        <div class="panel-body">
+
+          <div class="row">
+            <!-- <div class="col-md-12">
+                        <p><strong> Functional status assessment </strong></p>
+                    </div> -->
+            <div class="col-md-12">
+              <div class="form-group">
+                <mdb-checkbox [default]="true" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.functionalAssessment.iadLsAssessment" [checked]="false">
+                  Assessment of instrumental activities of daily living (IADLs), such as meal preparation, shopping for
+                  groceries, using public transportation, housework, home repair, laundry, taking medications or
+                  handling finances
+                </mdb-checkbox>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <div class="form-group">
+                <mdb-checkbox [default]="true" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.functionalAssessment.componentAssessment" [checked]="false">
+                  Assessment of three of the following four components: cognitive status; ambulation status; sensory
+                  ability; other functional independence, such as exercise, ability to perform job
+                </mdb-checkbox>
+              </div>
+            </div>
+            <div class="col-md-8">
+              <div class="form-group">
+                <mdb-checkbox [default]="true" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.functionalAssessment.statusAssessment" [checked]="false">
+                  Results using a standardized functional status assessment tool
+                </mdb-checkbox>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Name of tool</label>
+                <input type="text" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.functionalAssessment.statusAssessmentTool"
+                  placeholder="Name of tool" class="form-control">
+              </div>
+            </div>
+            <div class="col-md-12">
+              <div class="form-group">
+                <mdb-checkbox [default]="true" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.functionalAssessment.adLsAssessment" [checked]="false">
+                  Assessment of ADLs, such as bathing, dressing, eating, transferring, using toilet, walking
+                </mdb-checkbox>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- End Screening Assessment  -->
+  <!-- Start Other Assessment  -->
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel z-depth-0 rounded-0">
+        <div class="panel-header">
+          <div class="current-section">
+            <h3>Other Assessment</h3>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-md-12">
+              <p><strong>This section is covered in patient tab under functional abilities.</strong></p>
+              <div class="d-flex mb-2">
+
+
+                <div class="custom-control  pl-0 custom-checkbox custom-control-inline ">
+                  <mdb-checkbox appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                    [(ngModel)]="humanaResObj.humanaDto.otherAssessment.physicalActivityAssessment" [default]="true"
+                    [checked]="false">
+                    Physical activity assessment
+                  </mdb-checkbox>
+                </div>
+                <div class="custom-control  pl-0 custom-checkbox custom-control-inline">
+                  <mdb-checkbox appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                    [(ngModel)]="humanaResObj.humanaDto.otherAssessment.advanceDirective" [default]="true"
+                    [checked]="false">
+                    Advance directive (Living will Yes/No)
+                  </mdb-checkbox>
+                </div>
+                <div class="custom-control  pl-0 custom-checkbox custom-control-inline">
+                  <mdb-checkbox appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                    [(ngModel)]="humanaResObj.humanaDto.otherAssessment.aspirinUse" [default]="true" [checked]="false">
+                    Aspirin use discussion
+                  </mdb-checkbox>
+                </div>
+                <div class="custom-control  pl-0 custom-checkbox custom-control-inline">
+                  <mdb-checkbox appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()" disabled
+                    [(ngModel)]="humanaResObj.humanaDto.otherAssessment.fallRisk" [default]="true" [checked]="false">
+                    Fall risk assessment
+                  </mdb-checkbox>
+                </div>
+              </div>
+            </div>
+
+
+            <div class="col-lg-5 col-sm-12">
+
+              <mdb-checkbox appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()" disabled
+                [(ngModel)]="humanaResObj.humanaDto.otherAssessment.depressionScreening" [default]="true"
+                [checked]="false">
+                Depression screening test (Score)
+              </mdb-checkbox>
+              <div>
+                <input type="text" appOnDebounce [debounceTime]="1500" disabled (onDebounce)="EditHumanaForm()"
+                  placeholder="Score" [(ngModel)]="humanaResObj.humanaDto.otherAssessment.score"
+                  class="form-control form-control-sm mt-2">
+              </div>
+
+            </div>
+            <div class="col-lg-7 col-sm-12">
+              <mdb-checkbox appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                [(ngModel)]="humanaResObj.humanaDto.otherAssessment.medicationReview" [default]="true"
+                [checked]="false">
+                Medication review for potientialy harmful drug-disease interaction in the elderly (Such As)
+              </mdb-checkbox>
+              <div>
+                <input type="text" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  placeholder="Such As" [(ngModel)]="humanaResObj.humanaDto.otherAssessment.medicationReviewText"
+                  class="form-control form-control-sm mt-2">
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel z-depth-0 rounded-0">
+        <div class="panel-header">
+          <div class="current-section">
+            <h3>Diagnosis – Please provide the appropriate active diagnoses and corresponding codes</h3>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="row">
+            <!-- <div class="col-md-12">
+                            <p><strong>Diagnosis – Please provide the appropriate active diagnoses and corresponding codes.</strong></p>
+                        </div> -->
+            <div class="col-md-12 table-responsive">
+              <table class="table table-bordered table-hover table-nowrap w-100">
+                <thead class="bg-dynamic-2c text-white">
+                  <!-- <th>#</th> -->
+                  <th>Diagnosis</th>
+                  <th>ICD-10 code</th>
+                  <th>Select treatment plan</th>
+                  <th>Other treatment plan</th>
+                </thead>
+                <tbody>
+                  <!-- <tr *ngFor="let item of humanaResObj.humanaDto.medicalHistory"> -->
+                  <tr *ngFor="let item of tempHumanaDiagnosis; let index=index;">
+                    <td>
+                      {{item.icdCode}}
+                    </td>
+                    <td>
+                      {{item.diagnosis}}
+                    </td>
+                    <td width="400">
+                      <ul class="status-list">
+                        <ng-container *ngFor="let fItem of item['OptionsList']">
+                          <li [class.active]="fItem.active===true"
+                            (click)="!fItem.active ? fItem.active=true : fItem.active = false;(fItem.text==='Other' && !fItem.active ) ? item['otherTreatmentPlan']='' : '';DiagnoseTreatmentPlanOptions(index)">
+                            <a class="link">{{fItem.text}}</a>
+                          </li>
+                        </ng-container>
+                      </ul>
+                      <!-- <ul class="status-list">
+                                        <li [class.active]="item.treatmentPlan==='Medication'" (click)="item.treatmentPlan='Medication';EditHumanaForm()"><a class="link">Medication</a>
+                                        </li>
+                                        <li [class.active]="item.treatmentPlan==='Monitor'" (click)="item.treatmentPlan='Monitor';EditHumanaForm()"><a class="link">Monitor</a>
+                                        </li>
+                                        <li [class.active]="item.treatmentPlan==='Diet'" (click)="item.treatmentPlan='Diet';EditHumanaForm()"><a class="link">Diet</a>
+                                        </li>
+                                        <li [class.active]="item.treatmentPlan==='Labs'" (click)="item.treatmentPlan='Labs';EditHumanaForm()"><a class="link">Labs</a>
+                                        <li [class.active]="item.treatmentPlan==='Referrals'" (click)="item.treatmentPlan='Referrals';EditHumanaForm()"><a class="link">Referrals</a>
+                                        <li [class.active]="item.treatmentPlan==='Other'" (click)="item.treatmentPlan='Other';EditHumanaForm()"><a class="link">Other</a>
+                                        </li>
+                                      </ul> -->
+                    </td>
+                    <td>
+                      <ng-container *ngIf="item['OptionsList'] && item['OptionsList'].length > 0">
+                        <input style="min-width: 200px;" [readOnly]="!item['OptionsList'][5].active" appOnDebounce
+                          [debounceTime]="1000" (onDebounce)="DiagnoseTreatmentPlanOptions(index)"
+                          [(ngModel)]="item['otherTreatmentPlan']" type="text" class="form-control">
+                      </ng-container>
+
+                    </td>
+                    <!-- <td>
+                                        <span class="ccm-active">
+                                            <i class="fa fa-{{item.isChronic ? 'check': 'close'}} fa-lg">
+                                            </i>
+                                        </span>
+                                    </td> -->
+                    <!-- <td>
+                                        {{item.diagnosisDate | date}}
+                                    </td> -->
+                    <!-- <td >
+                                      <ng-container *ngIf="item.resolvedDate">
+                                        {{item.resolvedDate | date}}
+                                      </ng-container>
+                                    </td> -->
+                    <!-- <td>
+                                        <span  class="ccm-inactive">
+                                          <i class="fa fa-{{item.active ? 'check': 'close'}} fa-lg"></i>
+                                        </span>
+                                    </td> -->
+                    <!-- <td>
+                                      <input appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()" [(ngModel)]="item.resolved" type="text" class="form-control">
+
+                                    </td> -->
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel z-depth-0 rounded-0">
+        <div class="panel-header">
+          <div class="current-section d-flex justify-content-between align-items-center">
+            <h3>Screening/prevention plan for the next five to 10 years <small class="text-warning-dark">(Based on Care
+                Gaps)</small></h3>
+            <div>
+              <button class="btn btn-dynamic-secondary-2c btn-sm mr-1"
+                (click)="humanaResObj.humanaDto.screeningPlan = '';EditHumanaForm()">Clear</button>
+              <button class="btn btn-dynamic-2c btn-sm mr-1" (click)="RefreshHumanaCareGpasData(0)">Refresh</button>
+            </div>
+          </div>
+        </div>
+        <div class="panel-body">
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <label>Screening/prevention plan for the next five to 10 years</label>
+                <textarea rows="5" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.screeningPlan" class="form-control">
+                            </textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel z-depth-0 rounded-0">
+        <div class="panel-header">
+          <div class="current-section d-flex justify-content-between align-items-center">
+            <h3>Follow-up/referral/test ordered <small class="text-warning-dark">(Based on Care Gaps)</small></h3>
+            <div>
+              <button class="btn btn-dynamic-secondary-2c btn-sm mr-1"
+                (click)="humanaResObj.humanaDto.followUp = '';EditHumanaForm()">Clear</button>
+              <button class="btn btn-dynamic-2c btn-sm mr-1" (click)="RefreshHumanaCareGpasData(1)">Refresh</button>
+            </div>
+          </div>
+        </div>
+        <div class="panel-body">
+
+
+          <div class="col-md-12">
+            <div class="form-group">
+              <label>Follow-up/referral/test ordered</label>
+              <textarea rows="5" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                [(ngModel)]="humanaResObj.humanaDto.followUp" class="form-control">
+                        </textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</fieldset>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel z-depth-0 rounded-0">
+        <div class="panel-header">
+          <div class="current-section">
+            <h3>Assessment</h3>
+          </div>
+        </div>
+        <div class="panel-body">
+
+          <div class="row">
+            <div class="col-md-12">
+              <p><strong>Assessment statement</strong></p>
+              <p>
+                Healthcare provider acknowledges and agrees that Humana will update and adjust this form as necessary.
+                Updated forms will be available for use in the secure section of Humana’s website:<a target="_blank"
+                  href="http://www.humana.com/provider/support/clinical/quality-resources/">
+                  humana.com/provider/support/clinical/quality-resources/</a>. </p>
+              <p>
+                Medicare payment to Medicare Advantage organizations is based, in part, on each patient’s diagnoses, as
+                attested to by the patient’s attending healthcare provider by virtue of his or her signature on this
+                medical record. Anyone who misrepresents, falsifies or conceals essential information required for
+                payment of federal funds may be subject to a fine, imprisonment or civil penalty under applicable
+                federal laws. </p>
+              <p>
+                By signing this document, you attest to having assessed the patient in a face-to-face visit and reviewed
+                the medical documents to complete the form using the best of your medical knowledge, having placed the
+                completed original of this form in the patient’s medical record and having ensured fully documented
+                proof of service of all completed fields is contained in the patient’s medical record. (Note: If the
+                practice has an electronic medical record system, scan the assessment and attach the image to the
+                electronic record.)
+              </p>
+              <p>
+                To the best of my knowledge, information and belief, the information provided regarding diagnoses is
+                truthful and accurate. </p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Healthcare provider name and credentials (print)</label>
+                <input type="text" appOnDebounce [debounceTime]="1500" readonly (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.healthCareProviderName" class="form-control" placeholder="">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Healthcare provider name and credentials (sign)</label>
+                <input type="text" readonly
+                  [(ngModel)]="healthCareProviderSignature" class="form-control" placeholder="">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Date</label>
+                <!-- <div class="position-relative">
+                            <div [class.overlay-Body]="true"> -->
+                <input type="text" [dpDayPicker]="datePickerConfig1" disabled placeholder="MM-DD-YYYY hh:mm a"
+                  [theme]="'dp-material ccm-date-picker'" [mode]="'daytime'" appOnDebounce [debounceTime]="1500"
+                  (onDebounce)="EditHumanaForm()" (ngModelChange)="humanaResObj.humanaDto.date=$event;"
+                  [ngModel]="humanaResObj.humanaDto.date | date:'MM-dd-yyyy hh:mm a'" class="bg-white form-control"
+                  placeholder="Date">
+                <!-- </div>
+                      </div> -->
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Provider office number</label>
+                <input type="text" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.providerOfficeNo" class="form-control" placeholder="">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Billing healthcare provider ID</label>
+                <input type="text" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.billingProviderId" class="form-control" placeholder="">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Healthcare provider address</label>
+                <input type="text" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.healthCareProviderAddress" class="form-control" placeholder="">
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="d-flex">Provider type</label>
+                <div class="form-check form-check-inline mt-0">
+                  <mdb-checkbox [default]="true" appOnDebounce [debounceTime]="500" (onDebounce)="EditHumanaForm()"
+                    [(ngModel)]="humanaResObj.humanaDto.tin" [checked]="false">
+                    TIN
+                  </mdb-checkbox>
+                </div>
+                <div class="form-check form-check-inline mt-0">
+                  <mdb-checkbox [default]="true" appOnDebounce [debounceTime]="500" (onDebounce)="EditHumanaForm()"
+                    [(ngModel)]="humanaResObj.humanaDto.npi" [checked]="false">
+                    NPI
+                  </mdb-checkbox>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <div class="form-group">
+                <label>City, State, ZIP</label>
+                <input type="text" appOnDebounce [debounceTime]="1500" (onDebounce)="EditHumanaForm()"
+                  [(ngModel)]="humanaResObj.humanaDto.cityStateZIP" class="form-control" placeholder="">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<ng-template #loadingSkelton>
+  <div class="panel z-depth-0 rounded-0">
+    <div class="panel-header">
+      <div class="current-section">
+        <h3>Patient Information</h3>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-sm-12 p-0">
+          <skltn-root duration="1500" [rectRadius]="0" flareWidth="50%" bgFill="#f2f3f8"
+            flareFill="rgba(255,255,255, 0.5)">
+            <!-- Card with Avatar -->
+            <div class="p-3">
+              <div class="skltn-card">
+                <div class="skltn-card__body">
+                  <div skltn-bone class="skltn-card__line"></div>
+                  <div skltn-bone class="skltn-card__line"></div>
+                  <div skltn-bone class="skltn-card__line"></div>
+                  <div skltn-bone class="skltn-card__line"></div>
+                </div>
+              </div>
+            </div>
+          </skltn-root>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12 p-0">
+          <skltn-root duration="1500" [rectRadius]="0" flareWidth="50%" bgFill="#f2f3f8"
+            flareFill="rgba(255,255,255, 0.5)">
+            <!-- Card with Avatar -->
+            <div class="p-3">
+              <div class="skltn-card">
+                <div class="skltn-card__body">
+                  <div skltn-bone class="skltn-card__line"></div>
+                  <div skltn-bone class="skltn-card__line"></div>
+                  <div skltn-bone class="skltn-card__line"></div>
+                  <div skltn-bone class="skltn-card__line"></div>
+                </div>
+              </div>
+            </div>
+          </skltn-root>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+<div mdbModal #viewPdfModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true" (close)="objectURLStr='';objectURLStrAW=''">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="viewPdfModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">Pdf Document</h4>
+      </div>
+      <div class="modal-body" style="height:calc(100vh - 175px); padding: 0px;">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="ccm-header" id="ccm-header">
+              <div class="d-flex justify-content-between align-items-center flex-wrap flex-sm-wrap ccm-nav"
+                style="min-width: 100%;">
+                <ul class="ccm-navbar">
+                  <li *ngIf="objectURLStrAW" (click)="activeTabId=2" [class.active]="activeTabId===2"><a>AW</a></li>
+                  <li *ngIf="objectURLStr" (click)="activeTabId=1" [class.active]="activeTabId===1"><a>Humana</a></li>
+                </ul>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <app-pdf-view *ngIf="objectURLStrAW && activeTabId===2" [documentUrl]="objectURLStrAW"></app-pdf-view>
+        <app-pdf-view *ngIf="objectURLStr && activeTabId===1" [documentUrl]="objectURLStr"></app-pdf-view>
+        <!-- <mdb-tabset #ccmConsent [buttonClass]="'classic-tabs tabs-outline-primary'" [contentClass]="'p-0'"
+      class="classic-tabs tabs-outline-primary">
+        <mdb-tab *ngIf="objectURLStrAW && activeTabId===2">
+
+        </mdb-tab>
+        <mdb-tab *ngIf="objectURLStr && activeTabId===1">
+          <app-pdf-view [documentUrl]="objectURLStr"></app-pdf-view>
+        </mdb-tab>
+      </mdb-tabset> -->
+      </div>
+    </div>
+  </div>
+</div>

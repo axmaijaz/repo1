@@ -1,0 +1,189 @@
+<!-- <div *hasClaim="'IsFacilityUser'" class="col-xl-6 col-lg-6 col-md-6 col-sm-12 mb-3">
+  <div class="card custom-radius-card" style="height: 100%;">
+    <div class="card-body">
+      <div class="d-flex mb-3 flex-wrap justify-content-between align-items-center">
+         <h2 class="graph-heading mb-2">Monthly EOD Report</h2>
+        <div class="d-flex flex-wrap justify-content-between w-100">
+        </div>
+      </div>
+      <div  class="d-flex flex-wrap justify-content-between align-items-center">
+        <div style="min-width: 100%;">
+          <canvas mdbChart width="100%"
+            [chartType]="eodReportChartType"
+            [datasets]="eodReportChartDatasets"
+            [labels]="eodReportChartLabels"
+            [colors]="eodReportChartColors"
+            [options]="eodReportChartOptions"
+            [legend]="false">
+          </canvas>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div> -->
+<div  *hasClaim="['IsFacilityUser']" class="row justify-content-around">
+    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 mb-3">
+      <div class="card custom-radius-card" style="height: 100%;">
+        <div class="card-body">
+          <div class="d-flex mb-3 flex-wrap justify-content-between align-items-center">
+             <h2 class="graph-heading mb-2">CCM Program</h2>
+          </div>
+          <div  class="d-flex flex-wrap justify-content-between align-items-center">
+            <div style="min-width: 100%;">
+              <canvas mdbChart width="100%"
+                [chartType]="ccmEodReportChartType"
+                [datasets]="ccmEodReportChartDatasets"
+                [labels]="ccmEodReportChartLabels"
+                [colors]="ccmEodReportChartColors"
+                [options]="ccmEodReportChartOptions"
+                [legend]="false">
+              </canvas>
+            </div>
+          </div>
+        </div>
+  
+      </div>
+    </div>
+    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 mb-3">
+        <div class="card custom-radius-card" style="height: 100%;">
+          <div class="card-body">
+            <div class="d-flex mb-3 flex-wrap justify-content-between align-items-center">
+              <h2 class="graph-heading mb-2">RPM Program</h2>
+            </div>
+            <div  class="d-flex flex-wrap justify-content-between align-items-center">
+              <div style="min-width: 100%;">
+               <canvas mdbChart width="100%"
+                [chartType]="rpmEodReportChartType"
+                [datasets]="rpmEodReportChartDatasets"
+                [labels]="rpmEodReportChartLabels"
+                [colors]="rpmEodReportChartColors"
+                [options]="rpmEodReportChartOptions"
+                [legend]="false">
+                </canvas>
+              </div>
+      
+            </div>
+          </div>
+      
+        </div>
+      </div>
+  </div>
+<div  *hasClaim="['IsFacilityUser']" class="row justify-content-around">
+    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 mb-3">
+      <div class="card custom-radius-card" style="height: 100%;">
+        <div class="card-body">
+          <div class="d-flex mb-3 flex-wrap justify-content-between align-items-center">
+             <h2 class="graph-heading mb-2">Current month CCM progress</h2>
+            <div class="d-flex flex-wrap justify-content-between w-100">
+              <p class="mb-1 border p-1 rounded d-flex align-items-center" style="font-size: 12px;"><strong> Projection:</strong> <strong class="ml-1 px-1 text-white  bg-dynamic-2c rounded">{{ccmProjectionPercentage|| 0}}% </strong></p>
+              <p class="mb-1 ml-1 border p-1 rounded d-flex align-items-center" style="font-size: 12px;"> <strong>Completed:</strong> <strong class="ml-1 px-1 text-white  bg-dynamic-2c rounded">{{ccmAchievementPercentage|| 0}}% </strong></p>
+              <p class="mb-1 ml-1 border p-1 rounded d-flex align-items-center" style="font-size: 12px;"> <strong>Last month CCM:</strong><strong class="ml-1 px-1 text-white  bg-dynamic-2c rounded">{{ccmLastAchievementPercentage|| 0}}%</strong></p>
+            </div>
+          </div>
+          <div  class="d-flex flex-wrap justify-content-between align-items-center">
+            <div style="min-width: 100%;">
+              <canvas mdbChart width="100%"
+                [chartType]="ccmChartTypePie"
+                [datasets]="ccmChartDatasetsPie"
+                [labels]="ccmChartLabelsPie"
+                [colors]="ccmChartColorsPie"
+                [options]="ccmChartOptionsPie"
+                [legend]="false">
+              </canvas>
+            </div>
+          </div>
+        </div>
+  
+      </div>
+    </div>
+    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 mb-3">
+        <div class="card custom-radius-card" style="height: 100%;">
+          <div class="card-body">
+            <div class="d-flex mb-3 flex-wrap justify-content-between align-items-center">
+              <h2 class="graph-heading mb-2">Current month RPM progress</h2>
+              <div class="d-flex flex-wrap justify-content-between w-100">
+                <p class="mb-1 border p-1 rounded d-flex align-items-center" style="font-size: 12px;"><strong> Projection:</strong> <strong class="ml-1 px-1 text-white  bg-dynamic-2c rounded">{{rpmProjectionPercentage || 0}}% </strong></p>
+                <p class="mb-1 ml-1 border p-1 rounded d-flex align-items-center" style="font-size: 12px;"> <strong>Completed:</strong> <strong class="ml-1 px-1 text-white  bg-dynamic-2c rounded">{{rpmAchievementPercentage || 0}}% </strong></p>
+                <p class="mb-1 ml-1 border p-1 rounded d-flex align-items-center" style="font-size: 12px;"> <strong>Last month RPM:</strong><strong class="ml-1 px-1 text-white  bg-dynamic-2c rounded">{{rpmSixteenDaysReadingPercentage || 0}}%</strong></p>
+              </div>
+            </div>
+            <div  class="d-flex flex-wrap justify-content-between align-items-center">
+              <div style="min-width: 100%;">
+                <canvas mdbChart width="100%"
+                  [chartType]="chartTypePie"
+                  [datasets]="chartDatasetsPie"
+                  [labels]="chartLabelsPie"
+                  [colors]="chartColorsPie"
+                  [options]="chartOptionsPie"
+                  [legend]="false">
+                </canvas>
+              </div>
+      
+            </div>
+          </div>
+      
+        </div>
+      </div>
+  </div>
+<!-- <div class="row justify-content-around">
+    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 mb-3">
+      <div class="card custom-radius-card" style="height: 100%;">
+        <div class="card-body">
+          <h2 class="graph-heading">CCM End of Day Report</h2>
+          <div  class="d-flex flex-wrap justify-content-between align-items-center">
+            <div class="legend-ccm-graph">
+              <ul>
+                <li><strong>Achievements</strong> <span >{{ccmEodReport.achievements}}</span></li>
+                <li><strong>Last Month Achievements</strong> <span >{{ccmEodReport.lastMonthAchievements}}</span></li>
+                <li><strong>CCM Projection</strong> <span >{{ccmEodReport.ccmProjection}}</span></li>
+                <li><strong>Eligible Patients</strong> <span >{{ccmEodReport.eligiblePatients}}</span></li>
+              </ul>
+            </div>
+            <div style="min-width: 160px;">
+              <canvas mdbChart width="160" height="160"
+                [chartType]="'doughnut'"
+                [datasets]="ccmChartDatasetsPie"
+                [labels]="ccmChartLabelsPie"
+                [colors]="ccmChartColorsPie"
+                [options]="ccmChartOptionsPie"
+                [legend]="false">
+              </canvas>
+            </div>
+    
+          </div>
+        </div>
+  
+      </div>
+    </div>
+    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 mb-3">
+        <div class="card custom-radius-card" style="height: 100%;">
+          <div class="card-body">
+            <h2 class="graph-heading">RPM End of Day Report</h2>
+            <div  class="d-flex flex-wrap justify-content-between align-items-center">
+              <div class="legend-rpm-graph">
+                <ul>
+                  <li><strong>Eligible Patients</strong> <span >{{rpmEodReport.activePatients}}</span></li>
+                  <li><strong>16 Days Reading Patients</strong> <span >{{rpmEodReport.sixteenDaysReadingPatients}}</span></li>
+                  <li><strong>No reading Patient</strong> <span >{{rpmEodReport.noReadingPatients}}</span></li>
+                  <li><strong>Rpm Projection</strong> <span >{{rpmEodReport.rpmProjection}}</span></li>
+                  <li><strong>Achievements</strong> <span >{{rpmEodReport.totalCompletedPatients}}</span></li>
+                </ul>
+              </div>
+              <div style="min-width: 160px;">
+                <canvas mdbChart width="160" height="160"
+                  [chartType]="'doughnut'"
+                  [datasets]="chartDatasetsPie"
+                  [labels]="chartLabelsPie"
+                  [colors]="chartColorsPie"
+                  [options]="chartOptionsPie"
+                  [legend]="false">
+                </canvas>
+              </div>
+      
+            </div>
+          </div>
+      
+        </div>
+      </div>
+  </div> -->

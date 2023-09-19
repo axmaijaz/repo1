@@ -1,0 +1,27 @@
+@import "theme";
+
+.ccm-consent {
+  .border.rounded {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin: 0 auto;
+    min-height: 120px;
+    margin-bottom: 1rem;
+  }
+}
+.claim-select {
+  border:1px solid $dynamic-colour;
+  padding: 6px 5px;
+  color: $dynamic-colour;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 4px;
+  text-align: center;
+  &.active,
+  &:hover {
+    background-color: $dynamic-colour;
+    color: #fff;
+    cursor: pointer;
+  }
+}

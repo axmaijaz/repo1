@@ -1,0 +1,357 @@
+<div class="d-flex flex-wrap justify-content-between mb-4">
+  <div class="d-flex align-items-center justify-content-start">
+    <h4 class="mr-3 mb-0"><a class="text-dark" (click)="navigateBack()"><i class="fa fa-arrow-left"></i></a></h4>
+    <h1 class="page-title mb-2">Invoice Preview</h1>
+    <!-- <h1 class="page-title mb-2">AM Diabetes & Endocrinology</h1> -->
+    <!-- <p><strong>Kate Bond Road Bartlett, TN 38133 </strong></p> -->
+  </div>
+  <div class="d-flex justify-content-between">
+
+<!-- 
+    <div class="card mr-3" *ngIf="!isLoadingPreview">
+      <div class="card-body p-2">
+        <div class="d-flex justify-content-center align-items-center">
+          <h4 class="mb-0 font-600 price-title text-dynamic-2c"> <i class="fa fa-money fa-lg"></i>
+            {{invoicePreviewData.installmentsCount}}</h4>
+        </div>
+        <p class="mb-0"><small>Installments</small></p>
+      </div>
+    </div>
+    <div class="card mr-3" *ngIf="!isLoadingPreview">
+      <div class="card-body p-2">
+        <div class="d-flex justify-content-center align-items-center">
+          <h4 class="mb-0 font-600 price-title text-dynamic-2c"> <i class="fa fa-money fa-lg"></i>
+            {{invoicePreviewData.installmentsAmount}}<span class="text-dynamic-2c">$</span></h4>
+        </div>
+        <p class="mb-0"><small>Installments Amount</small></p>
+      </div>
+    </div>
+    <div class="card mr-3" *ngIf="!isLoadingPreview">
+      <div class="card-body p-2">
+        <div class="d-flex justify-content-center align-items-center">
+          <h4 class="mb-0 font-600 price-title text-dynamic-2c"> <i class="fa fa-money fa-lg"></i>
+            {{invoicePreviewData.transmissionChargesCount}}</h4>
+        </div>
+        <p class="mb-0"><small>Transmission Charges Count</small></p>
+      </div>
+    </div>
+    <div class="card mr-3" *ngIf="!isLoadingPreview">
+      <div class="card-body p-2">
+        <div class="d-flex justify-content-center align-items-center">
+          <h4 class="mb-0 font-600 price-title text-dynamic-2c"> <i class="fa fa-money fa-lg"></i>
+            {{invoicePreviewData.transmissionCharges}}<span class="text-dynamic-2c">$</span></h4>
+        </div>
+        <p class="mb-0"><small>Transmission Charges</small></p>
+      </div>
+    </div>
+    <div class="card mr-3" *ngIf="!isLoadingPreview">
+      <div class="card-body p-2">
+        <div class="d-flex justify-content-center align-items-center">
+          <h4 class="mb-0 font-600 price-title text-dynamic-2c"> <i class="fa fa-money fa-lg"></i>
+            {{invoicePreviewData.reActivatedDevicesCount}}<span class="text-dynamic-2c">$</span></h4>
+        </div>
+        <p class="mb-0"><small>ReActivated Devices Count</small></p>
+      </div>
+    </div>
+    <div class="card mr-3" *ngIf="!isLoadingPreview">
+      <div class="card-body p-2">
+        <div class="d-flex justify-content-center align-items-center">
+          <h4 class="mb-0 font-600 price-title text-dynamic-2c"> <i class="fa fa-money fa-lg"></i>
+            {{invoicePreviewData.reActivationCharges}}<span class="text-dynamic-2c">$</span></h4>
+        </div>
+        <p class="mb-0"><small>ReActivated Charges</small></p>
+      </div>
+    </div> -->
+    <div class="card mr-3" *ngIf="!isLoadingPreview">
+      <div class="card-body p-2">
+        <div class="d-flex justify-content-center align-items-center">
+          <h4 class="mb-0 font-600 price-title text-dynamic-2c"> <i class="fa fa-money fa-lg"></i>
+            <span class="text-dynamic-2c">$</span>{{invoicePreviewData.fixedMonthlyCharge}}</h4>
+        </div>
+        <p class="mb-0"><small>Fixed Amount</small></p>
+      </div>
+    </div>
+    <div class="card" *ngIf="!isLoadingPreview">
+      <div class="card-body p-2">
+        <div class="d-flex justify-content-between align-items-center">
+          <!-- <h4 class="mb-0 mr-3 price-title">Billed Amount:</h4> -->
+          <h4 class="mb-0 font-600 price-title text-dynamic-2c"><i class="fa fa-money fa-lg"></i>
+            <span class="text-dynamic-2c">$</span>{{invoicePreviewData.invoiceTotal}}</h4>
+        </div>
+        <p class="mb-0"><small>Billed Amount</small></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-sm-6 d-flex w-100 align-items-end mb-3">
+    <div class="form-group mb-0 w-100">
+      <label for="" [class.text-dynamic-2c]="activeViewType===2">Previous Invoices</label>
+      <ng-select [class.my-class-success]="activeViewType===2" class="ng-select-small" [(ngModel)]="selectedInvoiceId" name="myOrganization"
+        [loading]="isLoadinginvoicesList || loadingInvoicesDetails" [multiple]="false" [searchable]="true"
+         placeholder="Select Invoice" required #IssueOrganizationid="ngModel">
+
+        <!-- <ng-option [value]="item.id" *ngFor="let item of invoicesList">{{item.invoiceNumber}}-{{item.payPeriod}} {{item.invoiceDate | date}}</ng-option> -->
+        <ng-option [value]="item.id" *ngFor="let item of invoicesList">{{item.invoiceNumber}} {{item.payPeriod}} {{item.facilityName}}</ng-option>
+      </ng-select>
+    </div>
+    <button (click)="invoiceSelectionChanged()" class="btn btn-dynamic-2c btn-sm mb-0 d-flex align-items-center">
+      <span *ngIf="(isLoadinginvoicesList || loadingInvoicesDetails) && activeViewType===2" class="spinner-border spinner-border-sm " role="status" aria-hidden="true">
+      </span>
+      Apply
+    </button>
+  </div>
+  <div class="col-sm-2 pr-0">
+
+    <div class="month">
+      <label for="" [class.text-dynamic-2c]="activeViewType===1">Unbilled Claims</label>
+      <ng-select [class.my-class-success]="activeViewType===1" [searchable]="false" class="ng-select-small" [clearable]="false" [(ngModel)]="monthId"
+         placeholder="Select Month" (click)="$event.stopPropagation();"
+        style="min-width:140px">
+        <ng-option [value]="1">January</ng-option>
+        <ng-option [value]="2">February</ng-option>
+        <ng-option [value]="3">March</ng-option>
+        <ng-option [value]="4">April</ng-option>
+        <ng-option [value]="5">May</ng-option>
+        <ng-option [value]="6">June</ng-option>
+        <ng-option [value]="7">July</ng-option>
+        <ng-option [value]="8">August</ng-option>
+        <ng-option [value]="9">September</ng-option>
+        <ng-option [value]="10">October</ng-option>
+        <ng-option [value]="11">November</ng-option>
+        <ng-option [value]="12">December</ng-option>
+      </ng-select>
+    </div>
+  </div>
+  <div class="col-sm-4 d-flex align-items-start pl-2" style="margin-top: 28px">
+    <div class="form-group flex-1">
+      <div class="month">
+        <ng-select [class.my-class-success]="activeViewType===1" [searchable]="false" class="w-100 ng-select-small" [clearable]="false" placeholder="Select Year"
+          [(ngModel)]="yearId" (click)="$event.stopPropagation();"
+          style="width:250px">
+          <ng-option *ngFor="let year of listOfYears" [value]="year">{{year}}</ng-option>
+        </ng-select>
+      </div>
+    </div>
+    <button (click)="PreviewInvoiceByFacilityId()" class="btn btn-dynamic-2c btn-sm my-0 d-flex align-items-center">
+      <span *ngIf="(isLoadinginvoicesList || loadingInvoicesDetails) && activeViewType===1" class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
+      </span>
+      Apply
+    </button>
+
+    <button [disabled]="generatingInvoice || activeViewType === 2 || disableGenerateInvoice" *hasClaim="['CanGenerateInvoice']" class="btn btn-dynamic-2c btn-sm m-0 d-flex align-items-center"
+      style=" float:right " (click)="openConfirmModal()" title="Generate Invoice">
+      <span *ngIf="generatingInvoice" class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
+      </span>
+      <i class="fa fa-dollar fa-lg"></i> Generate Invoice</button>
+
+  </div>
+  <div class="col-12">
+    <!-- <div class="d-flex mb-2 justify-content-between align-items-center">
+            <div style="min-width: 100px;">
+                <label class="font-weight-bold">
+                    Services:
+                </label>
+            </div>
+            <div class="flex-grow-1">
+                <div>
+                    <button type="button" style="width: 100px;" class="btn ml-0 btn-dynamic-2c btn-sm active">ALL</button>
+                    <button type="button" style="width: 100px;" class="btn btn-dynamic-2c btn-sm">CCM</button>
+                    <button type="button" style="width: 100px;" class="btn btn-dynamic-2c btn-sm">RPM</button>
+                    <button type="button" style="width: 100px;" class="btn btn-dynamic-2c btn-sm">TCM</button>
+                    <button type="button" style="width: 100px;" class="btn btn-dynamic-2c btn-sm">BHI</button>
+                    <button type="button" style="width: 100px;" class="btn btn-dynamic-2c btn-sm">AWV</button>
+                    <button type="button" style="width: 100px;" class="btn btn-dynamic-2c btn-sm">Endo</button>
+                </div>
+            </div>
+        </div> -->
+    <!-- <div class="d-flex justify-content-between align-items-center">
+            <div style="min-width: 100px;">
+                <label class="font-weight-bold">
+                    Patient:
+                </label>
+            </div>
+            <div class="flex-grow-1">
+                <div class="form-group">
+                    <input type="text" class="form-control">
+                </div>
+            </div>
+        </div> -->
+
+
+
+  </div>
+</div>
+<div class="row" *ngIf="!isLoadingPreview">
+  <div class="col-lg-4">
+    <div class="d-flex flex-wrap rpm-content-box flex-1 text-center p-0">
+      <div class="item-top-centent d-flex justify-content-center align-items-center w-100">
+        <p class="mb-0 item-bold text-center"> Installments / Sales</p>
+      </div>
+      <div class="item-bottom-content d-flex flex-1">
+        <div class="completed-min-not-started cursor-pointer" (click)="invoiceDetailByDeviceDto.category = 0;getInvoiceDetailByDevice();">
+            <p class="mb-0"><small class="text-info font-700" style="font-size: 10px;">Count</small></p>
+            <p class="mb-0"><strong class="mr-1">{{invoicePreviewData.installmentsCount}}</strong></p>
+        </div>
+        <div class="completed-min-not-started">
+            <p class="mb-0"><small class="text-info font-700" style="font-size: 10px;">Charges</small></p>
+            <p class="mb-0"><i class="fa fa-money fa-lg text-dynamic-2c mr-1"></i><strong class="mr-1"><span class="text-dynamic-2c">$</span>{{invoicePreviewData.installmentsAmount }}</strong></p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4">
+    <div class="d-flex flex-wrap rpm-content-box flex-1 text-center p-0">
+      <div class="item-top-centent d-flex justify-content-center align-items-center w-100">
+        <p class="mb-0 item-bold text-center"> Transmission </p>
+      </div>
+      <div class="item-bottom-content d-flex flex-1">
+        <div class="completed-min-not-started" (click)="invoiceDetailByDeviceDto.category = 1;">
+            <p class="mb-0"><small class="text-info font-700" style="font-size: 10px;">Count</small></p>
+            <p class="mb-0"><strong class="mr-1">{{invoicePreviewData.transmissionChargesCount}}</strong></p>
+        </div>
+        <div class="completed-min-not-started">
+            <p class="mb-0"><small class="text-info font-700" style="font-size: 10px;">Charges</small></p>
+            <p class="mb-0"><i class="fa fa-money fa-lg text-dynamic-2c mr-1"></i><strong class="mr-1"><span class="text-dynamic-2c">$</span>{{invoicePreviewData.transmissionCharges }}</strong></p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4">
+    <div class="d-flex flex-wrap rpm-content-box flex-1 text-center p-0">
+      <div class="item-top-centent d-flex justify-content-center align-items-center w-100">
+        <p class="mb-0 item-bold text-center"> ReActivated Devices </p>
+      </div>
+      <div class="item-bottom-content d-flex flex-1">
+        <div class="completed-min-not-started cursor-pointer" (click)="invoiceDetailByDeviceDto.category = 2;getInvoiceDetailByDevice();">
+            <p class="mb-0"><small class="text-info font-700" style="font-size: 10px;">Count</small></p>
+            <p class="mb-0"><strong class="mr-1">{{invoicePreviewData.reActivatedDevicesCount}}</strong></p>
+        </div>
+        <div class="completed-min-not-started">
+            <p class="mb-0"><small class="text-info font-700" style="font-size: 10px;">Charges</small></p>
+            <p class="mb-0"><i class="fa fa-money fa-lg text-dynamic-2c mr-1"></i><strong class="mr-1"><span class="text-dynamic-2c">$</span>{{invoicePreviewData.reActivationCharges}}</strong></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<p><strong>Price Per CPT Code</strong></p>
+<div *ngIf="isLoadingPreview" class="d-flex justify-content-center text-center">
+  <!-- <div class="d-flex justify-content-center text-center"> -->
+
+  <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+</div>
+
+
+<ng-container *ngIf="!isLoadingPreview">
+  <div class="row mt-3">
+    <div class="col-lg-3" *ngFor="let item of displayInvoiceObj1">
+      <div class="panel">
+        <div class="panel-header p-2 border-bottom-0">
+          <div class="d-flex align-items-center justify-content-between">
+            <div>
+              <small>CPT Code</small>
+              <p class="mb-0 font-500">{{item.key}} <small> </small></p>
+            </div>
+            <div class="text-right">
+              <small>T.E x U. Price = Total</small>
+              <p class="mb-0 text-dynamic-2c"><strong> {{item.value.length}} x {{item['unitPrice']}} =
+                  ${{item.moduleTotal}}</strong></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<p><strong>Price Per Service</strong></p>
+
+<ng-container *ngIf="!isLoadingPreview">
+  <div class="row mt-3">
+    <div class="col-lg-6" *ngFor="let item of displayInvoiceObj">
+      <div class="panel">
+        <div class="panel-header">
+          <div class="d-flex align-items-center justify-content-between">
+            <h3 class="mb-0">{{item.key}} ({{item.value.length}})</h3>
+            <p class="mb-0"><strong>AMOUNT: ${{item.moduleTotal}}</strong></p>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div style="height: 350px;">
+            <div style="overflow-y: auto;height: 100%;">
+              <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                  <thead class="bg-dynamic-2c text-white">
+                    <tr>
+                      <th>Patient Name</th>
+                      <th>FQHC</th>
+                      <th>CPT Code</th>
+                      <th>Service Date</th>
+                      <th>Charges</th>
+                      <th>Icd Codes</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let claim of item.value">
+                      <td>{{claim.patientName}}</td>
+                      <td>{{claim.fqhcCode}}</td>
+                      <td>{{claim.cptCode}}</td>
+                      <td> <span *ngIf="claim.serviceDate">{{claim.serviceDate | date}}</span></td>
+                      <td>{{claim.facilityPaymentAmount}}</td>
+                      <td>{{claim.icd10Code}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>
+<div mdbModal #invoiceDetailsByDevice="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myinvoiceDetailsByDeviceLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable  modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header py-2">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="invoiceDetailsByDevice.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" style="font-size: 20px;" id="myModalLabel">
+         {{invoiceCategoryByDeviceEnum[invoiceDetailByDeviceDto.category]}} Details
+        </h4>
+      </div>
+      <div class="modal-body">
+        <div class="table-responsive">
+          <table class="table table-hover table-bordered">
+            <thead class="bg-dynamic-2c text-white">
+              <tr>
+                <th>Patient's Name</th>
+                <th>Device Serial N0.</th>
+                <th *ngIf="invoiceDetailByDeviceDto.category == 0" >Installment Amount</th>
+                <th *ngIf="invoiceDetailByDeviceDto.category == 1" >Transmission Amount</th>
+                <th *ngIf="invoiceDetailByDeviceDto.category == 2" >Reactivation Amount</th>
+                <th *ngIf="invoiceDetailByDeviceDto.category == 0" >Date of Installment</th>
+                <th *ngIf="invoiceDetailByDeviceDto.category == 1" >Date of Transmission</th>
+                <th *ngIf="invoiceDetailByDeviceDto.category == 2" >Date of Reactivation</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of invoiceDetailsList" >
+                <td>{{item.patientName}}</td>
+                <td>{{item.deviceSerialNumber}}</td>
+                <td>{{item.chargeAmount}}</td>
+                <td>{{item.appliedDate | dateFormatPipe}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer py-2">
+        <button type="button" class="btn btn-sm btn-dynamic-secondary-2c" aria-label="Close" (click)="invoiceDetailsByDevice.hide()" >Close</button>
+      </div>
+    </div>
+  </div>
+</div>

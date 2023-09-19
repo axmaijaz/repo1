@@ -1,0 +1,826 @@
+<div class="ccm-body p-3" style="font-size: 12px;">
+  <!-- <div class="row" aria-readonly="true" readonly="true">
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label for="namea">Billing Provider<span class="text-danger">*</span></label>
+          <ng-select class="ng-select-small" [multiple]="false" [searchable]="true" placeholder="Select Billing Provider">
+            <ng-option value="1">Salman Khan </ng-option>
+            <ng-option value="1">Imran Khan </ng-option>
+            <ng-option value="1">Irfan Khan </ng-option>
+          </ng-select>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label for="defaultLoginFormPassword">Password</label>
+          <div class="d-flex">
+            <input type="password" id="defaultLoginFormPassword" class="form-control form-control-sm"
+              placeholder="Password">
+            <button class="btn btn-dynamic-2c btn-sm  m-0 ml-2">Enter</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <hr /> -->
+  <ng-container *ngIf="isLoadingPTABData;then loadingSkelton"></ng-container>
+  <div class="row" *ngIf="!isLoadingPTABData">
+
+    <div class="col-sm-12">
+      <div class="row justify-content-end" style="margin: 0 -20px;">
+
+        <div class="col-xl-7 col-lg-12 col-md-12 col-sm-12 d-flex flex-wrap">
+          <div class="d-flex flex-fill">
+            <!-- <button class="col btn btn-dynamic-2c btn-sm" enabled appDebounceClick (debounceClick)="DownLoadPdf()"
+            [debounceTime]="200">
+            <span *ngIf="isLoadingZip" class="mr-1 spinner-border spinner-border-sm " role="status"
+              aria-hidden="true"></span>
+            <span class="fa fa-download"></span>
+            Download</button> -->
+            <!-- <button class="col btn btn-dynamic-secondary-2c btn-sm" appDebounceClick (debounceClick)="sendtoPatientModal.show()"
+            [debounceTime]="200" [disabled]="awEncounterPTabDto.status !== 1">Send to patient</button> -->
+          </div>
+          <div class="d-flex flex-fill">
+            <!-- <button class="col btn btn-dynamic-secondary-2c btn-sm" [disabled]="awEncounterPTabDto.status !== 1" appDebounceClick
+            (debounceClick)="OPenPatientTab()" [debounceTime]="200">Patient Tab</button> -->
+            <button class="col btn btn-dynamic-2c btn-sm" appDebounceClick (debounceClick)="awNotes.toggle()"
+              [debounceTime]="200" [disabled]="awEncounterPTabDto.status !== 1">Show Notes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <fieldset [disabled]="awEncounterPTabDto.status !== 1">
+      <div class="col-sm-12" mdbCollapse #awNotes="bs-collapse">
+        <div class="row">
+          <div class="col-lg-6 col-sm-12">
+            <div class="form-group border-bottom pb-3">
+              <label for="">Physical Assessment Note</label>
+              <textarea name="" class="form-control" appOnDebounce [debounceTime]="2000"
+                (onDebounce)="EditAWEncounterNotes()" id="physicalAssessmentNote"
+                [(ngModel)]="awEncounterPTabDto.physicalAssessmentNote" style="height: 40px;" cols="30"
+                rows="10"></textarea>
+            </div>
+          </div>
+          <div class="col-lg-6 col-sm-12">
+            <div class="form-group border-bottom pb-3">
+              <label for="">Self assessment Note</label>
+              <textarea name="" class="form-control" appOnDebounce [debounceTime]="2000"
+                (onDebounce)="EditAWEncounterNotes()" id="selfAssessmentNote"
+                [(ngModel)]="awEncounterPTabDto.selfAssessmentNote" style="height: 40px;" cols="30"
+                rows="10"></textarea>
+            </div>
+          </div>
+          <div class="col-lg-6 col-sm-12">
+            <div class="form-group border-bottom pb-3">
+              <label for="">Behavioral Note</label>
+              <textarea name="" class="form-control" appOnDebounce [debounceTime]="2000"
+                (onDebounce)="EditAWEncounterNotes()" id="behavioralNote"
+                [(ngModel)]="awEncounterPTabDto.behavioralNote" style="height: 40px;" cols="30" rows="10"></textarea>
+            </div>
+          </div>
+          <div class="col-lg-6 col-sm-12">
+            <div class="form-group border-bottom pb-3">
+              <label for="">Functional Assessment Note</label>
+              <textarea name="" class="form-control" appOnDebounce [debounceTime]="2000"
+                (onDebounce)="EditAWEncounterNotes()" id="functionalAssessmentNote"
+                [(ngModel)]="awEncounterPTabDto.functionalAssessmentNote" style="height: 40px;" cols="30"
+                rows="10"></textarea>
+            </div>
+          </div>
+          <div class="col-lg-6 col-sm-12">
+            <div class="form-group border-bottom pb-3">
+              <label for="">Home safety Assessment Note</label>
+              <textarea name="" class="form-control" appOnDebounce [debounceTime]="2000"
+                (onDebounce)="EditAWEncounterNotes()" id="homeSafetyAssessmentNote"
+                [(ngModel)]="awEncounterPTabDto.homeSafetyAssessmentNote" style="height: 40px;" cols="30"
+                rows="10"></textarea>
+            </div>
+          </div>
+          <div class="col-lg-6 col-sm-12">
+            <div class="form-group border-bottom pb-3">
+              <label for="">Hearing screen Note </label>
+              <textarea name="" class="form-control" appOnDebounce [debounceTime]="2000"
+                (onDebounce)="EditAWEncounterNotes()" id="hearingScreenNote"
+                [(ngModel)]="awEncounterPTabDto.hearingScreenNote" style="height: 40px;" cols="30" rows="10"></textarea>
+            </div>
+          </div>
+          <div class="col-lg-6 col-sm-12">
+            <div class="form-group border-bottom pb-3">
+              <label for="">Vision Screen Note </label>
+              <textarea name="" class="form-control" appOnDebounce [debounceTime]="2000"
+                (onDebounce)="EditAWEncounterNotes()" id="visionScreenNote"
+                [(ngModel)]="awEncounterPTabDto.visionScreenNote" style="height: 40px;" cols="30" rows="10"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="col-sm-12 mb-3">
+        <div class="">
+          <div class="row">
+            <div *ngIf="!awEncounterPTabDto.sixCIT" class="col-sm-6">
+              <div class="form-group">
+                <label for="minicogScore">Minicog Score ( 0 - 4) </label>
+                <input type="text" readonly appOnDebounce [debounceTime]="2000" (onDebounce)="EditAWEncounterNotes()"
+                  id="minicogScore" [(ngModel)]="awEncounterPTabDto.minicogScore" class="form-control form-control-sm">
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label for="phqScore">Cognitive Impairment Test (6CIT) (0-28)
+                </label>
+                <input type="text" readonly 
+                  id="phqScore" [(ngModel)]="awEncounterPTabDto.sixCIT" class="form-control form-control-sm">
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label for="phqScore">PHQ Score
+                  <span class="text-info" *ngIf="!awEncounterPTabDto.depressionScreeningCompleted">Screening is not
+                    completed</span>
+                </label>
+                <input type="text" readonly appOnDebounce [debounceTime]="2000" (onDebounce)="EditAWEncounterNotes()"
+                  id="phqScore" [(ngModel)]="awEncounterPTabDto.phqScore" class="form-control form-control-sm">
+              </div>
+            </div>
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label for="alcoholScreenResult">Alcohol Screen Result
+                  <span class="text-info" *ngIf="!awEncounterPTabDto.amScreeningCompleted">Screening is not
+                    completed</span>
+                </label>
+                <input type="text" readonly appOnDebounce [debounceTime]="2000" (onDebounce)="EditAWEncounterNotes()"
+                  id="alcoholScreenResult" [(ngModel)]="awEncounterPTabDto.alcoholScreenResult"
+                  class="form-control form-control-sm">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-12">
+        <div class="border-bottom mb-3 pb-3">
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="row">
+                <!-- <div class="col-lg-4 col-sm-12">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" (change)="EditAWEncounterNotes()"
+                        [(ngModel)]="awEncounterPTabDto.patientAgreementLDCT" class="custom-control-input"
+                        id="patientAgreementLDCT">
+                      <label class="custom-control-label" for="patientAgreementLDCT"> LDCT G0296</label>
+                    </div>
+                  </div>
+                  <div class="col-lg-4 col-sm-12">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" (change)="EditAWEncounterNotes()" [(ngModel)]="awEncounterPTabDto.ldctScreening"
+                        class="custom-control-input" id="screeningCounselingLDCT">
+                      <label class="custom-control-label" for="screeningCounselingLDCT"> (Screening for LDCT) If
+                        applicable</label>
+                    </div>
+                  </div> -->
+                <div class="col-lg-12 col-sm-12">
+                  <div class="form-group">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" [disabled]="ldctNotApplicable" (change)="EditAWEncounterNotes()"
+                        [(ngModel)]="awEncounterPTabDto.ldctCounseling" class="custom-control-input"
+                        id="ldctCounseling">
+                      <label class="custom-control-label" for="ldctCounseling"> G0296 - LDCT
+                        <span class="text-info" *ngIf="ldctNotApplicable">Not Applicable</span></label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-sm-12 d-flex justify-content-start align-items-center">
+                  <label for="ldctCounselingNote">Note </label>
+                  <textarea appOnDebounce [debounceTime]="2000" (onDebounce)="EditAWEncounterNotes()"
+                    id="ldctCounselingNote" [(ngModel)]="awEncounterPTabDto.ldctCounselingNote"
+                    class="form-control ml-3" style="height: 36px" cols="30" rows="10"></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="row">
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <div class="custom-control custom-checkbox custom-control-inline">
+                      <input type="checkbox" [disabled]="cessationNotApplicable"
+                        (change)="checkIfTobaccoCptIsEmpty(2);EditAWEncounterNotes()"
+                        [(ngModel)]="awEncounterPTabDto.tobaccoCessationCounseling" class="custom-control-input"
+                        id="tobaccoCessationCounseling">
+                      <label class="custom-control-label" for="tobaccoCessationCounseling"> Tobacco Cessation
+                        Counseling
+                        <span class="text-info" *ngIf="cessationNotApplicable"> Not Applicable ( Patient is not using
+                          tobacco
+                          products)</span></label>
+
+                      <a id="tobaccoCessation" class="ml-3" container="body" [mdbPopover]="tobaccoCessation"
+                        placement="bottom" triggers="focus"><i
+                          class="fa fa-exclamation-circle text-success fa-lg"></i></a>
+                      <ng-template #tobaccoCessation>
+                        <div class="bg-dark text-white py-3 pl-3 pr-2">
+                          <div class="who-covered" (click)="$event.stopPropagation()" [innerHTML]="tobacoHtml"
+                            malihu-scrollbar [scrollbarOptions]="scrollbarOptionsTimeline" style="max-height: 300px;">
+                          </div>
+                        </div>
+                      </ng-template>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-6 col-sm-12">
+                  <div class="form-check pl-0 form-check-inline">
+                    <input type="radio" [(ngModel)]="awEncounterPTabDto.tobaccoCessationCounselingCode"
+                      (change)="checkIfTobaccoCptIsEmpty(1);EditAWEncounterNotes()" [value]="'99406'"
+                      class="form-check-input" name="olsgd9825a" mdbInput id="54554">
+                    <label class="form-check-label" for="54554">99406</label>
+                  </div>
+                  <div class="form-check pl-0 form-check-inline">
+                    <input type="radio" [(ngModel)]="awEncounterPTabDto.tobaccoCessationCounselingCode"
+                      (change)="checkIfTobaccoCptIsEmpty(1);EditAWEncounterNotes()" [value]="'99407'"
+                      class="form-check-input" name="olsgd9825a" mdbInput id="85454">
+                    <label class="form-check-label" for="85454">99407</label>
+                    <a id="faceToFaceObesity12" class="ml-3"><i appDebounceClick
+                        (debounceClick)="uncheckTobaccoRadioProp()"
+                        class="fa fa-times-circle text-danger fa-lg"></i></a>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+
+
+                <!-- <div class="col-lg-6 col-sm-12">
+                    <p class="mb-2"><strong>99406 / 99407 – Smoking and tobacco use cessation counseling visit; intensive,
+                        greater
+                        than 10 minutes</strong>
+                    </p>
+                  </div> -->
+                <div class="col-lg-12 col-sm-12">
+                  <div class="form-group d-flex justify-content-start align-items-center">
+                    <label for="tobaccoCessationNote">Note </label>
+                    <textarea appOnDebounce [debounceTime]="2000" (onDebounce)="EditAWEncounterNotes()"
+                      id="tobaccoCessationNote" [(ngModel)]="awEncounterPTabDto.tobaccoCessationNote"
+                      class="form-control ml-3" style="height: 36px" cols="30" rows="10"></textarea>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-12">
+
+
+
+        <div class="row">
+          <div class="col-sm-12 border-bottom mb-3">
+            <div class="row">
+              <div class="col-lg-6 col-sm-12">
+                <div class="form-group">
+                  <div class="custom-control custom-checkbox custom-control-inline">
+                    <input type="checkbox" [disabled]="!awEncounterPTabDto.amScreeningCompleted"
+                      (change)="EditAWEncounterNotes()" [(ngModel)]="awEncounterPTabDto.alcoholMisuseScreening"
+                      class="custom-control-input" id="alcoholmisusecounseling">
+                    <label class="custom-control-label" for="alcoholmisusecounseling"> Alcohol Misuse Screening
+                      <span class="text-info" *ngIf="!awEncounterPTabDto.amScreeningCompleted">Screening is not
+                        completed</span>
+                    </label>
+
+                    <a id="popTemplate" class="ml-3 d-flex align-items-center" container="body"
+                      [mdbPopover]="popTemplate" placement="bottom" triggers="focus"><i
+                        class="fa fa-exclamation-circle text-success fa-lg"></i></a>
+                    <ng-template #popTemplate>
+                      <div class="bg-dark text-white py-3 pl-3 pr-2">
+                        <div class="who-covered" (click)="$event.stopPropagation()" [innerHTML]="alcoholHtml"
+                          malihu-scrollbar [scrollbarOptions]="scrollbarOptionsTimeline" style="max-height: 300px;">
+                        </div>
+                      </div>
+                    </ng-template>
+                  </div>
+                  <div class="custom-control custom-checkbox custom-control-inline">
+                    <input type="checkbox" (change)="EditAWEncounterNotes()"
+                      [(ngModel)]="awEncounterPTabDto.alcoholMisuseCounseling" class="custom-control-input"
+                      id="alcoholMisuseCounseling">
+                    <label class="custom-control-label" for="alcoholMisuseCounseling"> Alcohol Misuse
+                      Counseling</label>
+                    <a id="MisuseCounseling" class="ml-3 d-flex align-items-center" container="body"
+                      [mdbPopover]="MisuseCounseling" placement="bottom" triggers="focus"><i
+                        class="fa fa-exclamation-circle text-success fa-lg"></i></a>
+                    <ng-template #MisuseCounseling>
+                      <div class="bg-dark text-white py-3 pl-3 pr-2">
+                        <div class="who-covered" (click)="$event.stopPropagation()" [innerHTML]="alcoholHtml"
+                          malihu-scrollbar [scrollbarOptions]="scrollbarOptionsTimeline" style="max-height: 300px;">
+                        </div>
+                      </div>
+                    </ng-template>
+                  </div>
+                </div>
+
+
+                <div class="form-group d-flex justify-content-start align-items-center">
+                  <label for="alcoholMisuseNote">Note </label>
+                  <textarea appOnDebounce [debounceTime]="2000" (onDebounce)="EditAWEncounterNotes()"
+                    id="alcoholMisuseNote" [(ngModel)]="awEncounterPTabDto.alcoholMisuseNote" class="form-control ml-3"
+                    style="height: 36px" cols="30" rows="10"></textarea>
+                </div>
+              </div>
+              <div class="col-lg-6 col-sm-12">
+                <div class="form-group">
+                  <div class="custom-control custom-checkbox mb-3  d-flex align-items-center">
+                    <input type="checkbox" [disabled]="!awEncounterPTabDto.depressionScreeningCompleted"
+                      (change)="EditAWEncounterNotes()" [(ngModel)]="awEncounterPTabDto.annuallDepressionScreening"
+                      class="custom-control-input" id="annuallDepressionScreening">
+                    <label class="custom-control-label" for="annuallDepressionScreening">G0444 Annual depression
+                      screening
+                      <span class="text-info" *ngIf="!awEncounterPTabDto.depressionScreeningCompleted">Screening is not
+                        completed</span>
+                    </label>
+
+
+                  </div>
+                </div>
+                <div class="form-group d-flex justify-content-start align-items-center">
+                  <label for="annuallDepressionNote">Note </label>
+                  <textarea appOnDebounce [debounceTime]="2000" (onDebounce)="EditAWEncounterNotes()"
+                    id="annuallDepressionNote" [(ngModel)]="awEncounterPTabDto.annuallDepressionNote"
+                    class="form-control ml-3" style="height: 36px" cols="30" rows="10"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="row">
+          <div class="col-sm-12 border-bottom mb-2">
+            <div class="row">
+              <div class="d-flex flex-wrap col-lg-6 col-sm-12 p-0">
+                <div class="col-sm-12 form-group">
+                  <div class="custom-control custom-checkbox">
+                    <input type="checkbox" (change)="EditAWEncounterNotes()"
+                      [(ngModel)]="awEncounterPTabDto.endOfLifePlanning" class="custom-control-input"
+                      id="endOfLifePlanning">
+                    <label class="custom-control-label" for="endOfLifePlanning">99497 - End of Life Planning</label>
+                  </div>
+                </div>
+                <div class="col-sm-12 form-group d-flex justify-content-start align-self-end">
+                  <label for="endOfLifeNote">Note </label>
+                  <textarea appOnDebounce [debounceTime]="2000" (onDebounce)="EditAWEncounterNotes()" id="endOfLifeNote"
+                    [(ngModel)]="awEncounterPTabDto.endOfLifeNote" class="form-control ml-3" style="height: 36px"
+                    cols="30" rows="10"></textarea>
+                </div>
+              </div>
+              <div class="col-lg-6 col-sm-12">
+                <div class="mb-2">
+                  <div class="custom-control custom-checkbox mb-2 d-flex align-items-center">
+                    <input [disabled]="disableBmiFields" type="checkbox"
+                      (change)="checkIfObasityCptIsEmpty(2);EditAWEncounterNotes()"
+                      [(ngModel)]="awEncounterPTabDto.faceToFaceObesity" class="custom-control-input"
+                      id="faceToFaceObesity">
+                    <label class="custom-control-label" for="faceToFaceObesity"> Behavioral
+                      Counseling
+                      for
+                      Obesity, 15 minutes (For BMI > 30) </label>
+                    <span class="text-info" *ngIf="disableBmiFields"> Not Applicable
+                      ({{awEncounterPTabDto.bmi}})</span>
+                    <a id="faceToFaceObesity" class="ml-3" container="body" [mdbPopover]="faceToFaceObesity"
+                      placement="bottom" triggers="focus"><i
+                        class="fa fa-exclamation-circle text-success fa-lg"></i></a>
+                    <ng-template #faceToFaceObesity>
+                      <div class="bg-dark text-white py-3 pl-3 pr-2">
+                        <div class="who-covered" (click)="$event.stopPropagation()" [innerHTML]="BehavioralHTML"
+                          malihu-scrollbar [scrollbarOptions]="scrollbarOptionsTimeline" style="max-height: 300px;">
+                        </div>
+                      </div>
+                    </ng-template>
+                  </div>
+                  <div class="form-check pl-0 form-check-inline" style="margin-left: -4px;">
+                    <input [disabled]="disableBmiFields" type="radio"
+                      [(ngModel)]="awEncounterPTabDto.faceToFaceObesityCode"
+                      (change)="checkIfObasityCptIsEmpty(1);EditAWEncounterNotes()" [value]="'G0447'"
+                      class="form-check-input" mdbInput name="hhsdsydbgdyudyd" id="G0447">
+                    <label class="form-check-label" for="G0447">G0447</label>
+                  </div>
+                  <div class="form-check pl-0 form-check-inline">
+                    <input [disabled]="disableBmiFields" type="radio"
+                      [(ngModel)]="awEncounterPTabDto.faceToFaceObesityCode"
+                      (change)="checkIfObasityCptIsEmpty(1);EditAWEncounterNotes()" [value]="'G0473'"
+                      class="form-check-input" mdbInput name="hhsdsydbgdyudyd" id="G0473">
+                    <label class="form-check-label" for="G0473">G0473</label>
+                    <a id="faceToFaceObesity11" class="ml-3"><i appDebounceClick (debounceClick)="uncheckFTFRadioProp()"
+                        class="fa fa-times-circle text-danger fa-lg"></i></a>
+                  </div>
+                </div>
+                <div class="form-group d-flex justify-content-start align-items-center">
+                  <label for="faceToFaceNote">Note </label>
+                  <textarea [disabled]="disableBmiFields" appOnDebounce [debounceTime]="2000"
+                    (onDebounce)="EditAWEncounterNotes()" id="faceToFaceNote"
+                    [(ngModel)]="awEncounterPTabDto.faceToFaceNote" class="form-control ml-3" style="height: 36px"
+                    cols="30" rows="10"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="col-sm-12 border-bottom mb-3 pb-3">
+
+            <div class="row">
+              <div class="col-lg-6 col-sm-12 d-flex flex-wrap">
+                <div class="col-sm-12 custom-control custom-checkbox">
+                  <input type="checkbox" (change)="EditAWEncounterNotes()"
+                    [(ngModel)]="awEncounterPTabDto.faceToFaceCardiovascular" class="custom-control-input"
+                    id="faceToFaceCardiovascular">
+                  <label class="custom-control-label" for="faceToFaceCardiovascular">G0446 – Annual, face-to-face
+                    IBT for cardiovascular disease, individual, 15 minutes</label>
+                </div>
+                <div class="col-sm-12 d-flex justify-content-start align-items-end p-0">
+                  <label for="faceToFaceCardiovascularNote">Note </label>
+                  <textarea appOnDebounce [debounceTime]="2000" (onDebounce)="EditAWEncounterNotes()"
+                    id="faceToFaceCardiovascularNote" [(ngModel)]="awEncounterPTabDto.faceToFaceCardiovascularNote"
+                    class="form-control ml-3" style="height: 36px" cols="30" rows="10"></textarea>
+                </div>
+              </div>
+              <div class="col-lg-6 col-sm-12">
+                <div class="custom-control custom-checkbox mb-2">
+                  <input type="checkbox" (change)="EditAWEncounterNotes()" [(ngModel)]="awEncounterPTabDto.awv"
+                    class="custom-control-input" id="awv">
+                  <label class="custom-control-label" for="awv"> Annual Wellness Eligible</label>
+                  <a id="annuallWellness" class="ml-3" container="body" [mdbPopover]="annuallWellness"
+                    placement="bottom" triggers="hover"><i class="fa fa-exclamation-circle text-success fa-lg"></i></a>
+
+                    <a id="annuallWellnessEst" class="ml-3" container="body" [mdbPopover]="annuallWellnessEst"
+                    placement="bottom" triggers="hover"><i
+                      class="fa fa-exclamation-circle text-success fa-lg"></i></a>
+
+                  <ng-template #annuallWellness>
+                    <div class="bg-dark text-white py-3 pl-3 pr-2">
+                      <div class="who-covered" (click)="$event.stopPropagation()" [innerHTML]="awHtml" malihu-scrollbar
+                        [scrollbarOptions]="scrollbarOptionsTimeline" style="max-height: 300px;">
+                      </div>
+                    </div>
+                  </ng-template>
+                </div>
+
+                <div class="d-flex flex-wrap align-items-stretch mb-3">
+                  <div class="d-flex col align-items-center border rounded">
+                    <div class="d-flex justify-content-between flex-wrap flex-1">
+                      <div class="form-check pl-0 form-check-inline">
+                        <input type="radio" [(ngModel)]="awEncounterPTabDto.awvCode"
+                          (change)="nullCPTCodeValue('medicadeCPTCode', awEncounterPTabDto.medicadeCPTCode);EditAWEncounterNotes()"
+                          [value]="'G0438'" class="form-check-input" mdbInput id="G0438">
+                        <label class="form-check-label" for="G0438">G0438</label>
+                      </div>
+                      <div class="form-check pl-0 form-check-inline">
+                        <input type="radio" [(ngModel)]="awEncounterPTabDto.awvCode"
+                          (change)="nullCPTCodeValue('medicadeCPTCode', awEncounterPTabDto.medicadeCPTCode);EditAWEncounterNotes()"
+                          [value]="'G0439'" class="form-check-input" mdbInput id="G0439">
+                        <label class="form-check-label" for="G0439">G0439</label>
+                      </div>
+                      <div class="pl-0 form-check-inline">
+                        <input type="radio" [(ngModel)]="awEncounterPTabDto.awvCode"
+                          (change)="nullCPTCodeValue('medicadeCPTCode', awEncounterPTabDto.medicadeCPTCode);EditAWEncounterNotes()"
+                          [value]="'G0468'" class="form-check-input" mdbInput id="G0468">
+                        <label class="form-check-label" for="G0468">G0468</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col border rounded ml-2">
+
+
+                    <ng-template #annuallWellnessEst>
+                      <div class="bg-dark text-white py-3 pl-3 pr-2">
+                        <div class="who-covered" (click)="$event.stopPropagation()" malihu-scrollbar
+                          [scrollbarOptions]="scrollbarOptionsTimeline" style="max-height: 300px;">
+                          <div>
+                            <strong> New Patient:</strong>
+
+                            <ul>
+                              <li>99385 - 18-39 years</li>
+                              <li> 99386 - 40-64 years</li>
+                              <li> 99387 - 65 years and older</li>
+                            </ul>
+
+                            <strong> Established Patient:</strong>
+                            <ul>
+                              <li> 99395 - 18-39 years</li>
+                              <li> 99396 - 40-64 years</li>
+                              <li> 99397 - 65 years and older</li>
+                            </ul>
+
+
+
+
+
+                          </div>
+                        </div>
+                      </div>
+                    </ng-template>
+
+
+
+
+                    <div class="d-flex justify-content-between flex-wrap flex-1">
+                      <div class="form-check pl-0 form-check-inline">
+                        <input type="radio" [(ngModel)]="awEncounterPTabDto.medicadeCPTCode"
+                          (change)="nullCPTCodeValue('awvCode', awEncounterPTabDto.awvCode);EditAWEncounterNotes()"
+                          [value]="'99385'" class="form-check-input" name="medicadeCptCode" mdbInput id="99385">
+                        <label class="form-check-label" for="99385">99385</label>
+                      </div>
+                      <div class="form-check pl-0 form-check-inline">
+                        <input type="radio" [(ngModel)]="awEncounterPTabDto.medicadeCPTCode"
+                          (change)="nullCPTCodeValue('awvCode', awEncounterPTabDto.awvCode);EditAWEncounterNotes()"
+                          [value]="'99386'" class="form-check-input" name="medicadeCptCode" mdbInput id="99386">
+                        <label class="form-check-label" for="99386">99386</label>
+                      </div>
+                      <div class="pl-0 form-check-inline">
+                        <input type="radio" [(ngModel)]="awEncounterPTabDto.medicadeCPTCode"
+                          (change)="nullCPTCodeValue('awvCode', awEncounterPTabDto.awvCode);EditAWEncounterNotes()"
+                          [value]="'99387'" class="form-check-input" name="medicadeCptCode" mdbInput id="99387">
+                        <label class="form-check-label" for="99387">99387</label>
+                      </div>
+                      <div class="pl-0 form-check-inline">
+                        <input type="radio" [(ngModel)]="awEncounterPTabDto.medicadeCPTCode"
+                          (change)="nullCPTCodeValue('awvCode', awEncounterPTabDto.awvCode);EditAWEncounterNotes()"
+                          [value]="'99395'" class="form-check-input" name="medicadeCptCode" mdbInput id="99395">
+                        <label class="form-check-label" for="99395">99395</label>
+                      </div>
+                      <div class="pl-0 form-check-inline">
+                        <input type="radio" [(ngModel)]="awEncounterPTabDto.medicadeCPTCode"
+                          (change)="nullCPTCodeValue('awvCode', awEncounterPTabDto.awvCode);EditAWEncounterNotes()"
+                          [value]="'99396'" class="form-check-input" name="medicadeCptCode" mdbInput id="99396">
+                        <label class="form-check-label" for="99396">99396</label>
+                      </div>
+                      <div class="pl-0 form-check-inline">
+                        <input type="radio" [(ngModel)]="awEncounterPTabDto.medicadeCPTCode"
+                          (change)="nullCPTCodeValue('awvCode', awEncounterPTabDto.awvCode);EditAWEncounterNotes()"
+                          [value]="'99397'" class="form-check-input" name="medicadeCptCode" mdbInput id="99397">
+                        <label class="form-check-label" for="99397">99397</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+
+
+
+                <div class="d-flex justify-content-start align-items-center">
+                  <label for="awvNote">Note: </label>
+                  <textarea appOnDebounce [debounceTime]="2000" (onDebounce)="EditAWEncounterNotes()" id="awvNote"
+                    [(ngModel)]="awEncounterPTabDto.awvNote" class="form-control ml-3" style="height: 40px;" cols="30"
+                    rows="10"></textarea>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-end flex-wrap align-items-center">
+          <div class="col-lg-4 col-sm-12 d-flex align-items-center flex-grow-1 pr-0">
+            <label class="mr-3">Assigned To</label>
+            <ng-select [clearable]="false" [(ngModel)]="awEncounterPTabDto.assignedBillingProviderId"
+              (change)="EditAWEncounterNotes()" class="flex-1 ng-select-small" [multiple]="false" [searchable]="true"
+              required>
+              <ng-option [value]="item.id"
+                *ngFor="let item of (facilityUserList | filterFUsersByRole: 'Billing Provider')">{{item.firstName}}
+                {{item.lastName}}</ng-option>
+            </ng-select>
+          </div>
+          <button class="btn btn-dynamic-secondary-2c btn-sm mr-1" (click)="OpenVerifyProviderModal()">Change Provider</button>
+          <button class="btn btn-dynamic-2c btn-sm mr-0" [disabled]="!isBillingProvider"
+            (click)="signEncounterModal.show()">E-Signature</button>
+        </div>
+        <div class="d-flex justify-content-between align-items-end">
+          <div>
+            <label class="mb-0 mr-3"><strong>Current User:</strong> {{currentUserName}}</label>
+            <label class="mb-0"><strong>Encounter Date:</strong> <span *ngIf="awEncounterPTabDto.encounterDate">
+                {{awEncounterPTabDto.encounterDate | dateFormatPipe}}</span> </label>
+            <button class="btn btn-icon btn-dynamic-2c m-0 mr-2 ml-1 " [disabled]="awEncounterPTabDto.status !== 1">
+              <i class="fa fa-calendar" [dpDayPicker]="datePickerConfig1" #date="dpDayPicker"
+                [theme]="'dp-material ccm-date-picker'" [mode]="'day'" (onSelect)="changeEncounterdate($event)"> </i>
+            </button>
+          </div>
+
+          <div class="text-right">
+            <!-- <label *ngIf="providerName && (!awEncounterPTabDto.signedBy || awEncounterPTabDto.signedBy === ' ')" class="mb-0 ml-2"><strong>Selected Provider:</strong> {{providerName}}</label> -->
+            <label *ngIf="awEncounterPTabDto.signedBy" class="mb-0"><strong>Electronically signed By:</strong>
+              {{awEncounterPTabDto.signedBy}}</label>
+            <br>
+            <label *ngIf="awEncounterPTabDto.signatureDate"><span
+                style="font-size: 14px;">{{awEncounterPTabDto.signatureDate | dateFormatPipe}}</span></label>
+            <!-- <label ><span style="font-size: 12px;">{{abc | date}}</span></label> -->
+          </div>
+        </div>
+      </div>
+
+    </fieldset>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-sm-12">
+    <div class="form-form form-group">
+      <div class="row">
+        <div class="col-sm-6 mt-2 pl-4">
+          <label for="gapsData">Gaps Data</label>
+        </div>
+        <div class="col-sm-6">
+          <div class="d-flex justify-content-end">
+            <button title="Refresh gaps data" [disabled]="awEncounterPTabDto.status !== 1"
+              class="btn btn-dynamic-secondary-2c btn-sm mr-1" (click)="openConfirmModal()">Refresh Gaps Data</button>
+            <button class="btn btn-dynamic-secondary-2c btn-sm mr-1" (click)="copyData(awEncounterPTabDto.gapsData)">Copy</button>
+          </div>
+        </div>
+      </div>
+      <div>
+        <!-- (onDebounce)="saveTempGapsData()" -->
+        <textarea type="text" #textarea [(ngModel)]="awEncounterPTabDto.gapsData" appOnDebounce [debounceTime]="500"
+          (onDebounce)="EditAWEncounterNotes()" [disabled]="awEncounterPTabDto.status !== 1" id="gapsData" rows="15"
+          placeholder="Enter note text..." class="form-control"></textarea>
+      </div>
+    </div>
+  </div>
+</div>
+<div>
+
+</div>
+<app-verify-as-billing-provider></app-verify-as-billing-provider>
+<ng-template #loadingSkelton>
+  <!-- <div class="panel-body"> -->
+  <div class="row">
+    <div class="col-sm-12 p-0">
+      <skltn-root duration="2000" [rectRadius]="0" flareWidth="50%" bgFill="#f2f3f8" flareFill="rgba(255,255,255, 0.5)">
+        <!-- Card with Avatar -->
+        <div class="p-3">
+          <div class="skltn-card">
+            <div class="skltn-card__body">
+              <div skltn-bone class="skltn-card__line"></div>
+              <div skltn-bone class="skltn-card__line"></div>
+              <div skltn-bone class="skltn-card__line"></div>
+              <div skltn-bone class="skltn-card__line"></div>
+            </div>
+          </div>
+        </div>
+      </skltn-root>
+    </div>
+  </div>
+  <!-- </div> -->
+</ng-template>
+<div mdbModal #signEncounterModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true" (open)="initializeSignModal()">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="signEncounterModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <!-- <h4 class="modal-title w-100" id="myModalLabel"><i class="fa fa-exclamation-triangle yellow-text"></i>{{modalObj.Title}}
+        </h4> -->
+        <h4 class="modal-title w-100 text-center" id="myModalLabel">Sign Encounter
+        </h4>
+      </div>
+      <div class="modal-body">
+        <p class="text-danger mb-2 text-center">E-Sign will make the forms uneditable </p>
+        <!-- {{modalObj.Text}} -->
+        <!-- <p class="text-center"><i class="fa fa-exclamation-triangle text-danger" style="font-size: 3rem;"></i> </p> -->
+        <p> <strong>Billing Provider:</strong> {{providerName}}</p>
+        <div>
+          <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+              <div class="form-group">
+                <label for="sigDate">Signature Date</label>
+                <div class="d-flex">
+                  <!-- <input type="signature" [(ngModel)]="signature" name="signature1" autocomplete="new-signaturesig"
+                    id="sigDate" class="form-control form-control-sm" placeholder="Signature Date"> -->
+                  <input type="text" class="form-control form-control-sm bg-white" #dateDPicker="dpDayPicker"
+                    [ngModel]="signAwDto.signatureDate | dateFormatPipe: 'time'"
+                    (ngModelChange)="signAwDto.signatureDate=$event;checkDate()" [dpDayPicker]="datePickerConfig"
+                    placeholder="MM-DD-YYYY" [theme]="'dp-material ccm-date-picker'" [mode]="'daytime'" />
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-12 col-md-12 col-sm-12">
+              <div class="form-group">
+                <div class="d-flex w-100 justify-content-between align-items-center">
+                  <label for="encDate">Encounter Date</label>
+                  <p style="font-size:12px" *ngIf="!isMatchDates" class="mb-0 text-warning">Service Date and Signing
+                    Date do not match.</p>
+                </div>
+                <div class="d-flex">
+                  <!-- <input type="signature" [(ngModel)]="signature" name="signature2" autocomplete="new-signaturedate"
+                    id="encDate" class="form-control form-control-sm" placeholder="Encounter Date"> -->
+                  <input type="text" class="form-control form-control-sm bg-white" #dateDPicker1="dpDayPicker"
+                    [ngModel]="signAwDto.encounterDate | dateFormatPipe"
+                    (ngModelChange)="signAwDto.encounterDate=$event;checkDate()" [dpDayPicker]="datePickerConfig1"
+                    placeholder="MM-DD-YYYY" [theme]="'dp-material ccm-date-picker'" [mode]="'day'" />
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-12 col-md-12 col-sm-12">
+              <div class="form-group">
+                <label for="defaultLoginFormsignature">Signature</label>
+                <div class="d-flex">
+                  <input type="signature" [(ngModel)]="signAwDto.signature" name="signature"
+                    autocomplete="new-signature" id="defaultLoginFormsignature" class="form-control form-control-sm"
+                    placeholder="signature">
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-12 col-md-12 col-sm-12" *ngIf="facilityFormsDto.hasHumana && patientFormsDto.hasHumana">
+              <div class="form-group">
+                <label for="humanaid">Humana ID<strong class="text-danger">*</strong></label>
+                <div class="d-flex">
+                  <input type="text" [(ngModel)]="signAwDto.humanaMemberId" [disabled]="!signAwDto.signHumana"
+                    name="humanaId" id="humanaid" class="form-control form-control-sm" placeholder="Humana ID">
+                </div>
+              </div>
+            </div>
+            <!-- <div class="col-3" *ngIf="facilityFormsDto.hasHumana && patientFormsDto.hasHumana">
+              <div class="form-group">
+                <mdb-checkbox class="ml-auto" [default]="true" [(ngModel)]="signAwDto.signHumana">
+                  Humana</mdb-checkbox>
+              </div>
+
+            </div>
+            <div class="col-3" *ngIf="facilityFormsDto.hasSuperBill && patientFormsDto.hasSuperBill">
+              <div class="form-group">
+                <mdb-checkbox class="ml-auto" [default]="true" [(ngModel)]="signAwDto.signSuperBill">
+                  Super Bill</mdb-checkbox>
+              </div>
+            </div> -->
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="d-flex w-100 justify-content-between align-items-center">
+          <div>
+            <button type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+              (click)="signEncounterModal.hide()" mdbWavesEffect>Cancel</button>
+            <button
+              [disabled]="signingAWEncounter || !signAwDto.signature || !signAwDto.signatureDate || !signAwDto.encounterDate || (facilityFormsDto.hasHumana && patientFormsDto.hasHumana && signAwDto.signHumana && !signAwDto.humanaMemberId)"
+              type="button" (click)="SignAWEncounter(signEncounterModal)"
+              class="relative waves-light btn btn-sm btn-dynamic-2c" mdbWavesEffect>
+              <span *ngIf="signingAWEncounter" class="spinner-border spinner-border-sm" role="status"
+                aria-hidden="true"></span>
+              Approve</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<div mdbModal #sendtoPatientModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="sendtoPatientModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <!-- <h4 class="modal-title w-100" id="myModalLabel"><i class="fa fa-exclamation-triangle yellow-text"></i>{{modalObj.Title}}
+        </h4> -->
+        <h4 class="modal-title w-100" id="myModalLabel">Send to Patient
+        </h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-sm-12">
+            <div class="form-group">
+              <label for="defaultLoginFormsignature">Email</label>
+              <div class="d-flex">
+                <input type="email" [(ngModel)]="sendToPatienTDto.email" name="email" autocomplete="new-email"
+                  id="defaultLoginFormemail" class="form-control form-control-sm" placeholder="Email">
+              </div>
+            </div>
+
+          </div>
+          <div class="col-lg-12 col-md-12 col-sm-12">
+            <div class="form-group">
+              <label for="defaultLoginFormsignature">Phone</label>
+              <div class="d-flex">
+                <input type="Phone" [(ngModel)]="sendToPatienTDto.phoneNo" name="Phone" autocomplete="new-Phone"
+                  id="defaultLoginFormPhone" class="form-control form-control-sm" placeholder="Phone">
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+          (click)="sendtoPatientModal.hide()" mdbWavesEffect>Close</button>
+        <button [disabled]="sendingToPatient || (!sendToPatienTDto.email && !sendToPatienTDto.phoneNo)"
+          (click)="SendToPatient(sendtoPatientModal)" type="button"
+          class="relative waves-light btn btn-sm btn-dynamic-2c" mdbWavesEffect>
+          <span *ngIf="sendingToPatient" class="spinner-border spinner-border-sm" role="status"
+            aria-hidden="true"></span>
+          Send</button>
+      </div>
+    </div>
+  </div>
+</div>

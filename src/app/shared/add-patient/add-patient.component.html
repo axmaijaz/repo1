@@ -1,0 +1,1220 @@
+<div class="d-flex align-items-start row justify-content-between">
+
+  <div class="d-inline-flex justify-content-start">
+    <h4 class="mr-3 mb-0"><a class="text-dark" (click)="navigateBack()"><i class="fa fa-arrow-left"></i></a></h4>
+    <h1 class="page-title mb-3" *ngIf="!patientId">Add Patient</h1>
+    <h1 class="page-title mb-3" *ngIf="patientId">Edit Patient</h1>
+  </div>
+  <div class="form-group d-inline-flex align-items-center mb-0">
+    <label class="mb-0 " for="namee">Billing Provider<small class="text-danger">*</small></label>
+    <ng-select style="min-width:250px ;" class="ng-select-small" [loading]="LoadingData" [(ngModel)]="BillingProviderId"
+      appendTo="body" [multiple]="false" [searchable]="true" placeholder="Billing Provider">
+      <ng-option *ngFor="let item of BIllingProviderList" [value]="item.id">{{item.lastName}},{{item.firstName}}
+      </ng-option>
+    </ng-select>
+  </div>
+</div>
+
+<form [formGroup]="PatientForm">
+  <div class="row">
+    <div class="col-md-12 p-0">
+      <div class="card p-2">
+        <div class="row">
+          <div class="col-12">
+            <div class="front-border">
+              <h4 class="mb-2" style="font-weight:500;color: #2b373d;">Personal Info</h4>
+            </div>
+          </div>
+          <div class="col-md-4 col-xl-3 col-lg-4 col-sm-6">
+            <div class="form-group">
+              <label for="firstName">First Name<small class="text-danger">*</small></label>
+              <input type="text" formControlName="firstName" class="form-control form-control-sm" id="firstName"
+                placeholder="First Name" [ngClass]="{'is-invalid':(PatientForm.get('firstName').touched ||
+                PatientForm.get('firstName').dirty) &&
+                !PatientForm.get('firstName').valid }">
+
+              <span class="invalid-feedback">
+                <span
+                  *ngIf="!PatientForm.get('firstName').errors && (PatientForm.get('firstName').touched || PatientForm.get('firstName').dirty)">
+                  Please enter your first name.
+                </span>
+              </span>
+            </div>
+          </div>
+          <div class="col-md-4 col-xl-3 col-lg-4 col-sm-6">
+            <div class="form-group">
+              <label for="middleName">Middle Name</label>
+              <input type="text" formControlName="middleName" class="form-control form-control-sm" id="middleName"
+                placeholder="Middle Name">
+            </div>
+          </div>
+          <div class="col-md-4 col-xl-3 col-lg-4 col-sm-6">
+            <div class="form-group">
+              <label for="lastName">Last Name<small class="text-danger">*</small></label>
+              <input type="text" formControlName="lastName" class="form-control form-control-sm" id="lastName" placeholder="Last Name"
+                [ngClass]="{'is-invalid':(PatientForm.get('lastName').touched ||
+                PatientForm.get('lastName').dirty) &&
+                !PatientForm.get('lastName').valid }">
+
+              <span class="invalid-feedback">
+                <span *ngIf="!PatientForm.get('lastName').errors && (PatientForm.get('lastName').touched ||
+                   PatientForm.get('lastName').dirty)">
+                  Please enter your last name.
+                </span>
+              </span>
+            </div>
+          </div>
+          <div class="col-md-4 col-xl-3 col-lg-4 col-sm-6">
+            <div class="form-group">
+              <label for="nickname">Nick Name</label>
+              <input type="text" formControlName="nickname" class="form-control form-control-sm" id="nickname"
+                placeholder="Nick Name">
+            </div>
+          </div>
+          <div class="col-md-4 col-xl-3 col-lg-4 col-sm-6 ">
+            <div class="form-group">
+              <label for="patientEmrId">EMR ID<small class="text-danger">*</small> <small *ngIf="emrExist"
+                  class="text-danger"> Patient with this Emr ID already registered</small></label>
+              <input type="text" formControlName="patientEmrId"
+                (blur)="checkEMRAvailibility(PatientForm.get('patientEmrId').value)"
+                class="form-control form-control-sm text-uppercase" id="patientEmrId" placeholder="EMR Id" [ngClass]="{'is-invalid':(PatientForm.get('patientEmrId').touched ||
+                PatientForm.get('patientEmrId').dirty) &&
+                !PatientForm.get('patientEmrId').valid }">
+
+              <span class="invalid-feedback">
+                <span
+                  *ngIf="PatientForm.get('patientEmrId').errors && (PatientForm.get('patientEmrId').touched || PatientForm.get('patientEmrId').dirty)">
+                  Please enter your EMR id.
+                </span>
+              </span>
+            </div>
+          </div>
+          <div class="col-md-4 col-xl-3 col-lg-4 col-sm-6">
+            <div class="">
+              <label class="w-100">Date of Birth<small class="text-danger">*</small></label>
+              <mdb-date-picker class="custom-datepicker mb-0 w-100" [options]="myDatePickerOptions" formControlName="dateOfBirth"
+                [outlineInput]="true" [defaultMonth]="dateDefaultMonth" [inline]="false" name="mydate" [placeholder]="'Date of Birth'">
+              </mdb-date-picker>
+            </div>
+            <span *ngIf="(PatientForm.get('dateOfBirth').touched ||
+            PatientForm.get('dateOfBirth').dirty) &&
+            !PatientForm.get('dateOfBirth').valid">
+              <span *ngIf="!PatientForm.get('dateOfBirth').errors && (PatientForm.get('dateOfBirth').touched ||
+                 PatientForm.get('dateOfBirth').dirty)" style="color: rgb(220, 53, 69); font-size: 12.8px">
+                Please enter your date of birth.
+              </span>
+            </span>
+          </div>
+          <div class="col-md-4 col-xl-3 col-lg-4 col-sm-6">
+            <div class="form-group d-flex justify-content-between align-items-center">
+              <div>
+                <label for="sex" class="w-100">Sex<small class="text-danger">*</small></label>
+                <div class="form-check form-check-inline mt-0">
+                  <input type="radio" formControlName="sex" class="form-check-input" id="male" name="sex"
+                    [value]="'male'" mdbInput>
+                  <label class="form-check-label" style="padding-left: 30px!important;" for="male">Male</label>
+                </div>
+                <div class="form-check form-check-inline mt-0">
+                  <input type="radio" formControlName="sex" class="form-check-input" id="female" name="sex"
+                    [value]="'female'" mdbInput>
+                  <label class="form-check-label" style="padding-left: 30px!important;" for="female">Female</label>
+                </div>
+              </div>
+              <!-- <mdb-checkbox style="margin-top: 25px;" [default]="true" formControlName="ccmNotBillable" >CCM Not Billable</mdb-checkbox> -->
+            </div>
+            <span *ngIf="(PatientForm.get('sex').touched ||
+            PatientForm.get('sex').dirty) &&
+            !PatientForm.get('sex').valid">
+              <span *ngIf="!PatientForm.get('sex').errors && (PatientForm.get('sex').touched ||
+                 PatientForm.get('sex').dirty)" style="color: rgb(220, 53, 69); font-size: 12.8px">
+                Please select your sex.
+              </span>
+            </span>
+          </div>
+          <div class="col-md-4 col-xl-3 col-lg-4 col-sm-6">
+            <div class="form-group">
+              <div class="d-flex justify-content-between">
+                <label for="homePhone">Primary Phone<small *ngIf="!primaryPhoneNotAvailable" class="text-danger">*</small></label>
+                <mdb-checkbox [ngModelOptions]="{standalone: true}" [checked]="primaryPhoneNotAvailable" (change)="changePrimaryPhoneAvailability()" [(ngModel)]="primaryPhoneNotAvailable" [default]="true" title="">
+                  Not Available
+                </mdb-checkbox>
+              </div>
+              <input type="text" [disabled]="true" formControlName="homePhone" autocomplete="nope" mask="(000)000-0000" class="form-control form-control-sm" id="homePhone"
+                placeholder="Primary Phone" [ngClass]="{'is-invalid':(PatientForm.get('homePhone').touched ||
+                PatientForm.get('homePhone').dirty) &&
+                !PatientForm.get('homePhone').valid }">
+              <span class="invalid-feedback">
+                <span *ngIf="!!PatientForm.get('homePhone').errors && (PatientForm.get('homePhone').touched ||
+                    PatientForm.get('homePhone').dirty)">
+                  Please enter your primary phone.
+                </span>
+              </span>
+            </div>
+          </div>
+          <div class="form-group col-md-4 col-xl-3 col-lg-4 col-sm-6">
+            <div class="d-flex justify-content-between">
+              <label for="icdcodesystem7878">Email
+                <!-- <small class="text-danger">*</small><small
+                  *ngIf="emailinvalid && !patientId" class="text-danger"> Email address already
+                  registered</small> -->
+              </label>
+              <mdb-checkbox *ngIf="!patientId" [default]="true" [checked]="false"
+                (change)="FillUserNameUserName($event.checked)">Email use Username as well
+              </mdb-checkbox>
+            </div>
+            <!-- <input type="text" formControlName="email" [readonly]="patientId && PatientForm.get('email').value" (blur)="checkAvailibility(PatientForm.get('email').value)" -->
+            <input type="text" formControlName="email" [readonly]="!allowPatientEmailEdit" autocomplete="nope"
+              class="form-control form-control-sm" id="icdcodesystem7878" placeholder="Email / UserName"
+              [ngClass]="{'is-invalid':(PatientForm.get('email').touched ||
+            PatientForm.get('email').dirty) &&
+            !PatientForm.get('email').valid }">
+
+            <span class="invalid-feedback">
+              <span *ngIf="!!PatientForm.get('email').errors && (PatientForm.get('email').touched ||
+                PatientForm.get('email').dirty)">
+                Please enter your email/userName .
+              </span>
+            </span>
+          </div>
+          <div class="form-group col-md-4 col-xl-3 col-lg-4 col-sm-6" *ngIf="isSameUserName">
+            <label for="icdcodesystem23">UserName
+              <small class="text-danger">*</small><small *ngIf="emailinvalid && !patientId" class="text-danger">
+                User Name already
+                registered</small>
+              <small *ngIf="userNameErrorMsg && !patientId" class="text-danger">
+                {{userNameErrorMsg}}</small>
+            </label>
+            <input type="text" formControlName="userName" [readonly]="patientId"
+              (blur)="checkAvailibility(PatientForm.get('userName').value)" class="form-control form-control-sm"
+              id="icdcodesystem23" placeholder="UserName" [ngClass]="{'is-invalid':(PatientForm.get('userName').touched ||
+            PatientForm.get('userName').dirty) &&
+            !PatientForm.get('userName').valid }">
+
+            <span class="invalid-feedback">
+              <span *ngIf="!PatientForm.get('userName').errors && (PatientForm.get('userName').touched ||
+                PatientForm.get('userName').dirty)">
+                Please enter your userName .
+              </span>
+            </span>
+          </div>
+          <div class="col-md-4" *ngIf="!patientId">
+            <!-- <label class="mt-1">Password </label> -->
+            <label for="new-password">Password<small class="text-danger">*</small></label>
+            <div class="input-group form-group mb-0">
+              <input [type]="show ? 'text' : 'password'" formControlName="password" autocomplete="new-password"
+                class="form-control form-control-sm" [ngClass]="{'is-invalid':(PatientForm.get('password').touched ||
+            PatientForm.get('password').dirty) &&
+            !PatientForm.get('password').valid }">
+              <a *ngIf="!patientId" (click)="password();" class="input-group-append">
+                <span class="input-group-text text-white bg-dynamic-2c" id="category"><i
+                    class="fa fa-eye"></i></span>
+              </a>
+            </div>
+            <span class="invalid-feedback">
+              <span *ngIf="!PatientForm.get('password').errors && (PatientForm.get('password').touched ||
+                  PatientForm.get('password').dirty)">
+                Please enter your password .
+              </span>
+            </span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <div class="front-border">
+              <hr class="mt-2">
+              <!-- <h4 class="mb-3 mt-2" style="font-weight:600;">Contact information</h4> -->
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="row">
+              <div class="col-md-4 col-xl-4 col-lg-4 col-sm-6">
+                <div class="form-group" >
+                  <label for="personalPhone">Secondary Phone</label>
+                  <input type="text" autocomplete="nope" formControlName="personNumber" mask="(000)000-0000" class="form-control form-control-sm"
+                    id="personalPhone" placeholder="Secondary Phone">
+                </div>
+              </div>
+              <div class="col-md-4 col-xl-4 col-lg-4 col-sm-6">
+                <div class="form-group">
+                  <label for="insurancePLan">Primary Insurance Plan<small class="text-danger"></small></label>
+                  <ng-select [loading]="isLoadingPayersList" id="insurancePLan" class="ng-select-small" formControlName="insurancePlanId" [multiple]="false" [searchable]="true"
+                          placeholder="Select Insurance Plan">
+                          <ng-option *ngFor="let item of insurancePLanList" [value]="item.id">{{item.name}}-{{item.payerName}}
+                          </ng-option>
+                  </ng-select>
+                </div>
+              </div>
+              <div class="col-md-4 col-xl-4 col-lg-4 col-sm-6">
+                <div class="form-group" >
+                  <label for="personalPhone">Primary Insurance ID</label>
+                  <input type="text" autocomplete="nope" formControlName="insuranceNumber" class="form-control form-control-sm"
+                    id="personalPhone" placeholder="Insurance Number">
+                </div>
+              </div>
+              <div class="col-md-4 col-xl-4 col-lg-4 col-sm-6">
+                <div class="form-group">
+                  <label for="insurancePLan">Secondary Insurance Plan<small class="text-danger"></small></label>
+                  <ng-select [loading]="isLoadingPayersList" id="secondaryInsurancePLan" class="ng-select-small" formControlName="secondaryInsurancePlanId" [multiple]="false" [searchable]="true"
+                          placeholder="Select Secondary Insurance Plan">
+                          <ng-option *ngFor="let item of insurancePLanList" [value]="item.id">{{item.name}}-{{item.payerName}}
+                          </ng-option>
+                  </ng-select>
+                </div>
+              </div>
+              <div class="col-md-4 col-xl-4 col-lg-4 col-sm-6">
+                <div class="form-group" >
+                  <label for="personalPhone">Secondary Insurance ID</label>
+                  <input type="text" autocomplete="nope" formControlName="secondaryInsuranceNumber" class="form-control form-control-sm"
+                    id="personalPhone" placeholder="Secondary insurance Number">
+                </div>
+              </div>
+              
+              
+            </div>
+          </div>
+          <div class="col-md-4 col-xl-4 col-lg-4 col-sm-6"  >
+            <div class="" style="    margin-top: 8px;">
+              <div class="border py-2 px-3 form-group">
+                <div class="form-group">
+                  <div class="d-flex justify-content-between">
+                    <label for="currentAddress">Current Address</label>
+                    <mdb-checkbox [default]="true" [checked]="true" title=""
+                      (change)="AssignCurrentAdrValue(IsSameCurrentAddress)">Same as Mailing
+                    </mdb-checkbox>
+                  </div>
+                  <input #search (click)="selectAddress = 'currentAddress'" formControlName="currentAddress" autocomplete="nope" class="form-control form-control-sm" id="jfjfjf"
+                    name="jfjfjf" type="text" [ngClass]="{'is-invalid':(PatientForm.get('currentAddress').touched ||
+                    PatientForm.get('currentAddress').dirty) &&
+                    !PatientForm.get('currentAddress').valid }">
+                  <span class="invalid-feedback">
+                    <span *ngIf="!!PatientForm.get('currentAddress').errors && (PatientForm.get('currentAddress').touched ||
+                       PatientForm.get('currentAddress').dirty)">
+                      Please enter your current address.
+                    </span>
+                  </span>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="form-group">
+                      <label for="zipCode">City</label>
+                      <input type="text" formControlName="city" class="form-control form-control-sm" id="city" placeholder="city">
+                    </div>
+                  </div>
+                  <div class="col-md-12"><div class="form-group">
+                    <label for="zipCode">State</label>
+                    <ng-select class="ng-select-small" formControlName="state" [clearable]="false" [multiple]="false" [searchable]="true"
+                      placeholder="Select State">
+                      <ng-option *ngFor="let item of States" [value]="item.code">{{item.code}} {{item.name}}
+                      </ng-option>
+                    </ng-select>
+                    <!-- <input type="text" formControlName="state" class="form-control form-control-sm" id="state" placeholder="State"> -->
+                  </div>
+                  </div>
+                  <div class="col-md-12">
+                    <div class="form-group mb-0">
+                      <label for="zipCode">ZIP Code</label>
+                      <input type="text" (change)="getCityAndState()" required maxlength="5" #zipCode formControlName="zip"
+                        OnlyNumbers class="form-control form-control-sm" id="zipCode" placeholder="Zip Code" [ngClass]="{'is-invalid':(PatientForm.get('zip').touched ||
+                                        PatientForm.get('zip').dirty) &&
+                                        !PatientForm.get('zip').valid }">
+                      <span class="invalid-feedback">
+                        <span *ngIf="!!PatientForm.get('zip').errors && (PatientForm.get('zip').touched)">
+                         Please enter zip code.
+                        </span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <div class="col-md-4 col-xl-4 col-lg-4 col-sm-6">
+            <div [ngClass]="{disabledDiv: IsSameCurrentAddress}" style="    margin-top: 8px;">
+              <div class="border py-2 px-3 form-group">
+                <div class="form-group">
+                  <label for="mailingAddress">Mailing Address</label>
+                  <input  #searchMaillingAddress (click)="selectAddress = 'mailingAddress'" formControlName="mailingAddress" autocomplete="nope" class="md-textarea form-control form-control-sm"
+                    id="mailingAddress" type="text">
+
+                  <!-- <span class="invalid-feedback">
+                                  <span *ngIf="!!PatientForm.get('mailingAddress').errors && (PatientForm.get('mailingAddress').touched ||
+                                         PatientForm.get('mailingAddress').dirty)">
+                                    Please enter your malling address.
+                                  </span>
+                                </span> -->
+                </div>
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="form-group">
+                      <label for="mallingzipCode">City</label>
+                      <input type="text" formControlName="maillingAddressCity" class="form-control form-control-sm" id="mallingcity"
+                        placeholder="city">
+                    </div>
+                  </div>
+                  
+                  <div class="col-md-12">
+                    <div class="form-group">
+                      <label for="mallingzipCode">State</label>
+                      <ng-select class="ng-select-small" [clearable]="false" formControlName="maillingAddressState" [multiple]="false"
+                        [searchable]="true" placeholder="Select State">
+                        <ng-option *ngFor="let item of States" [value]="item.code">{{item.code}} {{item.name}}
+                        </ng-option>
+                      </ng-select>
+                      <!-- <input type="text" formControlName="state" class="form-control form-control-sm" id="state" placeholder="State"> -->
+                    </div>
+                  </div>
+                  <div class="col-md-12">
+                    <div class="form-group mb-0">
+                      <label for="mallingzipCode">ZIP Code</label>
+                      <input type="text" (change)="getMaillingCityAndState()" required maxlength="5"
+                        formControlName="maillingAddressZipCode" OnlyNumbers class="form-control form-control-sm" id="mallingzipCode"
+                        placeholder="Zip Code">
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+
+
+
+
+          <!-- <div class="col-md-12">
+        <div class="form-group">
+          <label for="mailingAddress">Address Line 2</label>
+          <textarea formControlName="mailingAddress" class="md-textarea form-control " rows="3" id="mailingAddress"
+            type="text"></textarea>
+        </div>
+      </div> -->
+      <div class="col-md-4 col-xl-4 col-lg-4 col-sm-6">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="row">
+              <div class="col-md-12 mb-2">
+                <small class="text-dynamic-2c text-uppercase font-500">Emergency Contact</small>
+              </div>
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label for="emergencyContactName">Name</label>
+                  <input type="text" formControlName="emergencyContactName" class="form-control form-control-sm" id="emergencyContactName"
+                    placeholder="First Name">
+                </div>
+              </div>
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label for="emergencyContactRelationship">Relationship</label>
+                  <!-- <input type="text" formControlName="emergencyContactRelationship" class="form-control form-control-sm"
+                    id="emergencyContactRelationship" placeholder="Relationship"> -->
+                  <ng-select class="ng-select-small" formControlName="emergencyContactRelationship" [multiple]="false"
+                    [searchable]="true" placeholder="Select RelationShip">
+                    <ng-option [value]="'Spouse'">Spouse</ng-option>
+                    <ng-option [value]="'Mother'">Mother</ng-option>
+                    <ng-option [value]="'Father'">Father</ng-option>
+                    <ng-option [value]="'Siblings'">Siblings</ng-option>
+                    <ng-option [value]="'Son'">Son</ng-option>
+                    <ng-option [value]="'Daughter'">Daughter</ng-option>
+                    <ng-option [value]="'Step-Son'">Step-Son</ng-option>
+                    <ng-option [value]="'Step-Daughter'">Step-Daughter</ng-option>
+                    <ng-option [value]="'Grand Father'">Grand Father</ng-option>
+                    <ng-option [value]="'Grand Mother'">Grand Mother</ng-option>
+                    <ng-option [value]="'Grand Son'">Grand Son</ng-option>
+                    <ng-option [value]="'Grand Daughter'">Grand Daughter</ng-option>
+                    <ng-option [value]="'Cousin'">Cousin</ng-option>
+                    <ng-option [value]="'Niece'">Niece</ng-option>
+                    <ng-option [value]="'Nephew'">Nephew</ng-option>
+                    <ng-option [value]="'Neighbor/Friend'">Neighbor/Friend</ng-option>
+                    <ng-option [value]="'Other'">Other</ng-option>
+                  </ng-select>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="emergencyContactPrimaryPhoneNo">Primary Phone</label>
+                  <input type="text" formControlName="emergencyContactPrimaryPhoneNo" mask="(000)000-0000"
+                    class="form-control form-control-sm" id="emergencyContactPrimaryPhoneNo" placeholder="Primary Ph. No.">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="emergencyContactSecondaryPhoneNo">Secondary Phone</label>
+                  <input type="text" formControlName="emergencyContactSecondaryPhoneNo" mask="(000)000-0000"
+                    class="form-control form-control-sm" id="emergencyContactSecondaryPhoneNo" placeholder="Secondary Ph. No.">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- <div class="col-md-4 col-xl-3 col-lg-4 col-sm-6">
+        <div class="row">
+          <div class="col-md-12 mb-2">
+            <small class="text-dynamic-2c text-uppercase font-500">Patient Preferences</small>
+          </div>
+          <div class="col-md-12">
+
+            <div class="form-group">
+              <label for="">What is the best time to call?</label>
+              <ng-select formControlName="bestTimeToCall" appendTo="body" class="ng-select-small" [multiple]="false"
+                [searchable]="false" placeholder="best time to call">
+                <ng-option [value]="'Morning'">Morning</ng-option>
+                <ng-option [value]="'Afternoon'">Afternoon</ng-option>
+                <ng-option [value]="'Evening'">Evening</ng-option>
+              </ng-select>
+            </div>
+          </div>
+
+          <div class="col-md-12">
+
+
+            <div class="form-group mb-0">
+              <label class="mb-0">Preferred Language?</label>
+            </div>
+              <div class="form-check form-check-inline">
+                <input type="radio" class="form-check-input" id="materialInline1" name="preferredLanguage"
+                  formControlName="preferredLanguage" [value]="'English'" mdbInput>
+                <label class="form-check-label" style="padding-left: 30px!important;" for="materialInline1">English</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input type="radio" class="form-check-input" id="materialInline2" name="preferredLanguage"
+                  formControlName="preferredLanguage" [value]="'Spanish'" mdbInput>
+                <label class="form-check-label" style="padding-left: 30px!important;" for="materialInline2">Spanish</label>
+              </div>
+              <div class="form-check form-check-inline"
+                *ngIf="language && language != 'English' && language != 'Spanish' ">
+                <input type="radio" class="form-check-input" id="materialInline3" formControlName="preferredLanguage"
+                  name="preferredLanguage" [value]="language" mdbInput>
+                <label class="form-check-label" style="padding-left: 30px!important;" for="materialInline3">{{language}}</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <button (click)="selectLanguageModal.show()" class="btn btn-outline-dark btn-sm px-2">
+                  <i
+                    class="fa fa-angle-left"></i> more</button>
+              </div>
+            </div>
+          </div>
+        </div> -->
+
+          <div class="col-md-12 ">
+            <div class="d-flex justify-content-start align-items-center pt-2">
+              <!-- <button type="button" mdbBtn color="seconary" class="waves-light btn-md px-5" aria-label="Close"
+               mdbWavesEffect>Close</button> -->
+              <button type="button" *ngIf="!patientId" (click)="addPatient(false);" [disabled]="!PatientForm.get('patientEmrId').value || !PatientForm.get('firstName').value || !PatientForm.get('lastName').value || !PatientForm.get('userName').value
+              || !PatientForm.get('password').value || !PatientForm.get('dateOfBirth').value || !PatientForm.get('sex').value|| (!primaryPhoneNotAvailable && !PatientForm.get('homePhone').value) || emailinvalid || emrExist || !BillingProviderId || isAddingNewPatient " class="relative btn-dynamic-2c btn px-5  py-2 btn-md ml-0 waves-light"
+                mdbWavesEffect> <span *ngIf="isAddingNewPatient" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Save</button>
+              <button type="button" *ngIf="patientId" (click)="editPatient();" [disabled]="!PatientForm.get('patientEmrId').value || !PatientForm.get('firstName').value || !PatientForm.get('lastName').value || !PatientForm.get('userName').value
+              || !PatientForm.get('password').value || !PatientForm.get('dateOfBirth').value || !PatientForm.get('sex').value || emailinvalid || emrExist || !BillingProviderId || isUpdatingPatient" class="relative btn-dynamic-2c btn px-5 py-2 btn-md ml-0 waves-light"
+                mdbWavesEffect> <span *ngIf="isUpdatingPatient" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Update</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+      <!-- <div class="col-md-12 p-0 d-none">
+      <mdb-tabset #ccmConsent [buttonClass]="'classic-tabs tabs-outline-primary'" [contentClass]="'tab-shadow'"
+        class="classic-tabs tabs-outline-primary">
+        <mdb-tab heading=" <span class='t-number'>1</span> Personal Info">
+          <div class="row">
+
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="patientEmrId">EMR ID<small class="text-danger">*</small> <small *ngIf="emrExist"
+                    class="text-danger"> Patient with this Emr ID already registered</small></label>
+                <input type="text" formControlName="patientEmrId"
+                  (blur)="checkEMRAvailibility(PatientForm.get('patientEmrId').value)"
+                  class="form-control form-control-sm text-uppercase" id="patientEmrId" placeholder="EMR Id" [ngClass]="{'is-invalid':(PatientForm.get('patientEmrId').touched ||
+                  PatientForm.get('patientEmrId').dirty) &&
+                  !PatientForm.get('patientEmrId').valid }">
+
+                <span class="invalid-feedback">
+                  <span
+                    *ngIf="PatientForm.get('patientEmrId').errors && (PatientForm.get('patientEmrId').touched || PatientForm.get('patientEmrId').dirty)">
+                    Please enter your EMR id.
+                  </span>
+                </span>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="insurancePLan">Insurance Plan<small class="text-danger"></small></label>
+                <ng-select [loading]="isLoadingPayersList" id="insurancePLan" class="ng-select-small" formControlName="insurancePlanId" [multiple]="false" [searchable]="true"
+                        placeholder="Select Insurance Plan">
+                        <ng-option *ngFor="let item of insurancePLanList" [value]="item.id">{{item.name}}-{{item.payerName}}
+                        </ng-option>
+                </ng-select>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="insurancePLan">Secondary Insurance Plan<small class="text-danger"></small></label>
+                <ng-select [loading]="isLoadingPayersList" id="secondaryInsurancePLan" class="ng-select-small" formControlName="secondaryInsurancePlanId" [multiple]="false" [searchable]="true"
+                        placeholder="Select Secondary Insurance Plan">
+                        <ng-option *ngFor="let item of insurancePLanList" [value]="item.id">{{item.name}}-{{item.payerName}}
+                        </ng-option>
+                </ng-select>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="firstName">First Name<small class="text-danger">*</small></label>
+                <input type="text" formControlName="firstName" class="form-control form-control-sm" id="firstName"
+                  placeholder="First Name" [ngClass]="{'is-invalid':(PatientForm.get('firstName').touched ||
+                  PatientForm.get('firstName').dirty) &&
+                  !PatientForm.get('firstName').valid }">
+
+                <span class="invalid-feedback">
+                  <span
+                    *ngIf="!PatientForm.get('firstName').errors && (PatientForm.get('firstName').touched || PatientForm.get('firstName').dirty)">
+                    Please enter your first name.
+                  </span>
+                </span>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="middleName">Middle Name</label>
+                <input type="text" formControlName="middleName" class="form-control form-control-sm" id="middleName"
+                  placeholder="Middle Name">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="lastName">Last Name<small class="text-danger">*</small></label>
+                <input type="text" formControlName="lastName" class="form-control form-control-sm" id="lastName" placeholder="Last Name"
+                  [ngClass]="{'is-invalid':(PatientForm.get('lastName').touched ||
+                  PatientForm.get('lastName').dirty) &&
+                  !PatientForm.get('lastName').valid }">
+
+                <span class="invalid-feedback">
+                  <span *ngIf="!PatientForm.get('lastName').errors && (PatientForm.get('lastName').touched ||
+                     PatientForm.get('lastName').dirty)">
+                    Please enter your last name.
+                  </span>
+                </span>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="nickname">Nick Name</label>
+                <input type="text" formControlName="nickname" class="form-control form-control-sm" id="nickname"
+                  placeholder="Nick Name">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="input-group form-group">
+                <label class="w-100">Date of Birth<small class="text-danger">*</small></label>
+                <mdb-date-picker class="custom-datepicker w-100" [options]="myDatePickerOptions" formControlName="dateOfBirth"
+                  [outlineInput]="true" [defaultMonth]="dateDefaultMonth" [inline]="false" name="mydate" [placeholder]="'Date of Birth'">
+                </mdb-date-picker>
+              </div>
+              <span *ngIf="(PatientForm.get('dateOfBirth').touched ||
+              PatientForm.get('dateOfBirth').dirty) &&
+              !PatientForm.get('dateOfBirth').valid">
+                <span *ngIf="!PatientForm.get('dateOfBirth').errors && (PatientForm.get('dateOfBirth').touched ||
+                   PatientForm.get('dateOfBirth').dirty)" style="color: rgb(220, 53, 69); font-size: 12.8px">
+                  Please enter your date of birth.
+                </span>
+              </span>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group d-flex justify-content-between align-items-center">
+                <div>
+                  <label for="sex" class="w-100">Sex<small class="text-danger">*</small></label>
+                  <div class="form-check form-check-inline mt-0">
+                    <input type="radio" formControlName="sex" class="form-check-input" id="male" name="sex"
+                      [value]="'male'" mdbInput>
+                    <label class="form-check-label" for="male">Male</label>
+                  </div>
+                  <div class="form-check form-check-inline mt-0">
+                    <input type="radio" formControlName="sex" class="form-check-input" id="female" name="sex"
+                      [value]="'female'" mdbInput>
+                    <label class="form-check-label" for="female">Female</label>
+                  </div>
+                </div>
+              </div>
+              <span *ngIf="(PatientForm.get('sex').touched ||
+              PatientForm.get('sex').dirty) &&
+              !PatientForm.get('sex').valid">
+                <span *ngIf="!PatientForm.get('sex').errors && (PatientForm.get('sex').touched ||
+                   PatientForm.get('sex').dirty)" style="color: rgb(220, 53, 69); font-size: 12.8px">
+                  Please select your sex.
+                </span>
+              </span>
+            </div>
+            <div class="col-md-12">
+              <div class="row">
+                <div class="form-group col-md-4 ">
+                  <div class="d-flex justify-content-between">
+                    <label for="icdcodesystem7878">Email
+
+                    </label>
+                    <mdb-checkbox *ngIf="!patientId" [default]="true" [checked]="false"
+                      (change)="FillUserNameUserName($event.checked)">Make this Email my Username as well
+                    </mdb-checkbox>
+                  </div>
+                  <input type="text" formControlName="email" [readonly]="!allowPatientEmailEdit" autocomplete="nope"
+                    class="form-control form-control-sm" id="icdcodesystem7878" placeholder="Email / UserName"
+                    [ngClass]="{'is-invalid':(PatientForm.get('email').touched ||
+                  PatientForm.get('email').dirty) &&
+                  !PatientForm.get('email').valid }">
+
+                  <span class="invalid-feedback">
+                    <span *ngIf="!!PatientForm.get('email').errors && (PatientForm.get('email').touched ||
+                     PatientForm.get('email').dirty)">
+                      Please enter your email/userName .
+                    </span>
+                  </span>
+                </div>
+                <div class="form-group col-md-4 ">
+                  <label for="icdcodesystem23">UserName
+                    <small class="text-danger">*</small><small *ngIf="emailinvalid && !patientId" class="text-danger">
+                      User Name already
+                      registered</small>
+                  </label>
+                  <input type="text" formControlName="userName" [readonly]="patientId"
+                    (blur)="checkAvailibility(PatientForm.get('userName').value)" class="form-control form-control-sm"
+                    id="icdcodesystem23" placeholder="UserName" [ngClass]="{'is-invalid':(PatientForm.get('userName').touched ||
+                  PatientForm.get('userName').dirty) &&
+                  !PatientForm.get('userName').valid }">
+
+                  <span class="invalid-feedback">
+                    <span *ngIf="!PatientForm.get('userName').errors && (PatientForm.get('userName').touched ||
+                     PatientForm.get('userName').dirty)">
+                      Please enter your userName .
+                    </span>
+                  </span>
+                </div>
+
+                <div class="col-md-4" *ngIf="!patientId">
+                  <label for="new-password">Password<small class="text-danger">*</small></label>
+                  <div class="input-group form-group mb-0">
+                    <input [type]="show ? 'text' : 'password'" formControlName="password" autocomplete="new-password"
+                      class="form-control form-control-sm" [ngClass]="{'is-invalid':(PatientForm.get('password').touched ||
+                  PatientForm.get('password').dirty) &&
+                  !PatientForm.get('password').valid }">
+                    <a *ngIf="!patientId" (click)="password();" class="input-group-append">
+                      <span class="input-group-text text-white bg-dynamic-2c" id="category"><i
+                          class="fa fa-eye"></i></span>
+                    </a>
+                  </div>
+                  <span class="invalid-feedback">
+                    <span *ngIf="!PatientForm.get('password').errors && (PatientForm.get('password').touched ||
+                       PatientForm.get('password').dirty)">
+                      Please enter your password .
+                    </span>
+                  </span>
+                </div>
+
+              </div>
+          </div>
+            <div appCcmLoader>
+              <div class="loader-wrap" *ngIf="isEditpatientloaded">
+                <div class="text-dynamic-2c la-ball-pulse ccm-loader">
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="d-flex justify-conten-end">
+            <button [disabled]="isLoading" *ngIf="patientId" (click)="editPatient()"
+            class="pull-right btn btn-dynamic-2c btn-sm" type="submit">Save</button>
+            <button *ngIf="!patientId" (click)="addPatient(false);" [disabled]="
+          emailinvalid || !PatientForm.get('firstName').value || !PatientForm.get('lastName').value || !PatientForm.get('userName').value ||
+          !PatientForm.get('dateOfBirth').value || !PatientForm.get('patientEmrId').value || isLoading"
+            class="pull-right btn btn-dynamic-2c btn-sm" type="submit">Save</button>
+            <button
+              [disabled]="!PatientForm.get('patientEmrId').value || !PatientForm.get('firstName').value || !PatientForm.get('lastName').value || !PatientForm.get('userName').value
+              || !PatientForm.get('password').value || !PatientForm.get('dateOfBirth').value || !PatientForm.get('sex').value || emailinvalid || emrExist"
+              (click)="ccmConsent.setActiveTab(2)" class="btn btn-dynamic-2c btn-sm ml-auto mr-0">Next</button>
+
+          </div>
+        </mdb-tab>
+        <mdb-tab [disabled]="!PatientForm.get('patientEmrId').value || !PatientForm.get('firstName').value || !PatientForm.get('userName').value
+        || !PatientForm.get('lastName').value || !PatientForm.get('password').value || !PatientForm.get('dateOfBirth').value
+        || !PatientForm.get('sex').value || emailinvalid || emrExist"
+          heading="<span class='t-number'>2</span> Contact information">
+          <div class="row">
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="homePhone">Primary Phone</label>
+                <input type="text" formControlName="homePhone" autocomplete="nope" mask="(000)000-0000" class="form-control form-control-sm" id="homePhone"
+                  placeholder="Primary Phone" [ngClass]="{'is-invalid':(PatientForm.get('homePhone').touched ||
+                  PatientForm.get('homePhone').dirty) &&
+                  !PatientForm.get('homePhone').valid }">
+                <span class="invalid-feedback">
+                  <span *ngIf="!!PatientForm.get('homePhone').errors && (PatientForm.get('homePhone').touched ||
+                     PatientForm.get('homePhone').dirty)">
+                    Please enter your primary phone.
+                  </span>
+                </span>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="personalPhone">Secondary Phone</label>
+                <input type="text" autocomplete="nope" formControlName="personNumber" mask="(000)000-0000" class="form-control form-control-sm"
+                  id="personalPhone" placeholder="Secondary Phone">
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="border p-3 form-group">
+                <div class="form-group">
+                  <div class="d-flex justify-content-between">
+                    <label for="currentAddress">Current Address</label>
+                    <mdb-checkbox [default]="true" [checked]="true"
+                      (change)="AssignCurrentAdrValue(IsSameCurrentAddress)">Mailing address is same
+                    </mdb-checkbox>
+                  </div>
+                  <input #search (click)="selectAddress = 'currentAddress'" formControlName="currentAddress" autocomplete="nope" class="form-control form-control-sm" id="jfjfjf"
+                    name="jfjfjf" type="text" [ngClass]="{'is-invalid':(PatientForm.get('currentAddress').touched ||
+                    PatientForm.get('currentAddress').dirty) &&
+                    !PatientForm.get('currentAddress').valid }">
+
+                  <span class="invalid-feedback">
+                    <span *ngIf="!!PatientForm.get('currentAddress').errors && (PatientForm.get('currentAddress').touched ||
+                       PatientForm.get('currentAddress').dirty)">
+                      Please enter your current address.
+                    </span>
+                  </span>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="zipCode">City</label>
+                      <input type="text" formControlName="city" class="form-control form-control-sm" id="city" placeholder="city">
+                    </div>
+                  </div>
+                  <div class="col-md-6"><div class="form-group">
+                    <label for="zipCode">State</label>
+                    <ng-select class="ng-select-small" formControlName="state" [multiple]="false" [searchable]="true"
+                      placeholder="Select State">
+                      <ng-option *ngFor="let item of States" [value]="item.code">{{item.code}} {{item.name}}
+                      </ng-option>
+                    </ng-select>
+                  </div>
+                  </div>
+
+                  <div class="col-md-12">
+                    <div class="form-group mb-0">
+                      <label for="zipCode">ZIP Code</label>
+                      <input type="text" (change)="getCityAndState()" required maxlength="5" #zipCode formControlName="zip"
+                        OnlyNumbers class="form-control form-control-sm" id="zipCode" placeholder="Zip Code" [ngClass]="{'is-invalid':(PatientForm.get('zip').touched ||
+                                        PatientForm.get('zip').dirty) &&
+                                        !PatientForm.get('zip').valid }">
+                      <span class="invalid-feedback">
+                        <span *ngIf="!!PatientForm.get('zip').errors && (PatientForm.get('zip').touched)">
+                          Please enter zip code.
+                        </span>
+                      </span>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+
+            <div class="col-md-6" [ngClass]="{disabledDiv: IsSameCurrentAddress}">
+              <div class="border p-3 form-group">
+                <div class="form-group">
+                  <label for="mailingAddress">Mailing Address</label>
+                  <input  #searchMaillingAddress (click)="selectAddress = 'mailingAddress'" formControlName="mailingAddress" autocomplete="nope" class="md-textarea form-control form-control-sm"
+                    id="mailingAddress" type="text">
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="mallingzipCode">City</label>
+                      <input type="text" formControlName="maillingAddressCity" class="form-control form-control-sm" id="mallingcity"
+                        placeholder="city">
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="mallingzipCode">State</label>
+                      <ng-select class="ng-select-small" formControlName="maillingAddressState" [multiple]="false"
+                        [searchable]="true" placeholder="Select State">
+                        <ng-option *ngFor="let item of States" [value]="item.code">{{item.code}} {{item.name}}
+                        </ng-option>
+                      </ng-select>
+                    </div>
+                  </div>
+                  <div class="col-md-12">
+                    <div class="form-group mb-0">
+                      <label for="mallingzipCode">ZIP Code</label>
+                      <input type="text" (change)="getMaillingCityAndState()" required maxlength="5"
+                        formControlName="maillingAddressZipCode" OnlyNumbers class="form-control form-control-sm" id="mallingzipCode"
+                        placeholder="Zip Code">
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+            <div class="col-md-12 mb-2">
+              <small class="text-dynamic-2c text-uppercase font-500">Patient Preferences</small>
+            </div>
+
+            <div class="col-md-6">
+
+              <div class="form-group">
+                <label for="">What is the best time to call?</label>
+                <ng-select formControlName="bestTimeToCall" appendTo="body" class="ng-select-small" [multiple]="false"
+                  [searchable]="false" placeholder="best time to call">
+                  <ng-option [value]="'Morning'">Morning</ng-option>
+                  <ng-option [value]="'Afternoon'">Afternoon</ng-option>
+                  <ng-option [value]="'Evening'">Evening</ng-option>
+                </ng-select>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+
+
+              <div class="form-group mb-0">
+                <label class="mb-0">Preferred Language?</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input type="radio" class="form-check-input" id="materialInline1" name="preferredLanguage1"
+                  formControlName="preferredLanguage" [value]="'English'" mdbInput>
+                <label class="form-check-label " for="materialInline1">English</label>
+              </div>
+
+              <div class="form-check form-check-inline">
+                <input type="radio" class="form-check-input" id="materialInline2" name="preferredLanguage1"
+                  formControlName="preferredLanguage" [value]="'Spanish'" mdbInput>
+                <label class="form-check-label" for="materialInline2">Spanish</label>
+              </div>
+              <div class="form-check form-check-inline"
+                *ngIf="language && language != 'English' && language != 'Spanish' ">
+                <input type="radio" class="form-check-input" id="materialInline3" formControlName="preferredLanguage1"
+                  name="preferredLanguage" [value]="language" mdbInput>
+                <label class="form-check-label" for="materialInline3">{{language}}</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <button (click)="selectLanguageModal.show()" class="btn btn-outline-dark btn-sm"><i
+                    class="fa fa-angle-left"></i> more</button>
+              </div>
+            </div>
+            <div class="col-md-12 mb-2">
+              <small class="text-dynamic-2c text-uppercase font-500">Emergency Contact</small>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="emergencyContactName">Name</label>
+                <input type="text" formControlName="emergencyContactName" class="form-control form-control-sm" id="emergencyContactName"
+                  placeholder="First Name">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="emergencyContactRelationship">Relationship</label>
+                <ng-select class="ng-select-small" formControlName="emergencyContactRelationship" [multiple]="false"
+                  [searchable]="true" placeholder="Select RelationShip">
+                  <ng-option [value]="'Spouse'">Spouse</ng-option>
+                  <ng-option [value]="'Mother'">Mother</ng-option>
+                  <ng-option [value]="'Father'">Father</ng-option>
+                  <ng-option [value]="'Siblings'">Siblings</ng-option>
+                  <ng-option [value]="'Son'">Son</ng-option>
+                  <ng-option [value]="'Daughter'">Daughter</ng-option>
+                  <ng-option [value]="'Step-Son'">Step-Son</ng-option>
+                  <ng-option [value]="'Step-Daughter'">Step-Daughter</ng-option>
+                  <ng-option [value]="'Grand Father'">Grand Father</ng-option>
+                  <ng-option [value]="'Grand Mother'">Grand Mother</ng-option>
+                  <ng-option [value]="'Grand Son'">Grand Son</ng-option>
+                  <ng-option [value]="'Grand Daughter'">Grand Daughter</ng-option>
+                  <ng-option [value]="'Cousin'">Cousin</ng-option>
+                  <ng-option [value]="'Niece'">Niece</ng-option>
+                  <ng-option [value]="'Nephew'">Nephew</ng-option>
+                  <ng-option [value]="'Neighbor/Friend'">Neighbor/Friend</ng-option>
+                  <ng-option [value]="'Other'">Other</ng-option>
+                </ng-select>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="emergencyContactPrimaryPhoneNo">Primary Phone</label>
+                <input type="text" formControlName="emergencyContactPrimaryPhoneNo" mask="(000)000-0000"
+                  class="form-control form-control-sm" id="emergencyContactPrimaryPhoneNo" placeholder="Primary PhoneNo">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="emergencyContactSecondaryPhoneNo">Secondary Phone</label>
+                <input type="text" formControlName="emergencyContactSecondaryPhoneNo" mask="(000)000-0000"
+                  class="form-control form-control-sm" id="emergencyContactSecondaryPhoneNo" placeholder="Secondary PhoneNo">
+              </div>
+            </div>
+          </div>
+          <button (click)="ccmConsent.setActiveTab(1)" class="btn btn-dynamic-secondary-2c btn-sm">Previous</button>
+          <button *ngIf="!patientId" (click)="addPatient(false);" [disabled]="
+          emailinvalid || !PatientForm.get('firstName').value || !PatientForm.get('lastName').value || !PatientForm.get('userName').value ||
+          !PatientForm.get('dateOfBirth').value || !PatientForm.get('patientEmrId').value || isLoading"
+            class="pull-right btn btn-dynamic-2c btn-sm" type="submit">Save</button>
+            <button *ngIf="!patientId" (click)="consentTaken = true;addPatient(false);" [disabled]="
+                      emailinvalid || !PatientForm.get('firstName').value || !PatientForm.get('lastName').value || !PatientForm.get('userName').value ||
+                      !PatientForm.get('dateOfBirth').value || !PatientForm.get('patientEmrId').value || isLoading"
+              class="pull-right btn btn-dynamic-2c btn-sm" type="submit">Save & Consent taken</button>
+          <button [disabled]="isLoading" *ngIf="patientId" (click)="editPatient()"
+            class="pull-right btn btn-dynamic-2c btn-sm" type="submit">Save</button>
+        </mdb-tab>
+
+      </mdb-tabset>
+
+
+    </div> -->
+  </div>
+</form>
+
+<div style="overflow-y: auto" mdbModal #selectFacilityModal="mdbModal" class="modal fade" role="dialog"
+  [config]="{ignoreBackdropClick: true}" aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg flat-modal" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <!-- <button type="button" class="close pull-right" aria-label="Close" (click)="selectFacilityModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button> -->
+        <h4 class="modal-title w-100" id="myModalLabel"> <a class="text-dark" (click)="navigateBack()"><i
+              class="fa fa-arrow-left fa-lg"></i></a> Please Select Facility</h4>
+      </div>
+
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label for="namea">Select Facility*</label>
+
+              <ng-select class="ng-select-small" [(ngModel)]="facilityId" [disabled]="facilityId"
+                (change)="facilityChanged($event)" [multiple]="false" [searchable]="true" [loading]="LoadingData"
+                placeholder="Select Facility">
+
+                <ng-option *ngFor="let item of facilityList" [value]="item.id">{{item.facilityName}}
+                </ng-option>
+              </ng-select>
+
+              <span *ngIf="facilityId < 1" style="color: rgb(220, 53, 69); font-size: 12.8px">
+                Please select your facility.
+              </span>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="form-group">
+              <label for="namee">Billing Provider</label>
+              <ng-select class="ng-select-small" [loading]="LoadingData" [(ngModel)]="BillingProviderId"
+                appendTo="body" [multiple]="false" [searchable]="true" placeholder="Billing Provider">
+                <ng-option *ngFor="let item of BIllingProviderList" [value]="item.id">{{item.lastName}},{{item.firstName}}
+                </ng-option>
+              </ng-select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" [disabled]="!facilityId || !BillingProviderId" class="btn btn-dynamic-2c btn-sm"
+          (click)="selectFacilityModal.hide();">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="overflow-y: auto" mdbModal #FacilityModal="mdbModal" class="modal fade" role="dialog"
+  [config]="{ignoreBackdropClick: true}" aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg flat-modal" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <!-- <button type="button" class="close pull-right" aria-label="Close" (click)="selectFacilityModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button> -->
+        <h4 class="modal-title w-100" id="myModalLabel"> <a class="text-dark" (click)="navigateBack()"><i
+              class="fa fa-arrow-left fa-lg"></i></a> Please Select Facility</h4>
+      </div>
+
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label for="namea">Facility Name<span class="text-danger">*</span></label>
+
+              <ng-select class="ng-select-small" [disabled]="facilityId" [(ngModel)]="facilityId"
+                (change)="facilityChanged($event)" [multiple]="false" [searchable]="true" [loading]="LoadingData"
+                placeholder="Select Facility">
+
+                <ng-option *ngFor="let item of facilityList" [value]="item.id">{{item.facilityName}}
+                </ng-option>
+              </ng-select>
+
+              <span *ngIf="facilityId < 1" style="color: rgb(220, 53, 69); font-size: 12.8px">
+                Please select your facility.
+              </span>
+            </div>
+          </div>
+          <div class="col-md-12 drop-wrap">
+            <div class="form-group">
+              <label for="namee">Billing Provider</label>
+              <ng-select class="ng-select-small" [loading]="LoadingData" [(ngModel)]="BillingProviderId"
+                appendTo=".drop-wrap" [multiple]="false" [searchable]="true" placeholder="Billing Provider">
+                <ng-option *ngFor="let item of BIllingProviderList" [value]="item.id">{{item.lastName}},{{item.firstName}}
+                </ng-option>
+              </ng-select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" [disabled]="!facilityId || !BillingProviderId" class="btn btn-dynamic-2c btn-sm"
+          (click)="FacilityModal.hide();">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div mdbModal #onlineConsentModal="mdbModal" class="modal fade" role="dialog" aria-labelledby="myBasicModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="onlineConsentModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">Consent Document</h4>
+      </div>
+      <div class="modal-body">
+        <div class="onlineConset" id="onlineConset">
+          <span [innerHTML]="consentDocument"></span>
+          <!-- <span [innerHTML]="physicianhtml"></span> -->
+        </div>
+        <br>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label for="signeture">Signature</label>
+              <input [(ngModel)]="Signature" (keyup)="appenDsignature()" type="text" style="font-style: italic"
+                class="form-control form-control-sm" id="signeture" placeholder="Signature">
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+
+      <div class="modal-footer">
+        <a (click)="MakePDF()" class="btn btn-dynamic-2c btn-sm mr-auto">Download Pdf</a>
+        <button type="button" (click)="patientConsentType=null;" class="btn btn-dark btn-sm" data-dismiss="modal"
+          (click)="onlineConsentModal.hide()">Decline</button>
+        <button [disabled]="!Signature" type="button" class="btn btn-dynamic-2c btn-sm"
+          (click)="startUpload();onlineConsentModal.hide()">Accept</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+<div mdbModal #selectLanguageModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  [config]="{backdrop: true, ignoreBackdropClick: true}" aria-labelledby="myselectLanguageModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <!-- <button type="button" class="close pull-right" aria-label="Close" (click)="selectLanguageModal.hide()">
+            <span aria-hidden="true">×</span>
+          </button> -->
+        <h4 class="modal-title w-100" id="myModalLabel">Select Language</h4>
+      </div>
+      <div class="modal-body" [formGroup]="PatientForm">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label for="namea">Language List</label>
+              <ng-select class="ng-select-small" formControlName="preferredLanguage" [(ngModel)]="language"
+                [multiple]="false" [searchable]="true" placeholder="Select Language">
+                <ng-option *ngFor="let item of languageList" [value]="item.name">{{item.name}}
+                </ng-option>
+              </ng-select>
+              <span *ngIf="(PatientForm.get('preferredLanguage').touched ||
+                PatientForm.get('preferredLanguage').dirty) &&
+                !PatientForm.get('preferredLanguage').valid">
+
+                <span *ngIf="!!PatientForm.get('preferredLanguage').errors && (PatientForm.get('preferredLanguage').touched ||
+                     PatientForm.get('preferredLanguage').dirty)" style="color: rgb(220, 53, 69); font-size: 12.8px">
+                  Please enter your date of birth.
+                </span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+          (click)="selectLanguageModal.hide()" mdbWavesEffect>Close</button>
+        <button type="button"  (click)="selectLanguageModal.hide()" class="relative btn-dynamic-2c btn btn-sm waves-light"
+          mdbWavesEffect>Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!--  -->
+
+<div mdbModal #selectIcdModal="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myselectIcdModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="selectIcdModal.hide()">
+            <span aria-hidden="true">×</span>
+          </button>
+        <h4 class="modal-title w-100 text-center align-content-center" id="myModalLabel">New ICD Code </h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+            <p><strong class="mr-1">Chronic Condition:</strong>
+              {{selectedChronicCondition.algorithm}}
+            </p>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label>ICD Code<small class="text-danger">*</small></label>
+              <input type="text" class="form-control form-control-sm" (blur)="checkIcdCodeExist()" [(ngModel)]="addICDCodeDto.icdCode" placeholder="ICD Code">
+            </div>
+          </div>
+          <div class="col-md-9">
+            <div class="form-group">
+              <label>Description<small class="text-danger">*</small></label>
+              <input type="text" class="form-control form-control-sm" [(ngModel)]="addICDCodeDto.detail" placeholder="Description">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button"  class="btn btn-dynamic-secondary-2c btn-sm" aria-label="Close"
+          (click)="selectIcdModal.hide()" >Close</button>
+        <button type="button" class="btn btn-dynamic-2c btn-sm" [disabled]="!addICDCodeDto.icdCode || !addICDCodeDto.detail || !selectedChronicCondition.id || isIcdCodeExist" (click)="addNewIcdCode(selectIcdModal)" >Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div mdbModal #viewPdfModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" [config]="{backdrop: true, ignoreBackdropClick: true}" aria-hidden="true"
+  (close)="objectURLStrAW=''">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-body" style="height:calc(100vh - 50px); padding: 0px;">
+        <button type="button" class="close pull-right document-close" aria-label="Close" (click)="viewPdfModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <app-pdf-view *ngIf="objectURLStrAW" [documentUrl]="objectURLStrAW"></app-pdf-view>
+      </div>
+    </div>
+  </div>
+</div>

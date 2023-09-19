@@ -1,0 +1,355 @@
+<div *hasClaim="['IsAppAdmin']" class="d-flex justify-content-between">
+  <h1 class="page-title mb-0">Dashboard - <span class="text-dynamic-2c"> {{dateProp}}</span></h1>
+  <button class="btn btn-dynamic-2c btn-sm m-0 mb-3" (click)="filterGrap.toggle()"><i class="fa fa-filter fa-lg"></i>
+    Filter</button>
+</div>
+<div *hasClaim="['IsFacilityUser']" class="d-flex justify-content-between">
+  <h1 class="page-title mb-0">Dashboard</h1>
+
+  <ng-container *hasClaim="'isLocumCareProvider'">
+    <button [disabled]="isLoadingAuditData" type="submit" mdbBtn (click)="getAuditData()"
+      class="btn btn-dynamic-2c btn-sm m-0 mb-3 mr-1">
+      <span *ngIf="isLoadingAuditData" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      Get Audit Data</button>
+  </ng-container>
+</div>
+<div  class="panel" mdbCollapse #filterGrap="bs-collapse">
+  <div class="panel-header d-flex justify-content-between align-items-center">
+    <h3>Filter</h3>
+    <div>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="filterGrap.toggle()">
+        <span aria-hidden="true">×</span>
+      </button>
+    </div>
+  </div>
+  <div class="panel-body">
+    <div class="row">
+      <div class="col-xl-8 col-lg-6 col-sm-6">
+        <label for="namea">Select Facility</label>
+        <ng-select class="ng-select-small" [(ngModel)]="selectedFacilityIds"  (clear)="selectedFacilityIds=[0];updateChartAndTable()" (remove)="updateChartAndTable()" (add)="filterChanges($event)" appendTo="body" [multiple]="true" [searchable]="true" [clearSearchOnAdd]="true" [closeOnSelect]="false"
+          placeholder="Select Facility">
+          <ng-option [value]="0">All</ng-option>
+          <ng-option *ngFor="let item of facilityList" [value]="item.id">{{item.facilityName}}</ng-option>
+        </ng-select>
+      </div>
+      <div class="col-xl-4 col-lg-6 col-sm-6">
+        <label for="namea">Select Date</label>
+        <input type="text" class="form-control form-control-sm" #dateDPicker="dpDayPicker" [(ngModel)]="dateProp"
+         (ngModelChange)="updateChartAndTable()" [dpDayPicker]="assignedDatePickerConfig" placeholder="YYYY-MM-DD"
+          [theme]="'dp-material ccm-date-picker'" [mode]="'day'" />
+      </div>
+    </div>
+    <!-- <div class="row">
+      <div class="col-md-12">
+        <h4>Date</h4>
+        <div class="d-flex align-items-center">
+          <div>
+            <strong style="color: #1266f1;" class="mb-0 mr-2">0</strong>
+          </div>
+          <div class="flex-1">
+            <mdb-range-input [min]="0" [max]="100"></mdb-range-input>
+          </div>
+          <div>
+            <strong style="color: #1266f1;" class="mb-0 ml-2">30</strong>
+          </div>
+        </div>
+      </div>
+    </div> -->
+  </div>
+</div>
+
+
+
+<app-rpm-end-of-day-report #RPMEndOfDayCMPRef ></app-rpm-end-of-day-report>
+<app-ccm-rpm-end-of-day-report></app-ccm-rpm-end-of-day-report>
+<app-ccm-end-of-day-report #CCMEndOfDayCMPRef ></app-ccm-end-of-day-report>
+
+<!-- <div class="d-flex justify-content-between">
+  <h1 class="page-title mb-0 flex-sm-grow-1"></h1>
+  <ng-container *hasClaim="'isLocumCareProvider'">
+    <button [disabled]="isLoadingAuditData" type="submit" mdbBtn (click)="getAuditData()"
+      class="btn btn-dynamic-2c btn-sm m-0 mb-3 mr-1">
+      <span *ngIf="isLoadingAuditData" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      Get Audit Data</button>
+  </ng-container>
+  <button class="btn btn-dynamic-2c btn-sm m-0 mb-0" (click)="filterGrap.toggle()"><i class="fa fa-filter fa-lg"></i>
+    Filter</button>
+</div> -->
+
+
+<!-- <div class="panel" mdbCollapse #filterGrap="bs-collapse">
+  <div class="panel-header d-flex justify-content-between align-items-center">
+    <h3>Filter</h3>
+    <div>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="filterGrap.toggle()">
+        <span aria-hidden="true">×</span>
+      </button>
+    </div>
+  </div>
+  <div class="panel-body">
+    <div class="row">
+      <div class="col-xl-3 col-lg-6 col-sm-6" *ngIf="securityService.securityObject.userType === 3">
+        <label for="namea">Select Facility</label>
+        <ng-select class="ng-select-small" [(ngModel)]="dashBoardFilterDto.facilityId" appendTo="body"
+          [loading]="isLoading" (ngModelChange)="getdataOnFilter()" [multiple]="false" [searchable]="true"
+          placeholder="Select Facility">
+          <ng-option [value]="0">Select Facility</ng-option>
+          <ng-option *ngFor="let item of facilityList" [value]="item.id">{{item.facilityName}}
+          </ng-option>
+        </ng-select>
+      </div>
+      <div class="col-xl-3 col-lg-6 col-sm-6" *ngIf="securityService.securityObject.userType !== 4">
+        <label for="namea">Select Care Provider</label>
+        <ng-select class="ng-select-small" [(ngModel)]="dashBoardFilterDto.careProviderId" appendTo="body"
+          (ngModelChange)="getAllGraphsData()" [multiple]="false" [searchable]="true" [loading]="CPLoader"
+          placeholder="Select Facility">
+          <ng-option [value]="0">Select Care Provider</ng-option>
+          <ng-option *ngFor="let item of CareProvidersList" [value]="item.id">{{item.firstName}} {{item.lastName}}
+          </ng-option>
+        </ng-select>
+      </div>
+      <div class="col-xl-3 col-lg-6 col-sm-6">
+        <label>Select Year</label>
+        <ng-select [searchable]="false" [(ngModel)]="dashBoardFilterDto.year" (ngModelChange)="getAllGraphsData()"
+          [appendTo]="'body'" class="ng-select-small" placeholder="Select Month" (click)="$event.stopPropagation();">
+          <ng-option *ngFor="let year of listOfYears" [value]="year">{{year}}</ng-option>
+        </ng-select>
+      </div>
+      <div class="col-xl-3 col-lg-6 col-sm-6">
+        <label>Select Month</label>
+        <ng-select [searchable]="false" [(ngModel)]="dashBoardFilterDto.month" (ngModelChange)="getAllGraphsData()"
+          [appendTo]="'body'" class="ng-select-small" placeholder="Select Month" (click)="$event.stopPropagation();">
+          <ng-option [value]="1">January</ng-option>
+          <ng-option [value]="2">February</ng-option>
+          <ng-option [value]="3">March</ng-option>
+          <ng-option [value]="4">April</ng-option>
+          <ng-option [value]="5">May</ng-option>
+          <ng-option [value]="6">June</ng-option>
+          <ng-option [value]="7">July</ng-option>
+          <ng-option [value]="8">August</ng-option>
+          <ng-option [value]="9">September</ng-option>
+          <ng-option [value]="10">October</ng-option>
+          <ng-option [value]="11">November</ng-option>
+          <ng-option [value]="12">December</ng-option>
+        </ng-select>
+      </div>
+    </div>
+  </div>
+</div> -->
+
+
+
+<!-- <div class="progress mb-3"> -->
+<!-- <div class="progress-bar bg-info" role="progressbar" style="width: '{{progressBarData.percentage}}'" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">{{progressBarData.percentage}}</div> -->
+<!-- {{progressBarData.percentage}} -->
+<!-- <ng-container *hasClaim="['IsFacilityUser']">
+  <mdb-progress class="custom-d-progress" value="{{progressBarData.percentage}}" min="0" max="100" type="success"
+    aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">{{progressBarData.percentage}}%</mdb-progress>
+</ng-container> -->
+<!-- </div> -->
+
+
+<!-- <div class="row widget-block">
+  <div class="col-lg-12 col-sm-12">
+    <div class="db-block">
+      <div class="d-flex align-items-center justify-content-end mb-4 ">
+        <div style="display: block; height: 300px;" class="block-2 w-100 p-0">
+          <p><strong class="mb-3">CCM Service Summary</strong></p>
+
+          <div *ngIf="isLoading" class="d-flex justify-content-center text-center">
+            <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+          </div>
+          <div style="position: relative; height:100%; width:100%"
+            *ngIf="!isLoading && (!SummaryBarChartDataSets || !SummaryBarChartDataSets.length )">
+            <h3>No record found</h3>
+          </div>
+          <div style="position: relative; height:100%; width:100%"
+            *ngIf="!isLoading && SummaryBarChartDataSets && SummaryBarChartDataSets.length ">
+            <canvas mdbChart [datasets]="SummaryBarChartDataSets" [labels]="SummaryBarChartLabels"
+              [colors]="linechartColors" [options]="chartOptions" [legend]="true" (chartHover)="chartHovered($event)"
+              (chartClick)="chartClicked($event)" [chartType]="'bar'">
+            </canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> -->
+<!-- <div class="row">
+  <div class="col-lg-6 col-md-6 col-sm-12">
+    <div class="db-block">
+      <div style="display: block; height: 300px" class="block-2 p-0">
+        <p><strong class="mb-3">Patient Record</strong></p>
+
+        <div *ngIf="isLoading" class="d-flex justify-content-center text-center">
+          <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+        </div>
+        <div style="position: relative; height:100%; width:100%"
+          *ngIf="!isLoading && (!minutesCompleteDoughnetChartsData || !minutesCompleteDoughnetChartsData.length )">
+          <h3>No record found</h3>
+        </div>
+        <div style="position: relative; height: 250px; width:100%"
+          *ngIf="!isLoading && minutesCompleteDoughnetChartsData ">
+          <canvas mdbChart [datasets]="minutesCompleteDoughnetChartsData" [labels]="minutesCompleteDoughnetChartsLabels"
+            [colors]="chartColorss" [options]="chartOptions" [legend]="true" (chartHover)="chartHovered($event)"
+            (chartClick)="chartClicked($event)" [chartType]="doughnut">
+          </canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6 col-md-6 col-sm-12">
+    <div class="db-block">
+
+      <div style="display: block; height: 300px" class="block-2 p-0">
+        <p><strong class="mb-3">Daily Reporting Data</strong></p>
+
+        <div *ngIf="isLoading" class="d-flex justify-content-center text-center">
+          <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+        </div>
+        <div style="position: relative; height:100%; width:100%"
+          *ngIf="!isLoading && (!dailyReportingDoughnetChartsData2 || !dailyReportingDoughnetChartsData2.length )">
+          <h3>No record found</h3>
+        </div>
+        <div style="position: relative; height: 250px; width:100%"
+          *ngIf="!isLoading && dailyReportingDoughnetChartsData2 && dailyReportingDoughnetChartsData2.length">
+          <canvas mdbChart [datasets]="dailyReportingDoughnetChartsData2" [labels]="dailyReportingDoughnetChartsLabels2"
+            [colors]="chartColorss" [options]="chartOptions" [legend]="true" (chartHover)="chartHovered($event)"
+            (chartClick)="chartClicked($event)" [chartType]="doughnut2">
+          </canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="d-flex align-items-center flex-wrap justify-content-between mb-3">
+  <h1 class="page-title mb-0 flex-sm-grow-1 mb-3">Care Gaps</h1>
+  <div>
+    <button type="button" class="btn btn-dynamic-2c btn-sm my-0 flex-shrink-0 mr-0" (click)="test.toggle()"><i
+        class="fa fa-filter fa-lg"></i> Filter</button>
+  </div>
+</div> -->
+
+
+
+<div class="row widget-block">
+  <!-- <div class="col-sm-12">
+    <div class="search-filter collapseable" mdbCollapse #test="bs-collapse">
+      <div class="panel" style="overflow: visible;">
+        <div class="panel-header d-flex justify-content-between align-items-center">
+          <h3>Search Filter</h3>
+          <div>
+            <button type="button" class="close pull-right" aria-label="Close" (click)="test.toggle()">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="row">
+
+            <div class="col-xl-3 col-lg-6 col-sm-6" *ngIf="isBillingProvider">
+              <div class="form-group">
+                <label for="name2e">Billing Provider</label>
+                <ng-select class="ng-select-small" [readonly]="isBillingProviderDisable"
+                  [(ngModel)]="careGapGraphSummary.billingProviderId" appendTo="body" [closeOnSelect]="true"
+                  (ngModelChange)="getCareGapsChartData()" [multiple]="false" [searchable]="true"
+                  placeholder="Billing Provider">
+                  <ng-option [value]="0">All Billing Providers </ng-option>
+                  <ng-option *ngFor="let item of bIllingProviderList" [value]="item.id">{{item.firstName}}
+                    {{item.lastName}}
+                  </ng-option>
+                </ng-select>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-lg-6 col-sm-6" *ngIf="isFacilitator">
+              <div class="form-group">
+                <label for="name12e">Care Facilitator</label>
+                <ng-select class="ng-select-small" [readonly]="isfacilitaorDisable" id="name12e" name="CF"
+                  [(ngModel)]="careGapGraphSummary.careFacilitatorId" appendTo="body" [closeOnSelect]="true"
+                  (ngModelChange)="getCareGapsChartData()" [multiple]="false" [searchable]="true"
+                  placeholder="Select Facilitator">
+                  <ng-option [value]="0">All Care Facilitator </ng-option>
+                  <ng-option *ngFor="let item of careFacilitatorsList" [value]="item.id">{{item.firstName}}
+                    {{item.lastName}}
+                  </ng-option>
+                </ng-select>
+              </div>
+            </div>
+            <div class="col-xl-3 col-lg-6 col-sm-6" *ngIf="isCareprovider">
+              <label for="namea321">Select Care Provider</label>
+              <ng-select class="ng-select-small" [readonly]="isCareProviderDisable"
+                [(ngModel)]="careGapGraphSummary.careProviderId" id="namea321" name="CP" appendTo="body"
+                (ngModelChange)="getCareGapsChartData()" [multiple]="false" [searchable]="true" [loading]="CPLoader"
+                placeholder="Select Facility">
+                <ng-option [value]="0">Select Care Provider</ng-option>
+                <ng-option *ngFor="let item of CareProvidersList" [value]="item.id">{{item.firstName}} {{item.lastName}}
+                </ng-option>
+              </ng-select>
+            </div>
+
+            <div class="col-xl-3 col-lg-6 col-sm-6">
+              <div class="form-group">
+                <label for="namee">Status</label>
+                <ng-select class="ng-select-small" [(ngModel)]="careGapGraphSummary.status" appendTo="body"
+                  [closeOnSelect]="true" (ngModelChange)="getCareGapsChartData()" [multiple]="false" [searchable]="true"
+                  placeholder="Select Status">
+                  <ng-option [value]="-1">All</ng-option>
+                  <ng-option *ngFor="let item of gapStatusList" [value]="item.number">{{ item.word }}</ng-option>
+
+                </ng-select>
+              </div>
+            </div>
+            <div class="col-xl-3 col-lg-6 col-sm-6">
+              <div class="form-group">
+                <label for="insurancPlan">Care Gaps</label>
+                <ng-select class="ng-select-small" [(ngModel)]="careGapGraphSummary.CareGaps" appendTo="body"
+                  [closeOnSelect]="false" [loading]="isLoadingPayersList" (ngModelChange)="getCareGapsChartData()"
+                  [multiple]="true" [searchable]="true" placeholder="Select Status">
+                  <ng-option *ngFor="let item of allCareGaps" [value]="item.id">{{item.measureName}}
+                  </ng-option>
+
+                </ng-select>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div> -->
+  <!-- <div class="col-lg-12 col-sm-12">
+    <div class="db-block"> -->
+      <!-- <p><strong class="mb-3">Care Gaps </strong></p> -->
+      <!-- <div style="display: block; height: 300px" class="block-2 p-0">
+        <div *ngIf="pcmGraphisLoading" class="d-flex justify-content-center text-center">
+          <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+        </div> -->
+        <!-- <div style="position: relative; height:90%; width:100%" *ngIf="!pcmGraphisLoading && careGapsChartsData2">
+          <canvas mdbChart [datasets]="careGapsChartsData2" [labels]="careGapsChartsLabels2"
+            [colors]="careGapschartColorss" [options]="careGapChartOptions" [legend]="true" (chartHover)="chartHovered($event)"
+            (chartClick)="chartClicked($event)" [chartType]="doughnut3">
+          </canvas>
+        </div> -->
+        <!-- <div style="position: relative; height:100%; width:100%" *ngIf="!isLoading">
+          <canvas mdbChart #careGapsChart [datasets]="bubbleChartData" [options]="bubbleChartOptions"
+            [colors]="chartColors" [legend]="false" [chartType]="'bubble'">
+          </canvas>
+        </div> -->
+        <!-- <p *ngIf="!bubbleChartData">No Record Found</p> -->
+      <!-- </div> -->
+    <!-- </div>
+  </div> -->
+</div>
+
+
+
+
+<!-- <app-dr-graphs [CareProvidersList1]="CareProvidersList" [facilitylistdata]="facilityList"
+  [isCareProviderDisable1]="isCareProviderDisable"></app-dr-graphs> -->
+
+  <!-- <app-rpm-analytics></app-rpm-analytics> -->
+

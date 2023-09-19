@@ -1,0 +1,189 @@
+<form [formGroup]="providerForm" (ngSubmit)="addProvider()">
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-sm-12 mb-2">
+        <small class="text-dynamic-2c text-uppercase font-500">Personal Information</small>
+      </div>
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label for="firstName">First Name</label>
+          <input type="text" formControlName="firstName" class="form-control" id="firstName" placeholder="First Name">
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label for="lastName">Last Name</label>
+          <input type="text" formControlName="lastName" class="form-control" id="lastName" placeholder="Last Name">
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label for="middleName">Middle Name</label>
+          <input type="text" formControlName="middleName" class="form-control" id="middleName"
+            placeholder="Middle Name">
+        </div>
+      </div>
+
+
+      <div class="col-sm-12 mb-2">
+        <small class="text-dynamic-2c text-uppercase font-500">Medical Record</small>
+      </div>
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label for="practiceId">Practice Id</label>
+          <input type="text" formControlName="practiceId" class="form-control" id="practiceId"
+            placeholder="Practice Id">
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label for="Degree">Degree</label>
+          <input type="text" formControlName="degree" class="form-control" id="Degree" placeholder="Degree">
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label for="mrn">Dea Number</label>
+          <input type="text" formControlName="deaNumber" class="form-control" id="mrn" placeholder="Dea Number">
+        </div>
+      </div>
+      <div class="col-sm-12">
+        <div class="form-group">
+          <label for="mrn">Speciality</label>
+          <ng-select formControlName="speciality" [searchable]="false" appendTo="body" placeholder="Select Speciality"
+            (click)="$event.stopPropagation();">
+            <ng-option *ngFor="let item of specialities" [value]="item.name">{{item.name}}</ng-option>
+          </ng-select>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label for="nationalProviderId">National Provider Id</label>
+          <input type="text" formControlName="nationalProviderId" class="form-control" id="nationalProviderId"
+            placeholder="National Provider Id">
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label for="otherLicenseId">Other License Id</label>
+          <input type="text" formControlName="otherLicenseId" class="form-control" id="otherLicenseId"
+            placeholder="Other License Id">
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label for="otherLicenseDescription">Other License Description</label>
+          <input type="text" formControlName="otherLicenseDescription" class="form-control" id="otherLicenseDescription"
+            placeholder="Other License Description">
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label for="stateLicenseNumber">State License Number</label>
+          <input type="text" formControlName="stateLicenseNumber" class="form-control" id="stateLicenseNumber"
+            placeholder="State License Number">
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label for="ssn">SSN</label>
+          <input type="text" formControlName="ssn" class="form-control" id="ssn" placeholder="SSN">
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label for="salutoryName">Salutory Name</label>
+          <input type="text" formControlName="salutoryName" class="form-control" id="salutoryName"
+            placeholder="salutoryName">
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label for="note">Note</label>
+          <input type="text" formControlName="note" class="form-control" id="note" placeholder="note">
+        </div>
+      </div>
+      <div class="col-sm-12">
+        <div class="form-group">
+          <label for="hospitalAffiliations">Hospital Affiliations</label>
+          <input type="text" formControlName="hospitalAffiliations" class="form-control" id="hospitalAffiliations"
+            placeholder="hospitalAffiliations">
+        </div>
+      </div>
+      <div class="col-sm-12">
+        <div class="form-group">
+          <label for="description">Description</label>
+          <input type="text" formControlName="description" class="form-control" id="description"
+            placeholder="Description">
+        </div>
+      </div>
+
+      <div class="sprt border-bottom"></div>
+      <div class="col-sm-12 mb-2">
+        <small class="text-dynamic-2c text-uppercase font-500">Contact Information</small>
+      </div>
+
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label for="personalPhone">Personal Phone</label>
+          <input type="text" formControlName="mobilePhone" mask="(000)000-0000" OnlyNumbers class="form-control" id="personalPhone"
+            placeholder="Personal Phone">
+        </div>
+      </div>
+
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="text" formControlName="email" class="form-control" id="email" placeholder="Nick Name">
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label for="phone">Phone</label>
+          <input type="text" formControlName="phone" mask="(000)000-0000" OnlyNumbers class="form-control" id="phone" placeholder="phone">
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label for="zipCode">State</label>
+          <input type="text" formControlName="state" class="form-control" id="state" placeholder="State">
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label for="zipCode">City</label>
+          <input type="text" formControlName="city" class="form-control" id="city" placeholder="city">
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label for="zipCode">ZIP Code</label>
+          <input type="text" formControlName="zip" class="form-control" id="zipCode" placeholder="Zip Code">
+        </div>
+      </div>
+      <div class="col-sm-12">
+        <div class="form-group">
+          <label for="addressline1">Address Line 1</label>
+          <textarea formControlName="addressLine1" class="md-textarea form-control " rows="3" id="addressline1"
+            type="text"></textarea>
+        </div>
+      </div>
+      <div class="col-sm-12">
+        <div class="form-group">
+          <label for="addressline2">Address Line 2</label>
+          <textarea formControlName="addressLine2" class="md-textarea form-control " rows="3" id="addressline2"
+            type="text"></textarea>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-dark btn-sm" aria-label="Close" (click)="modalClose()"
+      mdbWavesEffect>Close</button>
+    <button type="submit" class="btn btn-dynamic-2c btn-sm" *ngIf="provider.id === 0 || !provider.id">Add</button>
+    <button type="submit" class="btn btn-dynamic-2c btn-sm" *ngIf="provider.id > 0">Update</button>
+
+  </div>
+</form>

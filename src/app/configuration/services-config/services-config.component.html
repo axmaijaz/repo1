@@ -1,0 +1,365 @@
+<div class="modal-content">
+    <div class="modal-header">
+      <!-- <button type="button" class="close pull-right" aria-label="Close" (click)="facilityServicesModal.hide()">
+        <span aria-hidden="true">×</span>
+      </button> -->
+      <h4 class="modal-title w-100" id="myModalLabel">Facility Services </h4>
+    </div>
+    <mdb-progress-bar *ngIf="isLoadingServiceConfig || isSetFacilityServiceCOnfig" class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+    <div class="modal-body">
+        <div class="row">
+          <!-- <div class="col-sm-12 mb-2">
+          <small class="text-dynamic-2c text-uppercase font-500">User Information</small>
+        </div> -->
+          <div class="col-sm-12">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="card facility-card">
+                  <div class="card-header border-8" [class.disable]="!SetFacilityServiceCOnfigDto.chatService">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div>
+                        <p class="mb-0"><span class="fa fa-commenting-o fa-lg mr-1"></span>Application Chat</p>
+                      </div>
+                      <div class="custom-control custom-switch ">
+                        <input type="checkbox" class="custom-control-input" [(ngModel)]="SetFacilityServiceCOnfigDto.chatService" (change)="SetFacilityServiceCOnfig()"  id="chatService">
+                        <label class="custom-control-label" for="chatService"></label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="card facility-card">
+                  <div class="card-header border-8" [class.disable]="!SetFacilityServiceCOnfigDto.telephonyCommunication">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div>
+                        <p class="mb-0"><span class="fa fa-commenting-o fa-lg mr-1"></span>Patient Telephony Communication</p>
+                      </div>
+                      <div class="custom-control custom-switch ">
+                        <input type="checkbox" class="custom-control-input" [(ngModel)]="SetFacilityServiceCOnfigDto.telephonyCommunication" (change)="SetFacilityServiceCOnfig()"  id="telephonyCommunication">
+                        <label class="custom-control-label" for="telephonyCommunication"></label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="card facility-card">
+                  <div class="card-header border-8" [class.disable]="!SetFacilityServiceCOnfigDto.ccmService">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div>
+                        <p class="mb-0"><span class="fa fa-commenting-o fa-lg mr-1"></span>CCM</p>
+                      </div>
+                      <div class="custom-control custom-switch ">
+                        <input type="checkbox" class="custom-control-input" [(ngModel)]="SetFacilityServiceCOnfigDto.ccmService" (change)="SetFacilityServiceCOnfig()"  id="ccmService">
+                        <label class="custom-control-label" for="ccmService"></label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="card facility-card">
+                  <div class="card-header border-8" [class.disable]="!SetFacilityServiceCOnfigDto.pcmService">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div>
+                        <p class="mb-0"><span class="fa fa-commenting-o fa-lg mr-1"></span>PCM</p>
+                      </div>
+                      <div class="custom-control custom-switch ">
+                        <input type="checkbox" class="custom-control-input" [(ngModel)]="SetFacilityServiceCOnfigDto.pcmService" (change)="SetFacilityServiceCOnfig()"  id="pcmService">
+                        <label class="custom-control-label" for="pcmService"></label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="card facility-card">
+                  <div class="card-header border-8" [class.disable]="!SetFacilityServiceCOnfigDto.bhiService">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div>
+                        <p class="mb-0"><span class="fa fa-commenting-o fa-lg mr-1"></span>BHI</p>
+                      </div>
+                      <div class="custom-control custom-switch ">
+                        <input type="checkbox" class="custom-control-input" [(ngModel)]="SetFacilityServiceCOnfigDto.bhiService" (change)="SetFacilityServiceCOnfig()"  id="bhiService">
+                        <label class="custom-control-label" for="bhiService"></label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="card facility-card">
+                  <div class="card-header border-8" [class.disable]="!SetFacilityServiceCOnfigDto.prcmService">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div>
+                        <p class="mb-0"><span class="fa fa-commenting-o fa-lg mr-1"></span>PRCM</p>
+                      </div>
+                      <div class="custom-control custom-switch ">
+                        <input type="checkbox" class="custom-control-input" [(ngModel)]="SetFacilityServiceCOnfigDto.prcmService" (change)="SetFacilityServiceCOnfig()"  id="prcmService">
+                        <label class="custom-control-label" for="prcmService"></label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="card facility-card">
+                  <div class="card-header border-8" [class.disable]="!SetFacilityServiceCOnfigDto.tcmService">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div>
+                        <p class="mb-0"><span class="fa fa-commenting-o fa-lg mr-1"></span>TCM</p>
+                      </div>
+                      <div class="custom-control custom-switch ">
+                        <input type="checkbox" class="custom-control-input" [(ngModel)]="SetFacilityServiceCOnfigDto.tcmService" (change)="SetFacilityServiceCOnfig()"  id="tcmService">
+                        <label class="custom-control-label" for="tcmService"></label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="card facility-card">
+                  <div class="card-header border-8" [class.disable]="!SetFacilityServiceCOnfigDto.priorAuthorization">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div>
+                        <p class="mb-0"><span class="fa fa-commenting-o fa-lg mr-1"></span>Prior Authorization</p>
+                      </div>
+                      <div class="custom-control custom-switch ">
+                        <input type="checkbox" class="custom-control-input" [(ngModel)]="SetFacilityServiceCOnfigDto.priorAuthorization" (change)="SetFacilityServiceCOnfig()"  id="priorService">
+                        <label class="custom-control-label" for="priorService"></label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="card facility-card">
+                  <div class="card-header" [class.disable]="!SetFacilityServiceCOnfigDto.rpmService">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div>
+                        <p class="mb-0"><span class="fa fa-commenting-o fa-lg mr-1"></span>RPM</p>
+                      </div>
+                      <div class="custom-control custom-switch ">
+                        <input type="checkbox" class="custom-control-input" [(ngModel)]="SetFacilityServiceCOnfigDto.rpmService" (change)="SetFacilityServiceCOnfig()" id="rpmService">
+                        <label class="custom-control-label" for="rpmService"></label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div>
+                        <p class="mb-0"><span class="fa fa-commenting-o fa-lg mr-1"></span>Compliance Monitoring</p>
+                      </div>
+                      <div class="custom-control custom-switch ">
+                        <input type="checkbox" class="custom-control-input" [(ngModel)]="SetFacilityServiceCOnfigDto.rpmComplianceMonitoring" (change)="SetFacilityServiceCOnfig()" id="rpmComplianceMonitoring">
+                        <label class="custom-control-label" for="rpmComplianceMonitoring"></label>
+                      </div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div>
+                        <p class="mb-0"><span class="fa fa-commenting-o fa-lg mr-1"></span>Patient SMS Notifications</p>
+                      </div>
+                      <div class="custom-control custom-switch ">
+                        <input type="checkbox" class="custom-control-input" [(ngModel)]="SetFacilityServiceCOnfigDto.enableNotifications" (change)="showRpmNotificationConfirmationModal()" id="rpmNotifications">
+                        <label class="custom-control-label" for="rpmNotifications"></label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="card facility-card">
+                  <div class="card-header" [class.disable]="!SetFacilityServiceCOnfigDto.autoTimeCapture">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div>
+                        <p class="mb-0"><span class="fa fa-commenting-o fa-lg mr-1"></span>Auto Time Capture</p>
+                      </div>
+                      <div class="custom-control custom-switch ">
+                        <input [(ngModel)]="SetFacilityServiceCOnfigDto.autoTimeCapture" (change)="AutoTimeCaptureChanged()" type="checkbox" class="custom-control-input" id="autotime">
+                        <label class="custom-control-label" for="autotime"></label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <div class="d-flex justify-content-between pb-2 border-bottom align-items-center">
+                      <div>
+                        <p class="mb-0"><span class="fa fa-commenting-o fa-lg mr-1"></span>Time Laps Alerts</p>
+                      </div>
+                      <div class="custom-control custom-switch " style="width: 120px;">
+                        <input [disabled]="!SetFacilityServiceCOnfigDto.autoTimeCapture" [(ngModel)]="SetFacilityServiceCOnfigDto.timeLapseAlertDuration" (change)="SetFacilityServiceCOnfig()" type="number" min="1" class="form-control form-control-sm" placeholder="Duration">
+                      </div>
+                    </div>
+                    <div class="d-flex justify-content-between pt-2 align-items-center">
+                      <div>
+                        <p class="mb-0"><span class="fa fa-commenting-o fa-lg mr-1"></span>Out of Range Alerts</p>
+                      </div>
+                      <div class="custom-control custom-switch " style="width: 120px;">
+                        <input [disabled]="!SetFacilityServiceCOnfigDto.autoTimeCapture" [(ngModel)]="SetFacilityServiceCOnfigDto.outOfRangeAlertDuration" (change)="SetFacilityServiceCOnfig()" type="number" min="1" class="form-control form-control-sm" placeholder="Duration">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="card facility-card">
+                  <div class="card-header border-8" [class.disable]="!SetFacilityServiceCOnfigDto.teleMedicine">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div>
+                        <p class="mb-0"><span class="fa fa-commenting-o fa-lg mr-1"></span>TeleMedicine</p>
+                      </div>
+                      <div class="custom-control custom-switch ">
+                        <input type="checkbox" class="custom-control-input" [(ngModel)]="SetFacilityServiceCOnfigDto.teleMedicine" (change)="SetFacilityServiceCOnfig()"  id="teleMedicineService">
+                        <label class="custom-control-label" for="teleMedicineService"></label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="card facility-card">
+                  <div class="card-header border-8" [class.disable]="!SetFacilityServiceCOnfigDto.awvService">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div>
+                        <p class="mb-0"><span class="fa fa-commenting-o fa-lg mr-1"></span>AWV</p>
+                      </div>
+                      <div class="custom-control custom-switch ">
+                        <input type="checkbox" class="custom-control-input" [(ngModel)]="SetFacilityServiceCOnfigDto.awvService" (change)="SetFacilityServiceCOnfig()"  id="awvService">
+                        <label class="custom-control-label" for="awvService"></label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-sm-12 ">
+              <!-- <div class="facility-toggle-bar">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <p class="mb-0"><span class="fa fa-commenting-o fa-lg mr-1"></span>Chat</p>
+                  </div>
+                  <div class="custom-control custom-switch ">
+                    <input type="checkbox" class="custom-control-input" (click)="SetFacilityChatService()" [checked]="isFacilityChatServiceEnabled" id="customSwitches">
+                    <label class="custom-control-label" for="customSwitches"></label>
+                  </div>
+                </div>
+              </div> -->
+              <!-- <div class="facility-toggle-bar disable">
+                <div class=" d-flex justify-content-between align-items-center">
+                  <div>
+                    <p class="mb-0"><span class="fa fa-plus-square-o fa-lg mr-1"></span>Chronic Care Management</p>
+                  </div>
+                  <div class="custom-control custom-switch ">
+                    <input type="checkbox" class="custom-control-input" disabled id="customSwitches2">
+                    <label class="custom-control-label" for="customSwitches2"></label>
+                  </div>
+                </div>
+              </div> -->
+              <!-- <div class="facility-toggle-bar disable">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <p class="mb-0"><span class="fa fa-plus-square-o fa-lg mr-1"></span>Remote Patient Management</p>
+                  </div>
+                  <div class="custom-control custom-switch ">
+                    <input type="checkbox" class="custom-control-input" disabled id="customSwitches3">
+                    <label class="custom-control-label" for="customSwitches3"></label>
+                  </div>
+                </div>
+              </div> -->
+              <!-- <div class="facility-toggle-bar disable">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <p class="mb-0"><span class="fa fa-plus-square-o fa-lg mr-1"></span>Preventive Care</p>
+                  </div>
+                  <div class="custom-control custom-switch ">
+                    <input type="checkbox" class="custom-control-input" disabled id="customSwitches4">
+                    <label class="custom-control-label" for="customSwitches4"></label>
+                  </div>
+                </div>
+              </div> -->
+              <!-- <div class="facility-toggle-bar disable">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <p class="mb-0"><span class="fa fa-plus-square-o fa-lg mr-1"></span>Behavioral Health Integeration</p>
+                  </div>
+                  <div class="custom-control custom-switch ">
+                    <input type="checkbox" class="custom-control-input" disabled id="customSwitches5">
+                    <label class="custom-control-label" for="customSwitches5"></label>
+                  </div>
+                </div>
+              </div> -->
+              <!-- <div class="facility-toggle-bar disable">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <p class="mb-0"><span class="fa fa-plus-square-o fa-lg mr-1"></span>Principal Care Management</p>
+                  </div>
+                  <div class="custom-control custom-switch ">
+                    <input type="checkbox" class="custom-control-input" disabled id="customSwitches6">
+                    <label class="custom-control-label" for="customSwitches6"></label>
+                  </div>
+                </div>
+              </div> -->
+              <!-- <div class="facility-toggle-bar disable">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <p class="mb-0"><span class="fa fa-plus-square-o fa-lg mr-1"></span>Transitional Care Management</p>
+                  </div>
+                  <div class="custom-control custom-switch ">
+                    <input type="checkbox" class="custom-control-input" disabled id="customSwitches7">
+                    <label class="custom-control-label" for="customSwitches7"></label>
+                  </div>
+                </div>
+              </div> -->
+            </div>
+              <!-- <div class="custom-control custom-switch">
+                <input type="checkbox" class="custom-control-input" (click)="SetFacilityChatService()" [checked]="isFacilityChatServiceEnabled" id="customSwitches">
+                <label class="custom-control-label" for="customSwitches">Chat</label>
+              </div> -->
+            <!-- <div class="col-sm-12 mb-2 d-flex justify-content-between">
+              <div class="custom-control custom-switch">
+              <input type="checkbox" class="custom-control-input" disabled id="customSwitches2">
+              <label class="custom-control-label" for="customSwitches2">Chronic Care Management</label>
+            </div>
+            </div>
+            <div class="col-sm-12 mb-2 d-flex justify-content-between">
+              <div class="custom-control custom-switch">
+              <input type="checkbox" class="custom-control-input" disabled id="customSwitches3">
+              <label class="custom-control-label" for="customSwitches3">Remote Patient Management</label>
+            </div>
+            </div>
+            <div class="col-sm-12 mb-2 d-flex justify-content-between">
+              <div class="custom-control custom-switch">
+              <input type="checkbox" class="custom-control-input" disabled id="customSwitches4">
+              <label class="custom-control-label" for="customSwitches4">Preventive Care</label>
+            </div>
+            </div>
+            <div class="col-sm-12 mb-2 d-flex justify-content-between">
+              <div class="custom-control custom-switch">
+              <input type="checkbox" class="custom-control-input" disabled id="customSwitches5">
+              <label class="custom-control-label" for="customSwitches5">Behavioral Health Integeration</label>
+            </div>
+            </div>
+            <div class="col-sm-12 mb-2 d-flex justify-content-between">
+              <div class="custom-control custom-switch">
+              <input type="checkbox" class="custom-control-input" disabled id="customSwitches6">
+              <label class="custom-control-label" for="customSwitches6">Principal Care Management</label>
+            </div>
+            </div>
+            <div class="col-sm-12 mb-2 d-flex justify-content-between">
+              <div class="custom-control custom-switch">
+              <input type="checkbox" class="custom-control-input" disabled id="customSwitches7">
+              <label class="custom-control-label" for="customSwitches7">Transitional Care Management</label>
+            </div>
+            </div> -->
+          </div>
+
+        </div>
+    </div>
+    <!-- <div class="modal-footer">
+      <button type="submit"
+        class="btn btn-dynamic-2c btn-sm rounded"
+        (click)="facilityServicesModal.hide()">Close</button>
+    </div> -->
+  </div>

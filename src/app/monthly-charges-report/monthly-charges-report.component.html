@@ -1,0 +1,65 @@
+<div class="d-flex flex-row align-items-center justify-content-between mb-3">
+  <div class="d-flex align-item-center justify-content-start">
+    <!-- <h4 class="mr-3 mb-0"><a class="text-dark" [routerLink]="['/accounts/invoices']">
+        <i class="fa fa-arrow-left"></i></a></h4> -->
+    <h1 class="page-title mb-0">Monthly Report</h1>
+  </div>
+
+</div>
+<div class="row">
+  <div class="col-lg-4 col-sm-4">
+<div class="form-group mb-0">
+  <label class="w-100">startDate</label>
+  <!-- <input type="text" class="form-control form-control-sm" #dateDPicker="dpDayPicker" (ngModelChange)="getCharges()"
+    [dpDayPicker]="datePickerConfig2" placeholder="MM-DD-YYYY" [(ngModel)]="startDate"
+    [theme]="'dp-material ccm-date-picker'" [mode]="'day'" /> -->
+    <input type="text" [ngModel]="startDate | dateFormatPipe"
+                  (ngModelChange)="startDate=$event;getCharges()"
+                  class="form-control form-control-sm" #dateDPicker="dpDayPicker" [dpDayPicker]="datePickerConfig2"
+                  placeholder="MM-DD-YYYY" [theme]="'dp-material ccm-date-picker'" [mode]="'day'" />
+</div>
+</div>
+<div class="col-lg-4 col-sm-4">
+<div class="form-group mb-0">
+  <label class="w-100">endDate</label>
+  <!-- <input type="text" class="form-control form-control-sm" #dateDPicker="dpDayPicker" (ngModelChange)="getCharges()"
+    [dpDayPicker]="datePickerConfig2" placeholder="MM-DD-YYYY" [(ngModel)]="endDate"
+    [theme]="'dp-material ccm-date-picker'" [mode]="'day'" /> -->
+    <input type="text" [ngModel]="endDate | dateFormatPipe"
+                  (ngModelChange)="endDate=$event;getCharges()"
+                  class="form-control form-control-sm" #dateDPicker="dpDayPicker" [dpDayPicker]="datePickerConfig2"
+                  placeholder="MM-DD-YYYY" [theme]="'dp-material ccm-date-picker'" [mode]="'day'" />
+</div>
+</div>
+<div class="col-lg-4 col-sm-4">
+  <div class="form-group">
+    <label for="name">filter by</label>
+    <ng-select class="ng-select-small" [(ngModel)]="filterBy" appendTo="body" (ngModelChange)="getCharges()"
+      [closeOnSelect]="true" [multiple]="false" [searchable]="true" placeholder="Select Chronic Disease"
+      >
+      <ng-option [value]="'CreatedDate'">Created Date</ng-option>
+      <ng-option [value]="'LastModifiedDate'">Last Modified Date</ng-option>
+      <ng-option [value]="'PostingDate'">Posting Date</ng-option>
+      <ng-option [value]="'ServiceStartDate'">Service Start Date</ng-option>
+      <ng-option [value]="'PrimaryInsurancePaymentPostingDate'">Primary Insurance Payment Posting Date</ng-option>
+    </ng-select>
+  </div>
+</div>
+</div>
+<!-- rowHeaderLayout="tree" -->
+<!-- <dx-pivot-grid id="insurance"
+  [allowSortingBySummary]="true"
+  [allowSorting]="true"
+  [allowFiltering]="true"
+  [allowExpandAll]="true"
+  [height]="740"
+  [showColumnGrandTotals]="false"
+    [showRowGrandTotals]="true"
+    [showRowTotals]="true"
+    [showColumnTotals]="false"
+  [showBorders]="true"
+  [dataSource]="dataSource">
+  <dxo-export [enabled]="true" fileName="Insurance Report"></dxo-export>
+  <dxo-field-chooser [allowSearch]="true"></dxo-field-chooser>
+</dx-pivot-grid> -->
+

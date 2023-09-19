@@ -1,0 +1,168 @@
+@import "theme";
+.ccm-header {
+  background-color: $white;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  box-shadow: $box-shadow;
+  .patient-profile {
+      padding: 2rem;
+      display: flex;
+      justify-content: flex-start;
+      align-items: flex-end;
+      flex-wrap: wrap;
+    > div {
+      flex: 1 1 25%;
+      @include media-breakpoint-down(md) {
+        flex: 1 1 50%;
+        margin-bottom: 1rem;
+      }
+      flex: 1 1 25%;
+      @include media-breakpoint-down(sm) {
+        flex: 1 1 100%;
+      }
+    }
+    p {
+      margin: 0;
+      color: darken($grey, 20%);
+      span {
+        color: darken($grey, 40%);
+        font-weight: 400;
+        text-transform: capitalize;
+      }
+    }
+    .profile-img {
+      margin-right: 1rem;
+      img {
+        border-radius: 50%;
+        width: 75px;
+        height: 75px;
+      }
+    }
+  }
+}
+.ccm-nav {
+  border-top: 1px solid lighten($grey, 13%);
+  border-bottom: 1px solid lighten($grey, 13%);
+  padding: 0 2rem;
+  .ccm-navbar {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    li {
+      margin-right: 2rem;
+      a {
+        padding: 1rem 0;
+        color: $grey;
+        display: block;
+        &:hover,
+        &:focus {
+          color: $dynamic-colour;
+          box-shadow: inset 0 -3px 0 $dynamic-colour;
+        }
+      }
+      &.active {
+        a {
+          box-shadow: inset 0 -3px 0 $dynamic-colour;
+        }
+      }
+    }
+  }
+}
+::ng-deep .ng-select {
+  .ng-select-container {
+    // min-width: 135px;
+    min-height: 25px;
+    border-radius: 3px;
+    line-height: 25px;
+  }
+  &.ng-select-single {
+    .ng-select-container {
+      height: 25px;
+      line-height: 25px;
+    }
+  }
+}
+::ng-deep .ng-dropdown-panel .ng-dropdown-panel-items .ng-option {
+  padding: 2px 10px;
+  font-size: 14px;
+}
+::ng-deep
+  .ng-select.ng-select-single
+  .ng-select-container
+  .ng-value-container
+  .ng-input {
+  top: 0;
+}
+
+.skltn-chart {
+  height: 150px;
+}
+
+.time-completed {
+  flex: 1 1 100%;
+}
+
+ul{
+  &.link-list{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    li{
+      a{
+        color: $dark;
+        &:hover{
+          color:$dynamic-colour;
+          transition: all ease-in-out .3ms;
+        }
+      }
+    }
+  }
+}
+
+.dropdown-active{
+  background-color: $dynamic-colour;
+  color: $white;
+}
+.link-active{
+  text-decoration: underline !important;
+}
+.status-bullet{
+  width: 8px;
+  height: 8px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.user-name-list .name-caption {
+  display: inline-block;
+  background: $dynamic-secondary-colour;
+  width: 25px;
+  height: 25px;
+  text-align: center;
+  border-radius: 20px;
+  line-height: 23px;
+  font-size: 10px;
+  color: white;
+  font-weight: 400;
+  border: 2px solid white;
+}
+
+
+
+.user-name-list .name-caption:not(:first-child) {
+  background: $secondary !important;
+  margin-left: -7px;
+}
+
+.user-name-list .name-caption:hover {
+  z-index: 1;
+  position: relative;
+  cursor: pointer;
+}
+.rowBackgroundColorDiv {
+  text-decoration: line-through !important;
+  text-decoration-color: red !important;
+  color: gray !important;
+}

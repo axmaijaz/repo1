@@ -1,0 +1,173 @@
+<div class="d-flex align-item-center justify-content-start">
+  <h4 class="mr-3 mb-0"><a class="text-dark" (click)="navigateBack()">
+      <i class="fa fa-arrow-left"></i></a></h4>
+  <h1 class="page-title">Medicare Data</h1>
+</div>
+<div class="patient-profile">
+  <div class="patient-info-data">
+
+
+    <div class="profile-block bs-sm m-0">
+
+      <div *ngIf="isLoading">
+        <skltn-root duration="2000" [rectRadius]="0" flareWidth="50%" bgFill="#f2f3f8"
+          flareFill="rgba(255,255,255, 0.5)">
+          <!-- Card with Avatar -->
+          <div class="skltn-card">
+            <div skltn-bone class="skltn-card__avatar" type="circle"></div>
+            <div class="skltn-card__body">
+              <div skltn-bone class="skltn-card__title"></div>
+              <div skltn-bone class="skltn-card__line"></div>
+              <div skltn-bone class="skltn-card__line"></div>
+            </div>
+          </div>
+        </skltn-root>
+      </div>
+
+      <div class="row" *ngIf="!isLoading">
+        <div class="col-sm-12 border-bottom mb-2">
+
+          <div class="d-flex align-items-center pb-2">
+            <div>
+              <small>{{reportData.id}}</small> Last Updated: <strong>{{reportData.lastUpdated | dateFormatPipe}}</strong>
+              <div class="d-flex align-items-center pb-2 flex-wrap">
+                <h3 class="text-dynamic-secondary-2c mb-0 mr-3">Patient Name
+                </h3>
+                <p class="mb-0"><strong class="text-dynamic-2c">Gender, Age</strong></p>
+              </div>
+            </div>
+
+            <!-- <button
+              class="btn btn-dynamic-2c btn-sm btn-rounded ml-auto">
+              <span  class="spinner-border spinner-border-sm" role="status"
+                aria-hidden="true"></span> Message
+            </button> -->
+          </div>
+
+        </div>
+        <ng-container *ngFor="let resource of reportData.resources">
+          <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6">
+            <!-- <p class="mb-2"><strong class="mb-2 text-dynamic-2c">Patient Info</strong></p> -->
+            <div class="pb-info w-100">
+              <p><strong> Id. </strong>{{resource.id}}</p>
+              <p><strong> Status. </strong> {{resource.status}}</p>
+              <!-- <p><strong>Date Of Birth </strong> .dateOfBirth}</p> -->
+            </div>
+          </div>
+          <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6">
+            <!-- <p class="mb-2"><strong class="mb-2 text-dynamic-2c">Providers Info</strong></p> -->
+            <div class="pb-info">
+              <p><strong>Start Date</strong>{{resource.start | dateFormatPipe}}</p>
+              <p><strong>End Date</strong>{{resource.end | dateFormatPipe}}
+            </div>
+          </div>
+          <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6" *ngIf="resource.payment">
+            <!-- <p class="mb-2"><strong class="mb-2 text-dynamic-2c">Emergency Contact</strong></p> -->
+            <div class="pb-info">
+              <!-- <p><strong>Diagnoses Length</strong> {{resource.diagnosis.length}}</p> -->
+              <p><strong >Payment</strong> <span *ngIf="resource.payment.code"> {{resource.payment.code}} </span><span *ngIf="resource.payment.value"> {{resource.payment.value}}</span></p>
+            </div>
+          </div>
+          <ng-container *ngIf="resource.diagnosis">
+            <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6" *ngFor="let diagnose of resource.diagnosis">
+              <p class="mb-2"><strong class="mb-2 text-dynamic-2c">Diagnoses</strong></p>
+              <div class="pb-info" *ngFor="let dCode of diagnose.diagnosisCoding">
+                <p><strong>Diagnose {{diagnose.sequence}}:</strong> {{dCode.code}} <a target="_blank" href="{{dCode.system}}">{{dCode.variableName}}</a> {{dCode.display}}</p>
+              </div>
+            </div>
+          </ng-container>
+          <br>
+          <ng-container  *ngIf="resource.extension && resource.extension.length > 0">
+            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4" *ngFor="let ext of resource.extension; let index=index;">
+              <p class="mb-2" *ngIf="index===0"><strong class="mb-2 text-dynamic-2c">Extensions</strong></p>
+              <div class="pb-info" >
+                <!-- <p><strong>Url</strong> <a href="{{ext.url}}">{{ext.url}}</a></p> -->
+                <p *ngIf="ext.valueMoney"><strong >Value Money</strong> <span> {{ext.valueMoney.value}} </span><span class="text-dynamic-2c"> {{ext.valueMoney.code}} </span><span class="text-secondry"> {{ext.valueMoney.system}}</span></p>
+                <p *ngIf="ext.valueCoding"><strong >Value Coding</strong> <a target="_blank" href="{{ext.valueCoding.system}}"> {{ext.valueCoding.variableName}} </a><span class="text-dynamic-2c"> {{ext.valueCoding.code}} </span><span class="text-secondry"> {{ext.valueCoding.display}}</span></p>
+                <!-- <p *ngIf="ext.valueIdentifier"><strong >Value Coding</strong> <a href="{{ext.valueIdentifier.system}}"> {{ext.valueIdentifier.variableName}} </a><span class="text-dynamic-2c"> {{ext.valueIdentifier.code}} </span><span class="text-secondry"> {{ext.valueIdentifier.display}}</span></p> -->
+                <p><strong>Quantity</strong> {{ext.quantity}}</p>
+                <p><strong>Extension Type</strong> {{ext.reportExtensionType}}</p>
+                <p><strong>Variable Name</strong><a target="_blank" href="{{ext.url}}">{{ext.variableName}}</a></p>
+                <p *ngIf="!ext.valueMoney  && !ext.valueCoding"><strong>            </strong></p>
+              </div>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="resource.identifier && resource.identifier.length > 0">
+            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4" *ngFor="let Iden of resource.identifier; let index=index;">
+              <p class="mb-2" *ngIf="index===0"><strong class="mb-2 text-dynamic-2c">Indentifiers</strong></p>
+              <div class="pb-info" >
+                <!-- <p><strong>System</strong><a target="_blank" href="{{Iden.system}}">{{Iden.system}}</a> </p> -->
+                <p><strong>Value</strong> {{Iden.value}}</p>
+                <p><strong>Variable Name</strong><a target="_blank" href="{{Iden.system}}">{{Iden.variableName}}</a> </p>
+              </div>
+            </div>
+          </ng-container>
+          <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12" *ngIf="resource.type && resource.type.length > 0">
+            <p class="mb-2"><strong class="mb-2 text-dynamic-2c">Types</strong></p>
+            <div class="pb-info" *ngFor="let typ of resource.type">
+              <!-- <p><strong>System</strong><a target="_blank" href="{{typ.system}}">{{typ.system}}</a> </p> -->
+              <p><strong>Code</strong> {{typ.code}} <span class="text-dynamic-2c">{{typ.variableName}}</span></p>
+              <p><strong>Variable Name</strong><a target="_blank" href="{{typ.system}}">{{typ.variableName}}</a></p>
+            </div>
+          </div>
+          <div class="col-sm-12">
+            <div class="table-data-list">
+              <div *ngIf="isLoading" class="d-flex justify-content-center text-center">
+                <!-- <div class="d-flex justify-content-center text-center"> -->
+                <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+              </div>
+              <ngx-datatable #table appRecalculateNgxTable class="material " [columnMode]="'force'" [headerHeight]="50"
+                [footerHeight]="50" [rowHeight]="35" [scrollbarV]="false" [scrollbarH]="true" [rows]="resource.items" [limit]="15"
+                [selectionType]="'checkbox'" [selectAllRowsOnPage]="false" >
+                <ngx-datatable-column name="#" [maxWidth]=50>
+                  <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+                    <span class="p-2">{{rowIndex + 1}}</span>
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Sequence" prop="sequence">
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Quantity" prop="quantity">
+                  <!-- <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+                    {{questionTypeEnum[row.questionType]}}
+                  </ng-template> -->
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Service Period Start" >
+                  <ng-template  let-row="row" let-rowIndex="rowIndex">
+                    <span class="p-2">{{row.servicePeriodStart | dateFormatPipe}}</span>
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Service Period End" >
+                  <ng-template  let-row="row" let-rowIndex="rowIndex">
+                    <span class="p-2">{{row.servicePeriodEnd | dateFormatPipe}}</span>
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Catogeries">
+                  <ng-template  let-row="row" let-rowIndex="rowIndex">
+                    <ng-container *ngFor="let cat of row.category">
+                      <span>{{cat.code}} {{cat.system}} {{cat.display}}</span>
+                    </ng-container>
+                  </ng-template>
+                </ngx-datatable-column>
+                <!-- <ngx-datatable-column name="Action" [canAutoResize]=false [frozenRight]=true [width]="120">
+                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                    <div class="action-button">
+                      <a class="btn btn-dynamic-2c btn-sm px-3" (click)="addQuestion.show();editQuestion(row)">Assign</a>
+                      <a class="btn btn-dynamic-2c btn-icon"
+                        ><i
+                          class="fa fa-pencil fa-lg"></i> </a>
+                      <a class="btn btn-danger btn-icon" ><i class="fa fa-trash"></i></a>
+                    </div>
+                  </ng-template>
+                </ngx-datatable-column> -->
+
+
+              </ngx-datatable>
+            </div>
+          </div>
+        </ng-container>
+
+      </div>
+
+    </div>
+  </div>
+</div>

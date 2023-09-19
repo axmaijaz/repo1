@@ -1,0 +1,68 @@
+<div class="row">
+  <div class="col-sm-12">
+    <div class="pt-2 px-3 border bg-white">
+      <label for="selectPerson">Notification User</label>
+      <div class="d-flex flex-nowrap align-items-start justify-contant-start mb-3">
+        <div class="flex-grow-1">
+          <ng-select [searchable]="false" [(ngModel)]="notificationUser"
+            (ngModelChange)="daysCheckBoxes={};selected247=false;" class="ng-select-small flex-grow-1"
+            placeholder="Select User" style="min-width:100%">
+            <ng-option [value]="item" *ngFor="let item of providerList">
+              {{item.lastName}},{{item.firstName}}
+            </ng-option>
+          </ng-select>
+        </div>
+      </div>
+      <div class="checked-users">
+        <span class="d-flex align-items-center"><span class="highligher"
+            style="background-color: #ff9292;"></span>Unassigned</span>
+        <ng-container *ngFor="let item of providerList">
+          <span class="d-flex align-items-center"><span class="highligher" style=""
+              [style.background]="item['color']"></span> {{item.lastName}},{{item.firstName}}
+
+          </span>
+
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="overflow-x: scroll;">
+
+<div class="alert-manager border border-top-0" style="min-width: 1200px;">
+  <div class="date-time">
+    <p>AM</p>
+    <p>PM</p>
+  </div>
+  <div class="alert-manager-header d-flex">
+    <mdb-checkbox [default]="true" [(ngModel)]="selected247" (change)="weekSelected($event.checked)">24 X 7
+    </mdb-checkbox>
+    <div class="day-name text-center">Week Days</div>
+    <div class="day-time" *ngFor="let hour of dayHoursList">
+      <div>{{hour.displayTime}}</div>
+    </div>
+  </div>
+  <div class="alert-body weekdays">
+    <div class="weekday" *ngFor="let day of weekDaysList">
+      <div class="all-day">
+        <mdb-checkbox [default]="true" [(ngModel)]="daysCheckBoxes[day.id]" (change)="dayChecked($event.checked, day)">
+          All Day</mdb-checkbox>
+      </div>
+      <div class="day-name text-center">{{day.name}}</div>
+      <div class="day-time" *ngFor="let hour of dayHoursList"
+        [class.select]="SelectingSlot && SelectingSlot.dayId === day.id && SelectingSlot.hourId === hour.id"
+        (click)="cellClicked(day, hour)">
+        <ng-container *ngIf="IsSelected(day, hour)">
+          <ng-container *ngFor="let item of getUsersOfSlot(day, hour)">
+            <div class="user-slot" [style.background]="item['color']"></div>
+          </ng-container>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<div class="d-flex justify-content-end">
+  <button class="btn btn-sm btn-dynamic-2c m-0 mt-3" type="button" (click)="SaveCareProvidersSchedule();">Save</button>
+</div>

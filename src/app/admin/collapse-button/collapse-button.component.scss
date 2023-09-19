@@ -1,0 +1,68 @@
+@import "theme";
+.timeline-stepper {
+  height: calc(100vh - 270px);
+  margin: 0;
+  padding: 0;
+}
+.quickNote .modal-dialog .modal-content {
+  border-radius: 0px;
+}
+
+.timeline-main {
+  position: relative;
+  padding: 0;
+  height: calc(100vh - 350px);
+  .timeline-item {
+    border: 1px solid #ffb74d;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    margin-left: 2rem;
+    position: relative;
+    background: #fff59d;
+    border-radius: 5px;
+    box-shadow: $box-shadow;
+
+    p {
+      margin: 0px;
+      font-size: 0.9rem;
+    }
+    &::after {
+      content: " ";
+      display: block;
+      width: 12px;
+      height: 12px;
+      background: #ff9800;
+      position: absolute;
+      left: -23px;
+      top: 50%;
+      border-radius: 15px;
+      z-index: 1;
+      border: 2px solid $white;
+    }
+  }
+  &::after {
+    content: " ";
+    height: 100vh;
+    background: #ff9800;
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 1rem;
+    width: 1px;
+  }
+  &.primary {
+    .timeline-item {
+      border: 1px solid lighten($primary, 30%);
+      background: lighten($primary, 50%);
+      &::after {
+        content: " ";
+        background: $dynamic-colour;
+      }
+    }
+    &::after {
+      content: " ";
+
+      background: lighten($primary, 30%);
+    }
+  }
+}

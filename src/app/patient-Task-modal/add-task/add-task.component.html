@@ -1,0 +1,222 @@
+
+<div mdbModal #addTask="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myaddTaskLabel"
+aria-hidden="true" (open)="f.reset()">
+<div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close pull-right" aria-label="Close" (click)="addTask.hide()">
+        <span aria-hidden="true">×</span>
+      </button>
+      <h4 class="modal-title w-100" id="myModalLabel">Add Task</h4>
+    </div>
+    <div class="modal-body">
+      <form name="form" #f="ngForm" novalidate>
+        <div class="task-patient-info mb-3">
+          <div class="row">
+            <div class="col-sm-6">
+
+              <p><strong>Patient: </strong>{{patientData.fullName}}</p>
+              <p><strong>DOB: </strong>{{patientData.dateOfBirth}}</p>
+              <div class="cp-list d-flex justify-content-between">
+                <strong style="font-size: 14px;">Care Provider: </strong>
+                <div class="user-name-list">
+                  <div title="{{item.fullName}}" class="name-caption" *ngFor="let item of patientData.careProviders">
+                    <span>{{item['nameAbbreviation']}}</span>
+                  </div>
+                </div>
+              </div>
+              <p><strong>Care Facilitator: </strong>{{patientData.careFacilitatorName}}</p>
+            </div>
+
+
+            <div class="col-sm-6">
+              <p><strong>EMR ID: </strong>{{patientData.patientEmrId}}</p>
+              <p><strong>Phone #: </strong>{{patientData['primaryPhoneNumber']}}</p>
+              <div>
+                <p><strong>Billing Provider: </strong>{{patientData.billingProviderName}}</p>
+              </div>
+              <div>
+                <p><strong>Entered By: </strong>{{patientData.enteredByName}}</p>
+
+                <!-- <div class="row">
+
+            <div class="col-sm-6">
+
+              <p><strong>Patient: </strong>Fareed Ahmad</p>
+              <p><strong>DOB: </strong> 16 MAY 2020</p>
+              <div>
+                <p><strong>Care Provider: </strong>Fareed Ahmad</p>
+              </div>
+xz              <div>
+                <p><strong>Care Facilitator: </strong>Fareed Ahmad</p>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <p><strong>EMR ID: </strong>Fareed Ahmad</p>
+              <p><strong>Phone #: </strong>393 333 3333</p>
+              <div>
+                <p><strong>Billing Provider: </strong>Fareed Ahmad</p>
+              </div>
+              <div>
+                <p><strong>Entered By: </strong>Fareed Ahmad</p>
+              </div>
+            </div>
+          </div> -->
+              </div>
+            </div>
+          </div>
+          <div class="task-form mt-3">
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="d-flex form-group">
+                  <label for="assignTo" style="width: 80px;" class="flex-shrink-0">Assign To <sup
+                      class="text-danger">*</sup></label>
+                  <ng-select class="w-100 ng-select-small ml-3" [(ngModel)]="selectAssignTo" [closeOnSelect]="true"
+                    [multiple]="false" [searchable]="true" placeholder="Assign" required name="assignTo"
+                    #assignTo="ngModel" [ngClass]="{ 'is-invalid': assignTo.touched && assignTo.invalid }">
+                    <!-- <ng-option [value]="0">All Care Providers </ng-option> -->
+                    <ng-option *ngFor="let item of CareProvidersList" [value]="item">{{item.lastName}},{{item.firstName}}
+                    </ng-option>
+                  </ng-select>
+                </div>
+                <div *ngIf="assignTo.touched && assignTo.invalid" class="invalid-feedback">
+                  <div *ngIf="assignTo.errors.required">Assign To is required</div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="d-flex form-group">
+                  <label for="taskType" style="width: 80px;" class="flex-shrink-0">Type <sup
+                      class="text-danger">*</sup></label>
+                  <ng-select class="w-100 ng-select-small ml-3" [(ngModel)]="patientTaskData.patientTaskType"
+                    (ngModelChange)="resetotherfield()" required name="type" #type="ngModel" [multiple]="false"
+                    [searchable]="true" placeholder="Status"
+                    [ngClass]="{ 'is-invalid': type.touched && type.invalid }">
+                    <ng-option [value]="'Refill'">Refill</ng-option>
+                    <ng-option [value]="'Records'">Records </ng-option>
+                    <ng-option [value]="'Schedule'">Schedule </ng-option>
+                    <ng-option [value]="'Contact'">Contact </ng-option>
+                    <ng-option [value]="'Other'">Other</ng-option>
+                    <ng-option [value]="'AWV Document'">AWV Document</ng-option>
+                  </ng-select>
+                </div>
+                <div *ngIf="type.touched && type.invalid" class="invalid-feedback">
+                  <div *ngIf="type.errors.required">Type is required</div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="d-flex form-group">
+                  <label style="width: 80px;" class="flex-shrink-0">Other Type</label>
+                  <input type="text" [disabled]="patientTaskData.patientTaskType !== 'Other'" name="otherType"
+                    class="form-control form-control-sm ml-3" [(ngModel)]="otherType" />
+                </div>
+              </div>
+
+
+              <div class="col-sm-12">
+                <div class="d-flex">
+                  <label for="priority" style="width: 80px;" class="flex-shrink-0">Priority<sup
+                      class="text-danger">*</sup></label>
+                  <div class="form-group ml-3">
+                    <div class="custom-control custom-radio custom-control-inline">
+                      <input type="radio" [(ngModel)]="patientTaskData.patientTaskPriority" required
+                        class="custom-control-input" id="h1" [value]="'Stat'" name="priority" #priority="ngModel"
+                        mdbInput>
+                      <label class="custom-control-label" for="h1">STAT</label>
+                    </div>
+
+                    <!-- Default inline 2-->
+                    <div class="custom-control custom-radio custom-control-inline">
+                      <input type="radio" class="custom-control-input"
+                        [(ngModel)]="patientTaskData.patientTaskPriority" id="h2" [value]="'ASAP'" name="priority"
+                        #priority="ngModel" mdbInput>
+                      <label class="custom-control-label" for="h2">ASAP</label>
+                    </div>
+
+                    <!-- Default inline 3-->
+                    <div class="custom-control custom-radio custom-control-inline">
+                      <input type="radio" [(ngModel)]="patientTaskData.patientTaskPriority"
+                        class="custom-control-input" id="h3" [value]="'Routine'" name="priority" #priority="ngModel"
+                        mdbInput>
+                      <label class="custom-control-label" for="h3">Routine</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- <div class="col-sm-12">
+            <div class="d-flex">
+              <label for="priority" style="width: 80px;" class="flex-shrink-0">Status</label>
+
+              <div class="form-group ml-3">
+                <div class="custom-control custom-radio custom-control-inline">
+                  <input type="radio" class="custom-control-input" id="s1"
+                    [(ngModel)]="patientTaskData.patientTaskStatus" [value]="'Created'" name="inlne321" mdbInput>
+                  <label class="custom-control-label" for="s1">Created</label>
+                </div>
+                <div class="custom-control custom-radio custom-control-inline">
+                  <input type="radio" class="custom-control-input" id="s2"
+                    [(ngModel)]="patientTaskData.patientTaskStatus" [value]="'In Progress'" name="inlne321" mdbInput>
+                  <label class="custom-control-label" for="s2">In Progress</label>
+                </div>
+                <div class="custom-control custom-radio custom-control-inline">
+                  <input type="radio" class="custom-control-input" id="s3"
+                    [(ngModel)]="patientTaskData.patientTaskStatus" [value]="'Completed'" name="inlne321" mdbInput>
+                  <label class="custom-control-label" for="s3"> Completed</label>
+                </div>
+                <div class="custom-control custom-radio custom-control-inline">
+                  <input type="radio" class="custom-control-input" id="s4"
+                    [(ngModel)]="patientTaskData.patientTaskStatus" [value]="'Error Entry'" name="inlne321" mdbInput>
+                  <label class="custom-control-label" for="s4"> Error Entry</label>
+                </div>
+              </div>
+            </div>
+          </div> -->
+              <!-- <div class="col-sm-12">
+            <div class="d-flex form-group">
+              <label for="taskType" style="width: 80px;" class="flex-shrink-0">Created By <sup
+                  class="text-danger">*</sup></label>
+              <ng-select class="ng-select-small ml-3 w-100"  [multiple]="false"
+                [searchable]="true" placeholder="Status">
+                <ng-option [value]="0">None</ng-option>
+                <ng-option [value]="1">Deceased </ng-option>
+                <ng-option [value]="2">Duplicate Entry </ng-option>
+                <ng-option [value]="3">Added Erronously </ng-option>
+              </ng-select>
+            </div>
+          </div> -->
+
+              <div class="col-sm-12">
+                <div class="d-flex form-group">
+                  <label style="width: 80px; " class="flex-shrink-0" for="form12">Notes <sup
+                      class="text-danger">*</sup>
+                  </label>
+                  <textarea type="text" id="form12" rows="6" class="form-control ml-3"
+                    [(ngModel)]="patientTaskData.notes" style="height: 36px;" required name="notes" #notes="ngModel"
+                    [ngClass]="{ 'is-invalid': notes.touched && notes.invalid }"></textarea>
+                  <div *ngIf="notes.touched && notes.invalid" class="invalid-feedback">
+                    <div *ngIf="notes.errors.required">Notes is required</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-12">
+                <div class="d-flex form-group">
+                  <label style="width: 80px;" class="flex-shrink-0">Action</label>
+                  <input type="text" class="form-control form-control-sm ml-3" [(ngModel)]="patientTaskData.action"
+                    name="action" #action="ngModel" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+        (click)="addTask.hide()" mdbWavesEffect>Close</button>
+      <button type="button" size="sm" [disabled]="f.invalid || addingTask" class="relative waves-light btn btn-sm btn-dynamic-2c"
+        (click)="addEditPatientTask()" mdbWavesEffect>Save
+        changes</button>
+    </div>
+  </div>
+</div>
+</div>

@@ -1,0 +1,143 @@
+<div class="modalilies">
+  <ul *ngIf="!gettingData">
+    <li (click)="selectedModalityCode='BP'" [class.active]="selectedModalityCode==='BP'" *ngIf="insightsDataObj?.rpmDeviceBPReading">
+      <a>
+        <div>
+          <img  width="50"  height="50" src="/assets/rpm-devices/mbp.svg"  alt="Blood Pressure">
+        </div>
+        <div>
+          Blood Pressure
+        </div>
+      </a>
+    </li>
+    <li (click)="selectedModalityCode='BG'" [class.active]="selectedModalityCode==='BG'" *ngIf="insightsDataObj?.rpmDeviceBGReading">
+      <a>
+        <div>
+          <img  width="50"  height="50" src="/assets/rpm-devices/mbg.svg" alt="Blood Glucose">
+        </div>
+        <div>
+          Blood Glucose
+        </div>
+      </a>
+    </li>
+    <li (click)="selectedModalityCode='WT'" [class.active]="selectedModalityCode==='WT'" *ngIf="insightsDataObj?.rpmDeviceWTReading">
+      <a>
+        <div>
+          <img  width="50"  height="50" src="/assets/rpm-devices/mw.svg" alt="Weight">
+        </div>
+        <div>
+          Weight
+        </div>
+      </a>
+    </li>
+    <!-- <li *ngIf="insightsDataObj?.rpmDevicePOReading">
+      <a>
+        <div>
+          <img  width="50"  height="50" src="/assets/rpm-devices/pulse.svg"  alt="Pulse Oximetry">
+        </div>
+        <div>
+          Pulse Oximeter
+        </div>
+      </a>
+    </li> -->
+  </ul>
+</div>
+<div>
+  <div class="row" *ngIf="gettingData">
+    <div class="col-sm-12">
+      <div appCcmLoader class="loader-wrap">
+        <div class="spinner-border text-dynamic-secondary-2c ccm-loader" style="margin-top: 100px;" role="status">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row" *ngIf="!gettingData && !hasSomeData">
+    <div class="col-12" >
+      <div class="mb-3 w-100" >
+        <div class="box-cdma bg-green-cdma">
+          <div class="alert alert-danger mb-0" role="alert">
+            <i class="fa fa-exclamation-triangle fa-lg"></i> No Devices found!
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="!gettingData && hasSomeData">
+
+    <div style="margin-right: 1rem;">
+      <table class="table table-bordered table-hover mb-0">
+        <colgroup>
+          <col width="50%">
+          <col width="50%">
+        </colgroup>
+        <thead class="bg-dynamic-2c text-white">
+          <tr>
+            <th>Date</th>
+            <th>Reading</th>
+          </tr>
+        </thead>
+
+      </table>
+    </div>
+
+    <div style="max-height: 400px; margin-right: 1rem;overflow-y: scroll;">
+      <table class="table table-bordered table-hover">
+        <colgroup>
+          <col width="50%">
+          <col width="50%">
+        </colgroup>
+        <tbody *ngIf="selectedModalityCode == 'WT'">
+          <tr *ngIf="!insightsDataObj?.rpmDeviceWTReading?.weightData || !insightsDataObj?.rpmDeviceWTReading?.weightData.length">
+            <td>No Record Found</td>
+          </tr>
+          <tr *ngFor="let witem of insightsDataObj?.rpmDeviceWTReading?.weightData">
+            <td>{{witem.measurementDate | dateFormatPipe: 'time'}}</td>
+            <td>Wt: {{witem.weightValue | number}}</td>
+          </tr>
+        </tbody>
+        <tbody *ngIf="selectedModalityCode == 'BP'">
+          <tr *ngIf="!insightsDataObj?.rpmDeviceBPReading?.bloodPressureData || !insightsDataObj?.rpmDeviceBPReading?.bloodPressureData.length">
+            <td>No Record Found</td>
+          </tr>
+          <tr *ngFor="let bpitem of insightsDataObj?.rpmDeviceBPReading?.bloodPressureData">
+            <td> <a class="">
+              <!-- <i *hasClaim="'CanModifyRPMEncounter'" class="fa fa-calendar text-dynamic-secondary-2c mx-2"
+                  style="font-size: 20px;" title="Edit Date"
+                  placement="right"></i> -->
+                </a>{{bpitem.measurementDate | dateFormatPipe: 'time'}}</td>
+            <td>Sys: {{bpitem.highPressure}}, dys: {{bpitem.lowPressure}}, HR: {{bpitem.heartRate}}</td>
+          </tr>
+        </tbody>
+        <tbody *ngIf="selectedModalityCode == 'BG'">
+          <tr *ngIf="!insightsDataObj?.rpmDeviceBGReading?.bloodGlucoseData || !insightsDataObj?.rpmDeviceBGReading?.bloodGlucoseData.length">
+            <td>No Record Found</td>
+          </tr>
+          <tr *ngFor="let bgitem of insightsDataObj?.rpmDeviceBGReading?.bloodGlucoseData">
+            <td>{{bgitem.measurementDate | dateFormatPipe: 'time'}}</td>
+            <td>BG: {{bgitem.bg}}</td>
+          </tr>
+        <!-- <tbody *ngIf="selectedModalityCode == 'PO'">
+          <tr *ngIf="!insightsDataObj?.rpmDeviceWTReading?.pulseOximetryData || !insightsDataObj?.rpmDeviceWTReading?.pulseOximetryData.length">
+            <td>No Record Found</td>
+          </tr>
+          <tr *ngFor="let poitem of insightsDataObj?.rpmDeviceWTReading?.pulseOximetryData">
+            <td>{{poitem.measurementDate | dateFormatPipe: 'time'}}</td>
+            <td>OS: {{poitem.bloodOxygen}}, HR: {{poitem.heartRate}}</td>
+          </tr>
+        </tbody> -->
+        <!-- <tbody *ngIf="selectedModalityCode == 'AT'">
+          <tr *ngIf="!activityDataList || !activityDataList.length">
+            <td>No Record Found</td>
+          </tr>
+          <tr *ngFor="let aitem of activityDataList">
+            <td>{{aitem.measurementDate | dateFormatPipe: 'time'}}</td>
+            <td>Cal.: {{aitem.calories}}, Dist.: {{aitem.distanceTraveled}}, Steps: {{aitem.steps}}</td>
+          </tr>
+        </tbody> -->
+
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

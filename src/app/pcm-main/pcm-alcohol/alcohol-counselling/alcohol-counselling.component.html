@@ -1,0 +1,174 @@
+<div class="d-flex flex-row align-items-center justify-content-between mb-3">
+  <div class="d-flex justify-content-start align-items-center">
+    <h4 class="mr-3 mb-0"><a class="text-dark" (click)="goBack()">
+        <i class="fa fa-arrow-left"></i></a></h4>
+    <h1 class="page-title mb-0">{{ isGeneralCounselling ? 'Counselling' :'Alcohol Counselling'}}</h1>
+  </div>
+</div>
+<app-patient-details></app-patient-details>
+
+<div class="panel rounded-0 mt-2" style="overflow: visible;">
+  <div class="panel-header">
+    <h3>Brief face-to-face behavioral counseling for alcohol misuse <i class="fa fa-exclamation-circle fa-lg"   (click)="alcoholGuide.show()" style="cursor: pointer;"></i></h3>
+  </div>
+  <div class="panel-body">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="form-form form-group">
+          <label for="form12">Notes <sup class="text-danger">*</sup> </label>
+          <textarea type="text" [(ngModel)]="editAmCounsellingObj.note" id="form12" rows="6" class="form-control" required></textarea>
+        </div>
+      </div>
+      <div class="col-lg-4 col-sm-4">
+        <div class="form-group">
+          <label for="taskType">Billing Provider </label>
+          <ng-select [(ngModel)]="editAmCounsellingObj.billingProviderId" class="ng-select-small w-100" [multiple]="false" [searchable]="true" placeholder="Status">
+            <ng-option [value]="item.id" *ngFor="let item of BIllingProviderList">{{item.lastName}},{{item.firstName}}</ng-option>
+          </ng-select>
+        </div>
+      </div>
+      <div class="col-lg-4 col-sm-4">
+        <div class="form-group">
+          <label>Signature Date</label>
+          <div class="input-group">
+            <input type="text" [ngModel]="editAmCounsellingObj.signatureDate | dateFormatPipe" (ngModelChange)="editAmCounsellingObj.signatureDate=$event" class="form-control form-control-sm" #date="dpDayPicker" [dpDayPicker]="datePickerConfig"
+              [theme]="'dp-material ccm-date-picker'" [mode]="'day'" />
+            <a (click)="date.api.open();" class="input-group-append">
+              <span class="input-group-text text-white bg-dynamic-2c" id="category1"><i
+                  class="fa fa-calendar fa-lg"></i></span> </a>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-sm-4">
+        <div class="form-group">
+          <label for="result">Signature</label>
+          <div class="d-flex">
+            <input type="text" [(ngModel)]="editAmCounsellingObj.signature" class="form-control form-control-sm" id="result" placeholder="Signature">
+            <button type="button" [disabled]="!editAmCounsellingObj.note || SavingAMCounselling" (click)="SaveAMCounselling()" class="btn btn-sm btn-dynamic-2c my-0">
+              <span *ngIf="SavingAMCounselling" class="spinner-border spinner-border-sm" role="Select Billing Provider" aria-hidden="true"></span>
+              Save</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div mdbModal #alcoholGuide="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myalcoholGuideLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="alcoholGuide.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel" title="Brief face-to-face behavioral counseling for alcohol misuse">Brief behavioral counseling for alcohol misuse</h4>
+      </div>
+      <div class="modal-body">
+        <mdb-accordion [multiple]="true" class="ccm-accordian">
+          <mdb-accordion-item [collapsed]="false">
+            <mdb-accordion-item-head>Ask</mdb-accordion-item-head>
+            <mdb-accordion-item-body>
+              <ul>
+                <li>
+                  Ask permission to talk about patient’s alcohol use.
+                  “Would you mind if we talked more about your alcohol use?”
+                </li>
+                <li>Ask about patient’s alcohol pattern use.
+                  “I’d like to talk more about the type of alcoholic beverages you are consuming and the frequency of
+                  your consumption?
+                  “You indicated you are consuming more than the recommended limits, please tell me again how many times
+                  in the past 30 days you have had more than 4 drinks (for women) or 5 drinks (for men) in day? </li>
+                <li>Avoid arguing or confrontation. </li>
+
+              </ul>
+
+
+            </mdb-accordion-item-body>
+          </mdb-accordion-item>
+
+          <mdb-accordion-item [collapsed]="false">
+            <mdb-accordion-item-head>Assess</mdb-accordion-item-head>
+            <mdb-accordion-item-body>
+              <ul>
+
+
+                <li>Assess for alcohol use disorders. (Please review last AUDIT screen of the patient: Link to last
+                  alcohol
+                  screen)
+                  “Based on your responses, I am concerned about how much you’re
+                  drinking and how it can affect your health”
+                  “You are drinking alcohol at a level that puts you at increased risk for
+                  alcohol-related illnesses.”</li>
+                <li>Determine whether patient’s alcohol use has caused clinically significant
+                  impairment or distress;
+                  “In the past 12 months, has your drinking caused or contributed to the
+                  following: risk of bodily harm, relationship problems, role failure, and/or run ins with the law?”
+                </li>
+                <li>In the past 12 months, have you not been able to cut down or stop
+                  drinking, not been able to stick to drinking limits, shown tolerance,
+                  shown signs of withdrawal, kept drinking despite problems, spent a
+                  lot of time drinking, and/or spent less time on other matters?</li>
+                <li>Determine if patient has risky or harmful drinking behavior (alcohol misuse but no abuse or
+                  dependence).
+                  If alcohol dependence suspected,
+                  consider further evaluation or referral to behavioral health specialist.</li>
+              </ul>
+            </mdb-accordion-item-body>
+          </mdb-accordion-item>
+
+          <mdb-accordion-item [collapsed]="false">
+            <mdb-accordion-item-head>Advise</mdb-accordion-item-head>
+            <mdb-accordion-item-body>
+              <ul>
+                <li>Advise patient of your assessment and recommendations related to the
+                  findings.
+                  “You are drinking more than is medically safe.” Relate to the patient’s
+                  concerns and medical findings if present.
+                  I recommend that you cut down (or quit).
+
+                </li>
+              </ul>
+            </mdb-accordion-item-body>
+          </mdb-accordion-item>
+          <mdb-accordion-item [collapsed]="false">
+            <mdb-accordion-item-head>Assist</mdb-accordion-item-head>
+            <mdb-accordion-item-body>
+              <ul>
+                <li>Determine if patient is ready to change their behavior. If so,
+                  Assist with setting goals
+                  Recommend cutting down to maximum drinking limits or abstaining.
+                  Agree on a plan, to include specific steps the patient should take, how
+                  drinking will be tracked, how the patient will manage high-risk situations, and who might be willing
+                  to help, such as a spouse or non-drinking friends.
+                  Provide educational materials.
+                  “Are you ready to commit to changing your drinking behavior?”
+                  “I think it would be good if we talked about establishing goals around
+                  drinking alcoholic beverages…” </li>
+                <li>Restate your concern and reaffirm your willingness to help
+
+
+                </li>
+              </ul>
+            </mdb-accordion-item-body>
+          </mdb-accordion-item>
+          <mdb-accordion-item [collapsed]="false">
+            <mdb-accordion-item-head>Arrange</mdb-accordion-item-head>
+            <mdb-accordion-item-body>
+              <ul>
+                <li>Reinforce adherence, renegotiate drinking goals, encourage return visits for continued support,
+                  and rescreen, at least annually.
+
+                </li>
+              </ul>
+            </mdb-accordion-item-body>
+          </mdb-accordion-item>
+        </mdb-accordion>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close" (click)="alcoholGuide.hide()" mdbWavesEffect>Close</button>
+      </div>
+    </div>
+  </div>
+</div>

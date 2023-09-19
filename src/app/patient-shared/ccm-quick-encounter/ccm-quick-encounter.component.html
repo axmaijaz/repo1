@@ -1,0 +1,144 @@
+<div mdbModal #addEncounterModal="mdbModal" [config]="{ignoreBackdropClick: true, backdrop: false}" class="modal fade"
+  tabindex="-1" role="dialog" aria-labelledby="myroleManagementModalLabel" aria-hidden="true" (open)="ccmEncounterModalOpened()" (closed)="ResetStopWatch()">
+  <div class="modal-dialog modal-dialog-scrollable modal-md modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="addEncounterModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">Add Ccm Encounter</h4>
+      </div>
+
+      <div class="modal-body" *ngIf="addEncounterModal.isShown">
+        <div class="row">
+          <!-- <div class="col-sm-12 mb-2">
+            <small class="text-dynamic-2c text-uppercase font-500">User Information</small>
+          </div> -->
+          <div class="col-sm-12" *ngIf="securityService && securityService.securityObject.fullName">
+            <p><strong>Provider Name</strong> {{securityService.securityObject.fullName}}</p>
+          </div>
+
+          <div class="col-sm-12">
+            <label>Service Name</label>
+            <div class="form-group">
+              <ng-select [searchable]="true" [(ngModel)]="addCCMEncounterDto.ccmServiceTypeId"
+                (ngModelChange)="AssignValueCcmService();this.calculateEndtime()" class="w-100 ng-select-small"
+                placeholder="Select Service Type" (click)="$event.stopPropagation();">
+                <ng-option [value]="8">Discussion with Provider/Patient/Family</ng-option>
+                <ng-option [value]="12">ePrescribe</ng-option>
+                <ng-option [value]="18">Lab test results discussed with patients</ng-option>
+                <ng-option [value]="19">Lab/Radiology Orders</ng-option>
+                <ng-option [value]="35">Preauthorization</ng-option>
+                <ng-option [value]="40">Referrals</ng-option>
+                <ng-option [value]="27">Other</ng-option>
+              </ng-select>
+            </div>
+          </div>
+
+          <div class="col-sm-6">
+            <div class="form-group d-flex flex-wrap">
+              <label class="w-100">Start Time <small class="text-info" *ngIf="addCCMEncounterDto.startTime">{{('6/15/15
+                  ' + addCCMEncounterDto.startTime) | date: 'shortTime'}}</small></label>
+              <!-- <input type="text" class="form-control form-control-sm bg-white" readonly #dateDpTime="dpDayPicker"
+                [dpDayPicker]="timePickerConfig" [(ngModel)]="addCCMEncounterDto.startTime"
+                (ngModelChange)="calculateDuration()" [theme]="'dp-material ccm-date-picker'" [mode]="'time'" /> -->
+              <input type="text" [(ngModel)]="addCCMEncounterDto.startTime" (onChange)="calculateDuration()"
+                class="form-control form-control-sm bg-white" #dateDpTime="dpDayPicker" [dpDayPicker]="timePickerConfig"
+                [theme]="'dp-material ccm-date-picker'" [mode]="'time'" />
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="form-group d-flex flex-wrap">
+              <label class="w-100">End Time <small class="text-info" *ngIf="addCCMEncounterDto.startTime">{{('6/15/15 '
+                  + addCCMEncounterDto.endTime) | date: 'shortTime'}}</small></label>
+              <input type="text" readonly class="form-control form-control-sm" [(ngModel)]="addCCMEncounterDto.endTime"
+                placeholder="End Time" />
+            </div>
+          </div>
+
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label for="isChronic">Duration<small> in minutes</small></label>
+              <input type="text" [(ngModel)]="addCCMEncounterDto.duration" class="form-control form-control-sm"
+                id="isChronic" (input)="durationChanged(addCCMEncounterDto.duration)" placeholder="Duration">
+            </div>
+          </div>
+          <div *ngIf="!hideTimerForChatEncounter" class="col-sm-6">
+            <div class="form-group ml-3 flex-grow-1">
+              <label for="endTime">Timer</label>
+              <div class="d-flex">
+                <input type="text" id="stopwatchFieldCCM1"
+                class="form-control form-control-sm text-dynamic-secondary-2c" placeholder="00:00:00">
+                <button *ngIf="stopWatchInterval" class="btn btn-dynamic-2c my-0 mr-0 px-2 btn-sm " (click)="ResetStopWatch()">Stop </button>
+                <button *ngIf="!stopWatchInterval" class="btn btn-dynamic-2c my-0 mr-0 px-2 btn-sm " (click)="startStopWatch()">Start </button>
+
+              </div>
+
+            </div>
+          </div>
+          <div class="col-sm-12">
+            <div class="form-group">
+              <label for="formmm7">Note<sup class="text-danger">*</sup></label>
+              <app-two-c-text-area #myFIeldRefCCM12 [value]="addCCMEncounterDto.note" [height]="'140px'" [PatientId]="addCCMEncounterDto.patientId" (valueChanged)="addCCMEncounterDto.note=$event"></app-two-c-text-area>
+            </div>
+          </div>
+        </div>
+        <!-- <div #alert *ngIf="showAlertFEncounter" class="alert alert-warning alert-dismissible animated fade show"
+          role="alert">
+          <button type="button" class="close" aria-label="Close" >
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <strong>End Time must be greater than Start Time!</strong>
+        </div> -->
+      </div>
+      <div class="modal-footer d-block ">
+        <div>
+          <div
+            *ngIf="!PatientEncounterMonthlyStatusAcknowledge || (PatientEncounterMonthlyStatus === ccmMonthlyStatusEnum['Not Started']) || !addCCMEncounterDto.duration">
+            <div #alert class="alert mb-1 alert-warning alert-dismissible animated fade show" role="alert">
+              <strong
+                *ngIf="!PatientEncounterMonthlyStatusAcknowledge || (PatientEncounterMonthlyStatus === ccmMonthlyStatusEnum['Not Started'])">Acknowledge/update
+                monthly status to save</strong>
+              <br
+                *ngIf="!PatientEncounterMonthlyStatusAcknowledge || (PatientEncounterMonthlyStatus === ccmMonthlyStatusEnum['Not Started']) && !addCCMEncounterDto.duration">
+              <strong *ngIf="!addCCMEncounterDto.duration">Encounter duration is not valid.</strong>
+            </div>
+          </div>
+        </div>
+        <div class="d-flex align-items-center justify-content-between">
+          <div>
+            <div class="d-flex align-items-center  p-1">
+              <p class="m-0">Monthly Status:</p>
+              <div style="padding: 2px;" class=" ml-3 border rounded"
+                [class.border-success]="PatientEncounterMonthlyStatusAcknowledge && (PatientEncounterMonthlyStatus !== ccmMonthlyStatusEnum['Not Started'])"
+                [class.border-warning]="!PatientEncounterMonthlyStatusAcknowledge || (PatientEncounterMonthlyStatus === ccmMonthlyStatusEnum['Not Started'])">
+                <div class="btn-group cursor-pointer" mdbDropdown>
+                  <mdb-badge style="line-height: 14px;" mdbDropdownToggle success="true"
+                    (click)="PatientEncounterMonthlyStatusAcknowledge=true;">{{PatientEncounterMonthlyStatusTExt}}
+                  </mdb-badge>
+
+                  <div class="dropdown-menu status-dropdown" style="    bottom: 50px;top: unset;left: -3px;">
+                    <div>
+                      <!-- <span [ngStyle]="{'backgroupcmMOdelDatand': item.color}"></span> -->
+                      <a [class.active]="PatientEncounterMonthlyStatus === value"
+                        (click)="PatientEncounterMonthlyStatusAcknowledge=true;PatientEncounterMonthlyStatus=item.value;PatientEncounterMonthlyStatusTExt=item.name;"
+                        *ngFor="let item of CcmMonthlyStatusList" class="dropdown-item">{{item.name}}</a>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <button type="submit" class="btn btn-dynamic-2c btn-sm"
+            [disabled]="isLoading || !addCCMEncounterDto.note ||!PatientEncounterMonthlyStatusAcknowledge || (PatientEncounterMonthlyStatus === ccmMonthlyStatusEnum['Not Started']) || !addCCMEncounterDto.duration"
+            (click)="addEncounter()"><span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status"
+              aria-hidden="true"></span>
+            Add</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

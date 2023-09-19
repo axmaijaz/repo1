@@ -1,0 +1,209 @@
+<div class="d-flex flex-row align-items-center justify-content-end mb-3">
+  <!-- <div class="d-flex justify-content-start align-items-center">
+    <h4 class="mr-3 mb-0"><a class="text-dark" (click)="goBack()">
+        <i class="fa fa-arrow-left"></i></a></h4>
+    <h1 class="page-title mb-0">Preventive Care</h1>
+  </div> -->
+  <div>
+    <div class="action-button">
+      <div class="btn-group" mdbDropdown>
+        <a mdbDropdownToggle class="btn btn-dynamic-2c btn-icon" placement="right"><i class="fa fa-plus"></i></a>
+        <div class="dropdown-menu-right dropdown-menu status-dropdown">
+          <div>
+            <button [disabled]="isCreatingScreening" (click)="$event.stopPropagation();AddAMScreening()" class="dropdown-item">AM Screening <span *ngIf="isCreatingScreening" class="spinner-border spinner-border-sm" role="status"
+              aria-hidden="true"></span></button>
+              <button [disabled]="isCreatingAMCounselling" (click)="$event.stopPropagation();counselling= 'AM';AddEditCounseling()" class="dropdown-item">AM Counselling <span *ngIf="isCreatingAMCounselling" class="spinner-border spinner-border-sm" role="status"
+                aria-hidden="true"></span></button>
+            <button [disabled]="isCreatingDPScreening" (click)="$event.stopPropagation();AddDepressionScreening()" class="dropdown-item">DP Screening <span *ngIf="isCreatingDPScreening" class="spinner-border spinner-border-sm" role="status"
+              aria-hidden="true"></span></button>
+            <button [disabled]="isCreatingDPCounselling" (click)="$event.stopPropagation();counselling= 'DP';AddEditCounseling()" class="dropdown-item">DP Counselling <span *ngIf="isCreatingDPCounselling" class="spinner-border spinner-border-sm" role="status"
+              aria-hidden="true"></span></button>
+            <button [disabled]="isCreatingAWEncounter" (click)="$event.stopPropagation();AddAWEncounter()" class="dropdown-item">Annual Wellness<span *ngIf="isCreatingAWEncounter" class="spinner-border spinner-border-sm" role="status"
+              aria-hidden="true"></span></button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- <app-patient-details></app-patient-details> -->
+
+<ngx-datatable #table class="material rounded-0" [columnMode]="'force'" [headerHeight]="50" [footerHeight]="50" [rowHeight]="40"
+  [scrollbarV]="false" [scrollbarH]="true" [limit]="10" [rows]="pCMEncountersList" >
+  <ngx-datatable-column name="#" [width]=50>
+    <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+      <small class="mr-3">{{(rowIndex + 1)}}</small>
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="Measure Name" [width]=300 >
+
+    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+      <div class="d-flex justify-content-between align-items-center" style="width: 300px;">
+       <p class="flex-grow-1 m-0" style="white-space: pre-wrap;">{{row.measureName}}</p>
+        <div>
+          <ng-container *ngIf="row.encounterType == 1">
+            <button type="button" [disabled]='row.status !== 2' class="btn btn-icon btn-dynamic-2c my-0 mr-0"
+            (click)="selectedEncounter=row;addendumWarning.show();"><i class="fa fa-clone"></i></button>
+          </ng-container>
+          <button [disabled]="row.awEncounterId" type="button" class="btn btn-icon btn-dynamic-2c my-0 mr-0"
+          (click)="ProceedNavigation(row);"><i class="fa fa-eye fa-lg"></i></button>
+        <button [disabled]="row.awEncounterId" type="button" class="btn btn-icon btn-dynamic-2c my-0 mx-2"
+          (click)="closePcmEncounterObj.status = null;selectedEncounter=row;ClosedStatusModal.show();"><i class="fa fa-pencil fa-lg"></i></button>
+        </div>
+      </div>
+
+
+
+    </ng-template>
+
+  </ngx-datatable-column>
+  <ngx-datatable-column name="Encounter Date">
+    <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+      {{ row.encounterDate | dateFormatPipe }}
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="Code" [width]=50 prop="measureCode" > </ngx-datatable-column>
+  <ngx-datatable-column name="CPT Code" [width]=80 prop="cptCode" > </ngx-datatable-column>
+  <ngx-datatable-column name="Status" [width]=125>
+    <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+      <mdb-badge style="min-width: 100px;" success="true" mdbDropdownToggle dynamicPosition="true"
+                      *ngIf="row.status === pcmEncounterStatus.Successfull" color="w-100">
+                      {{ pcmEncounterStatus[row.status] }}
+                    </mdb-badge>
+      <mdb-badge style="min-width: 100px;" info="true" mdbDropdownToggle dynamicPosition="true"
+                      *ngIf="row.status === pcmEncounterStatus['In Process']" color="w-100">
+                      {{ pcmEncounterStatus[row.status] }}
+                    </mdb-badge>
+      <mdb-badge style="min-width: 100px;" danger="true" mdbDropdownToggle dynamicPosition="true"
+                      *ngIf="row.status !== pcmEncounterStatus.Successfull && row.status !== pcmEncounterStatus['In Process']" color="w-100">
+                      {{ pcmEncounterStatus[row.status] }}
+                    </mdb-badge>
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="Encounter Type" [width]=130>
+    <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+      {{ PcmEncounterTypeEnum[row.encounterType] }}
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="Billing Provider" prop="billingProvider"> </ngx-datatable-column>
+  <ngx-datatable-column name="Result" prop="result"> </ngx-datatable-column>
+  <!-- <ngx-datatable-column name="Last Done" [maxWidth]=120>
+    <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+      {{ row.lastDone | dateFormatPipe }}
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="Next Due" [maxWidth]=120>
+    <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+      {{ row.nextDue | dateFormatPipe }}
+    </ng-template>
+  </ngx-datatable-column> -->
+
+  <!-- <ngx-datatable-column name="action" prop="Notes"> </ngx-datatable-column> -->
+</ngx-datatable>
+
+
+<div mdbModal #ClosedStatusModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+aria-labelledby="myBasicModalLabel" aria-hidden="true" mdbTableScroll>
+<div class="modal-dialog" role="document">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close pull-right" aria-label="Close" (click)="ClosedStatusModal.hide()">
+        <span aria-hidden="true">×</span>
+      </button>
+      <h4 class="modal-title w-100" id="myModalLabel">Closed Status</h4>
+    </div>
+    <div class="modal-body" *ngIf="ClosedStatusModal.isShown">
+      <div>
+        <ul class="status-list">
+          <li [class.active]="closePcmEncounterObj.status === 3"> <a class="link"
+              (click)="closePcmEncounterObj.status = 3;">Closed Error
+            </a>
+          </li>
+          <li [class.active]="closePcmEncounterObj.status === 4"> <a class="link"
+              (click)="closePcmEncounterObj.status = 4;">Closed Duplicate
+            </a>
+          </li>
+          <li [class.active]="closePcmEncounterObj.status === 5"> <a class="link"
+              (click)="closePcmEncounterObj.status = 5;">Closed Other
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+
+      <button type="button" (click)="ClosedStatusModal.hide()" class="waves-light btn btn-sm btn-dynamic-secondary-2c"
+        aria-label="Close" mdbWavesEffect>Cancel</button>
+      <button type="button" [disabled]="closingEncounter" (click)="ClosePcmEncounter(ClosedStatusModal)" class="relative btn btn-sm btn-dynamic-secondary-2c"
+      mdbWavesEffect><span *ngIf="closingEncounter" class="spinner-border spinner-border-sm" role="status"
+      aria-hidden="true"></span> Save</button>
+    </div>
+  </div>
+</div>
+</div>
+<div mdbModal #addendumWarning="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+aria-labelledby="myBasicModalLabel" aria-hidden="true" mdbTableScroll>
+<div class="modal-dialog" role="document">
+  <div class="modal-content" *ngIf="addendumWarning.isShown">
+    <div class="modal-header">
+      <button type="button" class="close pull-right" aria-label="Close" (click)="addendumWarning.hide()">
+        <span aria-hidden="true">×</span>
+      </button>
+      <h4 class="modal-title w-100 text-center" id="myModalLabel">Amendment Alert </h4>
+    </div>
+    <div class="modal-body" *ngIf="!selectedEncounter.isBilled">
+      <p class="text-center"><i class="fa fa-exclamation-triangle text-danger" style="font-size: 3rem;"></i> </p>
+      
+       <p class="text-center">Do you want to Amendment?</p> 
+     
+      <div class="d-flex justify-content-center">
+        <div class="d-flex">
+          <button class="btn btn-dynamic-2c btn-sm" (click)="AddAnnualWellnessAddendum(addendumWarning)">YES</button>
+          <button class="btn btn-dynamic-secondary-2c btn-sm mr-0" (click)="addendumWarning.hide()">NO</button>
+        </div>
+      </div>
+   
+    
+     <div class="text-center">
+       <span *ngIf="isAddendum" class="spinner-border text-success spinner-border-md" role="status" aria-hidden="true"></span>
+     </div>
+    </div>
+
+    <div class="modal-body" *ngIf="selectedEncounter.isBilled">
+      <p class="text-center"><i class="fa fa-exclamation-triangle text-danger" style="font-size: 3rem;"></i> </p>
+      
+      <div class="alert alert-warning" role="alert">
+      You are not able to edit AW. However you can leave addendum note.
+      </div>
+  
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="form-group">
+            <label for="signeture">Note</label>
+            <textarea [(ngModel)]="selectedEncounter.addendumNote" class="md-textarea form-control " rows="3" id="note"
+                type="text"></textarea>
+          </div>
+        </div>
+        <div class="col-sm-12">
+          <div class="form-group">
+            <label for="signeture">Signature</label>
+            <input [(ngModel)]="selectedEncounter.addendumSignature" type="text" style="font-style: italic"
+              class="form-control" id="signeture" placeholder="Signature">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer" *ngIf="selectedEncounter.isBilled">
+
+      <button type="button" (click)="addendumWarning.hide()" class="waves-light btn btn-sm btn-dynamic-secondary-2c"
+        aria-label="Close" mdbWavesEffect>Cancel</button>
+      <button type="button" [disabled]="closingEncounter" (click)="AddEditAddendumNote(addendumWarning)" class="relative waves-light btn btn-sm btn-dynamic-secondary-2c"
+      mdbWavesEffect><span *ngIf="isAddendum" class="spinner-border spinner-border-sm" role="status"
+      aria-hidden="true"></span> Save</button>
+    </div>
+  </div>
+</div>
+</div>

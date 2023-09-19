@@ -1,0 +1,223 @@
+@import 'theme';
+.patients-details {
+    p {
+        display: flex;
+        border-radius: 10px;
+        align-items: center;
+        color: #fff;
+        margin: 0;
+        box-shadow: 0 5px 7px 0 #e9ecee;
+        strong {
+            padding: 10px;
+            width: 150px;
+            border-radius:10px 10px 0 10px;
+            text-align: center;
+            margin-right: 10px;
+        }
+    }
+}
+.bg-primary-gradient{
+    background: $dynamic-colour;
+}
+.bg-dynamic-secondary-2c-gradient{
+    background: $dynamic-secondary-colour;
+}
+.timeline-main {
+    position: relative;
+    padding: 0;
+    margin: 0 auto;
+    // height: calc(100vh - 280px);
+    &.toDoList {
+        // height: calc(100vh - 350px);
+    }
+    .date-time {
+        position: absolute;
+        left: 0rem;
+        top: 34px;
+    }
+    .timeline-item {
+        border: 1px solid #ffb74d;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        margin-left: 8rem;
+        position: relative;
+        background: #fff59d;
+        border-radius: 5px;
+        box-shadow: $box-shadow;
+        p {
+            margin: 0px;
+            font-size: 0.9rem;
+        }
+        &::after {
+            content: " ";
+            display: block;
+            width: 15px;
+            height: 15px;
+            background: #ff9800;
+            position: absolute;
+            left: -23.5px;
+            top: 35px;
+            border-radius: 15px;
+            z-index: 1;
+            border: 2px solid $white;
+        }
+        
+    }
+    &::after {
+        content: " ";
+        height: 120%;
+        background: #ff9800;
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 7rem;
+        width: 1px;
+    }
+    &.primary {
+        .timeline-item {
+            border: 1px solid lighten($primary, 30%);
+            background: lighten($primary, 20%) !important;
+            &::after {
+                content: " ";
+                background: $dynamic-colour;
+            }
+        }
+        &::after {
+            content: " ";
+            background: lighten($primary, 30%);
+        }
+    }
+    &.type-action-1 {
+        .timeline-item {
+            border: 1px solid lighten($primary, 30%);
+            background: lighten($primary, 30%) !important;
+            &::after {
+                content: " ";
+                background: $dynamic-colour;
+            }
+        }
+        &::after {
+            content: " ";
+            background: lighten($primary, 30%);
+        }
+    }
+    &.type-action-2 {
+        .timeline-item {
+            border: 1px solid lighten($info, 30%);
+            background: lighten($info, 30%) !important;
+            &::after {
+                content: " ";
+                background: $info;
+            }
+        }
+        &::after {
+            content: " ";
+            background: lighten($info, 30%);
+        }
+    }
+    &.type-action-3 {
+        .timeline-item {
+            border: 1px solid lighten($secondary, 30%);
+            background: lighten($secondary, 30%) !important;
+            &::after {
+                content: " ";
+                background: $dynamic-secondary-colour;
+            }
+        }
+        &::after {
+            content: " ";
+            background: lighten($secondary, 30%);
+        }
+    }
+
+    &.type-action-5 {
+        .timeline-item {
+            border: 1px solid lighten($success, 30%);
+            background: lighten($success, 30%) !important;
+            &::after {
+                content: " ";
+                background: $success;
+            }
+        }
+        &::after {
+            content: " ";
+            background: lighten($success, 30%);
+        }
+    }
+    &.type-action-4 {
+        .timeline-item {
+            border: 1px solid lighten($danger, 30%);
+            background: lighten($danger, 30%) !important;
+            &::after {
+                content: " ";
+                background: $danger;
+            }
+        }
+        &::after {
+            content: " ";
+            background: lighten($danger, 30%);
+        }
+    }
+    &.type-action-6 {
+        .timeline-item {
+            border: 1px solid lighten($warning, 30%);
+            background: lighten($warning, 30%) !important;
+            &::after {
+                content: " ";
+                background: $warning;
+            }
+        }
+        &::after {
+            content: " ";
+            background: lighten($warning, 30%);
+        }
+    }
+}
+.pb-info {
+    @include media-breakpoint-down(xl) {
+      margin: 0.5rem 0 !important;
+    }
+
+    padding: 5px;
+    border: 1px solid lighten($grey, 13%);
+    p {
+      margin-bottom: 0;
+      display: flex;
+      justify-content: flex-start;
+      background: #f7f7f7;
+      font-size: 13px;
+      font-weight: 500;
+      &:not(:last-child) {
+        margin-bottom: 5px;
+      }
+      padding: 5px 5px;
+      strong {
+        background-color: lighten($primary, 45%);
+        display: inline-block;
+        padding: 5px 8px;
+        margin: -5px;
+        margin-right: 10px;
+        flex: 0 0 50%;
+        font-weight: 600;
+        white-space: nowrap;
+      }
+    }
+    @include media-breakpoint-down(lg) {
+      margin: 0.5rem 0 ;
+      p {
+        font-size: 13px ;
+      font-weight: 400 ;
+      strong {
+        flex: 0 0 50% ;
+        font-weight: 500;
+      }
+      }
+    }
+  }
+// "Added To Inventory" = 0,
+// "Assigned To Patient" = 1,
+// "Back To Inventory" = 2,
+// "Changed Facility" = 3,
+// "Lost To Follow" = 4,
+// "Returned To Vendor" = 5,
+// "Sold To Facility" = 6,

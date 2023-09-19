@@ -1,0 +1,43 @@
+
+  <h1 class="page-title">Diseases</h1>
+
+<div class="table-data-list">
+    <div *ngIf="isLoading" class="d-flex justify-content-center text-center">
+        <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+      </div>
+  <ngx-datatable class="material" [columnMode]="'force'" [headerHeight]="50" [footerHeight]="50" [rowHeight]="35" [externalPaging]="true" [count]="pagingData.elementsCount"
+    [scrollbarV]="false" [scrollbarH]="true" [rows]="rows" [offset]="pagingData.pageNumber" [limit]="pagingData.pageSize" (page)='setPage($event)'
+     [loadingIndicator]="isLoading">
+    <ngx-datatable-column name="#" [maxWidth]=20>
+      <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+        {{rowIndex + 1}}
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="ICD Code" prop="icdCode" [maxWidth]=150>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Category" prop="category" [maxWidth]=150>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="ICD Code System" prop="icdCodeSystem" [maxWidth]=150>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="description" prop="description">
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Details" prop="detail">
+    </ngx-datatable-column>
+    <!-- <ngx-datatable-column name="Action" [canAutoResize]=false [frozenRight]=true [width]="160">
+      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+        <div class="action-button">
+            <a  class="btn btn-dynamic-2c btn-icon" title="Edit" placement="left"><i class="fa fa-pencil"></i> </a>
+            <a  class="btn btn-danger btn-icon" title="Remove" placement="left"><i class="fa fa-trash"></i></a>
+        </div>
+    </ng-template>
+    </ngx-datatable-column> -->
+    <!-- <ngx-datatable-column name="Action" [canAutoResize]=false [frozenRight]=true [width]="150">
+      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+        <ng-select [searchable]="false" appendTo="body" placeholder="Yes" (click)="$event.stopPropagation();">
+          <ng-option [value]="true">Yes</ng-option>
+          <ng-option [value]="false">No</ng-option>
+        </ng-select>
+      </ng-template>
+    </ngx-datatable-column> -->
+  </ngx-datatable>
+</div>

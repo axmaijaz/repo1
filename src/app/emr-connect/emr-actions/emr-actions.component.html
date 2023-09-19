@@ -1,0 +1,424 @@
+<div class="row" *ngIf="facility.integrationEnabled">
+  <div class="col-12">
+    <div class="d-flex align-items-center justify-content-between py-3">
+      <p class="mb-0"><strong >EMR Actions</strong></p>
+      <div>
+        <!-- <div class="form-group mb-0 position-relative" style="width: 150px;">
+          <input type="text" class="form-control form-control-sm" readonly #dateDPicker="dpDayPicker"
+          [dpDayPicker]="datePickerConfig2" placeholder="MMM-YYYY" [(ngModel)]="filterMonth" (ngModelChange)="DateChanged()"
+          [theme]="'dp-material ccm-date-picker'" [mode]="'month'" />
+          <div style="position: absolute;right:5px;top:5px;">
+            <span >
+              <i class="fa fa-calendar fa-lg"></i>
+            </span>
+          </div>
+        </div> -->
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="gettingCarePlan || gettingEncounterLogs || getClaimInfo || uploadFC || uploadFCD || uploadingDocument || updatingStatus" class="d-flex justify-content-center text-center">
+  <!-- <div class="d-flex justify-content-center text-center"> -->
+  <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+</div>
+<div class="row">
+  <div *hasClaim="['ccmService']" class="col-12">
+    <div class="box-athena">
+      <div class="left-vertical-title">
+        <p>CCM</p>
+      </div>
+      <div class="d-flex mb-3 justify-content-between align-items-center">
+        <div class="name-services d-inline-flex align-items-center">
+          <h3 class="mb-0 mr-3">Chronic Care Management</h3>
+          <div class="group-line-buttons">
+            <ng-template #ccmconsentInfo1>
+              <div class="p-3"  style="width: 220px;border: 1px solid #ccc;">
+                <h6 style="font-weight: 500;" >Consent info</h6>
+                <ul>
+                  <li class="text-danger" *ngIf="!patient?.isCCMConsentTaken">CCM Consent is not taken in 2C</li>
+                  <li class="text-dynamic-2c" *ngIf="patient?.isCCMConsentTaken && consentInfo.ccmDate">Consent Date: {{consentInfo.ccmDate | dateFormatPipe }}</li>
+                  <li class="text-dynamic-2c" *ngIf="patient?.isCCMConsentTaken && consentInfo.ccmConsentTakenBy">{{consentInfo.ccmConsentTakenBy}}</li>
+                </ul>
+                <!-- <span>Click <a routerLink="/insights/embedded/consents/consentdoc/{{patientId}}" [queryParams]="{hideActionButtons:true}">here</a> to view Consent</span> -->
+              </div>
+            </ng-template>
+            <button  placement="bottom" [mdbPopover]="ccmconsentInfo1" triggers="hover"
+             routerLink="/insights/embedded/consents/consentdoc/{{patientId}}" [queryParams]="{hideActionButtons:true, nature: 'CCM'}"
+             class="btn  btn-icon btn-danger border-0" [class.btn-success]="patient?.isCCMConsentTaken">
+              <span class="fa fa-clipboard"></span>
+            </button>
+            <ng-template #CarePlanStateInfo1>
+              <div class="p-3"  style="width: 220px;border: 1px solid #ccc;">
+                <h6 style="font-weight: 500;" >Care Plan info</h6>
+                <ul>
+                  <li class="text-danger" *ngIf="!hasCarePlan">Care Plan is not created in 2C</li>
+                  <li class="text-dynamic-2c" *ngIf="addEditMAsterCareplanObj?.carePlanUpdatedDate">Last Update: {{addEditMAsterCareplanObj?.carePlanUpdatedDate | dateFormatPipe}}</li>
+                </ul>
+                <!-- <span>Click <a routerLink="/insights/embedded/careplan/{{patientId}}">here</a> to view Care Plan</span> -->
+                <!-- <button mdbTooltip="Update Care Plan in Athena" (click)="ConfirmUploadClinicalDocument()" mdbBtn type="button" class="btn btn-dynamic-2c btn-sm btn-block mt-3 rounded py-1" size="sm" flat="true"  mdbWavesEffect>Update</button> -->
+              </div>
+            </ng-template>
+            <button [disabled]="!patient?.isCCMConsentTaken" [class.btn-success]="hasCarePlan" placement="bottom" [mdbPopover]="CarePlanStateInfo1" triggers="hover" routerLink="/insights/embedded/careplan/{{patientId}}" class="btn btn-danger btn-icon border-0">
+              <svg xmlns="http://www.w3.org/2000/svg" style="width: 20px !important;" width="25" height="10" viewBox="0 0 25 10" fill="none">
+                <path d="M10.3576 0.131251C10.3576 0.131251 8.77567 -0.163887 8.12845 0.131251C7.64651 0.350695 5.78123 1.02014 4.8611 1.34791V7.50067C5.39374 7.47012 6.45345 7.41387 6.90623 7.43192C8.25553 7.48678 9.26317 7.80692 10.2819 8.13053C11.2326 8.43261 12.193 8.73817 13.4486 8.8333C13.7652 8.85692 14.0722 8.88817 14.3701 8.91803C15.4465 9.02636 16.3993 9.12219 17.1881 8.8333C18.1951 8.46456 23.9465 5.66248 24.6652 4.92498C25.3847 4.18749 25.0249 2.19583 22.7958 2.56458C21.6965 2.74652 20.4208 3.27013 19.2652 3.74444C18.0777 4.23124 17.0159 4.66735 16.3972 4.62985C15.175 4.55623 11.9389 3.96596 11.9389 3.96596L15.6541 4.0111C15.6541 4.0111 16.1791 4.03888 16.9 3.5236C17.6222 3.00832 18.2666 1.53264 17.1881 1.53264C16.1097 1.53264 14.959 1.16319 14.959 1.16319L10.3576 0.131251ZM0 0.694443C0 0.510266 0.0731644 0.33363 0.203398 0.203397C0.333631 0.0731633 0.510265 0 0.694443 0H2.77777C2.96195 0 3.13858 0.0731633 3.26882 0.203397C3.39905 0.33363 3.47221 0.510266 3.47221 0.694443V8.33053C3.47221 8.51471 3.39905 8.69134 3.26882 8.82158C3.13858 8.95181 2.96195 9.02497 2.77777 9.02497H0.694443C0.510265 9.02497 0.333631 8.95181 0.203398 8.82158C0.0731644 8.69134 0 8.51471 0 8.33053V0.695138V0.694443Z" fill="white"/>
+              </svg>
+            </button>
+            <ng-template #ccmTimeInfo1>
+              <div class="p-3"  style="width: 220px;border: 1px solid #ccc;">
+                <h6 style="font-weight: 500;" >Monthly Review</h6>
+                <ul>
+                  <li class="text-danger" *ngIf="!(ccmMinutes > 19)">({{ccmMinutes}} Minutes) Ccm Encounters are incomplete for current month</li>
+                  <li class="text-dynamic-2c" *ngIf="(ccmMinutes > 19)">({{ccmMinutes}} Minutes) Ccm Encounters are completed for current month</li>
+                </ul>
+                <!-- <span>Click <a routerLink="/insights/embedded/mrModal/{{patientId}}/monthlyReview" [queryParams]="{isIframe:true}">here</a> to view CCM</span> -->
+              </div>
+            </ng-template>
+            <button [disabled]="!hasCarePlan || !patient?.isCCMConsentTaken" placement="bottom" [class.btn-success]="ccmMinutes > 19" [mdbPopover]="ccmTimeInfo1" triggers="hover" routerLink="/insights/embedded/mrModal/{{patientId}}/monthlyReview" [queryParams]="{isIframe:true}" class="btn btn-danger btn-icon border-0 position-relative">
+              <span class="fa fa-play"></span>
+              <span class="action-minutes-badge">
+                {{ccmMinutes || 0}}
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-3 col-md-6 mb-2 text-center cursor-pointer" (click)="statusChangeRef.OpenModel(patient?.id , 'ccmStatus' ,patient?.ccmStatus)">
+          <p class="mb-2" style="font-size: 14px;"><strong>CCM  Status</strong></p>
+          <span class="badge badge-success">{{ccmStatusEnum[patient?.ccmStatus]}}</span>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-2 text-center cursor-pointer" (click)="statusChangeRef.OpenModel(patient?.id , 'ccmMonthlyStatus' ,patient?.ccmMonthlyStatus)">
+          <p class="mb-2" style="font-size: 14px;"><strong>CCM  Monthly Status</strong></p>
+          <span class="badge badge-success">{{ccmMonthlyStatusEnum[patient?.ccmMonthlyStatus]}}</span>
+
+        </div>
+        <div class="col-lg-3 col-md-6 mb-2 text-center">
+          <p class="mb-2" style="font-size: 14px;"><strong>Last CCM Encounter</strong></p>
+          <div class="d-flex align-items-center justify-content-center">
+            <p *ngIf="EmrSummaryData.lastCcmDate" class="mb-0">{{EmrSummaryData.lastCcmDate | dateFormatPipe}} </p>
+            <button [disabled]="patient?.chronicDiagnosesIds?.length < 2 || !patient?.isCCMConsentTaken" class="btn btn-dynamic-2c btn-icon">
+              <span (click)="addCCmEncounterRef.OpenAddEncounterModal(patient)" class="fa fa-bolt fa-lg cursor-pointer"></span>
+            </button>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-2 text-center">
+          <p class="mb-2" style="font-size: 14px;"><strong>Next CCM </strong></p>
+          <div class="d-flex align-items-center justify-content-center">
+            <p *ngIf="EmrSummaryData.nextCcmDate" class="mb-0">{{EmrSummaryData.nextCcmDate | dateFormatPipe}} </p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *hasClaim="['rpmService']" class="col-12">
+    <div class="box-athena mt-3 mb-3">
+      <div class="left-vertical-title">
+        <p>RPM</p>
+      </div>
+      <div class="d-flex mb-3 justify-content-between align-items-center">
+        <div class="name-services d-inline-flex align-items-center">
+          <h3 class="mb-0 mr-3">Remote Patient Monitoring</h3>
+          <div class="group-line-buttons">
+            <ng-template #RPMconsentInfo1>
+              <div class="p-3"  style="width: 220px;border: 1px solid #ccc;">
+                <h6 style="font-weight: 500;" >Consent info</h6>
+                <ul>
+                  <li class="text-danger" *ngIf="!patient?.isRPMConsentTaken">RPM Consent is not taken in 2C</li>
+                  <li class="text-dynamic-2c" *ngIf="patient?.isRPMConsentTaken && consentInfo.rpmDate">Consent Date: {{consentInfo.rpmDate | dateFormatPipe }}</li>
+                  <li class="text-dynamic-2c" *ngIf="patient?.isRPMConsentTaken && consentInfo.rpmConsentTakenBy">{{consentInfo.rpmConsentTakenBy}}</li>
+                </ul>
+                <!-- <span>Click <a routerLink="/insights/embedded/consents/consentdoc/{{patientId}}" [queryParams]="{hideActionButtons:true}">here</a> to view Consent</span> -->
+              </div>
+            </ng-template>
+            <button [class.btn-success]="patient?.isRPMConsentTaken" placement="bottom" [mdbPopover]="RPMconsentInfo1" triggers="hover" routerLink="/insights/embedded/consents/consentdoc/{{patientId}}" [queryParams]="{hideActionButtons:true, nature: 'RPM'}" class="btn btn-danger btn-icon border-0" >
+              <span class="fa fa-clipboard"></span>
+            </button>
+            <ng-template #RPMreadings>
+              <div class="p-3"  style="width: 220px;border: 1px solid #ccc;">
+                <!-- <h6 style="font-weight: 500;" >RPM Modalities</h6> -->
+                <ul>
+                  <li class="text-danger">{{EmrSummaryData.readingDays}} days</li>
+                </ul>
+              </div>
+            </ng-template>
+            <button [disabled]="!patient?.isRPMConsentTaken" [class.btn-success]="EmrSummaryData.readingDays > 15" triggers="hover" [mdbPopover]="RPMreadings" placement="bottom" routerLink="/insights/embedded/modalities/{{patientId}}" [queryParams]="{isIframe:true}" class="btn btn-danger btn-icon border-0">
+              <svg xmlns="http://www.w3.org/2000/svg" style="width: 20px !important;" width="25" height="10" viewBox="0 0 25 10" fill="none">
+                <path d="M10.3576 0.131251C10.3576 0.131251 8.77567 -0.163887 8.12845 0.131251C7.64651 0.350695 5.78123 1.02014 4.8611 1.34791V7.50067C5.39374 7.47012 6.45345 7.41387 6.90623 7.43192C8.25553 7.48678 9.26317 7.80692 10.2819 8.13053C11.2326 8.43261 12.193 8.73817 13.4486 8.8333C13.7652 8.85692 14.0722 8.88817 14.3701 8.91803C15.4465 9.02636 16.3993 9.12219 17.1881 8.8333C18.1951 8.46456 23.9465 5.66248 24.6652 4.92498C25.3847 4.18749 25.0249 2.19583 22.7958 2.56458C21.6965 2.74652 20.4208 3.27013 19.2652 3.74444C18.0777 4.23124 17.0159 4.66735 16.3972 4.62985C15.175 4.55623 11.9389 3.96596 11.9389 3.96596L15.6541 4.0111C15.6541 4.0111 16.1791 4.03888 16.9 3.5236C17.6222 3.00832 18.2666 1.53264 17.1881 1.53264C16.1097 1.53264 14.959 1.16319 14.959 1.16319L10.3576 0.131251ZM0 0.694443C0 0.510266 0.0731644 0.33363 0.203398 0.203397C0.333631 0.0731633 0.510265 0 0.694443 0H2.77777C2.96195 0 3.13858 0.0731633 3.26882 0.203397C3.39905 0.33363 3.47221 0.510266 3.47221 0.694443V8.33053C3.47221 8.51471 3.39905 8.69134 3.26882 8.82158C3.13858 8.95181 2.96195 9.02497 2.77777 9.02497H0.694443C0.510265 9.02497 0.333631 8.95181 0.203398 8.82158C0.0731644 8.69134 0 8.51471 0 8.33053V0.695138V0.694443Z" fill="white"/>
+              </svg>
+            </button>
+            <ng-template #RPMTimeInfo1>
+              <div class="p-3"  style="width: 220px;border: 1px solid #ccc;">
+                <h6 style="font-weight: 500;" >RPM info</h6>
+                <ul>
+                  <li class="text-danger" *ngIf="!(rpmMinutes > 19)">({{rpmMinutes}} Minutes) RPM Encounters are incomplete for current month</li>
+                  <li class="text-dynamic-2c" *ngIf="(rpmMinutes > 19)">({{rpmMinutes}} Minutes) RPM Encounters are completed for current month</li>
+                </ul>
+                <!-- <span>Click <a routerLink="/insights/embedded/mrModal/{{patientId}}/monthlyReview" [queryParams]="{isIframe:true}">here</a> to view CCM</span> -->
+              </div>
+            </ng-template>
+            <button [disabled]="!patient?.isRPMConsentTaken" placement="bottom" [class.btn-success]="rpmMinutes > 19" [mdbPopover]="RPMTimeInfo1" triggers="hover" routerLink="/insights/embedded/rpmModal/PatientRpm/{{patientId}}" [queryParams]="{isIframe:true}" class="btn btn-danger btn-icon border-0">
+              <span class="fa fa-play"></span>
+              <span class="action-minutes-badge">
+                {{rpmMinutes || 0}}
+              </span>
+            </button>
+          </div>
+        </div>
+        <div>
+          <button  routerLink="/insights/embedded/rpmAlerts/{{patientId}}" class="notification-bell btn-dynamic-2c ">
+            <span class="fa fa-bell"></span>
+            <span *ngIf="EmrSummaryData.alertsCount" class="notification-number">{{EmrSummaryData.alertsCount}}</span>
+          </button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-3 col-md-6 mb-2 text-center cursor-pointer" (click)="statusChangeRef.OpenModel(patient?.id , 'rpmStatus' ,patient?.rpmStatus)">
+          <p class="mb-2" style="font-size: 14px;"><strong>RPM  Status</strong></p>
+          <span class="badge badge-success">{{rpmStatusEnum[patient?.rpmStatus]}}</span>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-2 text-center cursor-pointer" (click)="statusChangeRef.OpenModel(patient?.id , 'rpmMonthlyStatus' ,patient?.rpmMonthlyStatus)">
+          <p class="mb-2" style="font-size: 14px;"><strong>RPM  Monthly Status</strong></p>
+          <span class="badge badge-success">{{rpmMonthlyStatusEnum[patient?.rpmMonthlyStatus]}}</span>
+
+        </div>
+        <div class="col-lg-3 col-md-6 mb-2 text-center">
+          <p class="mb-2" style="font-size: 14px;"><strong>Last RPM Encounter</strong></p>
+          <div class="d-flex align-items-center justify-content-center">
+            <p *ngIf="EmrSummaryData.lastRpmDate" class="mb-0">{{EmrSummaryData.lastRpmDate | dateFormatPipe}} </p>
+            <button [disabled]="patient?.chronicDiagnosesIds?.length < 2 || !patient?.isRPMConsentTaken" class="btn btn-dynamic-2c btn-icon">
+              <span (click)="addRPmEncounterRef.OpenAddEncounterModal(patient)" class=" fa fa-bolt fa-lg cursor-pointer"></span>
+            </button>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-2 text-center">
+          <p class="mb-2" style="font-size: 14px;"><strong>Last Reading Date </strong></p>
+          <p *ngIf="EmrSummaryData.lastReadingDate" class="mb-0">{{EmrSummaryData.lastReadingDate | dateFormatPipe}} </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<app-ccm-quick-encounter #addCCmEncounterRef (encounterSaved)="CCMEncounterAdded()"></app-ccm-quick-encounter>
+<app-rpm-quick-encounter #addRPmEncounterRef (encounterSaved)="RPMEncounterAdded()"></app-rpm-quick-encounter>
+<app-patient-status-change #statusChangeRef (statusValueChanged)="getPatientById()"></app-patient-status-change>
+<!-- <div class="mb-3 row">
+  <div class="col-12 ">
+    <div class="emr-logs pr-3 border-bottom">
+      <div class="left-black-title">
+        <p class="mb-0">CCM</p>
+      </div>
+      <div class="slect-option-button">
+        <div>
+            <div class="btn-group cursor-pointer"  mdbDropdown>
+              <mdb-badge mdbTooltip="{{emrConnectInfo?.ccmEnrollmentStatusChangedDate | date: 'shortDate'}}" style="line-height: 14px;width: 120px;"  mdbDropdownToggle success="true">{{emrConnectInfo?.ccmEnrollmentStatus || 'CCM Enrollment Status'}}</mdb-badge>
+              <div style="top: 0;padding: 0;min-width: 120px;" class="dropdown-menu status-dropdown">
+                <div>
+                  <a *ngFor="let item of athenaStatusArr" (click)="UpdateCcmEnrollmentStatus(item.value)" class="dropdown-item border-bottom pl-2" style="font-size: 14px;">{{item.name}}</a>
+                </div>
+
+              </div>
+            </div>
+            <mdb-badge class="ml-2 cursor-pointer" (click)="CreateAppointmentNote()" mdbTooltip="Add Appointment Note" style="line-height: 14px;width: 120px;"  primary="true">Appointment Note </mdb-badge>
+            <mdb-badge class="ml-2 cursor-pointer" (click)="CreatePateintsChartAlert()" mdbTooltip="Add Appointment Note" style="line-height: 14px;width: 120px;"  primary="true">Chart Alert </mdb-badge>
+
+          </div>
+      </div>
+      <div class="width-25">
+        <ng-template #ccmconsentInfo>
+          <div class="p-3"  style="width: 220px;border: 1px solid #ccc;">
+            <h6 style="font-weight: 500;" >Consent info</h6>
+            <ul>
+              <li class="text-danger" *ngIf="!patient?.isCCMConsentTaken">CCM Consent is not taken in 2C</li>
+            </ul>
+            <span>Click <a routerLink="/insights/embedded/consents/consentdoc/{{patientId}}" [queryParams]="{hideActionButtons:true}">here</a> to view Consent</span>
+          </div>
+        </ng-template>
+        <div class="consent-box" [mdbPopover]="ccmconsentInfo" triggers="focus"  [class.box-active]="patient?.isCCMConsentTaken">
+          <span>Consent in 2C</span>
+          <span class="circle-check-2c">
+            <span class="fa fa-check "></span>
+            <span class="fa fa-exclamation-triangle "></span>
+
+          </span>
+        </div>
+      </div>
+      <div class="width-25" [class.active]="hasCarePlan && patient?.isCCMConsentTaken">
+        <ng-template #CarePlanStateInfo>
+          <div class="p-3"  style="width: 220px;border: 1px solid #ccc;">
+            <h6 style="font-weight: 500;" >Care Plan info</h6>
+            <ul>
+              <li class="text-danger" *ngIf="!hasCarePlan">Care Plan is not created in 2C</li>
+              <li class="text-danger" *ngIf="emrConnectInfo?.carePlanUpdatedDate">Last Update: {{emrConnectInfo?.carePlanUpdatedDate |date: 'shortDate'}}</li>
+            </ul>
+            <span>Click <a routerLink="/insights/embedded/careplan/{{patientId}}">here</a> to view Care Plan</span>
+            <button mdbTooltip="Update Care Plan in Athena" (click)="ConfirmUploadClinicalDocument()" mdbBtn type="button" class="btn btn-dynamic-2c btn-sm btn-block mt-3 rounded py-1" size="sm" flat="true"  mdbWavesEffect>Update</button>
+          </div>
+        </ng-template>
+        <div class="consent-box"  triggers="focus" [mdbPopover]="CarePlanStateInfo" [class.box-active]="hasCarePlan">
+          <span>Careplan</span>
+          <span class="circle-check-2c">
+            <span class="fa fa-check "></span>
+            <span class="fa fa-exclamation-triangle "></span>
+          </span>
+        </div>
+      </div>
+      <div class="width-25" [class.active]="hasCarePlan && patient?.isCCMConsentTaken">
+        <ng-template #ccmTimeInfo>
+          <div class="p-3"  style="width: 220px;border: 1px solid #ccc;">
+            <h6 style="font-weight: 500;" >Ccm info</h6>
+            <ul>
+              <li class="text-danger" *ngIf="!(ccmMinutes > 19)">Ccm Encounters are incomplete for current month</li>
+            </ul>
+            <span>Click <a routerLink="/insights/embedded/mrModal/{{patientId}}/monthlyReview" [queryParams]="{isIframe:true}">here</a> to view CCM</span>
+          </div>
+        </ng-template>
+        <div class="consent-box" [mdbPopover]="ccmTimeInfo" triggers="focus" [class.box-active]="ccmMinutes > 19">
+          <span>Encounter Time</span>
+          <span class="circle-check-2c">
+            <span class="fa fa-check "></span>
+            <span class="fa fa-exclamation-triangle "></span>
+          </span>
+        </div>
+        <div class="custom-progress-parts" [mdbTooltip]="ccmMinutes">
+          <span [class.active]="ccmMinutes > 19"></span>
+          <span [class.active]="ccmMinutes > 39"></span>
+          <span [class.active]="ccmMinutes > 59"></span>
+        </div>
+      </div>
+      <ng-template #CCMDocClaimSubmissionInfo>
+        <div class="p-3"  style="width: 220px;border: 1px solid #ccc;">
+          <h6 style="font-weight: 500;" >CCM Claim Info</h6>
+          <ul>
+            <li class="text-danger" *ngIf="!uploadClaimInfo?.CCM?.emrClaimSubmitted">CCM Claim not submitted</li>
+            <li class="text-danger" *ngIf="!uploadClaimInfo?.CCM?.emrDocumentSubmitted">CCM Claim document not submitted</li>
+          </ul>
+          <button mdbTooltip="Upload Claim & Document" (click)="ConfirmClaimDocUpload(EncounterClaimTypeEnum.CCM)" mdbBtn type="button" class="btn btn-dynamic-2c btn-sm btn-block mt-3 rounded py-1" size="sm" flat="true"  mdbWavesEffect>Submit</button>
+        </div>
+      </ng-template>
+      <div class="width-25">
+        <div class="joint-box cursor-pointer" [class.box-active]="uploadClaimInfo?.CCM?.emrClaimSubmitted && uploadClaimInfo?.CCM?.emrDocumentSubmitted" [mdbPopover]="CCMDocClaimSubmissionInfo" triggers="focus">
+          <div class="double-box">
+            <span>Document</span>
+            <span class="circle-check-2c">
+              <span class="fa fa-check "></span>
+              <span class="fa fa-exclamation-triangle "></span>
+            </span>
+          </div>
+          <div class="double-box">
+            <span>Claim</span>
+            <span class="circle-check-2c">
+              <span class="fa fa-check "></span>
+              <span class="fa fa-exclamation-triangle "></span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-12">
+    <div class="emr-logs pr-3">
+      <div class="left-black-title">
+        <p class="mb-0">RPM</p>
+      </div>
+      <div class="slect-option-button">
+      </div>
+      <div class="width-25">
+        <ng-template #RPMconsentInfo>
+          <div class="p-3"  style="width: 220px;border: 1px solid #ccc;">
+            <h6 style="font-weight: 500;" >Consent info</h6>
+            <ul>
+              <li class="text-danger" *ngIf="!patient?.isRPMConsentTaken">RPM Consent is not taken in 2C</li>
+            </ul>
+            <span>Click <a routerLink="/insights/embedded/consents/consentdoc/{{patientId}}" [queryParams]="{hideActionButtons:true}">here</a> to view Consent</span>
+          </div>
+        </ng-template>
+        <div class="consent-box" [mdbPopover]="RPMconsentInfo" triggers="focus" [class.box-active]="patient?.isRPMConsentTaken">
+          <span>Consent in 2C</span>
+          <span class="circle-check-2c">
+            <span class="fa fa-check "></span>
+            <span class="fa fa-exclamation-triangle "></span>
+          </span>
+        </div>
+      </div>
+      <div class="width-33 active" [class.active]="rpmMinutes > 19">
+        <div class="border-box-log box-active">
+          <div class="top-left-border" [class.active]="rpmMinutes > 19"></div>
+          <div class="top-right-border"></div>
+          <div class="bottom-left-border"></div>
+          <div class="bottom-right-border"></div>
+        </div>
+        <ng-template #RPMTimeInfo>
+          <div class="p-3"  style="width: 220px;border: 1px solid #ccc;">
+            <h6 style="font-weight: 500;" >RPM info</h6>
+            <ul>
+              <li class="text-danger" *ngIf="!(rpmMinutes > 19)">RPM Encounters are incomplete for current month</li>
+            </ul>
+            <span>Click <a routerLink="/insights/embedded/rpmModal/PatientRpm/{{patientId}}" [queryParams]="{isIframe:true}">here</a> to view RPM</span>
+
+          </div>
+        </ng-template>
+        <div class="consent-box mb-4" [mdbPopover]="RPMTimeInfo" triggers="focus" [class.box-active]="rpmMinutes > 19">
+          <span>Encounter Time</span>
+          <span class="circle-check-2c">
+            <span class="fa fa-check "></span>
+            <span class="fa fa-exclamation-triangle "></span>
+          </span>
+
+        </div>
+        <div class="custom-progress-parts" [mdbTooltip]="rpmMinutes">
+          <span [class.active]="rpmMinutes > 19"></span>
+          <span [class.active]="rpmMinutes > 39"></span>
+          <span [class.active]="rpmMinutes > 59"></span>
+        </div>
+        <ng-template #RPMReadingsInfo>
+          <div class="p-3"  style="width: 220px;border: 1px solid #ccc;">
+            <h6 style="font-weight: 500;" >RPM Modalities</h6>
+            <ul>
+              <li class="text-danger">RPM reading should be at least 16 days</li>
+            </ul>
+            <span>Click <a routerLink="/insights/embedded/modalities/{{patientId}}" [queryParams]="{isIframe:true}">here</a> to view RPM</span>
+            <button mdbTooltip="Update Vitals in Athena" (click)="ConfirmPostVitals()" mdbBtn type="button" class="btn btn-dynamic-2c btn-sm btn-block mt-3 rounded py-1" size="sm" flat="true"  mdbWavesEffect>Update Vitals</button>
+            <button mdbTooltip="Update Lab Result" (click)="ConfirmPostLabResult()" mdbBtn type="button" class="btn btn-dynamic-2c btn-sm btn-block mt-3 rounded py-1" size="sm" flat="true"  mdbWavesEffect>Update Lab Result</button>
+
+          </div>
+        </ng-template>
+        <div class="consent-box" [mdbPopover]="RPMReadingsInfo" triggers="focus">
+          <span>Readings</span>
+          <span class="circle-check-2c">
+            <span class="fa fa-check "></span>
+            <span class="fa fa-exclamation-triangle "></span>
+          </span>
+        </div>
+      </div>
+      <ng-template #RPMDocClaimSubmissionInfo>
+        <div class="p-3"  style="width: 220px;border: 1px solid #ccc;">
+          <h6 style="font-weight: 500;" >RPM Claim Info</h6>
+          <ul>
+            <li class="text-danger" *ngIf="!uploadClaimInfo?.RPM?.emrClaimSubmitted">RPM Claim not submitted</li>
+            <li class="text-danger" *ngIf="!uploadClaimInfo?.RPM?.emrDocumentSubmitted">RPM Claim document not submitted</li>
+          </ul>
+          <button mdbTooltip="Upload Claim & Document" (click)="ConfirmClaimDocUpload(EncounterClaimTypeEnum.RPM)" mdbBtn type="button" class="btn btn-dynamic-2c btn-sm btn-block mt-3 rounded py-1" size="sm" flat="true"  mdbWavesEffect>Submit</button>
+        </div>
+      </ng-template>
+      <div class="width-33">
+        <div class="joint-box cursor-pointer" [class.box-active]="uploadClaimInfo?.RPM?.emrClaimSubmitted && uploadClaimInfo?.RPM?.emrDocumentSubmitted" [mdbPopover]="RPMDocClaimSubmissionInfo" triggers="focus">
+          <div class="double-box">
+            <span>Document</span>
+            <span class="circle-check-2c">
+              <span class="fa fa-check "></span>
+              <span class="fa fa-exclamation-triangle "></span>
+            </span>
+          </div>
+          <div class="double-box">
+            <span>Claim</span>
+            <span class="circle-check-2c">
+              <span class="fa fa-check "></span>
+              <span class="fa fa-exclamation-triangle "></span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> -->

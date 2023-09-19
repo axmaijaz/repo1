@@ -1,0 +1,10 @@
+.logs-container{
+  height: 350px;
+  margin-right: 1.5rem;
+  &::before {
+    left: calc(5rem + 32px);
+  }
+}
+.disabledDiv {
+      pointer-events: none;
+      opacity: 1.0;   }

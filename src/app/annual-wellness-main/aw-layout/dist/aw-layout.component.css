@@ -1,0 +1,8 @@
+.document-close {
+  position: absolute;
+  right: -20px !important;
+  background: white;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+}

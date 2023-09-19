@@ -1,0 +1,243 @@
+@import "theme";
+
+.ccm-header {
+  background-color: $white;
+  border-radius: 5px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  box-shadow: 0 0px 3px 0 rgba(0, 0, 0, 0.1);
+  .patient-profile {
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    min-height: 100px;
+    border-bottom: 1px solid lighten($grey, 13%);
+    background-color: lighten($grey, 18%);
+    > div {
+      flex: 1 1 25%;
+      @include media-breakpoint-down(md) {
+        flex: 1 1 50%;
+        margin-bottom: 1rem;
+      }
+      flex: 1 1 25%;
+      @include media-breakpoint-down(sm) {
+        flex: 1 1 100%;
+      }
+    }
+    p {
+      margin: 0;
+      color: darken($grey, 20%);
+      span {
+        color: darken($grey, 50%);
+        text-transform: capitalize;
+      }
+    }
+  }
+  .follow-up-date {
+    border-bottom: 1px solid lighten($grey, 13%);
+    padding: 1rem 0;
+  }
+}
+.ccm-date {
+  display: flex;
+  label {
+    margin: 0;
+    white-space: nowrap;
+    padding: 0 10px;
+    font-size: 0.9rem;
+  }
+  .cons-date,
+  .follow-date {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+  }
+}
+.ccm-time {
+  p {
+    font-size: 0.9rem;
+  }
+}
+.encounter-header {
+  border-bottom: 1px solid lighten($grey, 13%);
+}
+.enc-time {
+  border-right: 1px solid lighten($grey, 13%);
+}
+.ques-section {
+  margin-bottom: 1rem;
+  border: 1px solid lighten($grey, 13%);
+  padding: 1rem;
+  background: lighten($grey, 17%);
+}
+.add-section {
+  border: 1px dashed $grey;
+  min-height: 100px;
+  transition: all ease 0.3s;
+
+  &:hover {
+    border: 1px dashed $dynamic-colour;
+    transition: all ease 0.3s;
+  }
+}
+
+.play-counter {
+  border-left: 1px solid $white;
+}
+
+.logs-container {
+  height: calc(100% - 2.5rem);
+  max-height: 350px;
+  margin-right: 1.5rem;
+  &::before {
+    @include media-breakpoint-up(sm){
+      content: " ";
+      height: 100%;
+      width: 1px;
+      border-left: 1px dashed $dynamic-colour;
+      position: absolute;
+      left: calc(5rem + 32px);
+      z-index: 8;
+    }
+    @include media-breakpoint-down(sm){
+      left: 1rem;
+    }
+  }
+
+}
+.logs {
+  height: 100%;
+  padding-left: 6rem;
+  @include media-breakpoint-down(sm){
+    padding: 0;
+  }
+  .log-item {
+    position: relative;
+    padding-bottom: 1rem;
+    &::before {
+      content: " ";
+      height: 100%;
+      width: 1px;
+      border-left: 1px solid $dynamic-colour;
+      position: absolute;
+      left: 1rem;
+      z-index: 8;
+    }
+    .log-title {
+      color: $dynamic-colour;
+      margin-bottom: 0;
+      padding-left: 11px;
+      &:before {
+        content: attr(date-time);
+        position: absolute;
+        left: -6rem;
+      }
+      span.log-bullet {
+        width: 12px;
+        height: 12px;
+        display: inline-block;
+        background: $dynamic-colour;
+        border-radius: 10px;
+        border: 2px solid $white;
+        z-index: 9;
+        position: relative;
+      }
+    }
+    .log-info {
+      padding-left: 2.5rem;
+      .sprt {
+        color: $grey;
+        margin: 0 1rem;
+      }
+    }
+  }
+}
+
+.ccm-encounter .accordion .card .card-body {
+  padding: 0;
+}
+
+@include media-breakpoint-down(sm) {
+  .encounter-header .month {
+    flex: 1;
+    margin-bottom: 1rem;
+  }
+
+  .encounter-header .ccm-date {
+    flex: 1 1 100%;
+  }
+
+  .encounter-header .ccm-date label {
+    flex: 100%;
+    padding: 0 0 !important;
+  }
+
+  .encounter-header .ccm-date .follow-date {
+    width: 100%;
+  }
+}
+.encounter-accordion {
+  box-shadow: $box-shadow;
+}
+
+
+.tnf {
+  min-height: 240px;
+}
+
+.care-plan-status {
+  min-height: 75px;
+  .time-container {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    display: flex;
+    align-items: center;
+    .item-icon {
+        @include media-breakpoint-down(sm) {
+          display: none;
+        }
+      padding-right: 1rem;
+      i {
+        font-size: 2.5rem;
+        color: darken($grey, 10%);
+      }
+    }
+    small {
+      // text-transform: uppercase;
+      font-weight: 600;
+      color: $dynamic-colour;
+    }
+    strong {
+      font-size: 1.4rem;
+      @include media-breakpoint-down(sm) {
+        font-size: .75rem;
+      }
+    }
+  }
+}
+::ng-deep
+.encounter-accordion {
+  .md-accordion .card{
+    border-top-left-radius: 5px !important;
+    border-top-right-radius: 5px !important;;
+  }
+}
+
+.show-logs {
+  width: 74px;
+  height: 74px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: -1rem;
+  border-left: 1px solid #dee2e6;
+  cursor: pointer;
+  i{
+    font-size: 1.3rem;
+  }
+}
+.cursor{
+  cursor: pointer;
+}

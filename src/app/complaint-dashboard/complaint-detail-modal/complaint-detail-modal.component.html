@@ -1,0 +1,233 @@
+<div mdbModal #cDetailModalRe="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-xlx" role="document">
+    <div class="modal-content">
+      <div class="modal-header d-flex justify-content-between">
+        <button type="button" class="close" aria-label="Close" (click)="cDetailModalRe.hide();seeVideo.hide();">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">
+          Complaint Detail
+        </h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="row">
+              <ng-container *ngIf="patientDetail && patientDetail['name']">
+                <div class="col-md-4 pr-0">
+                  <div  class="pb-info">
+                    <div *ngIf="patientDetail['name']">
+                      <p><strong class="mr-1">Patient Name:</strong>{{patientDetail['name']}} </p>
+                      <p><strong class="mr-1">DOB:</strong>{{patientDetail['patientDob'] | date}} </p>
+  
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4 pr-0">
+                  <div class=" pb-info">
+                    <div *ngIf="patientDetail['patientEmrId']">
+                      <p><strong class="mr-1">EMR ID:</strong>{{patientDetail['patientEmrId']}}</p>
+                      <p><strong class="mr-1">Ticket No:</strong>{{complaintDetailObj.ticketNo}} </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4 ">
+                  <div *ngIf="patientDetail['name']" class="pb-info">
+                    <div>
+                      <p><strong class="mr-1">Primary Phone:</strong>{{patientDetail['patientPrimaryPhoneNo']}}</p>
+                      <p><strong class="mr-1">Secondary Phone:</strong>{{patientDetail['patientSecondaryPhoneNo']}}</p>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+
+
+
+
+
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label for="searchBy">Complaint Type</label>
+                  <ng-select [clearable]="false" class="ng-select-small" [closeOnSelect]="true"
+                    [(ngModel)]="editCOmplaintObj.complaintTypeId" [multiple]="false" [searchable]="true"
+                    placeholder="Complaint Type" (ngModelChange)="getComplaintSubTypesForDropDown()">
+
+                    <ng-option *ngFor="let item of complaintTypesList"  [value]="item.id">{{item.display}}</ng-option>
+
+                    <!-- <ng-option [value]="1">Patient RPM</ng-option>
+                    <ng-option [value]="2">4G Device Request</ng-option>
+                    <ng-option [value]="3">Other</ng-option> -->
+                  </ng-select>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label for="searchBy">Complaint SubType</label>
+                  <ng-select [clearable]="false" class="ng-select-small" [closeOnSelect]="true"
+                    [(ngModel)]="editCOmplaintObj.complaintSubTypeId" [multiple]="false" [searchable]="true"
+                    placeholder="Complaint SubType">
+
+                    <ng-option *ngFor="let item of complaintSubTypesList"  [value]="item.id">{{item.display}}</ng-option>
+
+                  </ng-select>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label for="searchBy">Department</label>
+                  <ng-select [clearable]="false" class="ng-select-small" [(ngModel)]="editCOmplaintObj.departmentType"
+                    [closeOnSelect]="true" [multiple]="false" [searchable]="true" placeholder="Select Department">
+                    <ng-option [value]="1">General</ng-option>
+                    <ng-option [value]="2">Care Delivery</ng-option>
+                    <ng-option [value]="3">WorkPlace</ng-option>
+                    <ng-option [value]="4">Technical</ng-option>
+                    <ng-option [value]="5">Rpm Compliance</ng-option>
+                  </ng-select>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label for="searchBy">Assign To</label>
+                  <ng-select [clearable]="false" class="ng-select-small"
+                    [(ngModel)]="editCOmplaintObj.assignedFacilityUserId" [closeOnSelect]="true" [multiple]="false"
+                    [searchable]="true" placeholder="Assign To ">
+                    <ng-option [value]="item.id" *ngFor="let item of facilityUsersList">{{item.lastName}},{{item.firstName}}</ng-option>
+                  </ng-select>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label for="searchBy">Status</label>
+                  <ng-select [clearable]="false" class="ng-select-small" [(ngModel)]="editCOmplaintObj.complaintStatus"
+                    [closeOnSelect]="true" [multiple]="false" [searchable]="true" placeholder="Select Department">
+                    <ng-option [value]="1">Open</ng-option>
+                    <ng-option [value]="2">In Process</ng-option>
+                    <!-- <ng-option [value]="3">Show Stopper</ng-option> -->
+                    <ng-option [value]="4">Closed</ng-option>
+                  </ng-select>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label for="searchBy">Priority</label>
+                  <ng-select [clearable]="false" class="ng-select-small" [(ngModel)]="editCOmplaintObj.complaintPriority"
+                    [closeOnSelect]="true" [multiple]="false" [hideSelected]="true" [searchable]="false" placeholder="Select Department">
+                    <ng-option [value]="0" [disabled]="true" [hidden]="true">
+                      Select Priority
+                    </ng-option>
+                    <ng-option [value]="3">
+                      <div class="badge status-danger mr-2">&nbsp;</div> High
+                    </ng-option>
+                    <ng-option [value]="2">
+                      <div class="badge status-warning mr-2">&nbsp;</div> Medium
+                    </ng-option>
+                    <!-- <ng-option [value]="3">Show Stopper</ng-option> -->
+                    <ng-option [value]="1">
+                      <div class="badge status-primary mr-2">&nbsp;</div> Low
+                    </ng-option>
+
+
+                  </ng-select>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label for="searchBy">Action Date</label>
+                  <input type="text" class="form-control form-control-sm" #dateDPicker="dpDayPicker"
+                    [dpDayPicker]="datePickerConfig2" placeholder="MM-DD-YYYY" [(ngModel)]="editCOmplaintObj.actionDate"
+                    [theme]="'dp-material ccm-date-picker'" [mode]="'day'" />
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="form-group">
+                  <label for="addCommentField">Add Comment</label>
+                  <textarea id="addCommentField" [(ngModel)]="editCOmplaintObj.comment" class="form-control h-100"
+                    rows="2" placeholder="Complaint Detail"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6" mdbCollapse #seeVideo="bs-collapse">
+            <div class="panel border mb-0 py-1" *ngIf="hasVideo">
+              <div class="panel-header border-bottom">
+                <h3>Video</h3>
+              </div>
+              <div class="panel-body logs-body" style="height: 265px;">
+                <div class="view" *ngIf="hasVideo">
+                  <video id="recordVideoPlay" class="video-fluid" controls></video>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div [ngClass]="{ 'col-md-12': seeVideo.isCollapsed , 'col-md-6': !seeVideo.isCollapsed }">
+            <div class="panel border mb-0 py-1">
+              <div class="panel-header border-bottom">
+                <h3>Log Detail</h3>
+              </div>
+              <div class="panel-body logs-body" style="height: 265px;">
+                <div style="overflow-y:auto;height: 100%;" malihu-scrollbar
+                  [scrollbarOptions]="scrollbarOptionsTimeline">
+                  <div [innerHTML]="complaintDetailObj['logDetails1']">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class=" file-field flex-wrap align-items-center">
+              <label class="mr-2 mb-0 mt-3">Attachments</label>
+              <div class="mt-3" style="color: #999;"
+                *ngIf="!complaintDetailObj.patientComplaintDocuments || !complaintDetailObj.patientComplaintDocuments.length">
+                No Attachments
+              </div>
+              <div class="file-item mt-3 mr-3" *ngFor="let item of complaintDetailObj.patientComplaintDocuments">
+                <small class="mb-0"><a (click)="viewDoc(item.path)">{{item.title}}
+                    <span *ngIf="documentUploadProgress">{{documentUploadProgress}}</span>
+                  </a>
+                  <span *ngIf="item['processingDoc'] || processingDoc" class="spinner-border spinner-border-sm"
+                    role="status" aria-hidden="true"></span>
+                  <!--<a *ngIf="!item.id"><i (click)="ComplaintDocuments=[]" class="ml-2 fa fa-times fa-lg text-danger"></i></a>
+                  <a *ngIf="item.id"><i (click)="DeletePADocument(item)" class="ml-2 fa fa-times fa-lg text-danger"></i></a> -->
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer d-flex align-items-center justify-content-between py-1">
+        <div>
+          <button *ngIf="hasVideo" class="btn btn-sm btn-dynamic-2c" (click)="seeVideo.toggle()"> <span
+              class="fa fa-video-camera fa-lg mr-1"></span><span *ngIf="seeVideo.isCollapsed">Show</span><span
+              *ngIf="!seeVideo.isCollapsed">Hide</span> Video</button>
+        </div>
+        <div>
+          <button type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close"
+            (click)="cDetailModalRe.hide();seeVideo.hide();" >Close</button>
+          <button [disabled]="savingDetail || !complainIsEditable" type="button"
+            (click)="EditComplaintDetail(cDetailModalRe);seeVideo.hide();" class="relative waves-light btn btn-sm btn-dynamic-2c"
+            mdbWavesEffect>
+            <span *ngIf="savingDetail" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            Update</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div mdbModal #viewPdfModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" [config]="{backdrop: true, ignoreBackdropClick: true}" aria-hidden="true"
+  (close)="objectURLStrAW=''">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-body" style="height:calc(100vh - 50px); padding: 0px;">
+        <button type="button" class="close pull-right document-close" aria-label="Close" (click)="viewPdfModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <app-pdf-view *ngIf="objectURLStrAW" [documentUrl]="objectURLStrAW"></app-pdf-view>
+      </div>
+    </div>
+  </div>
+</div>

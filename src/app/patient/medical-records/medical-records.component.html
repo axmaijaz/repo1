@@ -1,0 +1,28 @@
+<h1 class="page-title">Medical Records</h1>
+
+
+<div class="ccm-header">
+  <div class="ccm-nav">
+    <ul class="ccm-navbar">
+      <!-- <li routerLinkActive="active"><a [routerLink]="['medicalHistory']">Medical History</a></li> -->
+      <!-- <li routerLinkActive="active"><a [routerLink]="['CcmQuestionList']">Care Plan</a></li> -->
+      <!-- <li routerLinkActive="active"><a [routerLink]="['diagnoses']">Diagnoses</a></li>
+      <li routerLinkActive="active"><a [routerLink]="['medications']">Medications</a></li>
+      <li routerLinkActive="active"><a [routerLink]="['immunization']">Immunization</a></li>
+      <li routerLinkActive="active"><a [routerLink]="['allergies']">Allergies</a></li> -->
+      <li routerLinkActive="active"><a [routerLink]="['pDetail/pDiagnoses']">Diagnoses</a></li>
+      <li routerLinkActive="active"><a [routerLink]="['pDetail/pMedications']">Medications</a></li>
+      <li routerLinkActive="active"><a [routerLink]="['pDetail/pAllergies']">Allergies</a></li>
+      <li routerLinkActive="active"><a [routerLink]="['pDetail/pImmunization']">Immunization</a></li>
+      <li routerLinkActive="active"><a [routerLink]="['pDetail/pfamily']">Family History</a></li>
+      <li routerLinkActive="active"><a [routerLink]="['pDetail/psurgical']">Surgical History</a></li>
+      <!-- <li routerLinkActive="active"><a [routerLink]="['clinicalsummary']">Clinical Summary</a></li> -->
+      <!-- <li routerLinkActive="active"><a [routerLink]="['labs']">Labs</a></li> -->
+      <!-- <li routerLinkActive="active"><a [routerLink]="['emergencyplan']">Emergency Plan</a></li> -->
+    </ul>
+  </div>
+</div>
+
+<div class="ccm-body">
+  <router-outlet></router-outlet>
+</div>

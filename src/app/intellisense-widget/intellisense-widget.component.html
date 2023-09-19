@@ -1,0 +1,33 @@
+<div class="xy-axis" id="globalIntellisenseView" (appIsOutside)="HideIntellisenseView()">
+  <!-- <div class="form-group mb-3">
+    <div class="form-group-search">
+      <span class="fa fa-search fa-lg"></span>
+    </div>
+    <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+  </div> -->
+  <div class="form-group">
+    <span class="fa fa-search-xy fa-search fa-lg"></span>
+    <ng-select id="globalSelectForIntellisense" [(ngModel)]="SelectedSmartPhrase" (ngModelChange)="SmartPhraseSelected()"
+     class="ng-select-small custom-select-xy-axis" name="myOrganization" [loading]="usingSMartPhrase"
+      [multiple]="false" [clearable]="false" [style]="" [dropdownPosition]="'bottom'" [isOpen]="true" [searchable]="true" [closeOnSelect]="false" [searchable]="true"
+      placeholder="Select Organization" >
+        <ng-option [disabled]="true" *ngIf="gettingPhrases">
+          <span class="spinner-border spinner-border-sm text-black" role="status" aria-hidden="true"></span>
+        </ng-option>
+        <ng-option [value]="item" *ngFor="let item of smartPhrasesList" >{{item.title}}</ng-option>
+    </ng-select>
+  </div>
+  <!-- <div class="event-scroll">
+    <div class="event-scroll-call" malihu-scrollbar [scrollbarOptions]="dropdownScrolls">
+      <ul class="select-taglist">
+        <li>HELLO</li>
+        <li>Good Morning</li>
+        <li>Good Night</li>
+        <li>Good Evening</li>
+        <li>Good Night</li>
+        <li>Good Morning</li>
+      </ul>
+    </div>
+  </div> -->
+
+</div>

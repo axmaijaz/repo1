@@ -1,0 +1,83 @@
+@import 'config';
+.scroll-spy-nav {
+  position: absolute;
+  z-index: 2;
+  right: 45px;
+  background-color: white;
+  max-width: 290px;
+
+  > div {
+    position: relative;
+  }
+}
+div.sticky-scroll-spy {
+  position: fixed;
+  z-index: 2;
+  right: 45px;
+  top: 120px;
+  background-color: white;
+}
+.scroll-spy-nav div {
+  border-bottom: 1px solid #f2f3f8;
+  padding: 5px 10px;
+  max-width: 290px;
+  position: relative;
+}
+.pain-check {
+  display: flex;
+  justify-content: space-between;
+
+  li {
+    width: 20px;
+    height: 20px;
+ list-style: none;
+ img{
+   width: 100%;
+ }
+      span {
+        flex: 0 0 20px;
+        border: 1px solid #444;
+        border-radius: 50px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          line-height: 0;
+          height: 20px;
+          font-size: 11px;
+          cursor: pointer;
+      }
+      span.active {
+          background-color: $dynamic-colour;
+          border:1px solid $dynamic-colour;
+      }
+  }
+}
+
+// span.active {
+//   // position: absolute;
+//   display: inline-block;
+//   width: 3px;
+//   height: 100%;
+//   background: #214389;
+//   top: 0;
+//   left: 0;
+//   margin-right: 9px;
+// }
+
+.current-section {
+  position: relative;
+  cursor: pointer !important;
+  &.active{
+    &::before{
+      content: " ";
+      width: 5px;
+      height: 100%;
+      background: $dynamic-secondary-colour;
+      display: inline-block;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+  }
+
+}

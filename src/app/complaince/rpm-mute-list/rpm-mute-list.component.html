@@ -1,0 +1,197 @@
+<div class="d-flex align-items-center flex-wrap justify-content-between mb-3">
+  <h1 class="page-title mb-0 flex-sm-grow-1 mb-3">RPM Patient Mute List</h1>
+
+</div>
+<div class="row d-flex form-group">
+  <div class="col-lg-6 col-sm-6">
+    <label for="searchBy">Search Patient</label>
+    <div class="d-flex align-items-center justify-content-start">
+      <input type="text" autocomplete="off" appOnDebounce [debounceTime]="500"
+      (onDebounce)="InitializePaging()" [(ngModel)]="searchStr"
+        class="form-control form-control-sm box-shadow w-100" id="searchBy" placeholder="Patient Name" />
+    </div>
+  </div>
+  <div class="d-flex align-items-end col-lg-6 col-sm-6">
+    <div class="flex-grow-1">
+      <label for="namea">Facility</label>
+      <ng-select class="ng-select-small" [(ngModel)]="facilityId"
+         [closeOnSelect]="true" [multiple]="false" [searchable]="true" [clearable]="false" [loading]="isLoading"
+        placeholder="Select Facility" (ngModelChange)="GetMuteListPatients()">
+        <ng-option [value]="0">Select Facility </ng-option>
+        <ng-option *ngFor="let item of facilityList" [value]="item.id">{{item.facilityName}}
+        </ng-option>
+      </ng-select>
+    </div>
+  </div>
+</div>
+<div class="position-relative">
+  <div class="d-flex align-items-center justify-content-between  px-0">
+    <div  id="page_length" class="dataTables_length">
+      <label >Show
+          <select [(ngModel)]="this.pagingData.pageSize" (ngModelChange)="InitializePaging()" >
+          <option  [value]="10">10</option>
+          <option  [value]="25">25</option>
+          <option  [value]="50">50</option>
+          <option  [value]="100">100</option>
+        </select> entries
+      </label>
+    </div>
+    <mdb-checkbox class="ml-auto" [(ngModel)]="showAll" [default]="true"
+      (change)="GetMuteListPatients()">
+      Show All</mdb-checkbox>
+  </div>
+</div>
+<div *ngIf="LoadingMuteList" class="d-flex justify-content-center text-center">
+  <!-- <div class="d-flex justify-content-center text-center"> -->
+  <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+</div>
+<div class="table-responsive">
+  <table class="table mute-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Patient Name</th>
+        <th>Mute Status</th>
+        <th>Days</th>
+        <th>From</th>
+        <th>To</th>
+        <th>Muted By</th>
+        <th>Date</th>
+        <th>Action</th>
+      </tr>
+
+    </thead>
+    <tbody>
+      <tr *ngIf="!patientMuteList || !patientMuteList.length"><td colspan="8">No record found</td></tr>
+      <tr *ngFor="let item of displayList">
+        <td>{{item['index']}}</td>
+        <td>{{item.patientName}}</td>
+        <td>{{item.muteStatus ? 'Muted' : 'Not Mute'}}</td>
+        <td>{{item.days}}</td>
+        <td style="min-width: 150px;">
+          <span *ngIf="item.muteFrom">
+
+            {{item.muteFrom | dateFormatPipe}}
+          </span>
+        </td>
+        <td style="min-width: 150px;">
+          <span *ngIf="item.muteTo">
+
+            {{item.muteTo | dateFormatPipe}}
+          </span>
+        </td>
+        <td>{{item.mutedBy}}</td>
+        <td>
+          <span *ngIf="item.mutedDate">
+
+            {{item.mutedDate | dateFormatPipe}}
+          </span>
+        </td>
+        <td>
+          <button *ngIf="item.muteStatus" class="btn btn-dynamic-2c btn-sm px-1 m-0" style="min-width: 80px;" (click)="OpenConfirmUnMuteModal(item)">Unmute</button>
+          <button *ngIf="!item.muteStatus" class="btn btn-dynamic-2c btn-sm px-1 m-0" style="min-width: 80px;" (click)="OpenMuteModal(basicModalForDate, item)">Mute</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div class="d-flex justify-content-between mt-3">
+  <div *ngIf="pagingData">
+    <p>Number Of Patients : {{pagingData.elementsCount}}</p>
+  </div>
+  <nav aria-label="Page navigation example">
+    <ul class="pagination ">
+      <!-- <li class="page-item " [ngClass]="{ disabled : pagingData.pageNumber === 1 }" (click)="PreviousFirst();"><a class="page-link" >First</a></li> -->
+      <li class="page-item " [ngClass]="{ disabled : pagingData.pageNumber === 1 }" (click)="pagingData.pageNumber=pagingData.pageNumber-1;ApplyPageFilter();">
+        <a class="page-link" aria-label="Previous" >
+          <span aria-hidden="true"><</span>
+          <span class="sr-only">Previous</span>
+        </a>
+      </li>
+      <!-- <li class="page-item" *ngIf="pagingData.pageNumber > 1 " [class.active]="pagingObj[1].active"  (click)="pagingData.pageNumber=+1;GetPriorAuthsByFacilityId()">
+        <a class="page-link" >{{1}}</a>
+      </li> -->
+      <!-- <li class="page-item" *ngIf="pagingData.pageNumber > 1 " >
+        <a class="page-link" >...</a>
+      </li> -->
+      <li class="page-item" *ngFor="let list of pagesArr"  [class.active]="list===pagingData.pageNumber" (click)="pagingData.pageNumber=+list;ApplyPageFilter()">
+        <a class="page-link" >{{list}}</a>
+      </li>
+
+      <!-- <li class="page-item" *ngIf="(lastPagePagination - pagingData.pageNumber) > 3 "  >
+        <a class="page-link" >...</a>
+      </li> -->
+      <!-- <li class="page-item" *ngIf="(lastPagePagination - pagingData.pageNumber) > 2 " [class.active]="pagingObj[lastPagePagination-1].active"  (click)="pagingData.pageNumber=+lastPagePagination;GetPriorAuthsByFacilityId()">
+        <a class="page-link" >{{lastPagePagination}}</a>
+      </li> -->
+      <li class="page-item" [ngClass]="{ disabled : pagingData.pageNumber === patientMuteList.length }" (click)="pagingData.pageNumber=pagingData.pageNumber+1;ApplyPageFilter()">
+        <a class="page-link"  aria-label="Next" >
+          <span aria-hidden="true">></span>
+          <span class="sr-only">Next</span>
+        </a>
+      </li>
+      <!-- <li class="page-item" [ngClass]="{ disabled : pagingData.pageNumber === lastPagePagination }" (click)="Last();GetPriorAuthsByFacilityId()"><a class="page-link" >Last</a></li> -->
+    </ul>
+  </nav>
+</div>
+<div mdbModal #basicModalForDate="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mybasicModalForDateLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="basicModalForDate.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">Set Mute Date</h4>
+      </div>
+      <div class="modal-body">
+        <div>
+          <!-- <label>Select Date</label>
+          <div class="input-group mb-3">
+            <div class="form-group input-group mb-0">
+              <input type="text" class="form-control form-control-sm" autocomplete="nope" name="daterangeInput" daterangepicker [options]="options"
+              />
+                  <div class="input-group-append custom-append">
+                   <span class="input-group-text text-white bg-dynamic-2c"><i class="fa fa-calendar"></i></span>
+                  </div>
+             </div>
+          </div> -->
+          <div class="row">
+            <div class="col-6">
+              <div class="input-group mb-3">
+                <label>From <strong class="text-danger">*</strong></label>
+                <div class="form-group input-group mb-0">
+                  <input type="text" class="form-control form-control-sm" #dateDPicker="dpDayPicker"
+                    [dpDayPicker]="datePickerConfig" placeholder="MM-DD-YYYY" [(ngModel)]="MutePatientDto.muteFrom"
+                    [theme]="'dp-material ccm-date-picker'" [mode]="'day'" appendTo="body" />
+                      <div class="input-group-append custom-append">
+                       <span class="input-group-text text-white bg-dynamic-2c"><i class="fa fa-calendar"></i></span>
+                      </div>
+                 </div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="input-group mb-3">
+                <label>To</label>
+                <div class="form-group input-group mb-0">
+                  <input type="text" class="form-control form-control-sm" #dateDPicker="dpDayPicker" [(ngModel)]="MutePatientDto.muteTo"
+                    [dpDayPicker]="datePickerConfig" placeholder="MM-DD-YYYY"
+                    [theme]="'dp-material ccm-date-picker'" [mode]="'day'" appendTo="body"  />
+                      <div class="input-group-append custom-append">
+                       <span class="input-group-text text-white bg-dynamic-2c"><i class="fa fa-calendar"></i></span>
+                      </div>
+                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="waves-light btn btn-sm btn-dynamic-secondary-2c" aria-label="Close" (click)="basicModalForDate.hide()" mdbWavesEffect>Close</button>
+        <button type="button" [disabled]="mutingPatient || !MutePatientDto.muteFrom" (click)="MutePatient(basicModalForDate)" class="relative waves-light btn btn-sm btn-dynamic-2c" mdbWavesEffect>
+          <span *ngIf="mutingPatient" class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
+          </span>
+          Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>

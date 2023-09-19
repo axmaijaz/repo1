@@ -1,0 +1,205 @@
+<!-- <div class="d-flex align-items-center justify-content-between mb-3"> -->
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <div class="d-flex align-items-center justify-content-start">
+      <!-- <h4 class="mr-3 mb-0"><a class="text-dark"><i class="fa fa-arrow-left" (click)="goBack()"></i></a></h4> -->
+      <h1 class="page-title mb-0">Case Types</h1>
+    </div>
+    <button type="button" class="btn btn-dynamic-2c btn-sm" (click)="AddNewCaseType(editCaseTypeModel)"
+    >Add
+      New</button>
+
+  </div>
+<div class="ccm-body">
+  <!-- <div class="d-flex align-items-center justify-content-between p-3">
+    <strong>Prior Auth</strong>
+    <a class="btn btn-dynamic-2c btn-sm m-0" title="Add prior auth"
+      (click)="addEditPriorRef.priorAuthAddEditDto={};addEditPriorRef.ShowAddEditModal();" date-placement="left">Add
+      New</a>
+  </div> -->
+  <div *ngIf="isLoading" class="d-flex justify-content-center text-center">
+    <!-- <div class="d-flex justify-content-center text-center"> -->
+    <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+  </div>
+
+  <ngx-datatable style="width: 100%;" [columnMode]="'force'" class="material z-depth-0" [headerHeight]="50"
+    [footerHeight]="50" [rowHeight]="50" [scrollbarV]="false" [scrollbarH]="true" [rows]="caseTypesLIst" [limit]="15">
+    <ngx-datatable-column name="#" [maxWidth]=50>
+      <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+        {{rowIndex + 1}}
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Title">
+      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+        <div class="d-flex justify-content-between align-items-center">
+          <span>{{row.title}}</span>
+          <div>
+            <button class="btn btn-dynamic-2c btn-icon" mdbTooltip="Edit" (click)="selectedCaseType=row;editCaseTypeModel.show()"
+          placement="left"><i class="fa fa-pencil"></i> </button>
+        <button [disabled]="row.facilityId===null" class="btn btn-danger btn-icon" (click)="openConfirmModal(row.id, 1)"><i class="fa fa-trash"></i></button>
+          </div>
+        </div>
+        
+        <!-- <button  class="btn btn-danger btn-icon"><i class="fa fa-trash"></i></button> -->
+      </ng-template>
+    </ngx-datatable-column>
+    <!-- <ngx-datatable-column name="Generic Name" prop="genericName">
+    </ngx-datatable-column> -->
+    <!-- <ngx-datatable-column name="Request Date">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        {{row.requestDate | dateFormatPipe}}
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Received Date">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        {{row.receivedDate | dateFormatPipe}}
+      </ng-template>
+    </ngx-datatable-column> -->
+    <!-- <ngx-datatable-column name="Case type" prop="paCaseTypeName">
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Case step" prop="paCaseStepName">
+    </ngx-datatable-column> -->
+    <!-- <ngx-datatable-column name="Case type" prop="paCaseTypeName">
+    </ngx-datatable-column> -->
+    <!-- <ngx-datatable-column name="Req Status" prop="paRequestStatus">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        {{paRequestStatusEnum[row.paRequestStatus]}}
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Case Status" prop="paCaseStatus">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        {{paCaseStatusEnum[row.paCaseStatus]}}
+      </ng-template>
+    </ngx-datatable-column> -->
+    <ngx-datatable-column name="Steps Count">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        <div class="user-name-list" *ngIf="row.paCaseSteps">
+          <div title="{{row.paCaseSteps.length}}" class="name-caption">
+            <span>{{row.paCaseSteps.length}}</span></div>
+        </div>
+      </ng-template>
+    </ngx-datatable-column>
+    <!-- <ngx-datatable-column name="PA Manager" prop="caseManager">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        <div class="user-name-list" *ngIf="row.caseManager && row.caseManager.nameAbbreviation">
+          <div title="{{row.caseManager.fullName}}" class="name-caption">
+            <span>{{row.caseManager.nameAbbreviation}}</span></div>
+        </div>
+      </ng-template>
+    </ngx-datatable-column> -->
+    <!-- <ngx-datatable-column name="Assigned To" prop="assignedTo">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        <div class="user-name-list" *ngIf="row.assignedTo && row.assignedTo.nameAbbreviation">
+          <div title="{{row.assignedTo.fullName}}" class="name-caption">
+            <span>{{row.assignedTo.nameAbbreviation}}</span></div>
+        </div>
+      </ng-template>
+    </ngx-datatable-column> -->
+    <!-- <ngx-datatable-column name="Steps" prop="paCaseSteps">
+    </ngx-datatable-column> -->
+    <!-- <ngx-datatable-column name="Attachment" prop="paDocuments">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        <ng-container *ngIf="row.paDocuments && row.paDocuments.length > 0">
+          <div class="user-name-list user-name-list-colorspan" >
+            <div title="{{item.title}}" class="name-caption" (click)="viewDoc(item.path)" *ngFor="let item of row.paDocuments">
+              <span>{{item.title[0]}}{{ item.title[1] }}</span>
+            </div>
+          </div>
+        </ng-container>
+      </ng-template>
+    </ngx-datatable-column> -->
+    <!-- <ngx-datatable-column name="Action" [canAutoResize]=false >
+      
+    </ngx-datatable-column> -->
+  </ngx-datatable>
+</div>
+
+<div mdbModal #editCaseTypeModel="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-md flat-modal modal-dialog-scrollable" role="document">
+    <div class="modal-content" *ngIf="editCaseTypeModel.isShown">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="editCaseTypeModel.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100">{{ selectedCaseType.id ? 'Edit Case Type' : 'Add Case Type'}}
+          <small *ngIf="selectedCaseType.facilityId===null"> Default Case type could not be edited </small></h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <!-- <div class="col-sm-12">
+
+            <div class="alert alert-danger" role="alert">
+
+              <p class="mb-0" style="font-size: 14px;">Only delete the patient in case the patient was added
+                erroneously
+                or there is a duplicate record.<br>
+                For any other reason please change the CCM status of the patient.
+                Deleted patients will be erased from the database along with their previous records. In most cases
+                changing status is
+                more appropriate. Never delete the patient with current month activity else it will affect the
+                invoice,
+                please contact
+                support for appropriate action.
+              </p>
+            </div>
+
+          </div> -->
+          <!-- <div class="col-sm-12 mb-2">
+            <small class="text-dynamic-2c text-uppercase font-500">User Information</small>
+          </div> -->
+          <!-- <div class="col-sm-12">
+            <div class="form-group">
+              <label for="practiceName">Case Status <sup class="text-danger">*</sup></label>
+              <ng-select class="ng-select-small" [multiple]="false"
+                [searchable]="true" placeholder="Status">
+                <ng-option [value]="item.id" *ngFor="let item of caseTypesLIst">{{item.title}}</ng-option>
+              </ng-select>
+            </div>
+
+          </div> -->
+          <div class="col-sm-12">
+            <div class="form-group">
+              <label for="nickname">Case Type</label>
+              <input type="text" [readOnly]="selectedCaseType.facilityId===null" [(ngModel)]="selectedCaseType.title" class="form-control form-control-sm" id="nickname"
+                placeholder="Add new case type">
+            </div>
+          </div>
+          <ng-container *ngIf="selectedCaseType.id">
+            <div class="col-sm-8">
+              <div class="form-group">
+                <label for="nickname">Add Case Step</label>
+                <input type="text" [(ngModel)]="newStepText" class="form-control form-control-sm" id="nickname"
+                  placeholder="Add new case type">
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div style="margin-top:20px;">
+                <button [disabled]="addigCasestep" type="button" class="btn btn-dynamic-2c btn-sm" (click)="AddCaseStep()">
+                  <span *ngIf="addigCasestep"class="mr-1 spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                  Add
+                </button>
+              </div>
+            </div>
+            <div class="col-sm-12">
+              <div class="border border-grey p-3 mb-3">
+                <div class="tags">
+                  <!-- <strong class="tags-title">Is Chronic</strong> -->
+                  <ul class="tag-list">
+                    <li class="tag" *ngFor="let item of (selectedCaseType.paCaseSteps)">
+                      {{item.title}}<a><i class="fa fa-close" (click)="openConfirmModal(item.id, 2)"></i></a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-dark btn-sm" (click)="editCaseTypeModel.hide()">Close</button>
+        <button [disabled]="editingCaseType" type="button" *ngIf="!selectedCaseType.id" class="btn btn-dynamic-2c btn-sm" (click)="AddCaseType(editCaseTypeModel)">
+          <span *ngIf="editingCaseType"class="mr-1 spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>Add</button>
+        <button [disabled]="editingCaseType || selectedCaseType.facilityId===null" type="button" *ngIf="selectedCaseType.id" class="btn btn-dynamic-2c btn-sm" (click)="EditCaseType(editCaseTypeModel)">
+          <span *ngIf="editingCaseType"class="mr-1 spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>Edit</button>
+      </div>
+    </div>
+  </div>
+</div>

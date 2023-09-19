@@ -1,0 +1,103 @@
+<div *ngIf="gettignCharges" class="d-flex justify-content-center text-center">
+  <!-- <div class="d-flex justify-content-center text-center"> -->
+  <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+</div>
+<div class="panel-body">
+  <div class="row">
+      <div class="col-xl-3 col-lg-6 col-sm-6">
+          <div class="form-group">
+              <label for="name">Transmission Charges</label>
+              <input type="number" [(ngModel)]="editTransmissionChargesObj.transmissionCharges" placeholder="Number"
+                  class="form-control form-control-sm">
+          </div>
+      </div>
+      <div class="col-xl-3 col-lg-6 col-sm-6">
+          <div class="form-group">
+              <label for="name">ReactivationCharges</label>
+              <input type="number" [(ngModel)]="editTransmissionChargesObj.reactivationCharges" placeholder="Number"
+                  class="form-control form-control-sm">
+          </div>
+      </div>
+      <div class="col-xl-3 col-lg-6 col-sm-6 ">
+          <div class="btn-group" style="padding-top: 1.85rem;">
+              <button *ngIf="facilityId"
+                  [disabled]="savingCharges"
+                  type="button" class="btn btn-dynamic-2c btn-sm my-0 flex-shrink-0"
+                  (click)="EditServiceSubscription()"><i class="fa fa-save fa-lg"></i> Update</button>
+              <button *ngIf="!facilityId"
+                  [disabled]="savingCharges"
+                  type="button" class="btn btn-dynamic-2c btn-sm my-0 flex-shrink-0"
+                  (click)="EditDefaultServiceSubscription()"><i class="fa fa-save fa-lg"></i> Update</button>
+          </div>
+      </div>
+  </div>
+
+</div>
+<div *ngIf="gettignPricing" class="d-flex justify-content-center text-center">
+    <!-- <div class="d-flex justify-content-center text-center"> -->
+    <mdb-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mdb-progress-bar>
+  </div>
+  <ngx-datatable #table class="material" [columnMode]="'force'" [headerHeight]="50" [footerHeight]="50" [rowHeight]="40"
+    [scrollbarV]="false" [scrollbarH]="true" [rows]="phDevicesPricingList" [offset]="0">
+    <ngx-datatable-column name="#" [maxWidth]=50>
+      <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-rowIndex="rowIndex">
+        {{rowIndex + 1}}
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column [width]="40" name="Modality" prop="modality"> </ngx-datatable-column>
+    <ngx-datatable-column [width]="40" name="Price" prop="price">
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Lease Price" prop="leasePrice"> </ngx-datatable-column>
+    <ngx-datatable-column name="Installments" prop="installmentsCount"> </ngx-datatable-column>
+    <!-- <ngx-datatable-column name="Transmission Charges" prop="transmissionCharges"> </ngx-datatable-column> -->
+    <!-- <ngx-datatable-column name="Billed Amount" prop="defaultFixCharge">
+    </ngx-datatable-column> -->
+    <ngx-datatable-column name="Action" [width]="40">
+      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+        <button type="button" class="btn btn-icon btn-dynamic-2c ml-2" (click)="OpenEditModal(row,editPHDevicePricingModal)"><span class="fa fa-eye fa-lg"></span></button>
+        <!-- <button type="button" class="btn btn-icon btn-danger ml-2" [disabled]="isLoading" (click)="openConfirmModal(row.id)"><i class="fa fa-trash fa-lg"></i></button> -->
+      </ng-template>
+    </ngx-datatable-column>
+    <!-- <ngx-datatable-column name="action" prop="Notes"> </ngx-datatable-column> -->
+  </ngx-datatable>
+
+  <div mdbModal #editPHDevicePricingModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true" [config]="{backdrop: true, ignoreBackdropClick: true}" >
+  <div class="modal-dialog modal-dialog-centered modal-md flat-modal modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="editPHDevicePricingModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" >Edit PH Device Pricing</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-12">
+              <div class="form-group">
+                <label for="price">Price</label>
+                <input type="number" id="price" name="otherType1" [(ngModel)]="editPHDevicePricingObj.price" class="form-control form-control-sm" />
+            </div>
+        </div>
+          <div class="col-sm-12">
+              <div class="form-group">
+                <label for="leasePrice">Lease Price</label>
+                <input type="number" id="leasePrice" name="otherType1" [(ngModel)]="editPHDevicePricingObj.leasePrice" class="form-control form-control-sm" />
+            </div>
+        </div>
+          <div class="col-sm-12">
+              <div class="form-group">
+                <label for="installmentsCount">Installments</label>
+                <input type="number" Numeric id="installmentsCount" name="otherType2" [(ngModel)]="editPHDevicePricingObj.installmentsCount" class="form-control form-control-sm" />
+            </div>
+        </div>
+      </div>
+    </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-dark btn-sm" (click)="editPHDevicePricingModal.hide()">Close</button>
+        <button *ngIf="!facilityId" type="submit" class="btn btn-dynamic-2c btn-sm"  [disabled]="savingPricing" (click)="EditDefaultPHPricing(editPHDevicePricingModal)">Update</button>
+        <button *ngIf="facilityId" type="submit" class="btn btn-dynamic-2c btn-sm"  [disabled]="savingPricing" (click)="EditPHPricing(editPHDevicePricingModal)">Update</button>
+      </div>
+
+  </div>
+</div>
