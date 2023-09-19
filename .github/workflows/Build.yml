@@ -1,47 +1,42 @@
-name: Build Pipeline
+name: Frontend Build-Only Pipeline
 
 on:
   push:
-    branches:
-    - master  
+    
+  pull_request:
+        branches:
+          - Development
+          - master
 
 jobs:
   build:
     runs-on: ubuntu-latest
-     
-    container:
-      image: node:14  # Use a Node.js 12 Docker image
-    env:
-      APP_DIRECTORY: '../../src/app'   #Our source directory
-
-
+  
     steps:
-      - name: Checkout Repository
+      - name: Checkout Code
         uses: actions/checkout@v2
 
-
-      - name: Set Up Node 12
+      - name: Install Node@12
         uses: actions/setup-node@v2
         with:
           node-version: 12
+    
+      - name: Install NPM Dependencies
+        run:  npm install --force
 
-      - name: node version
-        run: node -v
-        
-      - name: Install dependencies
-        run: npm install 
-        
-      - name: Build
-        run: ng build 
-        # run: npm run build
+      - name: Install Angular@9
+        run: npm install -g @angular/cli@9.1.11
+  
+      - name: Remove Existing 'ng-uikit-pro-standard'
+        run:  rm -rf node_modules/ng-uikit-pro-standard
 
-      - name: Archive Build Artifacts
-        uses: actions/upload-artifact@v2
-        with:
-           name: dist
-           path: dist  
+      - name: Copy New 'ng-uikit-pro-standard'
+        run: |
+             mkdir -p node_modules
+             cp -r ng-uikit-pro-standard node_modules/
+      
+      - name: Build Code
+        run: node --max-old-space-size=8192 ./node_modules/@angular/cli/bin/ng build
 
-      # - name: Set Environment Variables
-      #   run: |
-      #     echo "APP_DIRECTORY=$APP_DIRECTORY" >> $GITHUB_ENV
-      #     echo "ENVIRONMENT=${{ matrix.environment }}" >> $GITHUB_ENV
+      
+      
