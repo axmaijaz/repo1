@@ -15,7 +15,7 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
-    needs: Build
+    # needs: Build
     strategy:
       matrix:
         environment: [QA, Production]
@@ -28,11 +28,11 @@ jobs:
         with:
           name: dist
 
-      Uncomment the following lines to set environment variables
-      - name: Set environment variables
-        run: |
-          echo "APP_DIRECTORY=$APP_DIRECTORY" >> $GITHUB_ENV 
-          echo "ENVIRONMENT=${{ matrix.environment }}" >> $GITHUB_ENV
+      # Uncomment the following lines to set environment variables
+      # - name: Set environment variables
+      #   run: |
+      #     echo "APP_DIRECTORY=$APP_DIRECTORY" >> $GITHUB_ENV 
+      #     echo "ENVIRONMENT=${{ matrix.environment }}" >> $GITHUB_ENV
 
       # # Uncomment the following block to trigger the Build Pipeline workflow
       # - name: Trigger Build Pipeline
