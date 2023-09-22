@@ -31,13 +31,13 @@ jobs:
           echo "::set-output name=build-failed::true"
 
 
-    - name: Deprecate PR on Build Failure
-      if: steps.check-build-status.outputs.build-failed == 'true'
-      run: |
-          curl -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-          -H "Accept: application/vnd.github.v3+json" \
-          https://api.github.com/repos/axmaijaz/repo1/pulls/${{ github.event.pull_request.number }}/update -d '{"state":"closed"}'
-          fi
+    # - name: Deprecate PR on Build Failure
+    #   if: steps.check-build-status.outputs.build-failed == 'true'
+    #   run: |
+    #       curl -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+    #       -H "Accept: application/vnd.github.v3+json" \
+    #       https://api.github.com/repos/axmaijaz/repo1/pulls/${{ github.event.pull_request.number }}/update -d '{"state":"closed"}'
+    #       fi
       # -----------------------------------------------------
  
     
