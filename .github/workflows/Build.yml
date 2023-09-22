@@ -20,12 +20,12 @@ jobs:
         uses: actions/setup-node@v2
         # with:
         #   node-version: 12
-    
-      - name: Install NPM Dependencies
-        run:  npm install --force
+         abcdefghijklmnopqrstuvwxyz
+      # - name: Install NPM Dependencies
+      #   run:  npm install --force
 
-      - name: Install Angular@9
-        run: npm install -g @angular/cli
+      # - name: Install Angular@9
+      #   run: npm install -g @angular/cli
   
     #   - name: Remove Existing 'ng-uikit-pro-standard'
     #     run:  rm -rf node_modules/ng-uikit-pro-standard
