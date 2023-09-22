@@ -11,7 +11,7 @@ on:
       - synchronize
 
 jobs:
-  check-build-status:
+  check-buildpipeline-status:
     runs-on: ubuntu-latest
     steps:
     - name: Check Build Status
