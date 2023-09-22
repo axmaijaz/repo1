@@ -11,7 +11,7 @@ on:
       - synchronize
 
 jobs:
-  check-pr-status:
+  check-build-status:
     runs-on: ubuntu-latest
     steps:
     - name: Check Build Status
