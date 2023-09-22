@@ -15,6 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Check Build Status
+      id: check-build-status
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
@@ -26,10 +27,27 @@ jobs:
         # Check if the triggering workflow was successful
         if [ "$TRIGGERING_WORKFLOW_STATUS" == "success" ]; then
           echo "Congragulation! The triggering workflow ($TRIGGERING_WORKFLOW_NAME) was successful."
-          # You can add further steps here if you need to take action based on success.
+          echo "::set-output name=build-failed::false"
         else
           echo "OOps! The triggering workflow ($TRIGGERING_WORKFLOW_NAME) failed or had another conclusion."
-          # You can add further steps here if you need to take action based on failure.
-        fi
+          echo "::set-output name=build-failed::true"
+
+
+    - name: Deprecate PR on Build Failure
+      if: steps.check-build-status.outputs.build-failed == 'true'
+      run: |
+          curl -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          -H "Accept: application/vnd.github.v3+json" \
+          https://api.github.com/repos/axmaijaz/repo1/pulls/${{ github.event.pull_request.number }}/update -d '{"state":"closed"}'
+          fi
       # -----------------------------------------------------
  
+    # - name: Deprecate PR on Build Failure
+    # if: steps.check-build-status.outputs.build-failed == 'true'
+    # run: |
+    #   # Use GitHub API to close the PR
+    #   # Replace GITHUB_TOKEN with your repository's token or use a personal access token
+    #   # Make sure the token has the necessary permissions to close PRs
+    #   curl -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+    #   -H "Accept: application/vnd.github.v3+json" \
+    #   https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/update -d '{"state":"closed"}'
