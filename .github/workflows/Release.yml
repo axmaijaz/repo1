@@ -5,7 +5,6 @@ on:
     workflows: ["Build Pipeline"] 
     types:
       - completed
-
    pull_request_review:
     types:
       - submitted
