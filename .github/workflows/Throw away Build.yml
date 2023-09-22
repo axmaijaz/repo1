@@ -32,31 +32,4 @@ jobs:
           # You can add further steps here if you need to take action based on failure.
         fi
       # -----------------------------------------------------
-  #   - name: Check PR Status and Approvals
-  #     id: pr_check
-  #     run: |
-  #       pr_status=$(curl -s -X GET -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \ 
-  #               "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}")
-  #        approvals=$(echo $pr_status | jq -r '.reviews | map(select(.state == "APPROVED")) | length')
-  #        if [[ $pr_status == *'"state":"success"'* && $approvals -gt 0 ]]; then
-  #            echo "::set-output name=approved::true"
-  #        else
-  #           echo "::set-output name=approved::false"
-  #          fi
-  #   env:
-  #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #   outputs:
-  #       approved: ${{ steps.pr_check.outputs.approved }}  # add ${{ }} for the step output
  
-  # release:
-  #   needs: check-pr-status
-  #   runs-on: ubuntu-latest
-
-  #   steps:
-  #    - name: Conditional Release Pipeline Trigger
-  #      if: ${{ needs.check-pr-status.outputs.approved == 'true' }}
-  #      run: |
-  #       echo "Running the release pipeline"
-  #       # Add your release pipeline steps here
-  #       else
-  #       echo "PR is rejected or closed. Skipping release pipeline."
