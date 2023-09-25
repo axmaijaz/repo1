@@ -10,15 +10,16 @@ on:
     types:
       - submitted
 
-    workflow_dispatch:
+   workflow_dispatch:
     inputs:
       environment:
         description: 'Environment to deploy (QA or production)'
         required: true
+        type: choice
         default: 'QA'
         options:
-          - QA
-          - production
+            - QA
+            - production
 
 jobs:
   deploy:
