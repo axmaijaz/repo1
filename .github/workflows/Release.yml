@@ -26,28 +26,29 @@ jobs:
           id: choose-environment
           run: |
             echo "Which environment would you like to deploy to?"
-            echo "::set-output name=selected-environment::QA" # Default value
+            echo "selected-environment=QA" >> $GITHUB_ENV
             read -r environment
             if [[ "$environment" == "Production" ]]; then
-            echo "::set-env name=SELECTED_ENVIRONMENT::$environment"
+            echo "SELECTED_ENVIRONMENT=Production" >> $GITHUB_ENV
             fi
+
+        
         - name: Set environment variable
-          run:  echo "SELECTED_ENVIRONMENT=QA" >> $GITHUB_ENV
-          
-        - name: Deploy to ${{ matrix.environment }} Environment
-          if: ${{ env.SELECTED_ENVIRONMENT == 'Production' || steps.set-environment-variable.outputs.SELECTED_ENVIRONMENT == 'Production' }}
+          run: echo "SELECTED_ENVIRONMENT=QA" >> $GITHUB_ENV
+        - name: Deploy to ${{ matrix.environment }} Environment      
           run: |
-            if [[ "${{ env.SELECTED_ENVIRONMENT }}" == "Production" ]]; then
+            if [[ "$env.SELECTED_ENVIRONMENT" == "Production" ]]; then
               echo "Deploying to Production..."
               # Add your production deployment commands here
-            elif [[ "${{ env.SELECTED_ENVIRONMENT }}" == "QA" ]]; then
+            elif [[ "$env.SELECTED_ENVIRONMENT" == "QA" ]]; then
               echo "Deploying to QA..."
               # Add your QA deployment commands here
-            elif [[ "${{ env.SELECTED_ENVIRONMENT }}" == "Staging" ]]; then
+            elif [[ "$env.SELECTED_ENVIRONMENT" == "Staging" ]]; then
               echo "Deploying to Staging..."
               # Add your staging deployment commands here
             fi
         
+       
   
     
     
@@ -55,9 +56,4 @@ jobs:
     
     
       
-        # -  name: Determine Deployment Environment
-        #    id: choose-environment
-        #   -run: echo "::set-output name=environment::${{ github.event.inputs.environment }}"
-
-        # - name: Deploy to Production
-        #  run: if: steps.choose-environment.outputs.environment == 'Production'
+       
