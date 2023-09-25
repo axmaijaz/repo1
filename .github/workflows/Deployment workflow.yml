@@ -15,11 +15,11 @@ on:
       environment:
         description: 'Environment to deploy (QA or production)'
         required: true
-        # type: choice
-        # default: 'QA'
-        # options:
-        #     - QA
-        #     - production
+        type: choice
+        default: 'QA'
+        options:
+            - QA
+            - production
 
 jobs:
   deploy:
@@ -28,7 +28,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
+      - name: Set Environment Selection
+        run: echo "::set-output name=environment::${{ github.event.inputs.environment }}"
+        
     #   - name: Deploy to QA
     #     if: ${{ github.event.inputs.environment == 'QA' }}
     #     run: |
@@ -54,4 +56,3 @@ jobs:
               echo "Invalid environment choice."
               exit 1
             fi
-  
