@@ -3,8 +3,7 @@ name: Conditional Release Pipeline
 on:
   workflow_run:
     workflows: ["Frontend Build-Only Pipeline"] 
-    # types:
-    # - completed
+    
   # pull_request:
   #   types:
   #     - opened
