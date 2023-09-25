@@ -5,10 +5,10 @@ on:
     workflows: ["Frontend Build-Only Pipeline"] 
     types:
     - completed
-  pull_request:
-    types:
-      - opened
-      - synchronize
+  # pull_request:
+  #   types:
+  #     - opened
+  #     - synchronize
 
 jobs:
   check-build-status:

@@ -35,10 +35,35 @@ jobs:
     #     run: |
     #          mkdir -p node_modules
     #          cp -r ng-uikit-pro-standard node_modules/
-abcdef
+
       - name: Build Code
         run: ng build
+        continue-on-error: true # Continue even if the build fails
             # node --max-old-space-size=8192 ./node_modules/@angular/cli/bin/ng build
 
-      
+      - name: Check Build Status
+        id: build-status
+        run: echo "::set-output name=status::success" # Set the initial status as success
+
+      - name: Determine Build Status
+        id: check-build-status
+        run: |
+          if [ -d "dist" ]; then
+            echo "::set-output name=status::success"
+          else
+            echo "::set-output name=status::failure"
+          fi
+
+      - name: Close or Deprecate PR
+        if: steps.check-build-status.outputs.status == 'failure'
+        run: |
+          # You can add your logic to close or deprecate the PR here
+          # Example: Close the PR
+          # GITHUB_TOKEN is a built-in token for authentication
+          curl -X POST \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d '{"state": "closed"}' \
+            "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}"
+    
       
