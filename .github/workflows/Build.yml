@@ -40,7 +40,7 @@ jobs:
         run: ng build
         continue-on-error: true # Continue even if the build fails
             # node --max-old-space-size=8192 ./node_modules/@angular/cli/bin/ng build
-
+            abcdefghijklmnopqrstuvwxyz
       - name: Check Build Status
         id: build-status
         run: echo "::set-output name=status::success" # Set the initial status as success
