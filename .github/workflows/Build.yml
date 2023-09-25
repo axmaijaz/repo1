@@ -40,6 +40,8 @@ jobs:
         run: |
          ng build
          echo "::set-output name=status::success" # Set the initial status as success
+
+         abcdefghijkli
  # node --max-old-space-size=8192 ./node_modules/@angular/cli/bin/ng build
       # - name: Determine Build Status
       #   id: check-build-status
