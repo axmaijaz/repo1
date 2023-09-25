@@ -29,7 +29,7 @@ jobs:
           echo "Congragulation! The triggering workflow ($TRIGGERING_WORKFLOW_NAME) was successful."
           echo "::set-output name=build-failed::false"
         else
-          echo "OOps! The triggering workflow ($TRIGGERING_WORKFLOW_NAME) failed or had another conclusion."
+          echo "OOps! The triggering workflow ($TRIGGERING_WORKFLOW_NAME) failed but will lead to deprecate PR."
           echo "::set-output name=build-failed::true"
         fi
 
