@@ -36,8 +36,8 @@ jobs:
     #          mkdir -p node_modules
     #          cp -r ng-uikit-pro-standard node_modules/
       - name: Build Code
-        run:  building
-        continue-on-error: true # Continue even if the build fails
+        run:  building ABC
+        # continue-on-error: true # Continue even if the build fails
             # node --max-old-space-size=8192 ./node_modules/@angular/cli/bin/ng build
         
       - name: Check Build Status
