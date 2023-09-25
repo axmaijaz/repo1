@@ -35,7 +35,7 @@ jobs:
     #          cp -r ng-uikit-pro-standard node_modules/
       - name: Build Code
         run: |
-          ng build
+          ng buildxxx
           if [ $? -eq 0 ]; then
              echo "::set-output name=status::success"
           else
@@ -54,7 +54,7 @@ jobs:
             "$API_URL"
            fi
         id: build-status
-        continue-on-error: true # Continue even if the build fails
+        # continue-on-error: true # Continue even if the build fails
           # node --max-old-space-size=8192 ./node_modules/@angular/cli/bin/ng build
   # close-pr:
   #     needs: build
