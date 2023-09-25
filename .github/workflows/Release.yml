@@ -2,7 +2,7 @@ name: Release & Deployment Pipeline
 
 on:
    workflow_run:
-    workflows: ["Build Pipeline"] 
+    workflows: ["Frontend Build-Only Pipeline"] 
     types:
       - completed
 
