@@ -1,0 +1,41 @@
+name: Deployment Workflow
+
+on:
+   workflow_run:
+    workflows: ["Frontend Build-Only Pipeline"] 
+    types:
+      - completed
+
+   pull_request_review:
+    types:
+      - submitted
+
+    workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy (QA or production)'
+        required: true
+        default: 'QA'
+        options:
+          - QA
+          - production
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Deploy to QA
+        if: ${{ github.event.inputs.environment == 'QA' }}
+        run: |
+          # Your deployment script or commands for QA
+          # Example: deploy.sh qa
+
+      - name: Deploy to Production
+        if: ${{ github.event.inputs.environment == 'production' }}
+        run: |
+          # Your deployment script or commands for production
+          # Example: deploy.sh production
